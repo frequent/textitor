@@ -1,0 +1,82 @@
+todo: 
+OK - renderjsify tristan editor
+- add listener for editor tab close
+
+
+=> gitstorage
+  - replicate with indexeddb and remote gitstorage
+
+=> cachestorage
+  - serviceworker
+  - this is my filesystem to work on, create, edit, delete, ....
+  - must work offline, cribjs
+  - commit will do a diff with local gitstorage, allow to init?
+  - can add everything to gitstorage. push will send to master
+
+
+
+
+So Cedric does what?
+- calls jio-configurator which fetches the form
+- calls jio-cribjs, which declares load and save (all)
+  - > load creates jio
+  - uses jio w/ config to allAttachments
+  - fetches all attachments using keys
+  - puts them with sw gadget
+  - returns list of url
+  - > save creates jio
+  - calls allDocs on sw gadget
+  - creates a new entry (counter?) WHY
+  - makes ajax calls to fetch IF file not found?
+  - pushes all attachments to remote storage
+  
+> so load fetches everything from remote using jio and dumps it into cache
+> and save fetches everything from cache and dumps it on remote
+
+load = dav.allAttachments => sw.put -> returns url-list (custom)
+save = sw.allDocs => 
+
+
+
+
+a title bar to click, OPEN, CLOSE, SOURCE, FILES, SAVE, SYNC
+
+SOURCE should allow to define a
+mergly
+
+
+==========================
+
+<!-- https://github.com/michael/github > instructions
+
+http://rawgit.com/TristanCavelier/apps/master/app/code-editor/index.html
+https://github.com/TristanCavelier/texteditor/blob/master/manifest.appcache
+
+var github = new Github({
+  username: "frequent",
+  password: "",
+  auth: "basic"
+});
+serverless = github.getRepo("frequent", "nexedi-serverless-test")
+serverless.getTree("master", function (err, tree) {if (err) {console.log("error");console.log(err);} else {console.log(tree);}});
+
+text editor, should also work offline but be on git,
+
+text editor, cribjs, jio github storage
+
+jio git = I need branches? files?
+one jio per branch or one document per branch
+
+jio > document per branch    master - files are attachements. editing and saving means updating an attachement. Is this a commit, too? No, this should always be local.
+
+how to navigate files?
+  
+how to open multiple files? > tabs?
+  
+step 1:
+--><script type="text/javascript" src="github.js"></script>
+
+http://stackoverflow.com/questions/2745076/what-are-the-differences-between-git-commit-and-git-push?answertab=votes#tab-top
+
+
+    
