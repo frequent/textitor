@@ -28,23 +28,18 @@
 
   function validateConnection(cache_id) {
     if ('serviceWorker' in navigator) {
-      if (navigator.serviceWorker.controller === undefined) {
+      if (navigator.serviceWorker.controller === null) {
         return new RSVP.Promise(function(resolve, reject) {
-          navigator.serviceWorker.register(
-            'serviceworker.js', {
-              scope: './', 
-              cache: cache_id // XXX not sure this works
-            }
-          )
-          .then(function () {
-            if (navigator.serviceWorker.controller) {
-              resolve();
-            } else {
-              reject(new Error("Please refresh to initialize serviceworker"));
-            }
-          }).catch(function (err) {
-            reject(err);
-          });
+          navigator.serviceWorker.register('serviceworker.js', {scope: './'})
+            .then(function () {
+              if (navigator.serviceWorker.controller) {
+                resolve();
+              } else {
+                reject(new Error("Please refresh to initialize serviceworker"));
+              }
+            }).catch(function (err) {
+              reject(err);
+            });
         });
       }
     } else {
@@ -97,17 +92,19 @@
   };
 
   ServiceWorkerStorage.prototype.put = function (url, param) {
-    var context = this;
+    var context = this,
+      cache_id = context._cache;
     url = restrictDocumentId(url);
     return new RSVP.Queue()
       .push(function () {
-        return validateConnection(context._cache);
+        return validateConnection(cache_id);
       })
       .push(function () {
         return sendMessage({
           command: 'putAttachment',
           id: url,
-          name: "enclosure",
+          cache: cache_id,
+          name: DOCUMENT_EXTENSION,
           content: new Blob([param.content], {
             type: param.type,
           })
@@ -120,13 +117,15 @@
             .push(function () {
               return sendMessage({
                 command: 'put',
-                id: url
+                id: url,
+                cache: cache_id
               });
             })
             .push(function () {
               return sendMessage({
                 command: 'putAttachment',
                 id: url,
+                cache: cache_id,
                 name: url + DOCUMENT_EXTENSION,
                 content: new Blob([param.content], {
                   type: param.type,
@@ -142,7 +141,8 @@
   };
 
   ServiceWorkerStorage.prototype.get = function (url) {
-    var context = this;
+    var context = this,
+      cache_id = context._cache;
 
     // NOTE: alternatively get could also be run "official" way via
     // an ajax request, which the serviceworker would catch via fetch listener!
@@ -151,11 +151,12 @@
 
     return new RSVP.Queue()
       .push(function () {
-        return validateConnection(context._cache);
+        return validateConnection(cache_id);
       })
       .push(function () {
         return sendMessage({
           command: 'getAttachment',
+          cache: cache_id,
           id: url,
           name: url + DOCUMENT_EXTENSION
         });
@@ -171,16 +172,18 @@
 
   ServiceWorkerStorage.prototype.remove = function (url) {
     var context = this,
+      cache_id = context._cache,
       got_error = false;
 
     // First, try to remove enclosure, then the document
     return new RSVP.Queue()
       .push(function () {
-        return validateConnection(context._cache);
+        return validateConnection(cache_id);
       })
       .push(function () {
         return sendMessage({
           command: 'removeAttachment',
+          cache: cache_id,
           id: url,
           name: url + DOCUMENT_EXTENSION
         });
@@ -196,7 +199,8 @@
       .push(function () {
         return sendMessage({
           command: 'remove',
-          id: url
+          id: url,
+          cache: cache_id
         });
       })
       .push(undefined, function (error) {
@@ -230,14 +234,15 @@
   };
 
   ServiceWorkerStorage.prototype.allDocs = function (options) {
-    var context = this;
+    var context = this,
+      cache_id = context._cache;
 
     if (options === undefined) {
       options = {};
     }
     return new RSVP.Queue()
       .push(function () {
-        return validateConnection(context._cache);
+        return validateConnection(cache_id);
       })
       .push(function () {
         if (context.hasCapacity("list") &&
@@ -261,6 +266,7 @@
       .push(function () {
         return sendMessage({
           command: 'allDocs',
+          cache: cache_id,
           options: options
         });
       });
