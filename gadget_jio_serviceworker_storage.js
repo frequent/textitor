@@ -8,14 +8,10 @@
 (function (jIO, RSVP, Blob) {
   "use strict";
 
-  // no need to validate url, because serviceworker.js will throw on non-urls
+  // no need to validate attachment name, because serviceworker.js will throw
   function restrictDocumentId(id) {
-    if (id.indexOf("/") !== 0) {
-      throw new jIO.util.jIOError("id " + id + " is forbidden (no begin /)",
-                                  400);
-    }
-    if (id.lastIndexOf("/") !== (id.length - 1)) {
-      throw new jIO.util.jIOError("id " + id + " is forbidden (no end /)",
+    if (id.indexOf("/") > -1) {
+      throw new jIO.util.jIOError("id should be a project name, not a path)",
                                   400);
     }
     return id;
