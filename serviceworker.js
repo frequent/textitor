@@ -37,7 +37,7 @@ self.addEventListener('activate', function (event) {
   );
 });
 
-// build a server on fetch?
+// XXX build a server on fetch?
 // intercept network requests, allows to serve form cache or fetch from network
 self.addEventListener('fetch', function (event) {
   var url = event.request.url;
@@ -55,7 +55,7 @@ self.addEventListener('fetch', function (event) {
               } else {
                 
                 // clone call, because any operation like fetch/put... will
-                // consume the, request, so we need a copy of the original
+                // consume the request, so we need a copy of the original
                 // (see https://fetch.spec.whatwg.org/#dom-request-clone)
                 return fetch(event.request.clone()).then(function(response) {
 
