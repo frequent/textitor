@@ -95,7 +95,7 @@
         throw new jIO.util.jIOError("Cannot re-create existing cache",
                                 409);
       }, function (error) {
-        if (error.status_code === 404) {
+        if (error.status === 404) {
           return new RSVP.Queue()
             .push(function () {
               return sendMessage({
