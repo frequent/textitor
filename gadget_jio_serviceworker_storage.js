@@ -9,7 +9,7 @@
   "use strict";
 
   // no need to validate url, because serviceworker.js will throw on non-urls
-  function restrictDocumentId(url) {
+  function restrictDocumentId(id) {
     if (id.indexOf("/") !== 0) {
       throw new jIO.util.jIOError("id " + id + " is forbidden (no begin /)",
                                   400);
