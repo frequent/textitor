@@ -39,6 +39,7 @@ self.addEventListener('activate', function (event) {
 
 // XXX build a server on fetch?
 // intercept network requests, allows to serve form cache or fetch from network
+/*
 self.addEventListener('fetch', function (event) {
   var url = event.request.url;
   
@@ -49,9 +50,6 @@ self.addEventListener('fetch', function (event) {
           return cache.match(event.request)
             .then(function(response) {
               if (response) {
-                console.log("matched");
-                console.log(response);
-              /*  
                 return response;
               
               // no cached response for event.request, fetch from network
@@ -68,13 +66,7 @@ self.addEventListener('fetch', function (event) {
                       return response;
                     });
                 });
-                 */
               }
-              fetch(event.request.clone()).then(function(response) {
-                console.log("cloned");
-                console.log(response);
-                return response;
-              })
             })
             .catch(function(error) {
               
@@ -92,6 +84,7 @@ self.addEventListener('fetch', function (event) {
     event.respondWith(fetch(event.request));
   }
 });
+*/
 
 self.addEventListener('message', function (event) {
   var param = event.data,
