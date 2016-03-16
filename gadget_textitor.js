@@ -42,9 +42,19 @@
             .push(function (my_storage) {
               return RSVP.all([
                 my_rendered_gadget_list[0],
-                my_storage.put("http://foo.css", {"content":"bar", "type":"text/css"})
-              ]);
-            });
+                new RSVP.Queue()
+                  .push(function () {
+                    return my_storage.put("textitor");
+                  })
+                  .push(function (my_id) {
+                    console.log(my_id);
+                    return my_storage.putAttachment(my_id, "http://foo.css", {
+                      "type": "text/css",
+                      "content": "span%2C%20div%20%7Bborder%3A%201px%20solid%20red%20!important%3B%7D"
+                    })
+                  })
+                ])
+              });
         });
     });
 }(window, rJS));
