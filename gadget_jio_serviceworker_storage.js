@@ -8,25 +8,20 @@
 (function (jIO, RSVP, Blob) {
   "use strict";
 
-  var URL_PATTERN = /(http|ftp|https):\/\/[\w-]+(\.[\w-]+)+([\w.,@?^=%&amp;:\/~+#-]*[\w@?^=%&amp;\/~+#-])?/;
-  var DOCUMENT_EXTENSION = "enclosure";
-
+  // no need to validate url, because serviceworker.js will throw on non-urls
   function restrictDocumentId(url) {
-    if (URL_PATTERN.test(url) === false) {
-      throw new jIO.util.jIOError("url " + url + " is not an url. ",
+    if (id.indexOf("/") !== 0) {
+      throw new jIO.util.jIOError("id " + id + " is forbidden (no begin /)",
                                   400);
     }
-    return url;
-  }
-
-  function restrictAttachmentId(url) {
-    if (url.indexOf("/") !== -1) {
-      throw new jIO.util.jIOError("attachment " + url + " is forbidden",
+    if (id.lastIndexOf("/") !== (id.length - 1)) {
+      throw new jIO.util.jIOError("id " + id + " is forbidden (no end /)",
                                   400);
     }
+    return id;
   }
 
-  function validateConnection(cache_id) {
+  function validateConnection() {
     if ('serviceWorker' in navigator) {
       if (navigator.serviceWorker.controller === null) {
         return new RSVP.Promise(function(resolve, reject) {
@@ -78,176 +73,153 @@
    * @class ServiceWorkerStorage
    * @constructor
    */
-  function ServiceWorkerStorage (spec) {
-    if (typeof spec.cache !== 'string' || !spec.cache) {
-      throw new TypeError("Cache' must be a string " +
-                          "which contains more than one character.");
-    }
-    this._cache = spec.cache;
-  }
+  function ServiceWorkerStorage () {}
 
   ServiceWorkerStorage.prototype.post = function () {
-    throw new jIO.util.jIOError("Storage requires 'put' with resource url as id",
+    throw new jIO.util.jIOError("Storage requires 'put' to create new cache",
+                                400);
+  };
+  ServiceWorkerStorage.prototype.get = function () {
+    throw new jIO.util.jIOError("Storage does not support 'get' method",
                                 400);
   };
 
-  ServiceWorkerStorage.prototype.put = function (url, param) {
-    var context = this,
-      cache_id = context._cache;
-    url = restrictDocumentId(url);
+  ServiceWorkerStorage.prototype.put = function (id) {
     return new RSVP.Queue()
       .push(function () {
-        return validateConnection(cache_id);
+        return validateConnection();
       })
       .push(function () {
         return sendMessage({
-          command: 'putAttachment',
-          id: url,
-          cache: cache_id,
-          name: DOCUMENT_EXTENSION,
-          content: new Blob([param.content], {
-            type: param.type,
-          })
+          command: 'get',
+          id: restrictDocumentId(id)
         });
       })
-      .push(undefined, function (error) {
-        if ((error instanceof jIO.util.jIOError) &&
-          (error.status_code === 404)) {
+      .push(function () {
+        throw new jIO.util.jIOError("Cannot re-create existing cache",
+                                409);
+      }, function (error) {
+        if (error.status_code === 404) {
           return new RSVP.Queue()
             .push(function () {
               return sendMessage({
                 command: 'put',
-                id: url,
-                cache: cache_id
-              });
-            })
-            .push(function () {
-              return sendMessage({
-                command: 'putAttachment',
-                id: url,
-                cache: cache_id,
-                name: url + DOCUMENT_EXTENSION,
-                content: new Blob([param.content], {
-                  type: param.type,
-                })
+                id: id
               });
             });
-        }
-        throw error;
-      })
-      .push(function () {
-        return url;
+          }
+          throw error;
       });
   };
 
-  ServiceWorkerStorage.prototype.get = function (url) {
-    var context = this,
-      cache_id = context._cache;
+  ServiceWorkerStorage.prototype.remove = function (id) {
+    return new RSVP.Queue()
+      .push(function () {
+        return validateConnection();
+      })
+      .push(function () {
+        return sendMessage({
+          command: 'allAttachments',
+          id: restrictDocumentId(id)
+        });
+      })
+      .push(function (attachment_dict) {
+        var url_list = [],
+          key;
+        for (key in attachment_dict) {
+          if (attachment_dict.hasOwnProperty(url)) {
+            url_list.append(sendMessage({
+              command: 'removeAttachment',
+              id: key
+            }));
+          }
+        }
+        return RSVP.all(url_list);
+      });
+  };
+  
+  ServiceWorkerStorage.prototype.removeAttachment = function (id, url) {
+    return new RSVP.Queue()
+      .push(function () {
+        return validateConnection();
+      })
+      .push(function () {
+        return sendMessage({
+          command: 'removeAttachment',
+          id: restrictDocumentId(id),
+          name: url
+        });
+      });
+  };
+  
+  ServiceWorkerStorage.prototype.getAttachment = function (id, url) {
 
     // NOTE: alternatively get could also be run "official" way via
     // an ajax request, which the serviceworker would catch via fetch listener!
     // for a filesystem equivalent however, we don't assume fetching resources
     // from the network, so all methods will go through sendMessage
-
+    
     return new RSVP.Queue()
       .push(function () {
-        return validateConnection(cache_id);
+        return validateConnection();
       })
       .push(function () {
         return sendMessage({
           command: 'getAttachment',
-          cache: cache_id,
-          id: url,
-          name: url + DOCUMENT_EXTENSION
+          id: restrictDocumentId(id),
+          name: url
         });
-      })
-      .push(undefined, function (error) {
-        if ((error instanceof jIO.util.jIOError) &&
-            (error.status_code === 404)) {
-          throw new jIO.util.jIOError("Cannot find document " + url, 404);
-        }
-        throw error;
       });
   };
-
-  ServiceWorkerStorage.prototype.remove = function (url) {
-    var context = this,
-      cache_id = context._cache,
-      got_error = false;
-
-    // First, try to remove enclosure, then the document
+  
+  ServiceWorkerStorage.prototype.putAttachment = function (id, name, param) {
     return new RSVP.Queue()
       .push(function () {
-        return validateConnection(cache_id);
+        return validateConnection();
       })
       .push(function () {
         return sendMessage({
-          command: 'removeAttachment',
-          cache: cache_id,
+          command: 'putAttachment',
           id: url,
-          name: url + DOCUMENT_EXTENSION
+          name: name,
+          content: new Blob([param.content], {
+            type: param.type,
+          })
         });
-      })
-      .push(undefined, function (error) {
-        if ((error instanceof jIO.util.jIOError) &&
-            (error.status_code === 404)) {
-          got_error = true;
-          return;
-        }
-        throw error;
+      });
+  };
+  
+  ServiceWorkerStorage.prototype.allAttachments = function (id) {
+    return new RSVP.Queue()
+      .push(function () {
+        return validateConnection();
       })
       .push(function () {
         return sendMessage({
-          command: 'remove',
-          id: url,
-          cache: cache_id
+          command: 'allAttachments',
+          id: restrictDocumentId(id)
         });
-      })
-      .push(undefined, function (error) {
-        if ((!got_error) && (error instanceof jIO.util.jIOError) &&
-            (error.status_code === 404)) {
-          return url;
-        }
-        throw error;
       });
   };
 
-  ServiceWorkerStorage.prototype.getAttachment = function (url, name) {
-    throw new jIO.util.jIOError("Only support 'enclosure' attachment",
-                                400);
-  };
-
-  ServiceWorkerStorage.prototype.putAttachment = function (url, name) {
-    throw new jIO.util.jIOError("Only support 'enclosure' attachment",
-                                400);
-  };
-  ServiceWorkerStorage.prototype.removeAttachment = function (url, name) {
-    throw new jIO.util.jIOError("Only support 'enclosure' attachment",
-                                400);
-  };
-  ServiceWorkerStorage.prototype.allAttachments = function () {
-    throw new jIO.util.jIOError("Only support 'enclosure' attachment",
-                                400);
-  };
   ServiceWorkerStorage.prototype.hasCapacity = function (name) {
-    return ((name === "list") || (name === "include"));
+    return (name === "list");
   };
 
+  // returns a list of all caches ~ folders
   ServiceWorkerStorage.prototype.allDocs = function (options) {
-    var context = this,
-      cache_id = context._cache;
+    var context = this;
 
     if (options === undefined) {
       options = {};
     }
+
     return new RSVP.Queue()
       .push(function () {
-        return validateConnection(cache_id);
+        return validateConnection();
       })
       .push(function () {
-        if (context.hasCapacity("list") &&
-            ((options.include_docs === undefined) ||
-             context.hasCapacity("include"))) {
+        if (context.hasCapacity("list")) {
           return context.buildQuery(options);
         }
       })
@@ -264,9 +236,11 @@
   ServiceWorkerStorage.prototype.buildQuery = function (options) {
     return new RSVP.Queue()
       .push(function () {
+        return validateConnection();
+      })
+      .push(function () {
         return sendMessage({
           command: 'allDocs',
-          cache: cache_id,
           options: options
         });
       });
