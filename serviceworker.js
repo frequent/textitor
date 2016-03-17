@@ -8,6 +8,9 @@
 // importScripts('./serviceworker-cache-polyfill.js');
 
 // debug:
+// chrome://inspect/#service-workers
+// chrome://serviceworker-internals/
+// 
 // bar = new Promise(function (resolve, reject) {
 //   return caches.keys()
 //     .then(function (result) {
@@ -115,36 +118,35 @@ self.addEventListener('message', function (event) {
     
     // test if cache exits, only run ahead of put
     case 'get':
-      event.respondWith(
-        caches.keys().then(function(key_list) {
-          var i, len;
-          CURRENT_CACHE = param.id + "-v" + CURRENT_CACHE_VERSION;
-          for (i = 0, len = key_list.length; i < len; i += 1) {
-            if (key_list[i] === CURRENT_CACHE) {
-              event.ports[0].postMessage({
-                error: null
-              });
-            }
+      caches.keys().then(function(key_list) {
+        var i, len;
+        CURRENT_CACHE = param.id + "-v" + CURRENT_CACHE_VERSION;
+        for (i = 0, len = key_list.length; i < len; i += 1) {
+          if (key_list[i] === CURRENT_CACHE) {
+            event.ports[0].postMessage({
+              error: null
+            });
           }
-        
-          // event.ports[0] corresponds to the MessagePort that was transferred 
-          // as part of the controlled page's call to controller.postMessage(). 
-          // Therefore, event.ports[0].postMessage() will trigger the onmessage
-          // handler from the controlled page. It's up to you how to structure 
-          // the messages that you send back; this is just one example.
-          event.ports[0].postMessage({
-            error: {
-              "status": 404,
-              "message": "Cache does not exist."
-            }
-          });
-        })
-        .catch(function(error) {
-          event.ports[0].postMessage({
-            error: {'message': error.toString()}
-          });
-        })
-      );
+        }
+      
+        // event.ports[0] corresponds to the MessagePort that was transferred 
+        // as part of the controlled page's call to controller.postMessage(). 
+        // Therefore, event.ports[0].postMessage() will trigger the onmessage
+        // handler from the controlled page. It's up to you how to structure 
+        // the messages that you send back; this is just one example.
+        event.ports[0].postMessage({
+          error: {
+            "status": 404,
+            "message": "Cache does not exist."
+          }
+        });
+      })
+      .catch(function(error) {
+        event.ports[0].postMessage({
+          error: {'message': error.toString()}
+        });
+      })
+
       break;
 
     // create new cache by opening it. this will only run once per cache/folder
