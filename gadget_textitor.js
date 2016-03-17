@@ -48,12 +48,15 @@
                   })
                   .push(function (my_id) {
                     console.log(my_id);
-                    return my_storage.putAttachment(my_id, "http://foo.css", {
-                      "type": "text/css",
-                      "content": "span%2C%20div%20%7Bborder%3A%201px%20solid%20red%20!important%3B%7D"
-                    })
+                    return my_storage.putAttachment(
+                      my_id, 
+                      "http://foo.css", 
+                      new Blob(["span%2C%20div%20%7Bborder%3A%201px%20solid%20red%20!important%3B%7D"], {
+                        type: "text/css",
+                      })
+                    );
                   })
-                ])
+                ]);
               });
         });
     });

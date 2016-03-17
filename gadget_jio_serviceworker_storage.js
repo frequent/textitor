@@ -171,16 +171,11 @@
         return validateConnection();
       })
       .push(function () {
-        console.log(id)
-        console.log(name)
-        console.log(param)
         return sendMessage({
           command: 'putAttachment',
           id: id,
           name: name,
-          content: new Blob([param.content], {
-            type: param.type,
-          })
+          content: param
         });
       });
   };
