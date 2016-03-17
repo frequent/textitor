@@ -91,11 +91,8 @@
           id: restrictDocumentId(id)
         });
       })
-      .push(function () {
-        throw new jIO.util.jIOError("Cannot re-create existing cache",
-                                409);
-      }, function (error) {
-        if (error.status_code === 404) {
+      .push(undefined, function (error) {
+        if (error.status === 404) {
           return new RSVP.Queue()
             .push(function () {
               return sendMessage({
@@ -176,11 +173,9 @@
       .push(function () {
         return sendMessage({
           command: 'putAttachment',
-          id: url,
+          id: id,
           name: name,
-          content: new Blob([param.content], {
-            type: param.type,
-          })
+          content: param
         });
       });
   };
