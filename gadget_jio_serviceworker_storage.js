@@ -91,10 +91,7 @@
           id: restrictDocumentId(id)
         });
       })
-      .push(function () {
-        throw new jIO.util.jIOError("Cannot re-create existing cache",
-                                409);
-      }, function (error) {
+      .push(undefined, function (error) {
         if (error.status === 404) {
           return new RSVP.Queue()
             .push(function () {

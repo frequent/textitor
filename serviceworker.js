@@ -7,6 +7,9 @@
 // see https://developer.mozilla.org/en-US/docs/Web/API/Cache
 // importScripts('./serviceworker-cache-polyfill.js');
 
+// make RSVP the Promise of choice
+importScripts('./rsvp.js');
+
 // https://developer.mozilla.org/en-US/docs/Web/API/Service_Worker_API/Using_Service_Workers
 // http://www.html5rocks.com/en/tutorials/service-worker/introduction/
 
