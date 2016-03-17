@@ -7,8 +7,22 @@
 // see https://developer.mozilla.org/en-US/docs/Web/API/Cache
 // importScripts('./serviceworker-cache-polyfill.js');
 
-// make RSVP the Promise of choice
-// importScripts('./rsvp.js');
+// debug:
+// bar = new Promise(function (resolve, reject) {
+//   return caches.keys()
+//     .then(function (result) {
+//      console.log(result);
+//      return caches.open(result[0])
+//        .then(function(cache){
+//          return cache.keys()
+//            .then(function (request_list) {
+//              console.log(request_list);
+//              console.log("DONE");
+//              resolve();
+//            });
+//        });
+//    });
+//});
 
 // https://developer.mozilla.org/en-US/docs/Web/API/Service_Worker_API/Using_Service_Workers
 // http://www.html5rocks.com/en/tutorials/service-worker/introduction/
