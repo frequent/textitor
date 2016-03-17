@@ -8,6 +8,7 @@
 // importScripts('./serviceworker-cache-polyfill.js');
 
 // debug:
+// chrome://cache/
 // chrome://inspect/#service-workers
 // chrome://serviceworker-internals/
 // 
@@ -145,53 +146,49 @@ self.addEventListener('message', function (event) {
         event.ports[0].postMessage({
           error: {'message': error.toString()}
         });
-      })
+      });
 
       break;
 
     // create new cache by opening it. this will only run once per cache/folder
     case 'put':
       CURRENT_CACHE = param.id + "-v" + CURRENT_CACHE_VERSION;
-      event.respondWith(
-        caches.open(CURRENT_CACHE)
-          .then(function() {
-            event.ports[0].postMessage({
-              error: null,
-              data: param.id
-            });
-          })
-          .catch(function(error) {
-            event.ports[0].postMessage({
-              error: {'message': error.toString()}
-            });
-          })
-        );
-    break;
-
-    // return list of caches ~ folders
-    case 'allDocs':
-      event.respondWith(
-        caches.keys().then(function(key_list) {
-          result_list = key_list.map(function(key) {
-            return {
-              "id": key.split("-v")[0],
-              "value": {}
-            };
-          });
+      caches.open(CURRENT_CACHE)
+        .then(function() {
           event.ports[0].postMessage({
             error: null,
-            data: {
-              rows: result_list,
-              total_rows: result_list.length
-            }
+            data: param.id
           });
         })
         .catch(function(error) {
           event.ports[0].postMessage({
             error: {'message': error.toString()}
           });
-        })
-      );
+        });
+    break;
+
+    // return list of caches ~ folders
+    case 'allDocs':
+      caches.keys().then(function(key_list) {
+        result_list = key_list.map(function(key) {
+          return {
+            "id": key.split("-v")[0],
+            "value": {}
+          };
+        });
+        event.ports[0].postMessage({
+          error: null,
+          data: {
+            rows: result_list,
+            total_rows: result_list.length
+          }
+        });
+      })
+      .catch(function(error) {
+        event.ports[0].postMessage({
+          error: {'message': error.toString()}
+        });
+      });
     break;
     
     // return all urls stored in a cache
@@ -202,115 +199,108 @@ self.addEventListener('message', function (event) {
       // that serve as keys for the current cache. We assume all files
       // are kept in cache, so there will be no network requests.
 
-      event.respondWith(
-        caches.open(CURRENT_CACHE)
-          .then(function(cache) {
-            cache.keys().then(function (request_list) {
-              result_list = requests.map(function(request) {
-                return request.url;
-              }),
-              attachment_dict = {},
-              i, 
-              i_len;
-                
-              for (i = 0, i_len = result_list.length; i < i_len; i += 1) {
-                attachment_dict[result_list[i]] = {};
-              }
-              event.ports[0].postMessage({
-                error: null,
-                data: attachment_dict
-              });
-            });
-          })
-          .catch(function(error) {
+      caches.open(CURRENT_CACHE)
+        .then(function(cache) {
+          cache.keys().then(function (request_list) {
+            result_list = requests.map(function(request) {
+              return request.url;
+            }),
+            attachment_dict = {},
+            i, 
+            i_len;
+              
+            for (i = 0, i_len = result_list.length; i < i_len; i += 1) {
+              attachment_dict[result_list[i]] = {};
+            }
             event.ports[0].postMessage({
-              error: {'message': error.toString()}
+              error: null,
+              data: attachment_dict
             });
-          })
-        );
+          });
+        })
+        .catch(function(error) {
+          event.ports[0].postMessage({
+            error: {'message': error.toString()}
+          });
+        });
     break;
   
     case 'removeAttachment':
       CURRENT_CACHE = param.id + "-v" + CURRENT_CACHE_VERSION;
-      event.respondWith(
-        caches.open(CURRENT_CACHE)
-          .then(function(cache) {
-            request = new Request(param.name, {mode: 'no-cors'});
-            cache.delete(request)
-              .then(function(success) {
-                event.ports[0].postMessage({
-                  error: success ? null : {
-                    'status': 404,
-                    'message': 'Item not found in cache.'
-                  }
-                });
+
+      caches.open(CURRENT_CACHE)
+        .then(function(cache) {
+          request = new Request(param.name, {mode: 'no-cors'});
+          cache.delete(request)
+            .then(function(success) {
+              event.ports[0].postMessage({
+                error: success ? null : {
+                  'status': 404,
+                  'message': 'Item not found in cache.'
+                }
               });
-          })
-          .catch(function(error) {
-            event.ports[0].postMessage({
-              error: {'message': error.toString()}
             });
-          })
-      );
+        })
+        .catch(function(error) {
+          event.ports[0].postMessage({
+            error: {'message': error.toString()}
+          });
+        });
     break;
-    
+
     case 'getAttachment':
       CURRENT_CACHE = param.id + "-v" + CURRENT_CACHE_VERSION;
-      event.respondWith(
-        caches.open(CURRENT_CACHE)
-          .then(function(cache) {
-            return cache.match(param.name)
-            .then(function(response) {
-              if (response) {
-                event.ports[0].postMessage({
-                  error: null,
-                  data: response
-                });
-              } else {
-                event.ports[0].postMessage({
-                  error: {
-                    'status': 404,
-                    'message': 'Item not found in cache.'
-                  }
-                });
-              }
-            });
-          })
-          .catch(function(error) {
-            event.ports[0].postMessage({
-              error: {'message': error.toString()}
-            });
-          })
-      );
+      caches.open(CURRENT_CACHE)
+        .then(function(cache) {
+          return cache.match(param.name)
+          .then(function(response) {
+            if (response) {
+              event.ports[0].postMessage({
+                error: null,
+                data: response
+              });
+            } else {
+              event.ports[0].postMessage({
+                error: {
+                  'status': 404,
+                  'message': 'Item not found in cache.'
+                }
+              });
+            }
+          });
+        })
+        .catch(function(error) {
+          event.ports[0].postMessage({
+            error: {'message': error.toString()}
+          });
+        });
     break;  
       
     case 'putAttachment':
       CURRENT_CACHE = param.id + "-v" + CURRENT_CACHE_VERSION;
-      event.respondWith(
-        caches.open(CURRENT_CACHE)
-          .then(function(cache) {
-            
-            // If event.data.url isn't a valid URL, new Request() will throw a 
-            // TypeError which will be handled by the outer .catch().
-            // Hardcode {mode: 'no-cors} since the default for new Requests 
-            // constructed from strings is to require CORS, and we don't have any 
-            // way of knowing whether an arbitrary URL that a user entered 
-            // supports CORS.
-            request = new Request(param.name, {mode: 'no-cors'}),
-            response = new Response(param.content);
-            cache.put(request, response)
-              .then(function() {
-                event.ports[0].postMessage({
-                  error: null
-                });
+      caches.open(CURRENT_CACHE)
+        .then(function(cache) {
+          
+          // If event.data.url isn't a valid URL, new Request() will throw a 
+          // TypeError which will be handled by the outer .catch().
+          // Hardcode {mode: 'no-cors} since the default for new Requests 
+          // constructed from strings is to require CORS, and we don't have any 
+          // way of knowing whether an arbitrary URL that a user entered 
+          // supports CORS.
+          request = new Request(param.name, {mode: 'no-cors'}),
+          response = new Response(param.content);
+          cache.put(request, response)
+            .then(function() {
+              event.ports[0].postMessage({
+                error: null
               });
-          })
-          .catch(function(error) {
-            event.ports[0].postMessage({
-              error: {'message': error.toString()}
             });
-          })
-      );
+        })
+        .catch(function(error) {
+          event.ports[0].postMessage({
+            error: {'message': error.toString()}
+          });
+        });
     break;
     
     // refuse all else
