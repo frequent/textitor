@@ -17,7 +17,8 @@
     })
 
     .declareMethod('render', function (my_option_dict) {
-      var gadget = this;
+      var gadget = this,
+        return_gadget;
       return new RSVP.Queue()
         .push(function () {
           return RSVP.all([
@@ -32,6 +33,8 @@
           ]);
         })
         .push(function (my_rendered_gadget_list) {
+          // need to pass this back
+          return_gadget = my_rendered_gadget_list[0];
           return new RSVP.Queue()
             .push(function () {
               return jIO.createJIO({
@@ -40,24 +43,23 @@
               });
             })
             .push(function (my_storage) {
-              return RSVP.all([
-                my_rendered_gadget_list[0],
-                new RSVP.Queue()
-                  .push(function () {
-                    return my_storage.put("textitor");
-                  })
-                  .push(function (my_id) {
-                    console.log(my_id);
-                    return my_storage.putAttachment(
-                      my_id, 
-                      "http://foo.css", 
-                      new Blob(["span%2C%20div%20%7Bborder%3A%201px%20solid%20red%20!important%3B%7D"], {
-                        type: "text/css",
-                      })
-                    );
-                  })
-                ]);
-              });
+              return my_storage.put("textitor");
+            })
+            .push(function (my_id) {
+              console.log(my_id);
+              return my_storage.putAttachment(
+                my_id, 
+                "http://foo.css", 
+                new Blob(["span%2C%20div%20%7Bborder%3A%201px%20solid%20red%20!important%3B%7D"], {
+                  type: "text/css",
+                })
+              );
+            })
+            .push(function (my_response) {
+              console.log("done");
+              console.log(my_response);
+              return return_gadget;
+            });
         });
     });
 }(window, rJS));
