@@ -476,7 +476,7 @@
   // CodeMirror.keyMap.krx["Shift-Ctrl-L"] = "goCharRight";
   // CodeMirror.keyMap.krx["Shift-Ctrl-M"] = undefined;
   // CodeMirror.keyMap.krx["Shift-Ctrl-N"] = undefined;
-  CodeMirror.keyMap.krx["Shift-Ctrl-O"] = viewFileMenu;
+  CodeMirror.keyMap.krx["Shift-Ctrl-O"] = "krxViewFileMenu";
   // CodeMirror.keyMap.krx["Shift-Ctrl-P"] = undefined;
   // CodeMirror.keyMap.krx["Shift-Ctrl-Q"] = undefined;
   CodeMirror.keyMap.krx["Shift-Ctrl-R"] = doNothing; // (browser reload page without cache)
