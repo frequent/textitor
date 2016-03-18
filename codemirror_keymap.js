@@ -402,6 +402,66 @@
   CodeMirror.keyMap.krx["Shift-Alt-Space"] = "krxAutocompleteWordReverse";
   CodeMirror.keyMap.krx["Shift-Alt-Backspace"] = "delWordAfter";
 
+
+  /*
+  
+  ["Shift-Ctrl-0"] Open
+  ["Shift-Ctrl-Up"] Up in current folder
+  ["Shift-Ctrl-Down"] Down in current folder
+  ["Shift-Ctrl-Right"] Up one folder/Close file
+  ["Shift-Ctrl-Left"] Down one folder/Open file
+  ["Shift-Ctrl-S"] Save File (*)
+  ["Shift-Ctrl-X"] Close File
+  ["Shift-Ctrl-D"] Delete File
+  ["Shift-Ctrl-H"] List of Shortcuts
+
+  */
+  
+  // http://codemirror.net/doc/manual.html#addon_dialog
+  // open dialog takes
+  // template - html template
+  // callback - function to run on return
+  // options - all parameters listed
+  function viewFileMenu(cm) {
+    if (cm.openDialog) {
+      cm.openDialog(
+        "<span class=\"foo\">hello</span><input type=\"text\" />",
+        function (my_selected_value, my_event) {
+          console.log("callback");
+          console.log(my_selected_value);
+          console.log(my_event);
+        }, {
+          "bottom": false,
+          "closeOnEnter": false,
+          "closeOnBlur": false,
+          "onKeyDown": function (e, val, close) {
+            console.log("key down");
+            console.log(e);
+            console.log(val);
+            console.log(close);
+            return true;
+          },
+          "onKeyUp": function (e, val, close) {
+            console.log("key up");
+            console.log(e);
+            console.log(val);
+            console.log(close);
+            return true;
+          },
+          "onInput": function (e, val, close) {
+            console.log("input");
+            console.log(e);
+            console.log(val);
+            console.log(close);
+            return true;
+          },
+          "value": null,
+          "selectValueOnOpen": false
+        });
+    }
+  }
+  CodeMirror.commands.krxViewFileMenu = viewFileMenu;
+  
   // CodeMirror.keyMap.krx["Shift-Ctrl-A"] = undefined;
   // CodeMirror.keyMap.krx["Shift-Ctrl-B"] = undefined;
   // CodeMirror.keyMap.krx["Shift-Ctrl-C"] = undefined;
@@ -415,7 +475,8 @@
   // CodeMirror.keyMap.krx["Shift-Ctrl-K"] = "goLineUp";
   // CodeMirror.keyMap.krx["Shift-Ctrl-L"] = "goCharRight";
   // CodeMirror.keyMap.krx["Shift-Ctrl-M"] = undefined;
-  // CodeMirror.keyMap.krx["Shift-Ctrl-O"] = undefined;
+  // CodeMirror.keyMap.krx["Shift-Ctrl-N"] = undefined;
+  CodeMirror.keyMap.krx["Shift-Ctrl-O"] = viewFileMenu;
   // CodeMirror.keyMap.krx["Shift-Ctrl-P"] = undefined;
   // CodeMirror.keyMap.krx["Shift-Ctrl-Q"] = undefined;
   CodeMirror.keyMap.krx["Shift-Ctrl-R"] = doNothing; // (browser reload page without cache)
@@ -427,6 +488,7 @@
   // CodeMirror.keyMap.krx["Shift-Ctrl-X"] = "delCharAfter";
   // CodeMirror.keyMap.krx["Shift-Ctrl-Y"] = undefined;
   // CodeMirror.keyMap.krx["Shift-Ctrl-Z"] = undefined;
-  CodeMirror.keyMap.krx["Shift-Ctrl--"] = "undo";
+  // CodeMirror.keyMap.krx["Shift-Ctrl--"] = "undo";
+  // CodeMirror.keyMap.krx["Shift-Ctrl-Return"] = undefined;
 
 }(this));
