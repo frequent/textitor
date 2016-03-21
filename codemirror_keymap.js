@@ -405,15 +405,15 @@
 
   /*
   
-  ["Shift-Ctrl-0"] Open
-  ["Shift-Ctrl-Up"] Up in current folder
-  ["Shift-Ctrl-Down"] Down in current folder
-  ["Shift-Ctrl-Right"] Up one folder/Close file
-  ["Shift-Ctrl-Left"] Down one folder/Open file
-  ["Shift-Ctrl-S"] Save File (*)
-  ["Shift-Ctrl-X"] Close File
-  ["Shift-Ctrl-D"] Delete File
-  ["Shift-Ctrl-H"] List of Shortcuts
+  ["Ctrl-Alt-0"] Open
+  ["Ctrl-Alt-Up"] Up in current folder
+  ["Ctrl-Alt-Down"] Down in current folder
+  ["Ctrl-Alt-Right"] Up one folder/Close file
+  ["Ctrl-Alt-Left"] Down one folder/Open file
+  ["Ctrl-Alt-S"] Save File (*)
+  ["Ctrl-Alt-X"] Close File
+  ["Ctrl-Alt-D"] Delete File
+  ["Ctrl-Alt-H"] List of Shortcuts
 
   */
   
@@ -462,39 +462,33 @@
   }
   CodeMirror.commands.krxViewFileMenu = viewFileMenu;
   
-  function pokeMe(cm) {
-    console.log("poked");
-    console.log(cm);
-  }
-  CodeMirror.commands.krxPokeMe = pokeMe;
-  
-  CodeMirror.keyMap.krx["Shift-Ctrl-A"] = "krxPokeMe";
-  // CodeMirror.keyMap.krx["Shift-Ctrl-B"] = undefined;
-  // CodeMirror.keyMap.krx["Shift-Ctrl-C"] = undefined;
-  // CodeMirror.keyMap.krx["Shift-Ctrl-D"] = undefined;
-  // CodeMirror.keyMap.krx["Shift-Ctrl-E"] = undefined;
-  // CodeMirror.keyMap.krx["Shift-Ctrl-F"] = undefined;
-  // CodeMirror.keyMap.krx["Shift-Ctrl-G"] = undefined;
-  // CodeMirror.keyMap.krx["Shift-Ctrl-H"] = "goCharLeft";
-  // CodeMirror.keyMap.krx["Shift-Ctrl-I"] = undefined;
-  // CodeMirror.keyMap.krx["Shift-Ctrl-J"] = "goLineDown";
-  // CodeMirror.keyMap.krx["Shift-Ctrl-K"] = "goLineUp";
-  // CodeMirror.keyMap.krx["Shift-Ctrl-L"] = "goCharRight";
-  // CodeMirror.keyMap.krx["Shift-Ctrl-M"] = undefined;
-  // CodeMirror.keyMap.krx["Shift-Ctrl-N"] = undefined;
-  CodeMirror.keyMap.krx["Shift-Ctrl-O"] = "krxViewFileMenu";
-  // CodeMirror.keyMap.krx["Shift-Ctrl-P"] = undefined;
-  // CodeMirror.keyMap.krx["Shift-Ctrl-Q"] = undefined;
-  CodeMirror.keyMap.krx["Shift-Ctrl-R"] = doNothing; // (browser reload page without cache)
-  // CodeMirror.keyMap.krx["Shift-Ctrl-S"] = undefined;
-  // CodeMirror.keyMap.krx["Shift-Ctrl-T"] = undefined; // (browser open recently closed tab)
-  // CodeMirror.keyMap.krx["Shift-Ctrl-U"] = "undo";
-  // CodeMirror.keyMap.krx["Shift-Ctrl-V"] = undefined;
-  // CodeMirror.keyMap.krx["Shift-Ctrl-W"] = undefined;
-  // CodeMirror.keyMap.krx["Shift-Ctrl-X"] = "delCharAfter";
-  // CodeMirror.keyMap.krx["Shift-Ctrl-Y"] = undefined;
-  // CodeMirror.keyMap.krx["Shift-Ctrl-Z"] = undefined;
-  // CodeMirror.keyMap.krx["Shift-Ctrl--"] = "undo";
-  // CodeMirror.keyMap.krx["Shift-Ctrl-Return"] = undefined;
+  // CodeMirror.keyMap.krx["Ctrl-Alt-A"] = undefined;
+  // CodeMirror.keyMap.krx["Ctrl-Alt-B"] = undefined;
+  // CodeMirror.keyMap.krx["Ctrl-Alt-C"] = undefined;
+  // CodeMirror.keyMap.krx["Ctrl-Alt-D"] = undefined;
+  // CodeMirror.keyMap.krx["Ctrl-Alt-E"] = undefined;
+  // CodeMirror.keyMap.krx["Ctrl-Alt-F"] = undefined;
+  // CodeMirror.keyMap.krx["Ctrl-Alt-G"] = undefined;
+  // CodeMirror.keyMap.krx["Ctrl-Alt-H"] = undefined;
+  // CodeMirror.keyMap.krx["Ctrl-Alt-I"] = undefined;
+  // CodeMirror.keyMap.krx["Ctrl-Alt-J"] = undefined;
+  // CodeMirror.keyMap.krx["Ctrl-Alt-K"] = undefined;
+  // CodeMirror.keyMap.krx["Ctrl-Alt-L"] = undefined;
+  // CodeMirror.keyMap.krx["Ctrl-Alt-M"] = undefined;
+  // CodeMirror.keyMap.krx["Ctrl-Alt-N"] = undefined;
+  CodeMirror.keyMap.krx["Ctrl-Alt-O"] = "krxViewFileMenu";
+  // CodeMirror.keyMap.krx["Ctrl-Alt-P"] = undefined;
+  // CodeMirror.keyMap.krx["Ctrl-Alt-Q"] = undefined;
+  // CodeMirror.keyMap.krx["Ctrl-Alt-R"] = undefined;
+  // CodeMirror.keyMap.krx["Ctrl-Alt-S"] = undefined;
+  // CodeMirror.keyMap.krx["Ctrl-Alt-T"] = undefined;
+  // CodeMirror.keyMap.krx["Ctrl-Alt-U"] = undefined;
+  // CodeMirror.keyMap.krx["Ctrl-Alt-V"] = undefined;
+  // CodeMirror.keyMap.krx["Ctrl-Alt-W"] = undefined;
+  // CodeMirror.keyMap.krx["Ctrl-Alt-X"] = undefined;
+  // CodeMirror.keyMap.krx["Ctrl-Alt-Y"] = undefined;
+  // CodeMirror.keyMap.krx["Ctrl-Alt-Z"] = undefined;
+  // CodeMirror.keyMap.krx["Ctrl-Alt--"] = undefined;
+  // CodeMirror.keyMap.krx["Ctrl-Alt-Return"] = undefined;
 
 }(this));
