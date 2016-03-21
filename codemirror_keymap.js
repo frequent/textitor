@@ -462,7 +462,13 @@
   }
   CodeMirror.commands.krxViewFileMenu = viewFileMenu;
   
-  // CodeMirror.keyMap.krx["Shift-Ctrl-A"] = undefined;
+  function pokeMe(cm) {
+    console.log("poked");
+    console.log(cm);
+  }
+  CodeMirror.commands.krxPokeMe = pokeMe;
+  
+  CodeMirror.keyMap.krx["Shift-Ctrl-A"] = "krxPokeMe";
   // CodeMirror.keyMap.krx["Shift-Ctrl-B"] = undefined;
   // CodeMirror.keyMap.krx["Shift-Ctrl-C"] = undefined;
   // CodeMirror.keyMap.krx["Shift-Ctrl-D"] = undefined;
