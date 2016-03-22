@@ -1,4 +1,4 @@
-/*jslint indent: 2 */
+/*jslint indent: 2 */
 (function (root) {
   "use strict";
 
@@ -433,14 +433,20 @@
         }, {
           "bottom": false,
           "closeOnEnter": false,
-          "closeOnBlur": false,
-          "onKeyDown": function (e, val, close) {
+          "closeOnBlur": true,
+          "onKeyDown": function (my_event, my_val, my_close) {
             console.log("key down");
-            console.log(e);
-            console.log(val);
-            console.log(close);
+            console.log(my_event);
+            if (my_event.ctrlKey && my_event.altKey) {
+              switch (my_event.keyCode) {
+                case 128:
+                  my_close();
+                break;
+              }  
+            }
             return true;
           },
+          /*
           "onKeyUp": function (e, val, close) {
             console.log("key up");
             console.log(e);
@@ -448,6 +454,7 @@
             console.log(close);
             return true;
           },
+          */ 
           "onInput": function (e, val, close) {
             console.log("input");
             console.log(e);
@@ -476,7 +483,7 @@
   // CodeMirror.keyMap.krx["Ctrl-Alt-L"] = undefined;
   // CodeMirror.keyMap.krx["Ctrl-Alt-M"] = undefined;
   // CodeMirror.keyMap.krx["Ctrl-Alt-N"] = undefined;
-  CodeMirror.keyMap.krx["Ctrl-Alt-O"] = "krxViewFileMenu";
+  CodeMirror.keyMap.krx["Ctrl-Alt-O"] = "viewFileMenu";
   // CodeMirror.keyMap.krx["Ctrl-Alt-P"] = undefined;
   // CodeMirror.keyMap.krx["Ctrl-Alt-Q"] = undefined;
   // CodeMirror.keyMap.krx["Ctrl-Alt-R"] = undefined;
@@ -485,7 +492,7 @@
   // CodeMirror.keyMap.krx["Ctrl-Alt-U"] = undefined;
   // CodeMirror.keyMap.krx["Ctrl-Alt-V"] = undefined;
   // CodeMirror.keyMap.krx["Ctrl-Alt-W"] = undefined;
-  // CodeMirror.keyMap.krx["Ctrl-Alt-X"] = undefined;
+  // CodeMirror.keyMap.krx["Ctrl-Alt-X"] = "closeFileOrMenu";
   // CodeMirror.keyMap.krx["Ctrl-Alt-Y"] = undefined;
   // CodeMirror.keyMap.krx["Ctrl-Alt-Z"] = undefined;
   // CodeMirror.keyMap.krx["Ctrl-Alt--"] = undefined;
