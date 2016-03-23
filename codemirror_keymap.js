@@ -402,9 +402,7 @@
   CodeMirror.keyMap.krx["Shift-Alt-Space"] = "krxAutocompleteWordReverse";
   CodeMirror.keyMap.krx["Shift-Alt-Backspace"] = "delWordAfter";
 
-
   /*
-  
   ["Ctrl-Alt-0"] Open
   ["Ctrl-Alt-Up"] Up in current folder
   ["Ctrl-Alt-Down"] Down in current folder
@@ -418,67 +416,63 @@
   keyIdentifier "right" 39
   */
   
+  var OPERATION_MENU = "<span>Name:</span><input type=\"text\" />" +
+    "<button>Save</button>" +
+    "<button>Close</button>" +
+    "<button>Delete</button>";
+  
+  function setNavigationMenuInteraction(my_event, my_value, my_callback) {
+    if (my_event.ctrlKey && my_event.altKey) {
+      switch(my_event.keyCode) {
+        case 88:
+          my_callback();
+        break;
+        default:
+          console.log("keycode:", my_event.keyCode);
+        break;
+      }  
+    }
+  }
+
+  function enterCallback(my_selected_value, my_event) {
+    console.log("enterCallback");
+    console.log(my_selected_value);
+    console.log(my_event);
+  }
+  
   // http://codemirror.net/doc/manual.html#addon_dialog
-  // open dialog takes
-  // template - html template
-  // callback - function to run on return
-  // options - all parameters listed
-  function viewFileMenu(cm) {
+  function navigateRight(cm) {
     if (cm.openDialog) {
       cm.openDialog(
-        "<span class=\"foo\">hello</span><input type=\"text\" />",
-        function (my_selected_value, my_event) {
-          console.log("callback");
-        }, {
+        OPERATION_MENU,
+        enterCallback,
+        {
           "bottom": false,
           "closeOnEnter": false,
           "closeOnBlur": false,
-          "onKeyDown": function (e, val, close) {
-            console.log("key down");
-            console.log(e);
-            console.log(val);
-            console.log(close);
-            
-            if (e.ctrlKey && e.altKey) {
-              switch(e.keyCode) {
-                case 88:
-                  console.log("closing");
-                  close();
-                break;
-                default:
-                  console.log("keycode:", e.keyCode);
-                break;
-              }  
-            }
-            
-            return true;
-          },
+          "value": null,
+          "selectValueOnOpen": false,
           "onKeyUp": function (e, val, close) {
-            console.log("key up");
-            console.log(e);
-            console.log(val);
-            console.log(close);
+            setNavigationCallback(e, val, close);
             return true;
           },
           "onInput": function (e, val, close) {
-            console.log("input");
+            console.log("INPUT");
             console.log(e);
             console.log(val);
-            console.log(close);
-            return true;
-          },
-          "value": null,
-          "selectValueOnOpen": false
-        });
+          }
+        }
+      );
     }
   }
-  CodeMirror.commands.krxViewFileMenu = viewFileMenu;
+  CodeMirror.commands.krxNavigatRight = navigateRight;
   
-  function navigateHorizontal(cm) {
-    console.log("ola");
-    console.log(cm);
+  function navigateLeft(cm) {
+    if (cm.openDialog) {
+
+    }
   }
-  CodeMirror.commands.krxNavigateHorizontal = navigateHorizontal;
+  CodeMirror.commands.krxNavigatRight = navigateLeft;
   
   // CodeMirror.keyMap.krx["Ctrl-Alt-A"] = undefined;
   // CodeMirror.keyMap.krx["Ctrl-Alt-B"] = undefined;
@@ -494,7 +488,7 @@
   // CodeMirror.keyMap.krx["Ctrl-Alt-L"] = undefined;
   // CodeMirror.keyMap.krx["Ctrl-Alt-M"] = undefined;
   // CodeMirror.keyMap.krx["Ctrl-Alt-N"] = undefined;
-  CodeMirror.keyMap.krx["Ctrl-Alt-O"] = "krxViewFileMenu";
+  // CodeMirror.keyMap.krx["Ctrl-Alt-O"] = undefined;
   // CodeMirror.keyMap.krx["Ctrl-Alt-P"] = undefined;
   // CodeMirror.keyMap.krx["Ctrl-Alt-Q"] = undefined;
   // CodeMirror.keyMap.krx["Ctrl-Alt-R"] = undefined;
@@ -507,8 +501,8 @@
   // CodeMirror.keyMap.krx["Ctrl-Alt-Y"] = undefined;
   // CodeMirror.keyMap.krx["Ctrl-Alt-Z"] = undefined;
   // CodeMirror.keyMap.krx["Ctrl-Alt--"] = undefined;
-  CodeMirror.keyMap.krx["Ctrl-Alt-Right"] = "krxNavigateHorizontal";
-  CodeMirror.keyMap.krx["Ctrl-Alt-Left"] = "krxNavigateHorizontal";
+  CodeMirror.keyMap.krx["Ctrl-Alt-Right"] = "krxNavigateRight";
+  CodeMirror.keyMap.krx["Ctrl-Alt-Left"] = "krxNavigateLeft";
   // CodeMirror.keyMap.krx["Ctrl-Alt-Return"] = undefined;
 
 }(this));
