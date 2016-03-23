@@ -465,14 +465,14 @@
       );
     }
   }
-  CodeMirror.commands.krxNavigatRight = navigateRight;
+  CodeMirror.commands.krxNavigateRight = navigateRight;
   
   function navigateLeft(cm) {
     if (cm.openDialog) {
 
     }
   }
-  CodeMirror.commands.krxNavigatRight = navigateLeft;
+  CodeMirror.commands.krxNavigateLeft = navigateLeft;
   
   // CodeMirror.keyMap.krx["Ctrl-Alt-A"] = undefined;
   // CodeMirror.keyMap.krx["Ctrl-Alt-B"] = undefined;
