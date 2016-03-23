@@ -507,8 +507,8 @@
   // CodeMirror.keyMap.krx["Ctrl-Alt-Y"] = undefined;
   // CodeMirror.keyMap.krx["Ctrl-Alt-Z"] = undefined;
   // CodeMirror.keyMap.krx["Ctrl-Alt--"] = undefined;
-  CodeMirror.keyMap.krx["Ctrl-Alt-right"] = "krxNavigateHorizontal";
-  CodeMirror.keyMap.krx["Ctrl-Alt-left"] = "krxNavigateHorizontal";
+  CodeMirror.keyMap.krx["Ctrl-Alt-Right"] = "krxNavigateHorizontal";
+  CodeMirror.keyMap.krx["Ctrl-Alt-Left"] = "krxNavigateHorizontal";
   // CodeMirror.keyMap.krx["Ctrl-Alt-Return"] = undefined;
 
 }(this));
