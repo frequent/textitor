@@ -439,6 +439,16 @@
             console.log(e);
             console.log(val);
             console.log(close);
+            
+            if (e.ctrlKey && e.altKey) {
+              switch(e.keyCode) {
+                case 128:
+                  console.log("closing");
+                  close();
+                break;
+              }  
+            }
+            
             return true;
           },
           "onKeyUp": function (e, val, close) {
