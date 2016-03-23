@@ -442,9 +442,12 @@
             
             if (e.ctrlKey && e.altKey) {
               switch(e.keyCode) {
-                case 128:
+                case 88:
                   console.log("closing");
                   close();
+                break;
+                default:
+                  console.log("keycode:", e.keyCode);
                 break;
               }  
             }
