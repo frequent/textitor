@@ -437,15 +437,8 @@
           "onKeyDown": function (e, val, close) {
             console.log("key down");
             console.log(e);
-            /*
-            if (e.ctrlKey && e.altKey) {
-              switch(e.keyCode) {
-                case 128:
-                  close();
-                break;
-              }  
-            }
-            */
+            console.log(val);
+            console.log(close);
             return true;
           },
           "onKeyUp": function (e, val, close) {
@@ -454,7 +447,7 @@
             console.log(val);
             console.log(close);
             return true;
-          }, 
+          },
           "onInput": function (e, val, close) {
             console.log("input");
             console.log(e);
@@ -492,7 +485,7 @@
   // CodeMirror.keyMap.krx["Ctrl-Alt-U"] = undefined;
   // CodeMirror.keyMap.krx["Ctrl-Alt-V"] = undefined;
   // CodeMirror.keyMap.krx["Ctrl-Alt-W"] = undefined;
-  // CodeMirror.keyMap.krx["Ctrl-Alt-X"] = "closeFileOrMenu";
+  // CodeMirror.keyMap.krx["Ctrl-Alt-X"] = undefined;
   // CodeMirror.keyMap.krx["Ctrl-Alt-Y"] = undefined;
   // CodeMirror.keyMap.krx["Ctrl-Alt-Z"] = undefined;
   // CodeMirror.keyMap.krx["Ctrl-Alt--"] = undefined;
