@@ -433,7 +433,7 @@
         }, {
           "bottom": false,
           "closeOnEnter": false,
-          "closeOnBlur": true,
+          "closeOnBlur": false,
           "onKeyDown": function (e, val, close) {
             console.log("key down");
             console.log(e);
@@ -476,7 +476,7 @@
   // CodeMirror.keyMap.krx["Ctrl-Alt-L"] = undefined;
   // CodeMirror.keyMap.krx["Ctrl-Alt-M"] = undefined;
   // CodeMirror.keyMap.krx["Ctrl-Alt-N"] = undefined;
-  CodeMirror.keyMap.krx["Ctrl-Alt-O"] = "viewFileMenu";
+  CodeMirror.keyMap.krx["Ctrl-Alt-O"] = "krxViewFileMenu";
   // CodeMirror.keyMap.krx["Ctrl-Alt-P"] = undefined;
   // CodeMirror.keyMap.krx["Ctrl-Alt-Q"] = undefined;
   // CodeMirror.keyMap.krx["Ctrl-Alt-R"] = undefined;
@@ -492,3 +492,4 @@
   // CodeMirror.keyMap.krx["Ctrl-Alt-Return"] = undefined;
 
 }(this));
+
