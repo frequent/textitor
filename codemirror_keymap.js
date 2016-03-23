@@ -414,7 +414,8 @@
   ["Ctrl-Alt-X"] Close File
   ["Ctrl-Alt-D"] Delete File
   ["Ctrl-Alt-H"] List of Shortcuts
-
+  keyIdentifier "left" 37 
+  keyIdentifier "right" 39
   */
   
   // http://codemirror.net/doc/manual.html#addon_dialog
@@ -428,8 +429,6 @@
         "<span class=\"foo\">hello</span><input type=\"text\" />",
         function (my_selected_value, my_event) {
           console.log("callback");
-          console.log(my_selected_value);
-          console.log(my_event);
         }, {
           "bottom": false,
           "closeOnEnter": false,
@@ -475,6 +474,12 @@
   }
   CodeMirror.commands.krxViewFileMenu = viewFileMenu;
   
+  function navigateHorizontal(cm) {
+    console.log("ola");
+    console.log(cm);
+  }
+  CodeMirror.commands.krxNavigateHorizontal = navigateHorizontal;
+  
   // CodeMirror.keyMap.krx["Ctrl-Alt-A"] = undefined;
   // CodeMirror.keyMap.krx["Ctrl-Alt-B"] = undefined;
   // CodeMirror.keyMap.krx["Ctrl-Alt-C"] = undefined;
@@ -502,7 +507,8 @@
   // CodeMirror.keyMap.krx["Ctrl-Alt-Y"] = undefined;
   // CodeMirror.keyMap.krx["Ctrl-Alt-Z"] = undefined;
   // CodeMirror.keyMap.krx["Ctrl-Alt--"] = undefined;
+  CodeMirror.keyMap.krx["Ctrl-Alt-right"] = "krxNavigateHorizontal";
+  CodeMirror.keyMap.krx["Ctrl-Alt-left"] = "krxNavigateHorizontal";
   // CodeMirror.keyMap.krx["Ctrl-Alt-Return"] = undefined;
 
 }(this));
-
