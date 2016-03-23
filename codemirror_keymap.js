@@ -1,4 +1,4 @@
-/*jslint indent: 2 */
+/*jslint indent: 2 */
 (function (root) {
   "use strict";
 
@@ -434,27 +434,27 @@
           "bottom": false,
           "closeOnEnter": false,
           "closeOnBlur": true,
-          "onKeyDown": function (my_event, my_val, my_close) {
+          "onKeyDown": function (e, val, close) {
             console.log("key down");
-            console.log(my_event);
-            if (my_event.ctrlKey && my_event.altKey) {
-              switch (my_event.keyCode) {
+            console.log(e);
+            /*
+            if (e.ctrlKey && e.altKey) {
+              switch(e.keyCode) {
                 case 128:
-                  my_close();
+                  close();
                 break;
               }  
             }
+            */
             return true;
           },
-          /*
           "onKeyUp": function (e, val, close) {
             console.log("key up");
             console.log(e);
             console.log(val);
             console.log(close);
             return true;
-          },
-          */ 
+          }, 
           "onInput": function (e, val, close) {
             console.log("input");
             console.log(e);
