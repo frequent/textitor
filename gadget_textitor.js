@@ -3,6 +3,17 @@
 (function (window, rJS) {
   "use strict";
 
+  function callJioGadget(gadget, method, param_list) {
+    var called = false;
+    return new RSVP.Queue()
+      .push(function () {
+        return gadget.getDeclaredGadget("jio_gadget");
+      })
+      .push(function (jio_gadget) {
+        return jio_gadget[method].apply(jio_gadget, param_list);
+      });
+  }
+  
   rJS(window)
 
     .ready(function (my_gadget) {
@@ -49,7 +60,6 @@
                   return my_storage.put("textitor");
                 })
                 .push(function (my_id) {
-                  console.log(my_id);
                   return my_storage.putAttachment(
                     my_id, 
                     "http://foo.css", 
@@ -59,12 +69,45 @@
                   );
                 })
                 .push(function (my_response) {
-                  console.log("done");
-                  console.log(my_response);
                   return return_gadget;
                 });
             });
         });
+    })
+    
+    // jIO bridge
+    .allowPublicAcquisition("createJio", function (param_list) {
+      return callJioGadget(this, "createJio", param_list);
+    })
+    .allowPublicAcquisition("jio_allDocs", function (param_list) {
+      return callJioGadget(this, "allDocs", param_list);
+    })
+    .allowPublicAcquisition("jio_remove", function (param_list) {
+      return callJioGadget(this, "remove", param_list);
+    })
+    .allowPublicAcquisition("jio_post", function (param_list) {
+      return callJioGadget(this, "post", param_list);
+    })
+    .allowPublicAcquisition("jio_put", function (param_list) {
+      return callJioGadget(this, "put", param_list);
+    })
+    .allowPublicAcquisition("jio_get", function (param_list) {
+      return callJioGadget(this, "get", param_list);
+    })
+    .allowPublicAcquisition("jio_allAttachments", function (param_list) {
+      return callJioGadget(this, "allAttachments", param_list);
+    })
+    .allowPublicAcquisition("jio_getAttachment", function (param_list) {
+      return callJioGadget(this, "getAttachment", param_list);
+    })
+    .allowPublicAcquisition("jio_putAttachment", function (param_list) {
+      return callJioGadget(this, "putAttachment", param_list);
+    })
+    .allowPublicAcquisition("jio_removeAttachment", function (param_list) {
+      return callJioGadget(this, "removeAttachment", param_list);
+    })
+    .allowPublicAcquisition("jio_repair", function (param_list) {
+      return callJioGadget(this, "repair", param_list);
     });
+    
 }(window, rJS));
-
