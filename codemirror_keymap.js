@@ -522,7 +522,6 @@
         }
       });
     }
-    */
   }
   
   CodeMirror.commands.krxNavigateLeft = navigateLeft;
