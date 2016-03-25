@@ -469,8 +469,8 @@
   // http://codemirror.net/doc/manual.html#addon_dialog
   function navigateRight(cm) {
     var menu = setNavigationMenu("right");
-
     console.log("CALLED NAVIGATE RIGHT");
+    /*
     if (cm.openDialog) {
       cm.openDialog(menu, enterCallback, {
         "bottom": false,
@@ -489,11 +489,13 @@
           console.log(val);
         }
       });
-    }
+    }*/
   }
   CodeMirror.commands.moiNavigateRight = navigateRight;
   
   function navigateLeft(cm) {
+    console.log("left");
+    /*
     var menu = setNavigationMenu("left");
 
     console.log("CALLED NAVIGATE LEFT");
@@ -516,6 +518,7 @@
         }
       });
     }
+    */
   }
   CodeMirror.commands.moiNavigateLeft = navigateLeft;
   
@@ -544,7 +547,7 @@
   // CodeMirror.keyMap.moi["Ctrl-Alt-W"] = undefined;
   // CodeMirror.keyMap.moi["Ctrl-Alt-X"] = undefined;
   // CodeMirror.keyMap.moi["Ctrl-Alt-Y"] = undefined;
-  // CodeMirror.keyMap.moi["Ctrl-Alt-Z"] = undefined;
+  CodeMirror.keyMap.moi["Ctrl-Alt-Z"] = "moiNavigateRight";
   // CodeMirror.keyMap.moi["Ctrl-Alt--"] = undefined;
   CodeMirror.keyMap.moi["Ctrl-Alt-Right"] = "moiNavigateRight";
   CodeMirror.keyMap.moi["Ctrl-Alt-Left"] = "moiNavigateLeft";
