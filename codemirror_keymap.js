@@ -450,13 +450,25 @@
   }
 
   function setNavigationCallback(my_event, my_value, my_callback) {
-    console.log("navigation callback called")
+    console.log("navigation callback called");
     if (my_event.ctrlKey && my_event.altKey) {
       switch(my_event.keyCode) {
         case 88:
-          console.log("CLOSE")
+          console.log("CLOSE");
           my_callback();
         break;
+        case 37:
+          if (setNavigationMenu("left") === undefined) {
+            console.log("CLOSE");
+            my_callback();
+          }
+          break;
+        case 39:
+          if (setNavigationMenu("right") === undefined) {
+            console.log("CLOSE");
+            my_callback();
+          }
+          break;
         default:
           console.log("keycode:", my_event.keyCode);
         break;
@@ -502,6 +514,7 @@
 
   function navigateLeft(cm) {
     console.log("CALLED NAVIGATE LEFT");
+
     var menu = setNavigationMenu("left");
     if (cm.openDialog) {
       cm.openDialog(menu, enterCallback, {
@@ -511,8 +524,7 @@
         "value": null,
         "selectValueOnOpen": false,
         "onKeyUp": function (e, val, close) {
-          console.log("KEYUP");
-          console.log(e);
+          setNavigationCallback(e, val, close);
           return true;
         },
         "onInput": function (e, val, close) {
