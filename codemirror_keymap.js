@@ -416,15 +416,45 @@
   keyIdentifier "right" 39
   */
   
-  var OPERATION_MENU = "<span>Name:</span><input type=\"text\" />" +
-    "<button>Save</button>" +
-    "<button>Close</button>" +
-    "<button>Delete</button>";
+  var OBJECT_MENU = "<span>Name:</span><input type=\"text\" />" +
+    "<span class='custom-menu-typewriter'>CTRL+ALT+</span>" +
+    "<button class='custom-menu-button'><b>S</b>ave</button>" +
+    "<button class='custom-menu-button'><b>C</b>lose</button>" +
+    "<button class='custom-menu-button'><b>D</b>elete</button>";
   
-  function setNavigationMenuInteraction(my_event, my_value, my_callback) {
+  var OBJECT_LIST_MENU = "<span>Search:</span><input type=\"text\" />";
+  
+  CodeMirror.navigationMenu = {"position": "idle"};
+  
+  function setNavigationMenu(my_direction) {
+    switch (CodeMirror.navigationMenu.position) {
+      case "idle":
+        CodeMirror.navigationMenu.position = my_direction;
+        if (my_direction === "left") {
+          return OBJECT_MENU;
+        }
+        return OBJECT_LIST_MENU;
+      case "left":
+        if (my_direction === "left") {
+          return OBJECT_LIST_MENU;
+        }
+        CodeMirror.navigationMenu.position = "idle";
+        return;
+      case "right":
+        if (my_direction === "left") {
+          CodeMirror.navigationMenu.position = "idle";
+          return;
+        }
+        return OBJECT_LIST_MENU;
+    }
+  }
+
+  function setNavigationCallback(my_event, my_value, my_callback) {
+    console.log("navigation callback called")
     if (my_event.ctrlKey && my_event.altKey) {
       switch(my_event.keyCode) {
         case 88:
+          console.log("CLOSE")
           my_callback();
         break;
         default:
@@ -442,9 +472,12 @@
   
   // http://codemirror.net/doc/manual.html#addon_dialog
   function navigateRight(cm) {
+    console.log("CALLED NAVIGATE RIGHT");
+    
+    var menu = setNavigationMenu("right");
     if (cm.openDialog) {
       cm.openDialog(
-        OPERATION_MENU,
+        menu,
         enterCallback,
         {
           "bottom": false,
@@ -466,12 +499,32 @@
     }
   }
   CodeMirror.commands.krxNavigateRight = navigateRight;
-  
-  function navigateLeft(cm) {
-    if (cm.openDialog) {
 
+  function navigateLeft(cm) {
+    console.log("CALLED NAVIGATE LEFT");
+    var menu = setNavigationMenu("left");
+    if (cm.openDialog) {
+      cm.openDialog(menu, enterCallback, {
+        "bottom": false,
+        "closeOnEnter": false,
+        "closeOnBlur": false,
+        "value": null,
+        "selectValueOnOpen": false,
+        "onKeyUp": function (e, val, close) {
+          console.log("KEYUP");
+          console.log(e);
+          return true;
+        },
+        "onInput": function (e, val, close) {
+          console.log("INPUT");
+          console.log(e);
+          console.log(val);
+        }
+      });
     }
+    */
   }
+  
   CodeMirror.commands.krxNavigateLeft = navigateLeft;
   
   // CodeMirror.keyMap.krx["Ctrl-Alt-A"] = undefined;
