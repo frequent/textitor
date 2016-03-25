@@ -415,48 +415,22 @@
   keyIdentifier "left" 37 
   keyIdentifier "right" 39
   */
-
-  CodeMirror.keyMap.moi = {"fallthrough": "default"};
-  CodeMirror.navigationMenu = {"position": "idle"};
   
-  var OBJECT_MENU = "<span>Name:</span><input type=\"text\" />" +
-    "<span class='custom-menu-typewriter'>CTRL+ALT+</span>" +
-    "<button class='custom-menu-button'><b>S</b>ave</button>" +
-    "<button class='custom-menu-button'><b>C</b>lose</button>" +
-    "<button class='custom-menu-button'><b>D</b>elete</button>";
+  var OPERATION_MENU = "<span>Name:</span><input type=\"text\" />" +
+    "<button>Save</button>" +
+    "<button>Close</button>" +
+    "<button>Delete</button>";
   
-  var OBJECT_LIST_MENU = "<span>Search:</span><input type=\"text\" />";
-  
-  function setNavigationMenu(my_direction) {
-    switch (CodeMirror.navigationMenu.position) {
-      case "idle":
-        CodeMirror.navigationMenu.position = my_direction;
-        if (my_direction === "left") {
-          return OBJECT_MENU;
-        }
-        return OBJECT_LIST_MENU;
-      case "left":
-        if (my_direction === "left") {
-          return OBJECT_LIST_MENU;
-        }
-        CodeMirror.navigationMenu.position = "idle";
-        return;
-      case "right":
-        if (my_direction === "left") {
-          CodeMirror.navigationMenu.position = "idle";
-          return;
-        }
-        return OBJECT_LIST_MENU;
-    }
-  }
-
   function setNavigationMenuInteraction(my_event, my_value, my_callback) {
     if (my_event.ctrlKey && my_event.altKey) {
       switch(my_event.keyCode) {
+        case 88:
+          my_callback();
+        break;
         default:
           console.log("keycode:", my_event.keyCode);
         break;
-      }
+      }  
     }
   }
 
@@ -468,89 +442,67 @@
   
   // http://codemirror.net/doc/manual.html#addon_dialog
   function navigateRight(cm) {
-    var menu = setNavigationMenu("right");
-    console.log("CALLED NAVIGATE RIGHT");
-    /*
     if (cm.openDialog) {
-      cm.openDialog(menu, enterCallback, {
-        "bottom": false,
-        "closeOnEnter": false,
-        "closeOnBlur": false,
-        "value": null,
-        "selectValueOnOpen": false,
-        "onKeyUp": function (e, val, close) {
-          console.log("KEYUP");
-          console.log(e);
-          return true;
-        },
-        "onInput": function (e, val, close) {
-          console.log("INPUT");
-          console.log(e);
-          console.log(val);
+      cm.openDialog(
+        OPERATION_MENU,
+        enterCallback,
+        {
+          "bottom": false,
+          "closeOnEnter": false,
+          "closeOnBlur": false,
+          "value": null,
+          "selectValueOnOpen": false,
+          "onKeyUp": function (e, val, close) {
+            setNavigationCallback(e, val, close);
+            return true;
+          },
+          "onInput": function (e, val, close) {
+            console.log("INPUT");
+            console.log(e);
+            console.log(val);
+          }
         }
-      });
-    }*/
+      );
+    }
   }
-  CodeMirror.commands.moiNavigateRight = navigateRight;
+  CodeMirror.commands.krxNavigateRight = navigateRight;
   
   function navigateLeft(cm) {
-    console.log("left");
-    /*
-    var menu = setNavigationMenu("left");
-
-    console.log("CALLED NAVIGATE LEFT");
     if (cm.openDialog) {
-      cm.openDialog(menu, enterCallback, {
-        "bottom": false,
-        "closeOnEnter": false,
-        "closeOnBlur": false,
-        "value": null,
-        "selectValueOnOpen": false,
-        "onKeyUp": function (e, val, close) {
-          console.log("KEYUP");
-          console.log(e);
-          return true;
-        },
-        "onInput": function (e, val, close) {
-          console.log("INPUT");
-          console.log(e);
-          console.log(val);
-        }
-      });
+
     }
-    */
   }
-  CodeMirror.commands.moiNavigateLeft = navigateLeft;
+  CodeMirror.commands.krxNavigateLeft = navigateLeft;
   
-  // CodeMirror.keyMap.moi["Ctrl-Alt-A"] = undefined;
-  // CodeMirror.keyMap.moi["Ctrl-Alt-B"] = undefined;
-  // CodeMirror.keyMap.moi["Ctrl-Alt-C"] = undefined;
-  // CodeMirror.keyMap.moi["Ctrl-Alt-D"] = undefined;
-  // CodeMirror.keyMap.moi["Ctrl-Alt-E"] = undefined;
-  // CodeMirror.keyMap.moi["Ctrl-Alt-F"] = undefined;
-  // CodeMirror.keyMap.moi["Ctrl-Alt-G"] = undefined;
-  // CodeMirror.keyMap.moi["Ctrl-Alt-H"] = undefined;
-  // CodeMirror.keyMap.moi["Ctrl-Alt-I"] = undefined;
-  // CodeMirror.keyMap.moi["Ctrl-Alt-J"] = undefined;
-  // CodeMirror.keyMap.moi["Ctrl-Alt-K"] = undefined;
-  // CodeMirror.keyMap.moi["Ctrl-Alt-L"] = undefined;
-  // CodeMirror.keyMap.moi["Ctrl-Alt-M"] = undefined;
-  // CodeMirror.keyMap.moi["Ctrl-Alt-N"] = undefined;
-  // CodeMirror.keyMap.moi["Ctrl-Alt-O"] = undefined;
-  // CodeMirror.keyMap.moi["Ctrl-Alt-P"] = undefined;
-  // CodeMirror.keyMap.moi["Ctrl-Alt-Q"] = undefined;
-  // CodeMirror.keyMap.moi["Ctrl-Alt-R"] = undefined;
-  // CodeMirror.keyMap.moi["Ctrl-Alt-S"] = undefined;
-  // CodeMirror.keyMap.moi["Ctrl-Alt-T"] = undefined;
-  // CodeMirror.keyMap.moi["Ctrl-Alt-U"] = undefined;
-  // CodeMirror.keyMap.moi["Ctrl-Alt-V"] = undefined;
-  // CodeMirror.keyMap.moi["Ctrl-Alt-W"] = undefined;
-  // CodeMirror.keyMap.moi["Ctrl-Alt-X"] = undefined;
-  // CodeMirror.keyMap.moi["Ctrl-Alt-Y"] = undefined;
-  CodeMirror.keyMap.moi["Ctrl-Alt-Z"] = "moiNavigateRight";
-  // CodeMirror.keyMap.moi["Ctrl-Alt--"] = undefined;
-  CodeMirror.keyMap.moi["Ctrl-Alt-Right"] = "moiNavigateRight";
-  CodeMirror.keyMap.moi["Ctrl-Alt-Left"] = "moiNavigateLeft";
-  // CodeMirror.keyMap.moi["Ctrl-Alt-Return"] = undefined;
+  // CodeMirror.keyMap.krx["Ctrl-Alt-A"] = undefined;
+  // CodeMirror.keyMap.krx["Ctrl-Alt-B"] = undefined;
+  // CodeMirror.keyMap.krx["Ctrl-Alt-C"] = undefined;
+  // CodeMirror.keyMap.krx["Ctrl-Alt-D"] = undefined;
+  // CodeMirror.keyMap.krx["Ctrl-Alt-E"] = undefined;
+  // CodeMirror.keyMap.krx["Ctrl-Alt-F"] = undefined;
+  // CodeMirror.keyMap.krx["Ctrl-Alt-G"] = undefined;
+  // CodeMirror.keyMap.krx["Ctrl-Alt-H"] = undefined;
+  // CodeMirror.keyMap.krx["Ctrl-Alt-I"] = undefined;
+  // CodeMirror.keyMap.krx["Ctrl-Alt-J"] = undefined;
+  // CodeMirror.keyMap.krx["Ctrl-Alt-K"] = undefined;
+  // CodeMirror.keyMap.krx["Ctrl-Alt-L"] = undefined;
+  // CodeMirror.keyMap.krx["Ctrl-Alt-M"] = undefined;
+  // CodeMirror.keyMap.krx["Ctrl-Alt-N"] = undefined;
+  // CodeMirror.keyMap.krx["Ctrl-Alt-O"] = undefined;
+  // CodeMirror.keyMap.krx["Ctrl-Alt-P"] = undefined;
+  // CodeMirror.keyMap.krx["Ctrl-Alt-Q"] = undefined;
+  // CodeMirror.keyMap.krx["Ctrl-Alt-R"] = undefined;
+  // CodeMirror.keyMap.krx["Ctrl-Alt-S"] = undefined;
+  // CodeMirror.keyMap.krx["Ctrl-Alt-T"] = undefined;
+  // CodeMirror.keyMap.krx["Ctrl-Alt-U"] = undefined;
+  // CodeMirror.keyMap.krx["Ctrl-Alt-V"] = undefined;
+  // CodeMirror.keyMap.krx["Ctrl-Alt-W"] = undefined;
+  // CodeMirror.keyMap.krx["Ctrl-Alt-X"] = undefined;
+  // CodeMirror.keyMap.krx["Ctrl-Alt-Y"] = undefined;
+  // CodeMirror.keyMap.krx["Ctrl-Alt-Z"] = undefined;
+  // CodeMirror.keyMap.krx["Ctrl-Alt--"] = undefined;
+  CodeMirror.keyMap.krx["Ctrl-Alt-Right"] = "krxNavigateRight";
+  CodeMirror.keyMap.krx["Ctrl-Alt-Left"] = "krxNavigateLeft";
+  // CodeMirror.keyMap.krx["Ctrl-Alt-Return"] = undefined;
 
 }(this));
