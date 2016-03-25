@@ -430,7 +430,7 @@
     switch (CodeMirror.navigationMenu.position) {
       case "idle":
         CodeMirror.navigationMenu.position = my_direction;
-        if (my_direction === "left") {
+        if (my_direction === "right") {
           return OBJECT_MENU;
         }
         return OBJECT_LIST_MENU;
