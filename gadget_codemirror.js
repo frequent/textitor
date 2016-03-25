@@ -9,12 +9,201 @@
   To Public License, Version 2, as published by Sam Hocevar. See
   http://www.wtfpl.net/ for more details. */
 
-  var originalPageTitle = document.title;
+  /* Keymap */
+  CodeMirror.keyMap.my = {"fallthrough": "default"};
+
+  /*
+  ["Ctrl-Alt-0"] Open
+  ["Ctrl-Alt-Up"] Up in current folder
+  ["Ctrl-Alt-Down"] Down in current folder
+  ["Ctrl-Alt-Right"] Up one folder/Close file
+  ["Ctrl-Alt-Left"] Down one folder/Open file
+  ["Ctrl-Alt-S"] Save File (*)
+  ["Ctrl-Alt-X"] Close File
+  ["Ctrl-Alt-D"] Delete File
+  ["Ctrl-Alt-H"] List of Shortcuts
+  */
+  
+  var OBJECT_MENU = "<span>Name:</span><input type=\"text\" />" +
+    "<span class='custom-menu-typewriter'>CTRL+ALT+</span>" +
+    "<button class='custom-menu-button'><b>S</b>ave</button>" +
+    "<button class='custom-menu-button'><b>C</b>lose</button>" +
+    "<button class='custom-menu-button'><b>D</b>elete</button>";
+  
+  var OBJECT_LIST_MENU = "<span>Search:</span><input type=\"text\" />";
+
+  CodeMirror.navigationMenu = {"position": "idle"};
+  
+  function setNavigationMenu(my_direction) {
+    switch (CodeMirror.navigationMenu.position) {
+      case "idle":
+        CodeMirror.navigationMenu.position = my_direction;
+        if (my_direction === "right") {
+          return OBJECT_MENU;
+        }
+        return OBJECT_LIST_MENU;
+      case "left":
+        if (my_direction === "left") {
+          return OBJECT_LIST_MENU;
+        }
+        CodeMirror.navigationMenu.position = "idle";
+        return;
+      case "right":
+        if (my_direction === "left") {
+          CodeMirror.navigationMenu.position = "idle";
+          return;
+        }
+        return OBJECT_LIST_MENU;
+    }
+  }
+
+  function setNavigationCallback(my_event, my_value, my_callback) {
+    console.log("navigation callback called");
+    if (my_event.ctrlKey && my_event.altKey) {
+      switch(my_event.keyCode) {
+        
+        // Save
+        case 83:
+          console.log("DELETE 83");
+          break;
+        
+        // Delete
+        case 68:
+          console.log("DELETE 68");
+          break;
+
+        // Close
+        case 67:
+          console.log("CLOSE 67");
+          my_callback();
+        break;
+      
+        // Left
+        case 37:
+          if (setNavigationMenu("left") === undefined) {
+            console.log("CLOSE 37");
+            my_callback();
+          }
+          break;
+          
+        // Right
+        case 39:
+          if (setNavigationMenu("right") === undefined) {
+            console.log("CLOSE 39");
+            my_callback();
+          }
+          break;
+
+        default:
+          console.log("keycode:", my_event.keyCode);
+        break;
+      }  
+    }
+  }
+
+  function enterCallback(my_selected_value, my_event) {
+    console.log("enterCallback");
+    console.log(my_selected_value);
+    console.log(my_event);
+  }
+  
+  // http://codemirror.net/doc/manual.html#addon_dialog
+  function navigateRight(cm) {
+    console.log("CALLED NAVIGATE RIGHT");
+    
+    var menu = setNavigationMenu("right");
+    if (cm.openDialog) {
+      cm.openDialog(
+        menu,
+        enterCallback,
+        {
+          "bottom": false,
+          "closeOnEnter": false,
+          "closeOnBlur": false,
+          "value": null,
+          "selectValueOnOpen": false,
+          "onKeyUp": function (e, val, close) {
+            setNavigationCallback(e, val, close);
+            return true;
+          },
+          "onInput": function (e, val, close) {
+            console.log("INPUT");
+            console.log(e);
+            console.log(val);
+          }
+        }
+      );
+    }
+  }
+  CodeMirror.commands.myNavigateRight = navigateRight;
+
+  function navigateLeft(cm) {
+    console.log("CALLED NAVIGATE LEFT");
+
+    var menu = setNavigationMenu("left");
+    if (cm.openDialog) {
+      cm.openDialog(menu, enterCallback, {
+        "bottom": false,
+        "closeOnEnter": false,
+        "closeOnBlur": false,
+        "value": null,
+        "selectValueOnOpen": false,
+        "onKeyUp": function (e, val, close) {
+          setNavigationCallback(e, val, close);
+          return true;
+        },
+        "onInput": function (e, val, close) {
+          console.log("INPUT");
+          console.log(e);
+          console.log(val);
+        }
+      });
+    }
+  }
+  
+  CodeMirror.commands.myNavigateLeft = navigateLeft;
+  
+  // CodeMirror.keyMap.my["Ctrl-Alt-A"] = undefined;
+  // CodeMirror.keyMap.my["Ctrl-Alt-B"] = undefined;
+  // CodeMirror.keyMap.my["Ctrl-Alt-C"] = undefined;
+  // CodeMirror.keyMap.my["Ctrl-Alt-D"] = undefined;
+  // CodeMirror.keyMap.my["Ctrl-Alt-E"] = undefined;
+  // CodeMirror.keyMap.my["Ctrl-Alt-F"] = undefined;
+  // CodeMirror.keyMap.my["Ctrl-Alt-G"] = undefined;
+  // CodeMirror.keyMap.my["Ctrl-Alt-H"] = undefined;
+  // CodeMirror.keyMap.my["Ctrl-Alt-I"] = undefined;
+  // CodeMirror.keyMap.my["Ctrl-Alt-J"] = undefined;
+  // CodeMirror.keyMap.my["Ctrl-Alt-K"] = undefined;
+  // CodeMirror.keyMap.my["Ctrl-Alt-L"] = undefined;
+  // CodeMirror.keyMap.my["Ctrl-Alt-M"] = undefined;
+  // CodeMirror.keyMap.my["Ctrl-Alt-N"] = undefined;
+  // CodeMirror.keyMap.my["Ctrl-Alt-O"] = undefined;
+  // CodeMirror.keyMap.my["Ctrl-Alt-P"] = undefined;
+  // CodeMirror.keyMap.my["Ctrl-Alt-Q"] = undefined;
+  // CodeMirror.keyMap.my["Ctrl-Alt-R"] = undefined;
+  // CodeMirror.keyMap.my["Ctrl-Alt-S"] = undefined;
+  // CodeMirror.keyMap.my["Ctrl-Alt-T"] = undefined;
+  // CodeMirror.keyMap.my["Ctrl-Alt-U"] = undefined;
+  // CodeMirror.keyMap.my["Ctrl-Alt-V"] = undefined;
+  // CodeMirror.keyMap.my["Ctrl-Alt-W"] = undefined;
+  // CodeMirror.keyMap.my["Ctrl-Alt-X"] = undefined;
+  // CodeMirror.keyMap.my["Ctrl-Alt-Y"] = undefined;
+  // CodeMirror.keyMap.my["Ctrl-Alt-Z"] = undefined;
+  // CodeMirror.keyMap.my["Ctrl-Alt--"] = undefined;
+  CodeMirror.keyMap.my["Ctrl-Alt-Right"] = "myNavigateRight";
+  CodeMirror.keyMap.my["Ctrl-Alt-Left"] = "myNavigateLeft";
+  // CodeMirror.keyMap.my["Ctrl-Alt-Return"] = undefined;
+
+
+
   var editorURI;
   var editorTextarea;
   var editor;
   var commands = {};
   var ecc = new toolbox.ExtendedCancellableChain();
+
+
+
 
   ///////////
   // Tools //
@@ -95,131 +284,6 @@
     return array[parseInt(Math.random() * array.length, 10)];
   }
 
-  function generateTitleFromURI(uri) {
-    /*jslint regexp: true */
-    return uri.replace(/^([a-z]+:)?((?:[^\/]*\/)*)([^\/]*)$/, function (match, protocol, dirname, basename) {
-      /*jslint unparam: true */
-      if (basename) {
-        return basename + " (" + (protocol || "") + dirname + ") - " + originalPageTitle;
-      }
-      return (protocol || "") + dirname + " - " + originalPageTitle;
-    });
-  }
-
-  function md5sumArrayBuffer(message) {
-    // @param  {ArrayBuffer} message
-    // @return {ArrayBuffer} hash
-    // Info: Uint32Array endianness is always little-endian in javascript
-
-    function leftrotate(num, cnt) {
-      return (num << cnt) | (num >>> (32 - cnt));
-    }
-    function memcpy(src, dst, srci, dsti, len) {
-      while (len > 0) {
-        dst[dsti] = src[srci];
-        srci += 1;
-        dsti += 1;
-        len -= 1;
-      }
-    }
-    /*jslint bitwise: true */
-    /*global Uint8Array, Uint32Array */
-    var mod, padding2,
-      hash = new Uint32Array(4),
-      padding = new Uint8Array(64),
-      M = new Uint32Array(16),
-      bl = message.byteLength,
-      s = [
-        7, 12, 17, 22,  7, 12, 17, 22,  7, 12, 17, 22,  7, 12, 17, 22,
-        5,  9, 14, 20,  5,  9, 14, 20,  5,  9, 14, 20,  5,  9, 14, 20,
-        4, 11, 16, 23,  4, 11, 16, 23,  4, 11, 16, 23,  4, 11, 16, 23,
-        6, 10, 15, 21,  6, 10, 15, 21,  6, 10, 15, 21,  6, 10, 15, 21
-      ],
-      K = [
-        0xd76aa478, 0xe8c7b756, 0x242070db, 0xc1bdceee,
-        0xf57c0faf, 0x4787c62a, 0xa8304613, 0xfd469501,
-        0x698098d8, 0x8b44f7af, 0xffff5bb1, 0x895cd7be,
-        0x6b901122, 0xfd987193, 0xa679438e, 0x49b40821,
-        0xf61e2562, 0xc040b340, 0x265e5a51, 0xe9b6c7aa,
-        0xd62f105d, 0x02441453, 0xd8a1e681, 0xe7d3fbc8,
-        0x21e1cde6, 0xc33707d6, 0xf4d50d87, 0x455a14ed,
-        0xa9e3e905, 0xfcefa3f8, 0x676f02d9, 0x8d2a4c8a,
-        0xfffa3942, 0x8771f681, 0x6d9d6122, 0xfde5380c,
-        0xa4beea44, 0x4bdecfa9, 0xf6bb4b60, 0xbebfbc70,
-        0x289b7ec6, 0xeaa127fa, 0xd4ef3085, 0x04881d05,
-        0xd9d4d039, 0xe6db99e5, 0x1fa27cf8, 0xc4ac5665,
-        0xf4292244, 0x432aff97, 0xab9423a7, 0xfc93a039,
-        0x655b59c3, 0x8f0ccc92, 0xffeff47d, 0x85845dd1,
-        0x6fa87e4f, 0xfe2ce6e0, 0xa3014314, 0x4e0811a1,
-        0xf7537e82, 0xbd3af235, 0x2ad7d2bb, 0xeb86d391
-      ];
-    memcpy([0x67452301, 0xefcdab89, 0x98badcfe, 0x10325476], hash, 0, 0, 4);
-    message = new Uint8Array(message);
-
-    padding = new Uint32Array(padding.buffer);
-    padding[14] = bl * 8;
-    padding[15] = bl * 8 / 0x100000000;
-    padding = new Uint8Array(padding.buffer);
-
-    mod = bl % 64;
-    if (mod) {
-      bl -= mod;
-      if (mod > 56) {
-        padding2 = new Uint8Array(64);
-        memcpy(message, padding2, bl, 0, mod);
-        padding2[mod] = 0x80;
-      } else {
-        memcpy(message, padding, bl, 0, mod);
-        padding[mod] = 0x80;
-      }
-    } else {
-      padding[0] = 0x80;
-    }
-    function blk(A, i, hash) {
-      /*jslint bitwise: true */
-      var a = hash[0], b = hash[1], c = hash[2], d =  hash[3], f = 0, g = 0, tmp = 0;
-      M[0] = A[i] + A[i + 1] * 0x100 + A[i + 2] * 0x10000 + A[i + 3] * 0x1000000;
-      i += 4;
-      while (i % 64) {
-        M[(i % 64) / 4] = A[i] + A[i + 1] * 0x100 + A[i + 2] * 0x10000 + A[i + 3] * 0x1000000;
-        i += 4;
-      }
-      i = 0;
-      while (i < 64) {
-        if (i < 16) {
-          f = (b & c) | ((~b) & d);
-          g = i;
-        } else if (i < 32) {
-          f = (d & b) | ((~d) & c);
-          g = (5 * i + 1) % 16;
-        } else if (i < 48) {
-          f = b ^ c ^ d;
-          g = (3 * i + 5) % 16;
-        } else {
-          f = c ^ (b | (~d));
-          g = (7 * i) % 16;
-        }
-        tmp = d;
-        d = c;
-        c = b;
-        b = b + leftrotate((a + f + K[i] + M[g]), s[i]);
-        a = tmp;
-        i += 1;
-      }
-      hash[0] = hash[0] + a;
-      hash[1] = hash[1] + b;
-      hash[2] = hash[2] + c;
-      hash[3] = hash[3] + d;
-    }
-    mod = 0;
-    while (mod < bl) {
-      blk(message, mod, hash);
-      mod += 64;
-    }
-    if (padding2) { blk(padding2, 0, hash); }
-    blk(padding, 0, hash);
-    return hash.buffer;
-  }
 
 (function (window, rJS) {
   "use strict";
@@ -268,94 +332,25 @@
           return prev + "\n";
         }, ""));
       };
-      commands["open doc"] = "Loads and edit an URI data.";
-      commands.open = function (cm, args) {
-        if (cm.getOption("readOnly")) {
-          alert("Cannot open any resource right now. Please try later.");
-          return;
-        }
-        cm.off("change", setModified);
-        cm.setOption("readOnly", true);
-        if (!args[1]) { args[1] = prompt("Open URI:", editorURI); }
-        if (!args[1]) {
-          cm.setOption("readOnly", false);
-          return alert("Empty URI, aborting.");
-        }
-        document.title = "Loading... " + generateTitleFromURI(args[1]);
-        var mimetype;
-        return ecc.getURI(args[1]).then(function (blob) {
-          mimetype = blob.type;
-          return blob;
-        }).toText().catch(function (reason) {
-          if (reason && reason.status === 404) {
-            if (confirm("URI not found, would you like to edit it anyway?")) {
-              return "";
-            }
-          }
-          return Promise.reject(reason);
-        }).then(function (text) {
-          editorURI = args[1];
-          location.hash = "#" + args[1];
-          cm.setValue(text);
-          cm.setOption("mode", mimetype || "text");
-          cm.modified = false;
-          document.title = generateTitleFromURI(editorURI);
-        }).catch(alert).then(function () {
-          cm.setOption("readOnly", false);
-          cm.on("change", setModified);
-        });
-      };
-      commands["saveAs doc"] = "Save the current data to another URI.";
-      commands.saveAs = function (cm, args) {
-        if (cm.getOption("readOnly")) {
-          alert("Cannot save resource right now. Please try later.");
-          return;
-        }
-        cm.setOption("readOnly", true);
-        if (!args[1]) { args[1] = prompt("Save as URI:", editorURI); }
-        if (!args[1]) {
-          cm.setOption("readOnly", false);
-          return alert("Empty URI, aborting.");
-        }
-        document.title = "Saving... " + generateTitleFromURI(args[1]);
-        return ecc.value(cm.getValue()).putURI(args[1]).then(function () {
-          editorURI = args[1];
-          location.hash = "#" + args[1];
-          editor.modified = false;
-        }).catch(alert).then(function () {
-          document.title = generateTitleFromURI(editorURI);
-          cm.setOption("readOnly", false);
-        });
-      };
-      commands["save doc"] = "Save the current data to the current URI.";
-      commands.save = function (cm) {
-        return commands.saveAs(cm, ["save", editorURI]);
-      };
-      commands["download doc"] = "Open download pop-up.";
-      commands.download = function (cm) {
-        var filename = prompt("Filename:");
-        if (!filename) { return alert("Empty filename, aborting."); }
-        toolbox.downloadAs(filename, cm.getValue(), "application/octet-stream");
-      };
       commands["mode doc"] = "{javascript|html|python|...}";
       commands.mode = function (cm, args) {
         cm.setOption("mode", modeShortcuts[args[1]] || args[1]);
         cm.setOption("lint", false);
-        if (cm.getOption("krxAutoLint") && CodeMirror.lint[cm.getOption("mode")]) {
+        if (cm.getOption("myAutoLint") && CodeMirror.lint[cm.getOption("mode")]) {
           setTimeout(function () { cm.setOption("lint", true); });
         }
       };
       commands["lint doc"] = "Toggle automatic lint";
       commands.lint = function (cm) {
         if (cm.getOption("lint")) {
-          cm.setOption("krxAutoLint", false);
+          cm.setOption("myAutoLint", false);
           cm.setOption("lint", false);
         } else if (CodeMirror.lint[cm.getOption("mode")]) {
-          cm.setOption("krxAutoLint", true);
+          cm.setOption("myAutoLint", true);
           cm.setOption("lint", true);
         }
       };
-      commands["keyMap doc"] = "{default|krx|emacs|vim}";
+      commands["keyMap doc"] = "{default|my|emacs|vim}";
       commands.keyMap = function (cm, args) {
         cm.setOption("keyMap", args[1] || "default");
       };
@@ -367,49 +362,7 @@
         }
         cm.setOption("theme", args.slice(1).join(" ") || "default");
       };
-      commands["tab-size doc"] = "Set tab-size (int).";
-      commands["tab-size"] = function (cm, args) {
-        var i = parseInt(args[1], 10);
-        if (isFinite(i)) {
-          cm.setOption("tabSize", i);
-        }
-      };
-      /*jslint evil: true */
-      commands["eval doc"] = "Eval entire text as javascript /!\\ POTENTIALY DANGEROUS";
-      commands.eval = function (cm) {
-        window.eval(cm.getValue());
-      };
-      /*jslint evil: false */
-      commands["md5 doc"] = "Summarise the document content";
-      commands.md5 = function (cm) {
-        prompt("MD5", [].reduce.call(new Uint8Array(md5sumArrayBuffer(toolbox.textToArrayBuffer(cm.getValue()))), function (p, v) {
-          return p + ("0" + v.toString(16)).slice(-2);
-        }, ""));
-      };
-    
-      /*
-        "remove-trailing-spaces": function (cm) {
-          var position = cm.getCursor();
-          cm.setValue(cm.getValue().replace(/[ \t]+(\r)?\n/g, '$1\n'));
-          cm.setCursor(position);
-        },
-        "view-as-svg": function (cm) {
-          var svg_update_ident, svg_img = root.document.createElement("img");
-          root.document.body.appendChild(svg_img);
-          cm.setOption("fullScreen", false);
-          function updateSvg() {
-            svg_img.setAttribute(
-              "src",
-              "data:image/svg+xml;base64," + btoa(toolbox.stringToBinaryString(cm.getValue())
-            );
-          }
-          cm.on("change", function () {
-            root.clearTimeout(svg_update_ident);
-            svg_update_ident = root.setTimeout(updateSvg, 200);
-          });
-          updateSvg();
-        }
-        */
+
 
     })
 
@@ -443,7 +396,7 @@
     
         // http://codemirror.net/doc/manual.html#config
     
-        keyMap: "krx", // default "default"
+        keyMap: "my", // default "default"
         showCursorWhenSelecting: true,
     
         extraKeys: {
@@ -464,38 +417,14 @@
     
         lint: false,
         gutters: ["CodeMirror-lint-markers"],
-        krxAutoLint: true,
+        myAutoLint: true,
     
         autofocus: true, // default false
         theme: "rubyblue", // default "default"
         mode: "text"
       });
 
-    
-      if (location.hash) {
-        commands.open(editor, ["open", location.hash.slice(1)]);
-      }
-    
       window.editor = editor;
-    
-      //////////////////////
-      // Add gist feature //
-      //////////////////////
-
-      // try to save to "data:"
-      toolbox.ExtendedCancellableChain.prototype.putDataURI = function () {
-        var editorMode = editor.getOption("mode") || "text/plain", mimetype = toolbox.parseContentType(editorMode);
-        if (mimetype.match === mimetype.input) {
-          mimetype = editorMode;
-        } else {
-          mimetype = modeMimes[editorMode] || "text/plain";
-        }
-        this.toDataURI(mimetype).then(function (dataURI) {
-          location.hash = "#" + dataURI;
-        });
-        return;
-      };
-      
       return gadget;
     })
     
