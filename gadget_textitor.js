@@ -28,30 +28,20 @@
         .push(function (my_element) {
           my_gadget.property_dict.element = my_element;
           my_gadget.property_dict.jio_defer = RSVP.defer();
-          console.log("DONE");
-        });
-    })
-    
-    .ready(function (my_gadget) {
-      console.log("trigger 1");
-      console.log(my_gadget);
-      
-      return new RSVP.Queue()
-        .push(function () {
           return my_gadget.property_dict.jio_defer.promise;
         })
-        .push(function (my_return_gadget) {
-          console.log("triggered");
-          console.log(my_return_gadget);
+        .push(function (my_defer_value) {
           /*
           return callJioGadget(this, "createJiO", {
             "type": "serviceworker",
             "cache": "textitor"
           });
           */
-          return my_return_gadget;
+          console.log(my_defer_value);
+          return my_defer_value;
         });
     })
+
 
     .declareMethod('render', function (my_option_dict) {
       var gadget = this,
