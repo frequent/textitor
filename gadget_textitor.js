@@ -35,7 +35,7 @@
     .ready(function (my_gadget) {
       console.log("trigger 1");
       console.log(my_gadget);
-      /*
+      
       return new RSVP.Queue()
         .push(function () {
           return my_gadget.property_dict.jio_defer.promise;
@@ -43,13 +43,14 @@
         .push(function (my_return_gadget) {
           console.log("triggered");
           console.log(my_return_gadget);
-          
+          /*
           return callJioGadget(this, "createJiO", {
             "type": "serviceworker",
             "cache": "textitor"
           });
+          */
+          return my_return_gadget;
         });
-      */
     })
 
     .declareMethod('render', function (my_option_dict) {
@@ -73,8 +74,14 @@
           // need to pass this back
           return_gadget = my_rendered_gadget_list[0];
 
+          console.log("let's defer");
           return new RSVP.Queue()
             .push(function () {
+              return my_gadget.property_dict.jio_defer.resolve("ok");
+            })
+            .push(function (my_x) {
+              console.log("x");
+              console.log(my_x);
               return jIO.createJIO({
                 "type": "serviceworker",
                 "cache": "textitor"
@@ -95,15 +102,9 @@
                   );
                 })
                 .push(function (my_response) {
-                  console.log("so...");
-                  console.log(gadget.property_dict);
                   return return_gadget;
                 });
             });
-        })
-        .push(undefined, function (e) {
-          console.log(e);
-          throw e;
         });
     })
     
