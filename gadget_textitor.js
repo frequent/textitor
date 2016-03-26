@@ -108,6 +108,10 @@
         .push(function (my_return_value) {
           console.log(my_return_value);
           return return_gadget;
+        })
+        .push(undefined, function (e) {
+          console.log(e);
+          throw e;
         });
     })
     
