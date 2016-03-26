@@ -69,6 +69,7 @@
     .declareMethod('render', function (my_option_dict) {
       var gadget = this,
         return_gadget;
+      console.log("alors");
       return new RSVP.Queue()
         .push(function () {
           return RSVP.all([
@@ -77,12 +78,14 @@
           ]);
         })
         .push(function (my_declared_gadget_list) {
+          console.log("gadgets loaded");
           return RSVP.all([
             my_declared_gadget_list[0].render(my_option_dict || {}),
             my_declared_gadget_list[1].render(my_option_dict || {}),
           ]);
         })
         .push(function (my_rendered_gadget_list) {
+          console.log("stuck on render?");
           return_gadget = my_rendered_gadget_list[0];
           console.log("done");
           return gadget.property_dict.defer.resolve();
@@ -94,7 +97,7 @@
           return my_return_gadget;
         });
     })
-    
+
     // jIO bridge
     .allowPublicAcquisition("createJio", function (param_list) {
       return callJioGadget(this, "createJio", param_list);
