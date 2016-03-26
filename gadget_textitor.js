@@ -38,6 +38,7 @@
             "type": "serviceworker",
             "cache": "foo"
           });
+        });
     })
 
     .declareMethod('render', function (my_option_dict) {
