@@ -24,13 +24,46 @@
         })
         .push(function (my_element) {
           my_gadget.property_dict.element = my_element;
+          my_gadget.property_dict.defer = new RSVP.defer();
+        });
+    })
+    .ready(function (my_gadget) {
+      
+      // initialize serviceworker storage once jIO is available
+      return new RSVP.Queue()
+        .push(function () {
+          return my_gadget.property_dict.defer.promise;
+        })
+        .push(function (my_defer) {
+          return callJioGadget(this, "createJiO", {
+            "type": "serviceworker",
+            "cache": "textitor"
+          })
+          
+          // test
+          .push(function (my_storage) {
+            return new RSVP.Queue()
+              .push(function () {
+                return my_storage.put("textitor");
+              })
+              .push(function (my_id) {
+                return my_storage.putAttachment(
+                  my_id, 
+                  "http://foo.css", 
+                  new Blob(["span%2C%20div%20%7Bborder%3A%201px%20solid%20red%20!important%3B%7D"], {
+                    type: "text/css",
+                  })
+                );
+              })
+              .push(function (my_response) {
+                console.log("ALL SET");
+              });
+          });
         });
     })
 
     .declareMethod('render', function (my_option_dict) {
-      var gadget = this,
-        return_gadget;
-
+      var gadget = this;
       return new RSVP.Queue()
         .push(function () {
           return RSVP.all([
@@ -41,37 +74,16 @@
         .push(function (my_declared_gadget_list) {
           return RSVP.all([
             my_declared_gadget_list[0].render(my_option_dict || {}),
-            my_declared_gadget_list[1].render(my_option_dict || {})
+            my_declared_gadget_list[1].render(my_option_dict || {}),
+            
+            // will be resolved once serviceworker gadget/jio are ready
+            gadget.property_dict.defer.resolve()
           ]);
         })
         .push(function (my_rendered_gadget_list) {
-          // need to pass this back
-          return_gadget = my_rendered_gadget_list[0];
-          return new RSVP.Queue()
-            .push(function () {
-              return jIO.createJIO({
-                "type": "serviceworker",
-                "cache": "textitor"
-              });
-            })
-            .push(function (my_storage) {
-              return new RSVP.Queue()
-                .push(function () {
-                  return my_storage.put("textitor");
-                })
-                .push(function (my_id) {
-                  return my_storage.putAttachment(
-                    my_id, 
-                    "http://foo.css", 
-                    new Blob(["span%2C%20div%20%7Bborder%3A%201px%20solid%20red%20!important%3B%7D"], {
-                      type: "text/css",
-                    })
-                  );
-                })
-                .push(function (my_response) {
-                  return return_gadget;
-                });
-            });
+          
+          // need to pass the gadget back to add to DOM
+          return my_rendered_gadget_list[0];
         });
     })
     

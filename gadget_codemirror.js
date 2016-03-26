@@ -58,7 +58,6 @@
   }
 
   function setNavigationCallback(my_event, my_value, my_callback) {
-    console.log("navigation callback called");
     if (my_event.ctrlKey && my_event.altKey) {
       switch(my_event.keyCode) {
         
