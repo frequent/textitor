@@ -27,32 +27,26 @@
         })
         .push(function (my_element) {
           my_gadget.property_dict.element = my_element;
-          console.log("test");
-          console.log(RSVP.defer);
-          console.log(my_gadget.property_dict.element);
-          console.log("1");
-          console.log(RSVP.defer());
-          console.log("2");
           my_gadget.property_dict.jio_defer = RSVP.defer();
-          console.log("done");
-          
+          console.log("DONE");
         });
     })
     
-    /*
     .ready(function (my_gadget) {
+      console.log("trigger 1");
       return new RSVP.Queue()
         .push(function () {
           return my_gadget.property_dict.jio_defer.promise;
         })
         .push(function (my_return_gadget) {
+          /*
           return callJioGadget(this, "createJiO", {
             "type": "serviceworker",
             "cache": "foo"
           });
+          */
         });
     })
-    */
 
     .declareMethod('render', function (my_option_dict) {
       var gadget = this,
