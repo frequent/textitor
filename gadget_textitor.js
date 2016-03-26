@@ -72,7 +72,6 @@
         .push(function (my_rendered_gadget_list) {
           // need to pass this back
           return_gadget = my_rendered_gadget_list[0];
-          console.log("rendered");
 
           return new RSVP.Queue()
             .push(function () {
