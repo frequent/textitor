@@ -83,7 +83,7 @@
         })
         .push(function (my_rendered_gadget_list) {
           return_gadget = my_rendered_gadget_list[0];
-          return initiliazeStorage(gadget);
+          return initializeStorage(gadget);
         })
         .push(function () {
           return return_gadget;
