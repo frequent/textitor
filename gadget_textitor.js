@@ -11,6 +11,9 @@
       })
       .push(function (jio_gadget) {
         return jio_gadget[method].apply(jio_gadget, param_list);
+      })
+      .push(undefined, function (error) {
+        throw error;
       });
   }
   
@@ -34,10 +37,14 @@
           return my_gadget.property_dict.defer.promise;
         })
         .push(function (my_return_gadget) {
+          console.log(my_return_gadget);
+          console.log("defer");
+          /*
           return callJioGadget(this, "createJiO", {
             "type": "serviceworker",
             "cache": "foo"
           });
+          */
         });
     })
 
