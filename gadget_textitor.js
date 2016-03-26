@@ -39,10 +39,12 @@
           return my_gadget.property_dict.jio_defer.promise;
         })
         .push(function (my_return_gadget) {
+          console.log("triggered");
+          console.log(my_return_gadget);
           /*
           return callJioGadget(this, "createJiO", {
             "type": "serviceworker",
-            "cache": "foo"
+            "cache": "textitor"
           });
           */
         });
@@ -68,6 +70,8 @@
         .push(function (my_rendered_gadget_list) {
           // need to pass this back
           return_gadget = my_rendered_gadget_list[0];
+          
+          /*
           return new RSVP.Queue()
             .push(function () {
               return jIO.createJIO({
@@ -93,6 +97,13 @@
                   return return_gadget;
                 });
             });
+            */
+            console.log("triggering");
+            return gadget.property_dict.jio_defer.resolve("hello");
+        })
+        .push(function (my_return_value) {
+          console.log(my_return_value);
+          return return_gadget;
         });
     })
     
