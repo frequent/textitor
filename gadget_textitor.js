@@ -29,27 +29,13 @@
         .push(function (my_element) {
           my_gadget.property_dict.element = my_element;
           my_gadget.property_dict.jio_defer = RSVP.defer();
-        });
-    })
-    
-    .ready(function (my_gadget) {
-      return new RSVP.Queue()
-        .push(function () {
+        
           console.log(my_gadget);
           console.log(my_gadget.property_dict.jio_defer);
-          
-          // return my_gadget.property_dict.jio_defer.promise;
         })
-        .push(function (my_defer_call_argument_list) {
-          console.log("triggered");
-          console.log(my_defer_call_argument_list);
-          
-          //return callJioGadget(this, "createJiO", {
-          //  "type": "serviceworker",
-          //  "cache": "textitor"
-          //});
-        
-          //return my_return_gadget;
+        .push(undefined, function (e) {
+          console.log(e);
+          throw e;
         });
     })
 
@@ -74,8 +60,7 @@
         .push(function (my_rendered_gadget_list) {
           // need to pass this back
           return_gadget = my_rendered_gadget_list[0];
-          
-
+          console.log("A");
           return new RSVP.Queue()
             .push(function () {
               return my_gadget.property_dict.jio_defer.resolve();
@@ -102,8 +87,20 @@
                 })
                 .push(function (my_response) {
                   return return_gadget;
+                })
+                .push(undefined, function (e) {
+                  console.log(e);
+                  throw e;
                 });
+            })
+            .push(undefined, function (e) {
+              console.log(e);
+              throw e;
             });
+        })
+        .push(undefined, function (e) {
+          console.log(e);
+          throw e;
         });
     })
     
