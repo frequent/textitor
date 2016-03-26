@@ -17,7 +17,6 @@
   rJS(window)
 
     .ready(function (my_gadget) {
-      console.log("READY textior 1");
       my_gadget.property_dict = {};
       return new RSVP.Queue()
         .push(function () {
@@ -25,52 +24,13 @@
         })
         .push(function (my_element) {
           my_gadget.property_dict.element = my_element;
-          my_gadget.property_dict.defer = new RSVP.defer();
-        });
-    })
-    .ready(function (my_gadget) {
-      console.log("READY textior 2");      
-      // initialize serviceworker storage once jIO is available
-      return new RSVP.Queue()
-        .push(function () {
-          return my_gadget.property_dict.defer.promise;
-        })
-        .push(function (my_return_gadget) {
-          return callJioGadget(this, "createJiO", {
-            "type": "serviceworker",
-            "cache": "textitor"
-          })
-          
-          // test
-          .push(function (my_storage) {
-            return new RSVP.Queue()
-              .push(function () {
-                return my_storage.put("textitor");
-              })
-              .push(function (my_id) {
-                return my_storage.putAttachment(
-                  my_id, 
-                  "http://foo.css", 
-                  new Blob(["span%2C%20div%20%7Bborder%3A%201px%20solid%20red%20!important%3B%7D"], {
-                    type: "text/css",
-                  })
-                );
-              })
-              .push(function (my_response) {
-                console.log("ALL SET");
-                return my_return_gadget;
-              });
-          });
-        }, function (e) {
-          console.log(e);
-          throw e;
         });
     })
 
     .declareMethod('render', function (my_option_dict) {
       var gadget = this,
         return_gadget;
-      console.log("alors");
+
       return new RSVP.Queue()
         .push(function () {
           return RSVP.all([
@@ -79,26 +39,42 @@
           ]);
         })
         .push(function (my_declared_gadget_list) {
-          console.log("gadgets loaded");
           return RSVP.all([
             my_declared_gadget_list[0].render(my_option_dict || {}),
-            my_declared_gadget_list[1].render(my_option_dict || {}),
+            my_declared_gadget_list[1].render(my_option_dict || {})
           ]);
         })
         .push(function (my_rendered_gadget_list) {
-          console.log("stuck on render?");
+          // need to pass this back
           return_gadget = my_rendered_gadget_list[0];
-          console.log("done");
-          return gadget.property_dict.defer.resolve();
-        })
-        .push(function (my_return_gadget) {
-          console.log("can I get a return gadget");
-          console.log(my_return_gadget);
-          // need to pass the gadget back to add to DOM
-          return my_return_gadget;
+          return new RSVP.Queue()
+            .push(function () {
+              return jIO.createJIO({
+                "type": "serviceworker",
+                "cache": "textitor"
+              });
+            })
+            .push(function (my_storage) {
+              return new RSVP.Queue()
+                .push(function () {
+                  return my_storage.put("textitor");
+                })
+                .push(function (my_id) {
+                  return my_storage.putAttachment(
+                    my_id, 
+                    "http://foo.css", 
+                    new Blob(["span%2C%20div%20%7Bborder%3A%201px%20solid%20red%20!important%3B%7D"], {
+                      type: "text/css",
+                    })
+                  );
+                })
+                .push(function (my_response) {
+                  return return_gadget;
+                });
+            });
         });
-    });
-    /*
+    })
+    
     // jIO bridge
     .allowPublicAcquisition("createJio", function (param_list) {
       return callJioGadget(this, "createJio", param_list);
@@ -133,5 +109,5 @@
     .allowPublicAcquisition("jio_repair", function (param_list) {
       return callJioGadget(this, "repair", param_list);
     });
-    */
+    
 }(window, rJS));
