@@ -3,14 +3,42 @@
 (function (window, rJS) {
   "use strict";
 
-  function callJioGadget(gadget, method, param_list) {
-    var called = false;
+  function initializeStorage(my_gadget) {
+    console.log("initializing");
     return new RSVP.Queue()
       .push(function () {
-        return gadget.getDeclaredGadget("jio_gadget");
+        return callJioGadget(my_gadget, 'createJio', {
+          "type": "serviceworker",
+          "cache": "textitor"
+        });
+      })
+      
+      // try
+      .push(function (my_storage) {
+        return my_storage.put("textitor");
+      })
+      .push(function (my_id) {
+        return my_storage.putAttachment(
+          my_id, 
+          "http://foo.css", 
+          new Blob(["span%2C%20div%20%7Bborder%3A%201px%20solid%20red%20!important%3B%7D"], {
+            type: "text/css",
+          })
+        );
+      })
+      .push(function () {console.log("allset");}, function (e) {
+        console.log(e);
+        throw e;
+      });
+  }
+
+  function callJioGadget(my_gadget, my_method, my_param_list) {
+    return new RSVP.Queue()
+      .push(function () {
+        return my_gadget.getDeclaredGadget("jio_gadget");
       })
       .push(function (jio_gadget) {
-        return jio_gadget[method].apply(jio_gadget, param_list);
+        return jio_gadget[my_method].apply(jio_gadget, my_param_list);
       })
       .push(undefined, function (error) {
         throw error;
@@ -28,15 +56,6 @@
         })
         .push(function (my_element) {
           my_gadget.property_dict.element = my_element;
-          my_gadget.property_dict.jio_defer = RSVP.defer();
-        
-          console.log(my_gadget);
-          console.log(my_gadget.property_dict.jio_defer);
-          return my_gadget.property_dict.jio_defer.promise;
-        })
-        .push(function (my_resolved_defer_argument_list) {
-          console.log("resolved");
-          console.log(my_resolved_defer_argument_list);
         })
         .push(undefined, function (e) {
           console.log(e);
@@ -63,49 +82,11 @@
           ]);
         })
         .push(function (my_rendered_gadget_list) {
-          // need to pass this back
           return_gadget = my_rendered_gadget_list[0];
-          console.log("A");
-          return new RSVP.Queue()
-            .push(function () {
-              return gadget.property_dict.jio_defer.resolve();
-            })
-            .push(function () {
-              return jIO.createJIO({
-                "type": "serviceworker",
-                "cache": "textitor"
-              });
-            })
-            .push(function (my_storage) {
-              return new RSVP.Queue()
-                .push(function () {
-                  return my_storage.put("textitor");
-                })
-                .push(function (my_id) {
-                  return my_storage.putAttachment(
-                    my_id, 
-                    "http://foo.css", 
-                    new Blob(["span%2C%20div%20%7Bborder%3A%201px%20solid%20red%20!important%3B%7D"], {
-                      type: "text/css",
-                    })
-                  );
-                })
-                .push(function (my_response) {
-                  return return_gadget;
-                })
-                .push(undefined, function (e) {
-                  console.log(e);
-                  throw e;
-                });
-            })
-            .push(undefined, function (e) {
-              console.log(e);
-              throw e;
-            });
+          return initiliazeStorage(gadget);
         })
-        .push(undefined, function (e) {
-          console.log(e);
-          throw e;
+        .push(function () {
+          return return_gadget;
         });
     })
     
