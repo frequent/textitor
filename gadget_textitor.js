@@ -70,7 +70,7 @@
         .push(function (my_rendered_gadget_list) {
           // need to pass this back
           return_gadget = my_rendered_gadget_list[0];
-          
+          console.log("rendered");
           /*
           return new RSVP.Queue()
             .push(function () {
@@ -99,7 +99,11 @@
             });
             */
             console.log("triggering");
-            return gadget.property_dict.jio_defer.resolve("hello");
+            console.log(gadget);
+            console.log(gadget.property_dict);
+            return return_gadget;
+            
+            //return gadget.property_dict.jio_defer.resolve("hello");
         })
         .push(function (my_return_value) {
           console.log(my_return_value);
