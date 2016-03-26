@@ -34,7 +34,7 @@
         .push(function () {
           return my_gadget.property_dict.defer.promise;
         })
-        .push(function (my_defer) {
+        .push(function (my_return_gadget) {
           return callJioGadget(this, "createJiO", {
             "type": "serviceworker",
             "cache": "textitor"
@@ -57,13 +57,15 @@
               })
               .push(function (my_response) {
                 console.log("ALL SET");
+                return my_return_gadget;
               });
           });
         });
     })
 
     .declareMethod('render', function (my_option_dict) {
-      var gadget = this;
+      var gadget = this,
+        return_gadget;
       return new RSVP.Queue()
         .push(function () {
           return RSVP.all([
@@ -75,15 +77,18 @@
           return RSVP.all([
             my_declared_gadget_list[0].render(my_option_dict || {}),
             my_declared_gadget_list[1].render(my_option_dict || {}),
-            
-            // will be resolved once serviceworker gadget/jio are ready
-            gadget.property_dict.defer.resolve()
           ]);
         })
         .push(function (my_rendered_gadget_list) {
-          
+          return_gadget = my_rendered_gadget_list[0];
+          console.log("done");
+          return gadget.property_dict.defer.resolve();
+        })
+        .push(function (my_return_gadget) {
+          console.log("can I get a return gadget");
+          console.log(my_return_gadget);
           // need to pass the gadget back to add to DOM
-          return my_rendered_gadget_list[0];
+          return my_return_gadget;
         });
     })
     
