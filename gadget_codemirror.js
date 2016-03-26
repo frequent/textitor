@@ -366,7 +366,6 @@
     })
 
     .declareMethod('render', function (my_option_dict) {
-      console.log("codemirror render!");
       var gadget = this;
       
       /////////////////
