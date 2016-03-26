@@ -27,10 +27,18 @@
         })
         .push(function (my_element) {
           my_gadget.property_dict.element = my_element;
-          my_gadget.property_dict.jio_defer = RSVP.defer();
+          console.log("test");
+          console.log(RSVP);
+          console.log(RSVP.defer);
+          console.log(my_gadget);
+          console.log(my_gadget.property_dict);
+          console.log(my_gadget.property_dict.element);
+          console.log("done");
+          //my_gadget.property_dict.jio_defer = RSVP.defer();
         });
     })
     
+    /*
     .ready(function (my_gadget) {
       return new RSVP.Queue()
         .push(function () {
@@ -43,6 +51,7 @@
           });
         });
     })
+    */
 
     .declareMethod('render', function (my_option_dict) {
       var gadget = this,
