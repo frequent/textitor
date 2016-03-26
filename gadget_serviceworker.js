@@ -17,6 +17,7 @@
     })
 
     .declareMethod('render', function (my_option_dict) {
+      console.log("serviceworker render!");
       return this;
     });
 }(window, rJS));

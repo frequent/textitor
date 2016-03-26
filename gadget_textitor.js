@@ -17,6 +17,7 @@
   rJS(window)
 
     .ready(function (my_gadget) {
+      console.log("READY textior 1");
       my_gadget.property_dict = {};
       return new RSVP.Queue()
         .push(function () {
@@ -28,7 +29,7 @@
         });
     })
     .ready(function (my_gadget) {
-      
+      console.log("READY textior 2");      
       // initialize serviceworker storage once jIO is available
       return new RSVP.Queue()
         .push(function () {
@@ -96,8 +97,8 @@
           // need to pass the gadget back to add to DOM
           return my_return_gadget;
         });
-    })
-
+    });
+    /*
     // jIO bridge
     .allowPublicAcquisition("createJio", function (param_list) {
       return callJioGadget(this, "createJio", param_list);
@@ -132,5 +133,5 @@
     .allowPublicAcquisition("jio_repair", function (param_list) {
       return callJioGadget(this, "repair", param_list);
     });
-    
+    */
 }(window, rJS));
