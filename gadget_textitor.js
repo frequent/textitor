@@ -32,6 +32,11 @@
         
           console.log(my_gadget);
           console.log(my_gadget.property_dict.jio_defer);
+          return my_gadget.property_dict.jio_defer.promise;
+        })
+        .push(function (my_resolved_defer_argument_list) {
+          console.log("resolved");
+          console.log(my_resolved_defer_argument_list);
         })
         .push(undefined, function (e) {
           console.log(e);
@@ -63,7 +68,7 @@
           console.log("A");
           return new RSVP.Queue()
             .push(function () {
-              return my_gadget.property_dict.jio_defer.resolve();
+              return gadget.property_dict.jio_defer.resolve();
             })
             .push(function () {
               return jIO.createJIO({
