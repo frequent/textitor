@@ -27,17 +27,14 @@
         })
         .push(function (my_element) {
           my_gadget.property_dict.element = my_element;
-          //my_gadget.property_dict.defer = RSVP.defer();
+          my_gadget.property_dict.jio_defer = RSVP.defer();
         });
     })
     
     .ready(function (my_gadget) {
-      console.log(my_gadget);
-      console.log(RSVP);
-      /*
       return new RSVP.Queue()
         .push(function () {
-          return my_gadget.property_dict.defer.promise;
+          return my_gadget.property_dict.jio_defer.promise;
         })
         .push(function (my_return_gadget) {
           return callJioGadget(this, "createJiO", {
@@ -45,7 +42,6 @@
             "cache": "foo"
           });
         });
-      */
     })
 
     .declareMethod('render', function (my_option_dict) {
