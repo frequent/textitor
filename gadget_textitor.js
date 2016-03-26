@@ -37,7 +37,8 @@
         .push(function () {
           console.log(my_gadget);
           console.log(my_gadget.property_dict.jio_defer);
-          return my_gadget.property_dict.jio_defer.promise;
+          
+          // return my_gadget.property_dict.jio_defer.promise;
         })
         .push(function (my_defer_call_argument_list) {
           console.log("triggered");
@@ -55,12 +56,13 @@
     .declareMethod('render', function (my_option_dict) {
       var gadget = this,
         return_gadget;
-
+      console.log("RENDER");
+      
       return new RSVP.Queue()
         .push(function () {
           return RSVP.all([
             gadget.getDeclaredGadget("codemirror"),
-            gadget.getDeclaredGadget("serviceworker")
+            gadget.getDeclaredGadget("serviceworker"),
           ]);
         })
         .push(function (my_declared_gadget_list) {
@@ -72,13 +74,12 @@
         .push(function (my_rendered_gadget_list) {
           // need to pass this back
           return_gadget = my_rendered_gadget_list[0];
-
-          console.log("let's defer");
-          return new RSVP.Queue()
           
-            //.push(function () {
-            //  return my_gadget.property_dict.jio_defer.resolve("ok");
-            //})
+
+          return new RSVP.Queue()
+            .push(function () {
+              return my_gadget.property_dict.jio_defer.resolve();
+            })
             .push(function () {
               return jIO.createJIO({
                 "type": "serviceworker",
