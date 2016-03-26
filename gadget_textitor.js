@@ -60,6 +60,9 @@
                 return my_return_gadget;
               });
           });
+        }, function (e) {
+          console.log(e);
+          throw e;
         });
     })
 
