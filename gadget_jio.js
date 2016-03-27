@@ -7,7 +7,13 @@
 
     .ready(function (gadget) {
       // Initialize the gadget local parameters
+      console.log("Ready");
       gadget.state_parameter_dict = {};
+    })
+    .declareMethod('render', function () {
+      console.log("Render");
+      console.log(this);
+      return this;
     })
 
     .declareMethod('createJIO', function (jio_options) {
