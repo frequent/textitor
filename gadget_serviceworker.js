@@ -23,6 +23,7 @@
 
     .declareMethod('routeStorageRequest', function () {
       console.log("ROUTE REQUEST")
+      console.log(arguments)
       var gadget = this;
       console.log(gadget)
       return new RSVP.Queue()
