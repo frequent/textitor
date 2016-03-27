@@ -17,11 +17,14 @@
     })
 
     .declareMethod('render', function (my_option_dict) {
+      console.log("RENDER")
       return this;
     })
 
     .declareMethod('routeStorageRequest', function () {
+      console.log("ROUTE REQUEST")
       var gadget = this;
+      console.log(gadget)
       return new RSVP.Queue()
         .push(function () {
           return gadget.getDeclaredGadget("jio_gadget");
