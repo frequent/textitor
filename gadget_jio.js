@@ -10,7 +10,7 @@
       gadget.state_parameter_dict = {};
     })
 
-    .declareMethod('createJio', function (jio_options) {
+    .declareMethod('createJIO', function (jio_options) {
       this.state_parameter_dict.jio_storage = jIO.createJIO(jio_options);
     })
     .declareMethod('allDocs', function () {
