@@ -82,13 +82,14 @@
     })
 
     .declareMethod("forwardStorageRequest", function () {
-      var gadget = this;
+      var gadget = this,
+        payload = arguments;
       return new RSVP.Queue()
         .push(function () {
           return gadget.getDeclaredGadget("serviceworker");
         })
         .push(function (my_service_worker_gadget) {
-          return my_service_worker_gadget.routeStorageRequest(arguments);
+          return my_service_worker_gadget.routeStorageRequest(payload);
         });
     })
     //////////////////////////////////////////////
