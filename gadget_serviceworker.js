@@ -21,17 +21,17 @@
       return this;
     })
 
-    .declareMethod('routeStorageRequest', function () {
-      console.log("ROUTE REQUEST")
-      console.log(arguments)
+    .declareMethod('routeStorageRequest', function (my_method, my_param_list) {
       var gadget = this;
       console.log(gadget)
+      console.log(my_method)
+      console.log(my_param_list)
       return new RSVP.Queue()
         .push(function () {
           return gadget.getDeclaredGadget("jio_gadget");
         })
         .push(function (my_jio_gadget) {
-          return my_jio_gadget[arguments[0]].apply(jio_gadget, arguments[1]);
+          return my_jio_gadget[my_method].apply(jio_gadget, my_param_list);
         })
         .push(undefined, function (error) {
           throw error;
