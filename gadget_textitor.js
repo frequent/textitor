@@ -97,7 +97,7 @@
     
     // jIO bridge
     .allowPublicAcquisition("jio_create", function (param_list) {
-      return this.forwardStorageRequest("createJio", param_list);
+      return this.forwardStorageRequest("createJIO", param_list);
     })
     .allowPublicAcquisition("jio_allDocs", function (param_list) {
       return this.forwardStorageRequest("allDocs", param_list);

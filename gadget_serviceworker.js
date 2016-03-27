@@ -17,7 +17,6 @@
     })
 
     .declareMethod('render', function (my_option_dict) {
-      console.log("RENDER")
       return this;
     })
 
@@ -32,6 +31,7 @@
         .push(function (my_jio_gadget) {
           console.log(my_jio_gadget)
           console.log("and")
+          console.log(my_jio_gadget.createJIO)
           return my_jio_gadget[my_method].apply(jio_gadget, my_param_list);
         })
         .push(undefined, function (error) {
