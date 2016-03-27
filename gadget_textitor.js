@@ -2,12 +2,12 @@
 /*global window, rJS */
 (function (window, rJS) {
   "use strict";
-
+  
   function initializeStorage(my_gadget) {
-    console.log("initializing");
+    console.log("initializing storage");
     return new RSVP.Queue()
       .push(function () {
-        return callJioGadget(my_gadget, 'createJio', {
+        return my_gadget.forwardStorageRequest('jio_create', {
           "type": "serviceworker",
           "cache": "textitor"
         });
@@ -15,35 +15,26 @@
       
       // try
       .push(function (my_storage) {
-        return my_storage.put("textitor");
+        return my_gadget.forwardStorageRequest("jio_put", "textitor");
       })
       .push(function (my_id) {
-        return my_storage.putAttachment(
-          my_id, 
+        return my_gadget.forwardStorageRequest("jio_putAttachment", [
+          my_id,
           "http://foo.css", 
           new Blob(["span%2C%20div%20%7Bborder%3A%201px%20solid%20red%20!important%3B%7D"], {
             type: "text/css",
           })
-        );
+        ]);
       })
-      .push(function () {console.log("allset");}, function (e) {
+      .push(function () {
+        console.log("allset");
+      }, function (e) {
         console.log(e);
         throw e;
       });
   }
 
-  function callJioGadget(my_gadget, my_method, my_param_list) {
-    return new RSVP.Queue()
-      .push(function () {
-        return my_gadget.getDeclaredGadget("jio_gadget");
-      })
-      .push(function (jio_gadget) {
-        return jio_gadget[my_method].apply(jio_gadget, my_param_list);
-      })
-      .push(undefined, function (error) {
-        throw error;
-      });
-  }
+  
   
   rJS(window)
 
@@ -89,40 +80,58 @@
           return return_gadget;
         });
     })
+
+    .declareMethod("forwardStorageRequest", function () {
+      var gadget = this;
+      return new RSVP.Queue()
+        .push(function () {
+          return gadget.getDeclaredGadget("serviceworker");
+        })
+        .push(function (my_service_worker_gadget) {
+          return my_service_worker_gadget.routeStorageRequest(arguments);
+        });
+    })
+    //////////////////////////////////////////////
+    // published methods
+    //////////////////////////////////////////////
     
     // jIO bridge
-    .allowPublicAcquisition("createJio", function (param_list) {
-      return callJioGadget(this, "createJio", param_list);
+    .allowPublicAcquisition("jio_create", function (param_list) {
+      return this.forwardStorageRequest("createJio", param_list);
     })
     .allowPublicAcquisition("jio_allDocs", function (param_list) {
-      return callJioGadget(this, "allDocs", param_list);
+      return this.forwardStorageRequest("allDocs", param_list);
     })
     .allowPublicAcquisition("jio_remove", function (param_list) {
-      return callJioGadget(this, "remove", param_list);
+      return this.forwardStorageRequest("remove", param_list);
     })
     .allowPublicAcquisition("jio_post", function (param_list) {
-      return callJioGadget(this, "post", param_list);
+      return this.forwardStorageRequest("post", param_list);
     })
     .allowPublicAcquisition("jio_put", function (param_list) {
-      return callJioGadget(this, "put", param_list);
+      return this.forwardStorageRequest("put", param_list);
     })
     .allowPublicAcquisition("jio_get", function (param_list) {
-      return callJioGadget(this, "get", param_list);
+      return this.forwardStorageRequest("get", param_list);
     })
     .allowPublicAcquisition("jio_allAttachments", function (param_list) {
-      return callJioGadget(this, "allAttachments", param_list);
+      return this.forwardStorageRequest("allAttachments", param_list);
     })
     .allowPublicAcquisition("jio_getAttachment", function (param_list) {
-      return callJioGadget(this, "getAttachment", param_list);
+      return this.forwardStorageRequest("getAttachment", param_list);
     })
     .allowPublicAcquisition("jio_putAttachment", function (param_list) {
-      return callJioGadget(this, "putAttachment", param_list);
+      return this.forwardStorageRequest("putAttachment", param_list);
     })
     .allowPublicAcquisition("jio_removeAttachment", function (param_list) {
-      return callJioGadget(this, "removeAttachment", param_list);
+      return this.forwardStorageRequest("removeAttachment", param_list);
     })
     .allowPublicAcquisition("jio_repair", function (param_list) {
-      return callJioGadget(this, "repair", param_list);
+      return this.forwardStorageRequest("repair", param_list);
     });
+    
+    //////////////////////////////////////////////
+    // acquired methods
+    //////////////////////////////////////////////
     
 }(window, rJS));

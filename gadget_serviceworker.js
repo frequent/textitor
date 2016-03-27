@@ -18,5 +18,21 @@
 
     .declareMethod('render', function (my_option_dict) {
       return this;
+    })
+
+    .declareMethod('routeStorageRequest', function () {
+      var gadget = this;
+      return new RSVP.Queue()
+        .push(function () {
+          return gadget.getDeclaredGadget("jio_gadget");
+        })
+        .push(function (my_jio_gadget) {
+          return my_jio_gadget[arguments[0]].apply(jio_gadget, arguments[1]);
+        })
+        .push(undefined, function (error) {
+          throw error;
+        });
     });
+    
+
 }(window, rJS));
