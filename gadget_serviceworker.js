@@ -23,9 +23,6 @@
 
     .declareMethod('routeStorageRequest', function (my_method, my_param_list) {
       var gadget = this;
-      console.log(gadget)
-      console.log(my_method)
-      console.log(my_param_list)
       return new RSVP.Queue()
         .push(function () {
           return gadget.getDeclaredGadget("jio_gadget");

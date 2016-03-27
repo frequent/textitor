@@ -81,15 +81,14 @@
         });
     })
 
-    .declareMethod("forwardStorageRequest", function () {
-      var gadget = this,
-        payload = arguments;
+    .declareMethod("forwardStorageRequest", function (my_method, my_param_list) {
+      var gadget = this;
       return new RSVP.Queue()
         .push(function () {
           return gadget.getDeclaredGadget("serviceworker");
         })
         .push(function (my_service_worker_gadget) {
-          return my_service_worker_gadget.routeStorageRequest(payload);
+          return my_service_worker_gadget.routeStorageRequest(my_method, my_param_list);
         });
     })
     //////////////////////////////////////////////
