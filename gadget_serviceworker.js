@@ -29,10 +29,13 @@
           return gadget.getDeclaredGadget("jio_gadget");
         })
         .push(function (my_jio_gadget) {
-          console.log(my_jio_gadget)
+          return my_jio_gadget.render();
+        })
+        .push(function (my_rendered_jio_gadget) {
+          console.log(my_rendered_jio_gadget)
           console.log("and")
-          console.log(my_jio_gadget.createJIO)
-          return my_jio_gadget[my_method].apply(jio_gadget, my_param_list);
+          console.log(my_rendered_jio_gadget.createJIO)
+          return my_rendered_jio_gadget[my_method].apply(jio_gadget, my_param_list);
         })
         .push(undefined, function (error) {
           throw error;
