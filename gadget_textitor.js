@@ -5,9 +5,10 @@
   
   function initializeStorage(my_gadget) {
     console.log("initializing storage");
+
     return new RSVP.Queue()
       .push(function () {
-        return my_gadget.forwardStorageRequest('jio_create', {
+        return my_gadget.jio_create({
           "type": "serviceworker",
           "cache": "textitor"
         });
@@ -128,10 +129,13 @@
     })
     .allowPublicAcquisition("jio_repair", function (param_list) {
       return this.forwardStorageRequest("repair", param_list);
-    });
+    })
     
     //////////////////////////////////////////////
     // acquired methods
     //////////////////////////////////////////////
+    .declareAcquiredMethod("jio_create", function (param_list) {
+      return this.forwardStorageRequest("createJIO", param_list);
+    })
     
 }(window, rJS));
