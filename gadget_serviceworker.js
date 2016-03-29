@@ -17,7 +17,20 @@
     })
 
     .declareMethod('render', function (my_option_dict) {
-      return this;
+      var gadget = this;
+      return new RSVP.Queue()
+        .push(function () {
+          return gadget.declareGadget("gadget_jio.html", {
+            "scope": "jio_gadget_fallback"
+          });
+        })
+        .push(function (my_declared_gadget) {
+          return my_declared_gadget.render();
+        })
+        .push(function (my_rendered_gadget) {
+          console.log(my_rendered_gadget);
+          return gadget;
+        })
     })
 
     .declareMethod('routeStorageRequest', function (my_method, my_param_list) {
@@ -27,7 +40,7 @@
       console.log(my_param_list);
       return new RSVP.Queue()
         .push(function () {
-          return gadget.getDeclaredGadget("jio_gadget");
+          return gadget.getDeclaredGadget("jio_gadget_fallback");
         })
         .push(function (my_rendered_jio_gadget) {
           console.log(my_rendered_jio_gadget);
