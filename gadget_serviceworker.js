@@ -41,7 +41,18 @@
         .push(undefined, function (error) {
           throw error;
         });
-    });
+    })
     
+    .declareAcquiredMethod('jio_create', 'jio_create')
+    .declareAcquiredMethod('jio_allDocs', 'jio_allDocs')
+    .declareAcquiredMethod('jio_remove', 'jio_remove')
+    .declareAcquiredMethod('jio_post', 'jio_post')
+    .declareAcquiredMethod('jio_put', 'jio_put')
+    .declareAcquiredMethod('jio_get', 'jio_get')
+    .declareAcquiredMethod('jio_allAttachments', 'jio_allAttachments')
+    .declareAcquiredMethod('jio_removeAttachment', 'jio_removeAttachments')
+    .declareAcquiredMethod('jio_putAttachment', 'jio_putAttachment')
+    .declareAcquiredMethod('jio_getAttachment', 'jio_getAttachment')
+    .declareAcquiredMethod('jio_repair', 'jio_repair')
 
 }(window, rJS));
