@@ -18,6 +18,7 @@
 
     .declareMethod('render', function (my_option_dict) {
       var gadget = this;
+      console.log("inside serviceworker.js render")
       return new RSVP.Queue()
         .push(function () {
           return gadget.declareGadget("gadget_jio.html", {
