@@ -8,7 +8,7 @@
 
     return new RSVP.Queue()
       .push(function () {
-        return my_gadget.jio_create({
+        return my_gadget.forwardStorageRequest("jio_create", {
           "type": "serviceworker",
           "cache": "textitor"
         });
