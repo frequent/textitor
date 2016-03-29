@@ -68,6 +68,8 @@
           ]);
         })
         .push(function (my_declared_gadget_list) {
+          console.log("inside textworker.js");
+          console.log(my_declared_gadget_list);
           return RSVP.all([
             my_declared_gadget_list[0].render(my_option_dict || {}),
             my_declared_gadget_list[1].render(my_option_dict || {})
