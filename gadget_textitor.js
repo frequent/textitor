@@ -84,12 +84,15 @@
 
     .declareMethod("forwardStorageRequest", function (my_method, my_param_list) {
       var gadget = this;
+      console.log("request inside forward");
       return new RSVP.Queue()
         .push(function () {
           return gadget.getDeclaredGadget("serviceworker");
         })
-        .push(function (my_service_worker_gadget) {
-          return my_service_worker_gadget.routeStorageRequest(my_method, my_param_list);
+        .push(function (my_serviceworker_gadget) {
+          console.log("serviceworker gadget retrieved");
+          console.log(my_serviceworker_gadget)
+          return my_serviceworker_gadget.routeStorageRequest(my_method, my_param_list);
         });
     })
     //////////////////////////////////////////////
