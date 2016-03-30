@@ -7,12 +7,9 @@
 
     .ready(function (gadget) {
       // Initialize the gadget local parameters
-      console.log("Ready");
       gadget.state_parameter_dict = {};
     })
     .declareMethod('render', function () {
-      console.log("Render");
-      console.log(this);
       return this;
     })
 
@@ -58,6 +55,13 @@
     .declareMethod('repair', function () {
       var storage = this.state_parameter_dict.jio_storage;
       return storage.repair.apply(storage, arguments);
+    })
+    
+    
+    .allowPublicAcquisition("jio_create", function (my_param_list) {
+      console.log("HELLO!!!");
+      var gadget = this;
+      return gadget.createJIO(param_list);
     });
 
 }(window, rJS, jIO));
