@@ -68,8 +68,6 @@
           ]);
         })
         .push(function (my_declared_gadget_list) {
-          console.log("inside textworker.js");
-          console.log(my_declared_gadget_list);
           return RSVP.all([
             my_declared_gadget_list[0].render(my_option_dict || {}),
             my_declared_gadget_list[1].render(my_option_dict || {})
@@ -97,9 +95,50 @@
           return my_serviceworker_gadget.routeStorageRequest(my_method, my_param_list);
         });
     })
+    //////////////////////////////////////////////
+    // published methods
+    //////////////////////////////////////////////
+    
+    // jIO bridge
+    .allowPublicAcquisition("jio_create", function (param_list) {
+      return this.forwardStorageRequest("createJIO", param_list);
+    })
+    .allowPublicAcquisition("jio_allDocs", function (param_list) {
+      return this.forwardStorageRequest("allDocs", param_list);
+    })
+    .allowPublicAcquisition("jio_remove", function (param_list) {
+      return this.forwardStorageRequest("remove", param_list);
+    })
+    .allowPublicAcquisition("jio_post", function (param_list) {
+      return this.forwardStorageRequest("post", param_list);
+    })
+    .allowPublicAcquisition("jio_put", function (param_list) {
+      return this.forwardStorageRequest("put", param_list);
+    })
+    .allowPublicAcquisition("jio_get", function (param_list) {
+      return this.forwardStorageRequest("get", param_list);
+    })
+    .allowPublicAcquisition("jio_allAttachments", function (param_list) {
+      return this.forwardStorageRequest("allAttachments", param_list);
+    })
+    .allowPublicAcquisition("jio_getAttachment", function (param_list) {
+      return this.forwardStorageRequest("getAttachment", param_list);
+    })
+    .allowPublicAcquisition("jio_putAttachment", function (param_list) {
+      return this.forwardStorageRequest("putAttachment", param_list);
+    })
+    .allowPublicAcquisition("jio_removeAttachment", function (param_list) {
+      return this.forwardStorageRequest("removeAttachment", param_list);
+    })
+    .allowPublicAcquisition("jio_repair", function (param_list) {
+      return this.forwardStorageRequest("repair", param_list);
+    })
     
     //////////////////////////////////////////////
     // acquired methods
     //////////////////////////////////////////////
+    .declareAcquiredMethod("jio_create", function (param_list) {
+      return this.forwardStorageRequest("createJIO", param_list);
+    })
     
 }(window, rJS));
