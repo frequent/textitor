@@ -39,6 +39,7 @@
 
     // jIO bridge
     .allowPublicAcquisition("jio_create", function (param_list) {
+      console.log("IN");
       return this.routeStorageRequest("createJIO", param_list);
     })
     .allowPublicAcquisition("jio_allDocs", function (param_list) {

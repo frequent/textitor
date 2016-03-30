@@ -90,6 +90,7 @@
         .push(function (my_serviceworker_gadget) {
           console.log("???");
           console.log(my_method);
+          console.log(my_serviceworker_gadget);
           return my_serviceworker_gadget[my_method](my_param_list);
         });
     });
