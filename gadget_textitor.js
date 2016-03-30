@@ -58,8 +58,7 @@
     .declareMethod('render', function (my_option_dict) {
       var gadget = this,
         return_gadget;
-      console.log("RENDER");
-      
+
       return new RSVP.Queue()
         .push(function () {
           return RSVP.all([
@@ -89,10 +88,10 @@
           return gadget.getDeclaredGadget("serviceworker");
         })
         .push(function (my_serviceworker_gadget) {
-          console.log("???")
+          console.log("???");
+          console.log(my_method);
           return my_serviceworker_gadget[my_method](my_param_list);
         });
     });
 
 }(window, rJS));
-
