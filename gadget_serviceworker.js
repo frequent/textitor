@@ -73,6 +73,7 @@
       return this.routeStorageRequest("repair", param_list);
     })
     
+    .declareAcquiredMethod("jio_create", "jio_create");
     
 
 }(window, rJS));
