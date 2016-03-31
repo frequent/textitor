@@ -2,9 +2,8 @@
 /*global window, rJS */
 (function (window, rJS) {
   "use strict";
-  
+
   function initializeStorage(my_gadget) {
-    console.log("initializing storage");
 
     // calling without method acquisition, so call direct method
     return new RSVP.Queue()
@@ -14,7 +13,7 @@
           "cache": "textitor"
         });
       })
-      
+
       // try
       .push(function (my_storage) {
         return my_gadget.routeStorageRequest("put", "textitor");
@@ -22,37 +21,25 @@
       .push(function (my_id) {
         return my_gadget.routeStorageRequest("putAttachment", [
           my_id,
-          "http://foo.css", 
+          "http://foo.css",
           new Blob(["span%2C%20div%20%7Bborder%3A%201px%20solid%20red%20!important%3B%7D"], {
             type: "text/css",
           })
         ]);
-      })
-      .push(function () {
-        console.log("allset");
-      }, function (e) {
-        console.log(e);
-        throw e;
       });
   }
 
-  
-  
   rJS(window)
 
     .ready(function (my_gadget) {
       my_gadget.property_dict = {};
-      
+
       return new RSVP.Queue()
         .push(function () {
           return my_gadget.getElement();
         })
         .push(function (my_element) {
           my_gadget.property_dict.element = my_element;
-        })
-        .push(undefined, function (e) {
-          console.log(e);
-          throw e;
         });
     })
 
@@ -81,7 +68,7 @@
           return return_gadget;
         });
     })
-    
+
     .declareMethod('routeStorageRequest', function (my_method, my_param_list) {
       var gadget = this;
       return new RSVP.Queue()
@@ -130,6 +117,5 @@
     .allowPublicAcquisition("jio_repair", function (param_list) {
       return this.routeStorageRequest("repair", param_list);
     });
-
 
 }(window, rJS));
