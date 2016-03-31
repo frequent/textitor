@@ -89,7 +89,6 @@
           return gadget.getDeclaredGadget("serviceworker");
         })
         .push(function (my_serviceworker_gadget) {
-          console.log("passing along");
           return my_serviceworker_gadget.passRequest(my_method, my_param_list);
         })
         .push(undefined, function (error) {

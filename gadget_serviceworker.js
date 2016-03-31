@@ -32,7 +32,8 @@
           console.log("calling with");
           console.log(my_method);
           console.log(my_param_list);
-          return my_jio_gadget[my_method].apply(my_jio_gadget, my_param_list);
+          console.log([].concat(my_param_list))
+          return my_jio_gadget[my_method].apply(my_jio_gadget, [].concat(my_param_list));
         })
         .push(undefined, function (error) {
           throw error;
