@@ -2,12 +2,159 @@
 /*global window, rJS, document, location, alert, prompt, confirm, setTimeout,
   toolbox, CodeMirror */
 
-  /*! Copyright (c) 2015 Tristan Cavelier <t.cavelier@free.fr>
-  This program is free software. It comes without any warranty, to
-  the extent permitted by applicable law. You can redistribute it
-  and/or modify it under the terms of the Do What The Fuck You Want
-  To Public License, Version 2, as published by Sam Hocevar. See
-  http://www.wtfpl.net/ for more details. */
+  /* Codemirror Extension/Overwrites */
+  function dialogDiv(my_context, my_template, my_bottom) {
+    var wrap = my_context.getWrapperElement(),
+      dialog = wrap.appendChild(document.createElement("div"));
+
+    if (my_bottom) {
+      dialog.className = "CodeMirror-dialog CodeMirror-dialog-bottom";
+    } else {
+      dialog.className = "CodeMirror-dialog CodeMirror-dialog-top";
+    }
+    if (typeof my_template == "string") {
+      dialog.innerHTML = my_template;
+    } else { // Assuming it's a detached DOM element.
+      dialog.appendChild(my_template);
+    }
+    return dialog;
+  }
+
+  function closeNotification(my_context, my_newVal) {
+    if (my_context.state.currentNotificationClose) {
+      my_context.state.currentNotificationClose();
+    }
+    my_context.state.currentNotificationClose = my_newVal;
+  }
+  
+  // overwrite openDialog
+  function setOpenDialog(my_context, my_template, my_callback, my_option_dict) {
+    return CodeMirror.defineExtension("openDialog", function(my_template, my_callback, my_option_dict) {
+      var event_list = [],
+        dialog,
+        closed,
+        inp,
+        button,
+        onInputCallback,
+        action_form;
+
+      my_option_dict = my_option_dict || {};
+      dialog = dialogDiv(my_context, my_template, my_option_dict.bottom);
+      closed = false;
+      action_form = dialog.querySelector("form");
+
+      //
+      function close(my_newVal) {
+        if (typeof my_newVal == 'string') {
+          inp.value = my_newVal;
+        } else {
+          if (closed) {
+            return;
+          }
+          closed = true;
+          dialog.parentNode.removeChild(dialog);
+          my_context.focus();
+  
+          if (my_option_dict.onClose) {
+            my_option_dict.onClose(dialog);
+          }
+        }
+      }
+    
+      function filterAttachments(my_event) {
+        return close();
+      }
+
+      inp = dialog.getElementsByTagName("input")[0];
+      if (inp) {
+        if (CodeMirror.navigationMenu.position === 'left') {
+          onInputCallback = filterAttachments;
+        }
+        if (my_option_dict.value) {
+          inp.value = my_option_dict.value;
+          if (my_option_dict.selectValueOnOpen !== false) {
+            inp.select();
+          }
+        }
+
+        // NOTE: binding via RSVP vs CodeMirror on/off breaks browser compat (not required)
+        if (my_option_dict.onInput) {
+          event_list.push(
+            loopEventListener(inp, "input", false, function (my_event) {
+              my_option_dict.onInput(my_event, inp.value, onInputCallback || close);
+            })
+          );
+        }
+        if (my_option_dict.onKeyUp) {
+          event_list.push(
+            loopEventListener(inp, "keyup", false, function (my_event) {
+              my_option_dict.onKeyUp(my_event, inp.value, onInputCallback || close);
+            })
+          );
+        }
+
+        // default onkeydown, doesn't apply completely
+        event_list.push(
+          loopEventListener(inp, "keydown", false, function (my_event) {
+            if (my_option_dict && my_option_dict.onKeyDown) {
+              return my_option_dict.onKeyDown(my_event, inp.value, close);
+            }
+
+            // only esc will close, removed 
+            // (my_option_dict.closeOnEnter !== false && my_event.keyCode == 13)
+            if (my_event.keyCode == 27) {
+              inp.blur();
+              CodeMirror.e_stop(e);
+              close();
+            }
+            if (my_event.keyCode == 13) {
+              return my_callback(inp.value, my_event);
+            }
+          })
+        );
+      }
+
+      // won't apply - still...
+      if (my_option_dict.closeOnBlur !== false) {
+        event_list.push(new RSVP.Queue()
+          .push(function () {
+            return promiseEventListener(inp, "blur", false));
+          })
+          .push(function (my_event) {
+            close(my_event);
+          });
+      }
+      inp.focus();
+    }
+    
+    if (action_form) {
+      event_list.push(
+        loopEventListener(
+          action_form,
+          "submit",
+          false, 
+          function (my_event) {
+            var target = my_event.target,
+              action = target.submit.name;
+            console.log("action");
+            console.log(action);
+          }
+        )
+      );
+    }
+
+    // gogo-gadget-oh rsvp...
+    return new RSVP.Queue()
+      .push(function () {
+        closeNotification(my_context, null);
+        return RSVP.all(event_list);
+      })
+      .push(function () {
+        return close;
+      })
+
+  });
+      
 
   /* Keymap */
   CodeMirror.keyMap.my = {"fallthrough": "default"};
@@ -24,13 +171,14 @@
   ["Ctrl-Alt-H"] List of Shortcuts
   */
   
-  var OBJECT_MENU = "<span>Name:</span><input type=\"text\" />" +
+  var OBJECT_MENU = "<form><span>Name:</span><input type=\"text\" />" +
     "<span class='custom-menu-typewriter'>CTRL+ALT+</span>" +
-    "<button class='custom-menu-button'><b>S</b>ave</button>" +
-    "<button class='custom-menu-button'><b>C</b>lose</button>" +
-    "<button class='custom-menu-button'><b>D</b>elete</button>";
+    "<button type='submit' name='save' class='custom-menu-button'><b>S</b>ave</button>" +
+    "<button type='submit' name='close' class='custom-menu-button'><b>C</b>lose</button>" +
+    "<button type='submit' name='remove' class='custom-menu-button'><b>D</b>elete</button>" +
+    "</form>";
   
-  var OBJECT_LIST_MENU = "<span>Search:</span><input type=\"text\" />";
+  var OBJECT_LIST_MENU = "<form><span>Search:</span><input type=\"text\" /></form>";
 
   CodeMirror.navigationMenu = {"position": "idle"};
   
@@ -113,6 +261,7 @@
     var menu = setNavigationMenu("right");
     if (cm.openDialog) {
       cm.openDialog(
+        cm,
         menu,
         enterCallback,
         {
@@ -125,6 +274,7 @@
             setNavigationCallback(e, val, close);
             return true;
           },
+          // "onClose": function () {},
           "onInput": function (e, val, close) {
             console.log("INPUT");
             console.log(e);
@@ -141,7 +291,7 @@
 
     var menu = setNavigationMenu("left");
     if (cm.openDialog) {
-      cm.openDialog(menu, enterCallback, {
+      cm.openDialog(cm, menu, enterCallback, {
         "bottom": false,
         "closeOnEnter": false,
         "closeOnBlur": false,
