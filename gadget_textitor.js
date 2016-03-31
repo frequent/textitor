@@ -6,9 +6,10 @@
   function initializeStorage(my_gadget) {
     console.log("initializing storage");
 
+    // calling without method acquisition, so call direct method
     return new RSVP.Queue()
       .push(function () {
-        return my_gadget.forwardStorageRequest("jio_create", {
+        return my_gadget.routeStorageRequest("createJIO", {
           "type": "serviceworker",
           "cache": "textitor"
         });
@@ -16,10 +17,10 @@
       
       // try
       .push(function (my_storage) {
-        return my_gadget.forwardStorageRequest("jio_put", "textitor");
+        return my_gadget.routeStorageRequest("put", "textitor");
       })
       .push(function (my_id) {
-        return my_gadget.forwardStorageRequest("jio_putAttachment", [
+        return my_gadget.routeStorageRequest("putAttachment", [
           my_id,
           "http://foo.css", 
           new Blob(["span%2C%20div%20%7Bborder%3A%201px%20solid%20red%20!important%3B%7D"], {
@@ -80,19 +81,56 @@
           return return_gadget;
         });
     })
-
-    .declareMethod("forwardStorageRequest", function (my_method, my_param_list) {
+    
+    .declareMethod('routeStorageRequest', function (my_method, my_param_list) {
       var gadget = this;
       return new RSVP.Queue()
         .push(function () {
           return gadget.getDeclaredGadget("serviceworker");
         })
         .push(function (my_serviceworker_gadget) {
-          console.log("???");
-          console.log(my_method);
-          console.log(my_serviceworker_gadget);
-          return my_serviceworker_gadget[my_method](my_param_list);
+          console.log("passing along");
+          return my_serviceworker_gadget.passRequest(my_method, my_param_list);
+        })
+        .push(undefined, function (error) {
+          throw error;
         });
+    })
+
+    // jIO bridge
+    .allowPublicAcquisition("jio_create", function (param_list) {
+      return this.routeStorageRequest("createJIO", param_list);
+    })
+    .allowPublicAcquisition("jio_allDocs", function (param_list) {
+      return this.routeStorageRequest("allDocs", param_list);
+    })
+    .allowPublicAcquisition("jio_remove", function (param_list) {
+      return this.routeStorageRequest("remove", param_list);
+    })
+    .allowPublicAcquisition("jio_post", function (param_list) {
+      return this.routeStorageRequest("post", param_list);
+    })
+    .allowPublicAcquisition("jio_put", function (param_list) {
+      return this.routeStorageRequest("put", param_list);
+    })
+    .allowPublicAcquisition("jio_get", function (param_list) {
+      return this.routeStorageRequest("get", param_list);
+    })
+    .allowPublicAcquisition("jio_allAttachments", function (param_list) {
+      return this.routeStorageRequest("allAttachments", param_list);
+    })
+    .allowPublicAcquisition("jio_getAttachment", function (param_list) {
+      return this.routeStorageRequest("getAttachment", param_list);
+    })
+    .allowPublicAcquisition("jio_putAttachment", function (param_list) {
+      return this.routeStorageRequest("putAttachment", param_list);
+    })
+    .allowPublicAcquisition("jio_removeAttachment", function (param_list) {
+      return this.routeStorageRequest("removeAttachment", param_list);
+    })
+    .allowPublicAcquisition("jio_repair", function (param_list) {
+      return this.routeStorageRequest("repair", param_list);
     });
+
 
 }(window, rJS));

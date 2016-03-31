@@ -55,13 +55,6 @@
     .declareMethod('repair', function () {
       var storage = this.state_parameter_dict.jio_storage;
       return storage.repair.apply(storage, arguments);
-    })
-    
-    
-    .allowPublicAcquisition("jio_create", function (my_param_list) {
-      console.log("HELLO!!!");
-      var gadget = this;
-      return gadget.createJIO(param_list);
     });
 
 }(window, rJS, jIO));
