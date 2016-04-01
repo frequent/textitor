@@ -103,73 +103,76 @@
           })
         );
 
-        closing_event_list.push(new RSVP.Queue()
-          .push(function () {
-            return return promiseEventListener(inp, "keydown", false));
-          })
-          .push(function (my_event) {
-            // only esc will close, removed 
-            // (my_option_dict.closeOnEnter !== false && my_event.keyCode == 13)
-            if (my_event.keyCode == 27) {
-              inp.blur();
-              CodeMirror.e_stop(my_event);
-              close();
-            }
+        closing_event_list.push(
+          new RSVP.Queue()
+            .push(function () {
+              return promiseEventListener(inp, "keydown", false);
+            })
+            .push(function (my_event) {
+              // only esc will close, removed 
+              // (my_option_dict.closeOnEnter !== false && my_event.keyCode == 13)
+              if (my_event.keyCode == 27) {
+                inp.blur();
+                CodeMirror.e_stop(my_event);
+                close();
+              }
 
-            // is a callback necessary on return?
-            //if (my_event.keyCode == 13) {
-            //  return my_callback(inp.value, my_event);
-            //}  
-          });
-        )
+              // is a callback necessary on return?
+              //if (my_event.keyCode == 13) {
+              //  return my_callback(inp.value, my_event);
+              //}  
+            })
+        );
       }
 
       // won't apply - still...
       if (my_option_dict.closeOnBlur !== false) {
-        closing_event_list.push(new RSVP.Queue()
-          .push(function () {
-            return promiseEventListener(inp, "blur", false));
-          })
-          .push(function (my_event) {
-            close(my_event);
-          });
+        closing_event_list.push(
+          new RSVP.Queue()
+            .push(function () {
+              return promiseEventListener(inp, "blur", false);
+            })
+            .push(function (my_event) {
+              close(my_event);
+            })
+          );
       }
       inp.focus();
-    }
-    
-    if (action_form) {
-      recurring_event_list.push(
-        loopEventListener(
-          action_form,
-          "submit",
-          false, 
-          function (my_event) {
-            var target = my_event.target,
-              action = target.submit.name;
-            console.log("action");
-            console.log(action);
-          }
-        )
-      );
-    }
 
-    // gogo-gadget-oh rsvp...
-    return new RSVP.Queue()
-      .push(function () {
-        closeNotification(my_context, null);
-        
-        // loop eventlisteners trigger continuously
-        // everything that closes will resolve
-        return RSVP.any(
-          RSVP.all(recurring_event_list),
-          RSVP.any(closing_event_list)
+      if (action_form) {
+        recurring_event_list.push(
+          loopEventListener(
+            action_form,
+            "submit",
+            false, 
+            function (my_event) {
+              var target = my_event.target,
+                action = target.submit.name;
+              console.log("action");
+              console.log(action);
+            }
+          )
         );
-      })
-      .push(function (my_return_close) {
-        return close;
-      })
+      }
 
-  });
+      // gogo-gadget-oh rsvp...
+      return new RSVP.Queue()
+        .push(function () {
+          closeNotification(my_context, null);
+          
+          // loop eventlisteners trigger continuously
+          // everything that closes will resolve
+          return RSVP.any(
+            RSVP.all(recurring_event_list),
+            RSVP.any(closing_event_list)
+          );
+        })
+        .push(function (my_return_close) {
+          return close;
+        });
+
+    });
+  }
       
 
   /* Keymap */
