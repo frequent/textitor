@@ -28,7 +28,7 @@
   }
   
   // overwrite openDialog
-  function setOpenDialog(my_context, my_template, my_callback, my_option_dict) {
+  function setOpenDialog() {
     return CodeMirror.defineExtension("openDialog", function(my_template, my_callback, my_option_dict) {
       var closing_event_list = [],
         recurring_event_list = [],
@@ -37,12 +37,16 @@
         inp,
         button,
         onInputCallback,
-        action_form;
+        action_form,
+        my_context;
 
       my_option_dict = my_option_dict || {};
       dialog = dialogDiv(my_context, my_template, my_option_dict.bottom);
       closed = false;
       action_form = dialog.querySelector("form");
+      my_context = my_context || this;
+
+      console.log(my_context);
 
       //
       function close(my_newVal) {
@@ -470,6 +474,10 @@
         });
     })
     .ready(function (my_gadget) {
+      
+      console.log("READY, Overwriting");
+      // overwrite dialog
+      setOpenDialog();
 
       //////////
       // Init //
@@ -619,4 +627,5 @@
 
       return exec_queue;
     });
+
 }(window, rJS));
