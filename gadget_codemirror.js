@@ -40,6 +40,11 @@
         action_form,
         my_context;
 
+      console.log(this);
+      console.log(my_template);
+      console.log(my_callback);
+      console.log(my_option_dict);
+
       my_context = my_context || this;
       my_option_dict = my_option_dict || {};
       dialog = dialogDiv(my_context, my_template, my_option_dict.bottom);
