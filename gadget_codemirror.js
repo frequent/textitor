@@ -40,11 +40,11 @@
         action_form,
         my_context;
 
+      my_context = my_context || this;
       my_option_dict = my_option_dict || {};
       dialog = dialogDiv(my_context, my_template, my_option_dict.bottom);
       closed = false;
       action_form = dialog.querySelector("form");
-      my_context = my_context || this;
 
       console.log(my_context);
 
