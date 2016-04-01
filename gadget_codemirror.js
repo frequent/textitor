@@ -282,7 +282,6 @@
     var menu = setNavigationMenu("right");
     if (cm.openDialog) {
       cm.openDialog(
-        cm,
         menu,
         enterCallback,
         {
@@ -312,7 +311,7 @@
 
     var menu = setNavigationMenu("left");
     if (cm.openDialog) {
-      cm.openDialog(cm, menu, enterCallback, {
+      cm.openDialog(menu, enterCallback, {
         "bottom": false,
         "closeOnEnter": false,
         "closeOnBlur": false,
