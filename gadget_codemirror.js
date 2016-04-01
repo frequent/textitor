@@ -30,7 +30,8 @@
   // overwrite openDialog
   function setOpenDialog(my_context, my_template, my_callback, my_option_dict) {
     return CodeMirror.defineExtension("openDialog", function(my_template, my_callback, my_option_dict) {
-      var event_list = [],
+      var closing_event_list = [],
+        recurring_event_list = [],
         dialog,
         closed,
         inp,
@@ -79,44 +80,53 @@
 
         // NOTE: binding via RSVP vs CodeMirror on/off breaks browser compat (not required)
         if (my_option_dict.onInput) {
-          event_list.push(
+          recurring_event_list.push(
             loopEventListener(inp, "input", false, function (my_event) {
               my_option_dict.onInput(my_event, inp.value, onInputCallback || close);
             })
           );
         }
         if (my_option_dict.onKeyUp) {
-          event_list.push(
+          recurring_event_list.push(
             loopEventListener(inp, "keyup", false, function (my_event) {
               my_option_dict.onKeyUp(my_event, inp.value, onInputCallback || close);
             })
           );
         }
 
-        // default onkeydown, doesn't apply completely
-        event_list.push(
+        // default onkeydown, won't be used
+        recurring_event_list.push(
           loopEventListener(inp, "keydown", false, function (my_event) {
             if (my_option_dict && my_option_dict.onKeyDown) {
               return my_option_dict.onKeyDown(my_event, inp.value, close);
             }
+          })
+        );
 
+        closing_event_list.push(new RSVP.Queue()
+          .push(function () {
+            return return promiseEventListener(inp, "keydown", false));
+          })
+          .push(function (my_event) {
             // only esc will close, removed 
             // (my_option_dict.closeOnEnter !== false && my_event.keyCode == 13)
             if (my_event.keyCode == 27) {
               inp.blur();
-              CodeMirror.e_stop(e);
+              CodeMirror.e_stop(my_event);
               close();
             }
-            if (my_event.keyCode == 13) {
-              return my_callback(inp.value, my_event);
-            }
-          })
-        );
+
+            // is a callback necessary on return?
+            //if (my_event.keyCode == 13) {
+            //  return my_callback(inp.value, my_event);
+            //}  
+          });
+        )
       }
 
       // won't apply - still...
       if (my_option_dict.closeOnBlur !== false) {
-        event_list.push(new RSVP.Queue()
+        closing_event_list.push(new RSVP.Queue()
           .push(function () {
             return promiseEventListener(inp, "blur", false));
           })
@@ -128,7 +138,7 @@
     }
     
     if (action_form) {
-      event_list.push(
+      recurring_event_list.push(
         loopEventListener(
           action_form,
           "submit",
@@ -147,9 +157,15 @@
     return new RSVP.Queue()
       .push(function () {
         closeNotification(my_context, null);
-        return RSVP.all(event_list);
+        
+        // loop eventlisteners trigger continuously
+        // everything that closes will resolve
+        return RSVP.any(
+          RSVP.all(recurring_event_list),
+          RSVP.any(closing_event_list)
+        );
       })
-      .push(function () {
+      .push(function (my_return_close) {
         return close;
       })
 
