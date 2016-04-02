@@ -99,17 +99,17 @@
             })
           );
         }
-
+        
         // default onkeydown, won't be used
-        event_list.push(
-          loopEventListener(inp, "keydown", false, function (my_event) {
-            console.log("KEYDOWN");
-            if (my_option_dict && my_option_dict.onKeyDown) {
-              return my_option_dict.onKeyDown(my_event, inp.value, close);
-            }
+        // if (my_option_dict && my_option_dict.onKeyDown) {
+          event_list.push(
+            loopEventListener(inp, "keydown", false, function (my_event) {
+              console.log("KEYDOWN");
+              my_option_dict.onKeyDown(my_event, inp.value, close);
           })
         );
-
+        //}
+        
 
         closing_event_list.push(
           new RSVP.Queue()
