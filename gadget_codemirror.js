@@ -76,6 +76,7 @@
           }
         }
 
+        /*
         // NOTE: binding via RSVP vs CodeMirror on/off breaks browser compat (not required)
         if (my_option_dict.onInput) {
           console.log("Setting on input");
@@ -86,6 +87,8 @@
             })
           //);
         }
+        */
+        CodeMirror.on(inp, "input", function(e) { my_option_dict.onInput(e, inp.value, close);});
         if (my_option_dict.onKeyUp) {
           console.log("Setting on keyup");
           //recurring_event_list.push(
