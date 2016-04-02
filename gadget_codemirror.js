@@ -69,8 +69,6 @@
       }
 
       inp = dialog.getElementsByTagName("input")[0];
-      inp.setAttribute("style", "border:1px solid red;");
-
       if (inp) {
         if (my_option_dict.value) {
           inp.value = my_option_dict.value;
@@ -101,9 +99,9 @@
             })
           );
         }
-        /*
+
         // default onkeydown, won't be used
-        recurring_event_list.push(
+        event_list.push(
           loopEventListener(inp, "keydown", false, function (my_event) {
             console.log("KEYDOWN");
             if (my_option_dict && my_option_dict.onKeyDown) {
@@ -111,7 +109,7 @@
             }
           })
         );
-        */
+
 
         closing_event_list.push(
           new RSVP.Queue()
