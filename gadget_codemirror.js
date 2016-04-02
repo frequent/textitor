@@ -68,6 +68,8 @@
       }
 
       inp = dialog.getElementsByTagName("input")[0];
+      inp.setAttribute("style", "border:1px solid red;");
+
       if (inp) {
         if (my_option_dict.value) {
           inp.value = my_option_dict.value;
@@ -89,6 +91,8 @@
         }
         */
         CodeMirror.on(inp, "input", function(e) { my_option_dict.onInput(e, inp.value, close);});
+
+        /*
         if (my_option_dict.onKeyUp) {
           console.log("Setting on keyup");
           //recurring_event_list.push(
@@ -108,6 +112,7 @@
             }
           })
         );
+        */
 
         closing_event_list.push(
           new RSVP.Queue()
@@ -115,6 +120,7 @@
               return promiseEventListener(inp, "keydown", false);
             })
             .push(function (my_event) {
+              console.log("closing keydown");
               // only esc will close, removed 
               // (my_option_dict.closeOnEnter !== false && my_event.keyCode == 13)
               if (my_event.keyCode == 27) {
@@ -169,7 +175,6 @@
           // loop eventlisteners trigger continuously
           // everything that closes will resolve
           return RSVP.all(
-            RSVP.all(recurring_event_list),
             bar,
             baz,
             foo,
