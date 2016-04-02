@@ -92,17 +92,16 @@
 
         //CodeMirror.on(inp, "input", function(e) { my_option_dict.onInput(e, inp.value, close);});
 
-        /*
+
         if (my_option_dict.onKeyUp) {
-          console.log("Setting on keyup");
-          //recurring_event_list.push(
-          var foo = loopEventListener(inp, "keyup", false, function (my_event) {
-              console.log("KEYUP triggered");
+          event_list.push(
+            loopEventListener(inp, "keyup", false, function (my_event) {
+              console.log("KEYUP");
               my_option_dict.onKeyUp(my_event, inp.value, close);
             })
-          //);
+          );
         }
-
+        /*
         // default onkeydown, won't be used
         recurring_event_list.push(
           loopEventListener(inp, "keydown", false, function (my_event) {
@@ -175,9 +174,8 @@
           // I have x infinite, they all trigger, but never resolve, so
           // if I add a resolver?
           return RSVP.any(
-            RSVP.any(event_list),
+            RSVP.all(event_list),
             baz,
-            foo,
             RSVP.any(closing_event_list)
           );
         })
