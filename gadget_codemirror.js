@@ -32,6 +32,7 @@
     return CodeMirror.defineExtension("openDialog", function(my_template, my_callback, my_option_dict) {
       var closing_event_list = [],
         recurring_event_list = [],
+        event_list = [],
         dialog,
         closed,
         inp,
@@ -48,7 +49,6 @@
       closed = false;
       action_form = dialog.querySelector("form");
 
-      //
       function close(my_newVal) {
         if (typeof my_newVal == 'string') {
           inp.value = my_newVal;
@@ -96,7 +96,7 @@
         }
 
         // default onkeydown, won't be used
-        recurring_event_list.push(
+        event_list.push(
           loopEventListener(inp, "keydown", false, function (my_event) {
             console.log("KEYDOWN");
             if (my_option_dict && my_option_dict.onKeyDown) {
@@ -142,38 +142,29 @@
       inp.focus();
 
       if (action_form) {
-        //recurring_event_list.push(
-          var baz = loopEventListener(
+        event_list.push(loopEventListener(
             action_form,
             "submit",
             false, 
             function (my_event) {
-              var target = my_event.target,
-                action = target.submit.name;
               console.log("action");
-              console.log(action);
+              console.log(my_event);
             }
           )
-        // );
+        );
       }
+
+      event_list.push(RSVP.any(closing_event_list));
 
       // gogo-gadget-oh rsvp...
       return new RSVP.Queue()
         .push(function () {
           closeNotification(my_context, null);
-          
-          // loop eventlisteners trigger continuously
-          // everything that closes will resolve
-          return RSVP.all(
-            RSVP.all(recurring_event_list),
-            bar,
-            baz,
-            foo,
-            RSVP.any(closing_event_list)
-          );
+          return RSVP.all(event_list);
         })
         .push(function (my_return_close) {
           console.log("Unreachable");
+          console.log(my_return_close);
           return close;
         });
 
