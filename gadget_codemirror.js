@@ -32,7 +32,6 @@
     return CodeMirror.defineExtension("openDialog", function(my_template, my_callback, my_option_dict) {
       var closing_event_list = [],
         recurring_event_list = [],
-        event_list = [],
         dialog,
         closed,
         inp,
@@ -49,11 +48,12 @@
       closed = false;
       action_form = dialog.querySelector("form");
 
+      //
       function close(my_newVal) {
-        console.log("close");
-        console.log(dialog.hasFocus());
-        console.log(inp.hasFocus());
-        console.log(my_context.hasFocus());
+        console.log("CALLED close")
+        console.log(my_context.hasFocus())
+        console.log(dialog.hasFocus())
+        console.log(inp.hasFocus())
         if (typeof my_newVal == 'string') {
           inp.value = my_newVal;
         } else {
@@ -89,16 +89,14 @@
             })
           //);
         }
-        // debug
-        CodeMirror.on(inp, "input", function(e) { options.onInput(e, inp.value, close);});
-        
         if (my_option_dict.onKeyUp) {
-          event_list.push(
-            loopEventListener(inp, "keyup", false, function (my_event) {
+          console.log("Setting on keyup");
+          //recurring_event_list.push(
+          var foo = loopEventListener(inp, "keyup", false, function (my_event) {
               console.log("KEYUP triggered");
               my_option_dict.onKeyUp(my_event, inp.value, close);
             })
-          );
+          //);
         }
 
         // default onkeydown, won't be used
@@ -147,9 +145,9 @@
       }
       inp.focus();
 
-      // XXX submit and/or shortcut to trigger actions?
       if (action_form) {
-        event_list.push(loopEventListener(
+        //recurring_event_list.push(
+          var baz = loopEventListener(
             action_form,
             "submit",
             false, 
@@ -157,24 +155,29 @@
               var target = my_event.target,
                 action = target.submit.name;
               console.log("action");
-              console.log(my_event);
-              my_event.preventDefault();
+              console.log(action);
             }
           )
-        );
+        // );
       }
-
-      event_list.push(RSVP.any(closing_event_list));
 
       // gogo-gadget-oh rsvp...
       return new RSVP.Queue()
         .push(function () {
           closeNotification(my_context, null);
-          return RSVP.all(event_list);
+          
+          // loop eventlisteners trigger continuously
+          // everything that closes will resolve
+          return RSVP.all(
+            RSVP.all(recurring_event_list),
+            bar,
+            baz,
+            foo,
+            RSVP.any(closing_event_list)
+          );
         })
         .push(function (my_return_close) {
           console.log("Unreachable");
-          console.log(my_return_close);
           return close;
         });
 
