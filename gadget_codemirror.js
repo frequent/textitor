@@ -40,6 +40,9 @@
         action_form,
         my_context;
 
+      console.log("setting up");
+      console.log(my_option_dict);
+
       my_context = my_context || this;
       my_option_dict = my_option_dict || {};
       dialog = dialogDiv(my_context, my_template, my_option_dict.bottom);
@@ -65,14 +68,19 @@
       }
     
       function filterAttachments(my_event) {
-        return close();
+        console.log("Filtering Attachments");
+        console.log(my_event);
+        //return close();
       }
 
       inp = dialog.getElementsByTagName("input")[0];
+      console.log("is there an input");
+      console.log(dialog.getElementsByTagName("input"));
+      console.log(inp);
       if (inp) {
-        if (CodeMirror.navigationMenu.position === 'left') {
+        //if (CodeMirror.navigationMenu.position === 'left') {
           onInputCallback = filterAttachments;
-        }
+        //}
         if (my_option_dict.value) {
           inp.value = my_option_dict.value;
           if (my_option_dict.selectValueOnOpen !== false) {
@@ -82,6 +90,7 @@
 
         // NOTE: binding via RSVP vs CodeMirror on/off breaks browser compat (not required)
         if (my_option_dict.onInput) {
+          console.log("Setting on input");
           recurring_event_list.push(
             loopEventListener(inp, "input", false, function (my_event) {
               my_option_dict.onInput(my_event, inp.value, onInputCallback || close);
@@ -89,6 +98,7 @@
           );
         }
         if (my_option_dict.onKeyUp) {
+          console.log("Setting on keyup");
           recurring_event_list.push(
             loopEventListener(inp, "keyup", false, function (my_event) {
               my_option_dict.onKeyUp(my_event, inp.value, onInputCallback || close);
@@ -99,6 +109,7 @@
         // default onkeydown, won't be used
         recurring_event_list.push(
           loopEventListener(inp, "keydown", false, function (my_event) {
+            console.log("KEYDOWN");
             if (my_option_dict && my_option_dict.onKeyDown) {
               return my_option_dict.onKeyDown(my_event, inp.value, close);
             }
@@ -170,6 +181,7 @@
           );
         })
         .push(function (my_return_close) {
+          console.log("DONE ONCE AND FOR ALL?")
           return close;
         });
 
@@ -471,8 +483,7 @@
         });
     })
     .ready(function (my_gadget) {
-      
-      console.log("READY, Overwriting");
+
       // overwrite dialog
       setOpenDialog();
 
