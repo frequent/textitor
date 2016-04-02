@@ -50,6 +50,10 @@
       action_form = dialog.querySelector("form");
 
       function close(my_newVal) {
+        if (inp.hasFocus() === false) {
+          console.log("NO FOCUS");
+          inp.focus();
+        }
         if (typeof my_newVal == 'string') {
           inp.value = my_newVal;
         } else {
@@ -77,22 +81,20 @@
 
         // NOTE: binding via RSVP vs CodeMirror on/off breaks browser compat (not required)
         if (my_option_dict.onInput) {
-          console.log("Setting on input");
-          //recurring_event_list.push(
-          var bar = loopEventListener(inp, "input", false, function (my_event) {
+          event_list.push(
+            loopEventListener(inp, "input", true, function (my_event) {
               console.log("INPUT triggered");
               my_option_dict.onInput(my_event, inp.value, close);
             })
-          //);
+          );
         }
         if (my_option_dict.onKeyUp) {
-          console.log("Setting on keyup");
-          //recurring_event_list.push(
-          var foo = loopEventListener(inp, "keyup", false, function (my_event) {
-              console.log("KEYUP triggered");
+          event_list.push(
+            loopEventListener(inp, "keyup", false, function (my_event) {
+              console.log("KEYUP");
               my_option_dict.onKeyUp(my_event, inp.value, close);
             })
-          //);
+          );
         }
 
         // default onkeydown, won't be used
@@ -141,6 +143,7 @@
       }
       inp.focus();
 
+      // XXX use submit or shortcuts to trigger actions?
       if (action_form) {
         event_list.push(loopEventListener(
             action_form,
