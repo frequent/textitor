@@ -32,6 +32,7 @@
     return CodeMirror.defineExtension("openDialog", function(my_template, my_callback, my_option_dict) {
       var closing_event_list = [],
         recurring_event_list = [],
+        event_list = [],
         dialog,
         closed,
         inp,
@@ -78,19 +79,18 @@
           }
         }
 
-        /*
+
         // NOTE: binding via RSVP vs CodeMirror on/off breaks browser compat (not required)
         if (my_option_dict.onInput) {
-          console.log("Setting on input");
-          //recurring_event_list.push(
-          var bar = loopEventListener(inp, "input", false, function (my_event) {
+          event_list.push(
+            loopEventListener(inp, "input", false, function (my_event) {
               console.log("INPUT triggered");
               my_option_dict.onInput(my_event, inp.value, close);
             })
-          //);
+          );
         }
-        */
-        CodeMirror.on(inp, "input", function(e) { my_option_dict.onInput(e, inp.value, close);});
+
+        //CodeMirror.on(inp, "input", function(e) { my_option_dict.onInput(e, inp.value, close);});
 
         /*
         if (my_option_dict.onKeyUp) {
@@ -172,10 +172,10 @@
         .push(function () {
           closeNotification(my_context, null);
           
-          // loop eventlisteners trigger continuously
-          // everything that closes will resolve
-          return RSVP.all(
-            bar,
+          // I have x infinite, they all trigger, but never resolve, so
+          // if I add a resolver?
+          return RSVP.any(
+            RSVP.any(event_list),
             baz,
             foo,
             RSVP.any(closing_event_list)
