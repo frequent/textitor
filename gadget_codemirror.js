@@ -50,10 +50,7 @@
 
       //
       function close(my_newVal) {
-        console.log("CALLED close")
-        console.log(my_context.hasFocus())
-        console.log(dialog.hasFocus())
-        console.log(inp.hasFocus())
+        console.log("CLOSING");
         if (typeof my_newVal == 'string') {
           inp.value = my_newVal;
         } else {
