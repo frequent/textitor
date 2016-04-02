@@ -78,19 +78,21 @@
         // NOTE: binding via RSVP vs CodeMirror on/off breaks browser compat (not required)
         if (my_option_dict.onInput) {
           console.log("Setting on input");
-          recurring_event_list.push(
-            loopEventListener(inp, "input", false, function (my_event) {
+          //recurring_event_list.push(
+          var bar = loopEventListener(inp, "input", false, function (my_event) {
+              console.log("INPUT triggered");
               my_option_dict.onInput(my_event, inp.value, close);
             })
-          );
+          //);
         }
         if (my_option_dict.onKeyUp) {
           console.log("Setting on keyup");
-          recurring_event_list.push(
-            loopEventListener(inp, "keyup", false, function (my_event) {
+          //recurring_event_list.push(
+          var foo = loopEventListener(inp, "keyup", false, function (my_event) {
+              console.log("KEYUP triggered");
               my_option_dict.onKeyUp(my_event, inp.value, close);
             })
-          );
+          //);
         }
 
         // default onkeydown, won't be used
@@ -140,8 +142,8 @@
       inp.focus();
 
       if (action_form) {
-        recurring_event_list.push(
-          loopEventListener(
+        //recurring_event_list.push(
+          var baz = loopEventListener(
             action_form,
             "submit",
             false, 
@@ -152,7 +154,7 @@
               console.log(action);
             }
           )
-        );
+        // );
       }
 
       // gogo-gadget-oh rsvp...
@@ -163,12 +165,15 @@
           // loop eventlisteners trigger continuously
           // everything that closes will resolve
           return RSVP.all(
-            RSVP.any(recurring_event_list),
+            RSVP.all(recurring_event_list),
+            bar,
+            baz,
+            foo,
             RSVP.any(closing_event_list)
           );
         })
         .push(function (my_return_close) {
-          console.log("ALL SET");
+          console.log("Unreachable");
           return close;
         });
 
