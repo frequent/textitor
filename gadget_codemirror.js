@@ -67,9 +67,6 @@
       }
 
       inp = dialog.getElementsByTagName("input")[0];
-      console.log("is there an input");
-      console.log(dialog.getElementsByTagName("input"));
-      console.log(inp);
       if (inp) {
         if (my_option_dict.value) {
           inp.value = my_option_dict.value;
@@ -194,14 +191,14 @@
   ["Ctrl-Alt-H"] List of Shortcuts
   */
   
-  var OBJECT_MENU = "<form><span>Name:</span><input type=\"text\" />" +
+  var OBJECT_MENU = "<form><span>Name:</span><input type=\"text\" value=\"\" />" +
     "<span class='custom-menu-typewriter'>CTRL+ALT+</span>" +
     "<button type='submit' name='save' class='custom-menu-button'><b>S</b>ave</button>" +
     "<button type='submit' name='close' class='custom-menu-button'><b>C</b>lose</button>" +
     "<button type='submit' name='remove' class='custom-menu-button'><b>D</b>elete</button>" +
     "</form>";
   
-  var OBJECT_LIST_MENU = "<form><span>Search:</span><input type=\"text\" /></form>";
+  var OBJECT_LIST_MENU = "<form><span>Search:</span><input type=\"text\" value=\"\" /></form>";
 
   CodeMirror.navigationMenu = {"position": "idle"};
   
@@ -252,7 +249,6 @@
         case 37:
           if (setNavigationMenu("left") === undefined) {
             console.log("CLOSE 37");
-            console.log(my_callback)
             my_callback();
           }
           break;
@@ -261,7 +257,6 @@
         case 39:
           if (setNavigationMenu("right") === undefined) {
             console.log("CLOSE 39");
-            console.log(my_callback)
             my_callback();
           }
           break;
