@@ -83,7 +83,7 @@
           event_list.push(
             loopEventListener(inp, "input", false, function (my_event) {
               console.log("INPUT triggered");
-              my_option_dict.onInput(my_event, inp.value, close);
+              return my_option_dict.onInput(my_event, inp.value, close);
             })
           );
         }
@@ -95,12 +95,13 @@
           event_list.push(
             loopEventListener(inp, "keyup", false, function (my_event) {
               console.log("KEYUP");
-              my_option_dict.onKeyUp(my_event, inp.value, close);
+              return my_option_dict.onKeyUp(my_event, inp.value, close);
             })
           );
         }
         
         // default onkeydown, won't be used
+        /*
         // if (my_option_dict && my_option_dict.onKeyDown) {
           event_list.push(
             loopEventListener(inp, "keydown", false, function (my_event) {
@@ -109,6 +110,7 @@
           })
         );
         //}
+        */
         
 
         closing_event_list.push(
