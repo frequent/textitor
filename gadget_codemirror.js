@@ -162,13 +162,13 @@
           
           // loop eventlisteners trigger continuously
           // everything that closes will resolve
-          return RSVP.any(
-            RSVP.all(recurring_event_list),
+          return RSVP.all(
+            RSVP.any(recurring_event_list),
             RSVP.any(closing_event_list)
           );
         })
         .push(function (my_return_close) {
-          console.log("DONE ONCE AND FOR ALL?")
+          console.log("ALL SET");
           return close;
         });
 
