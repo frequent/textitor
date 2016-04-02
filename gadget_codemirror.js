@@ -36,7 +36,6 @@
         closed,
         inp,
         button,
-        onInputCallback,
         action_form,
         my_context;
 
@@ -66,21 +65,12 @@
           }
         }
       }
-    
-      function filterAttachments(my_event) {
-        console.log("Filtering Attachments");
-        console.log(my_event);
-        //return close();
-      }
 
       inp = dialog.getElementsByTagName("input")[0];
       console.log("is there an input");
       console.log(dialog.getElementsByTagName("input"));
       console.log(inp);
       if (inp) {
-        //if (CodeMirror.navigationMenu.position === 'left') {
-          onInputCallback = filterAttachments;
-        //}
         if (my_option_dict.value) {
           inp.value = my_option_dict.value;
           if (my_option_dict.selectValueOnOpen !== false) {
@@ -93,7 +83,7 @@
           console.log("Setting on input");
           recurring_event_list.push(
             loopEventListener(inp, "input", false, function (my_event) {
-              my_option_dict.onInput(my_event, inp.value, onInputCallback || close);
+              my_option_dict.onInput(my_event, inp.value, close);
             })
           );
         }
@@ -101,7 +91,7 @@
           console.log("Setting on keyup");
           recurring_event_list.push(
             loopEventListener(inp, "keyup", false, function (my_event) {
-              my_option_dict.onKeyUp(my_event, inp.value, onInputCallback || close);
+              my_option_dict.onKeyUp(my_event, inp.value, close);
             })
           );
         }
@@ -262,6 +252,7 @@
         case 37:
           if (setNavigationMenu("left") === undefined) {
             console.log("CLOSE 37");
+            console.log(my_callback)
             my_callback();
           }
           break;
@@ -270,6 +261,7 @@
         case 39:
           if (setNavigationMenu("right") === undefined) {
             console.log("CLOSE 39");
+            console.log(my_callback)
             my_callback();
           }
           break;
