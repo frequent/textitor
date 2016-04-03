@@ -40,10 +40,6 @@
         action_form,
         my_context;
 
-      console.log("setting up");
-      console.log(my_option_dict);
-      console.log(my_template);
-
       my_context = my_context || this;
       my_option_dict = my_option_dict || {};
       dialog = dialogDiv(my_context, my_template, my_option_dict.bottom);
@@ -60,8 +56,7 @@
           if (closed) {
             return;
           }
-          console.log("resetting external close");
-          CodeMirror.navigationMenu.externalClose = null;
+          
           closed = true;
           dialog.parentNode.removeChild(dialog);
           my_context.focus();
@@ -86,7 +81,6 @@
         if (my_option_dict.onInput) {
           event_list.push(
             loopEventListener(inp, "input", false, function (my_event) {
-              console.log("INPUT triggered");
               return my_option_dict.onInput(my_event, inp.value, close);
             })
           );
@@ -95,7 +89,6 @@
         if (my_option_dict.onKeyUp) {
           event_list.push(
             loopEventListener(inp, "keyup", false, function (my_event) {
-              console.log("KEYUP");
               return my_option_dict.onKeyUp(my_event, inp.value, close);
             })
           );
@@ -106,7 +99,6 @@
         // if (my_option_dict && my_option_dict.onKeyDown) {
           event_list.push(
             loopEventListener(inp, "keydown", false, function (my_event) {
-              console.log("KEYDOWN");
               my_option_dict.onKeyDown(my_event, inp.value, close);
           })
         );
@@ -115,26 +107,21 @@
         
 
         closing_event_list.push(
-          new RSVP.Queue()
-            .push(function () {
-              return promiseEventListener(inp, "keydown", false);
-            })
-            .push(function (my_event) {
-              console.log("closing keydown");
-              
-              // only esc will close
-              // (my_option_dict.closeOnEnter !== false && my_event.keyCode == 13)
-              if (my_event.keyCode == 27) {
-                inp.blur();
-                CodeMirror.e_stop(my_event);
-                close();
-              }
+          loopEventListener(inp, "keydown", false, function (my_event) {
+            console.log("keydown close triggered");
+            // close on ESC only
+            // (my_option_dict.closeOnEnter !== false && my_event.keyCode == 13)
+            if (my_event.keyCode == 27) {
+              inp.blur();
+              CodeMirror.e_stop(my_event);
+              return close();
+            }
 
-              // closing callback necessary?
-              //if (my_event.keyCode == 13) {
-              //  return my_callback(inp.value, my_event);
-              //}  
-            })
+            // closing callback necessary?
+            //if (my_event.keyCode == 13) {
+            //  return my_callback(inp.value, my_event);
+            //}    
+          })
         );
       }
 
@@ -161,8 +148,6 @@
             function (my_event) {
               var target = my_event.target,
                 action = target.submit.name;
-              console.log("action");
-              console.log(action);
             }
           )
         // );
@@ -172,7 +157,6 @@
       return new RSVP.Queue()
         .push(function () {
           closeNotification(my_context, null);
-          CodeMirror.navigationMenu.externalClose = close;
 
           return RSVP.any(
             RSVP.all(event_list),
@@ -180,7 +164,6 @@
           );
         })
         .push(function (my_return_close) {
-          console.log("Unreachable");
           return close;
         });
 
@@ -287,12 +270,10 @@
   
   // http://codemirror.net/doc/manual.html#addon_dialog
   function navigateRight(cm) {
-    console.log("CALLED NAVIGATE RIGHT");
     
     var menu = setNavigationMenu("right");
     if (menu === undefined) {
-      console.log("CLOSING externally");
-      CodeMirror.navigationMenu.externalClose();
+      // need to close
     }
     if (cm.openDialog) {
       cm.openDialog(
@@ -321,12 +302,9 @@
   CodeMirror.commands.myNavigateRight = navigateRight;
 
   function navigateLeft(cm) {
-    console.log("CALLED NAVIGATE LEFT");
-
     var menu = setNavigationMenu("left");
     if (menu !== undefined) {
-      console.log("CLOSING externally");
-      CodeMirror.navigationMenu.externalClose();
+      // need to close
     }
     if (cm.openDialog) {
       cm.openDialog(menu, enterCallback, {
@@ -340,9 +318,7 @@
           return true;
         },
         "onInput": function (e, val, close) {
-          console.log("INPUT");
-          console.log(e);
-          console.log(val);
+          
         }
       });
     }
