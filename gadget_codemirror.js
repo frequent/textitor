@@ -14,9 +14,7 @@
     }
     if (typeof my_template == "string") {
       dialog.innerHTML = my_template;
-    } else { // Assuming it's a detached DOM element.
-      console.log(dialog)
-      console.log(my_template)
+    } else {
       dialog.appendChild(my_template);
     }
     return dialog;
@@ -288,7 +286,7 @@
     console.log("CALLED NAVIGATE RIGHT");
     
     var menu = setNavigationMenu("right");
-    if (cm.openDialog) {
+    if (menu && cm.openDialog) {
       cm.openDialog(
         menu,
         enterCallback,
@@ -318,7 +316,7 @@
     console.log("CALLED NAVIGATE LEFT");
 
     var menu = setNavigationMenu("left");
-    if (cm.openDialog) {
+    if (menu && cm.openDialog) {
       cm.openDialog(menu, enterCallback, {
         "bottom": false,
         "closeOnEnter": false,
