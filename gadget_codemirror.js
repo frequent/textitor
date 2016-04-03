@@ -66,6 +66,7 @@
           }
         }
       }
+      CodeMirror.navigationMenu.externalClose = close;
 
       inp = dialog.getElementsByTagName("input")[0];
       if (inp) {
@@ -188,8 +189,6 @@
   CodeMirror.navigationMenu = {"position": "idle"};
   
   function setNavigationMenu(my_direction) {
-    console.log("Setting Navigation Menu")
-    console.log(my_direction)
     switch (CodeMirror.navigationMenu.position) {
       case "idle":
         CodeMirror.navigationMenu.position = my_direction;
@@ -201,7 +200,6 @@
         if (my_direction === "left") {
           return OBJECT_LIST_MENU;
         }
-        CodeMirror.navigationMenu.position = "idle";
         return;
       case "right":
         if (my_direction === "left") {
@@ -264,9 +262,8 @@
     
     var menu = setNavigationMenu("right");
     if (menu === undefined) {
-      // need to close
-    }
-    if (cm.openDialog) {
+      CodeMirror.navigationMenu.externalClose();
+    } else if (cm.openDialog) {
       cm.openDialog(
         menu,
         enterCallback,
@@ -295,9 +292,8 @@
   function navigateLeft(cm) {
     var menu = setNavigationMenu("left");
     if (menu !== undefined) {
-      // need to close
-    }
-    if (cm.openDialog) {
+      CodeMirror.navigationMenu.externalClose()
+    } else if (cm.openDialog) {
       cm.openDialog(menu, enterCallback, {
         "bottom": false,
         "closeOnEnter": false,
