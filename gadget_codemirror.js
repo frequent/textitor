@@ -15,7 +15,6 @@
     if (typeof my_template == "string") {
       dialog.innerHTML = my_template;
     } else { // Assuming it's a detached DOM element.
-      console.log("so")
       console.log(dialog)
       console.log(my_template)
       dialog.appendChild(my_template);
@@ -45,6 +44,7 @@
 
       console.log("setting up");
       console.log(my_option_dict);
+      console.log(my_template);
 
       my_context = my_context || this;
       my_option_dict = my_option_dict || {};
@@ -280,9 +280,7 @@
   }
 
   function enterCallback(my_selected_value, my_event) {
-    console.log("enterCallback");
-    console.log(my_selected_value);
-    console.log(my_event);
+    return;
   }
   
   // http://codemirror.net/doc/manual.html#addon_dialog
