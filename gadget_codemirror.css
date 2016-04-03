@@ -19,3 +19,6 @@ body {
 .CodeMirror-gutters .CodeMirror-gutter.CodeMirror-linenumbers {
   width: 29px !important;
 }
+.CodeMirror-dialog form {
+  display: inline-block;
+}
