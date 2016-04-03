@@ -101,7 +101,6 @@
             if (my_event.keyCode == 27) {
               inp.blur();
               CodeMirror.e_stop(my_event);
-              my_context.focus();
               return close();
             }
 
@@ -148,7 +147,6 @@
       return new RSVP.Queue()
         .push(function () {
           closeNotification(my_context, null);
-
           return RSVP.any(
             RSVP.all(event_list),
             RSVP.any(closing_event_list)
@@ -190,6 +188,8 @@
   CodeMirror.navigationMenu = {"position": "idle"};
   
   function setNavigationMenu(my_direction) {
+    console.log("Setting Navigation Menu")
+    console.log(my_direction)
     switch (CodeMirror.navigationMenu.position) {
       case "idle":
         CodeMirror.navigationMenu.position = my_direction;
