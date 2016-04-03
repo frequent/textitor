@@ -289,7 +289,8 @@
     
     var menu = setNavigationMenu("right");
     if (menu === undefined) {
-      
+      console.log("CLOSING externally");
+      CodeMirror.navigationMenu.externalClose();
     }
     if (cm.openDialog) {
       cm.openDialog(
@@ -322,7 +323,8 @@
 
     var menu = setNavigationMenu("left");
     if (menu !== undefined) {
-      
+      console.log("CLOSING externally");
+      CodeMirror.navigationMenu.externalClose();
     }
     if (cm.openDialog) {
       cm.openDialog(menu, enterCallback, {
