@@ -67,6 +67,7 @@
             my_option_dict.onClose(dialog);
           }
         }
+        CodeMirror.navigationMenu.externalClose = null;
       }
 
       inp = dialog.getElementsByTagName("input")[0];
@@ -169,6 +170,7 @@
       return new RSVP.Queue()
         .push(function () {
           closeNotification(my_context, null);
+          CodeMirror.navigationMenu.externalClose = close;
 
           return RSVP.any(
             RSVP.all(event_list),
@@ -286,7 +288,10 @@
     console.log("CALLED NAVIGATE RIGHT");
     
     var menu = setNavigationMenu("right");
-    if (menu && cm.openDialog) {
+    if (menu === undefined) {
+      
+    }
+    if (cm.openDialog) {
       cm.openDialog(
         menu,
         enterCallback,
@@ -316,7 +321,10 @@
     console.log("CALLED NAVIGATE LEFT");
 
     var menu = setNavigationMenu("left");
-    if (menu && cm.openDialog) {
+    if (menu !== undefined) {
+      
+    }
+    if (cm.openDialog) {
       cm.openDialog(menu, enterCallback, {
         "bottom": false,
         "closeOnEnter": false,
