@@ -78,7 +78,7 @@
         }
 
 
-        // NOTE: binding via RSVP vs CodeMirror on/off breaks browser compat (not required)
+        // NOTE: bind via RSVP vs CodeMirror breaks browser compat
         if (my_option_dict.onInput) {
           event_list.push(
             loopEventListener(inp, "input", false, function (my_event) {
@@ -87,9 +87,6 @@
             })
           );
         }
-
-        //CodeMirror.on(inp, "input", function(e) { my_option_dict.onInput(e, inp.value, close);});
-
 
         if (my_option_dict.onKeyUp) {
           event_list.push(
@@ -120,7 +117,8 @@
             })
             .push(function (my_event) {
               console.log("closing keydown");
-              // only esc will close, removed 
+              
+              // only esc will close
               // (my_option_dict.closeOnEnter !== false && my_event.keyCode == 13)
               if (my_event.keyCode == 27) {
                 inp.blur();
@@ -128,7 +126,7 @@
                 close();
               }
 
-              // is a callback necessary on return?
+              // closing callback necessary?
               //if (my_event.keyCode == 13) {
               //  return my_callback(inp.value, my_event);
               //}  
@@ -170,12 +168,9 @@
       return new RSVP.Queue()
         .push(function () {
           closeNotification(my_context, null);
-          
-          // I have x infinite, they all trigger, but never resolve, so
-          // if I add a resolver?
+
           return RSVP.any(
             RSVP.all(event_list),
-            baz,
             RSVP.any(closing_event_list)
           );
         })
@@ -203,14 +198,15 @@
   ["Ctrl-Alt-H"] List of Shortcuts
   */
   
-  var OBJECT_MENU = "<form><span>Name:</span><input type=\"text\" value=\"\" />" +
+  var OBJECT_MENU = "<span>Name:</span><input type=\"text\" value=\"\" />" +
     "<span class='custom-menu-typewriter'>CTRL+ALT+</span>" +
-    "<button type='submit' name='save' class='custom-menu-button'><b>S</b>ave</button>" +
-    "<button type='submit' name='close' class='custom-menu-button'><b>C</b>lose</button>" +
-    "<button type='submit' name='remove' class='custom-menu-button'><b>D</b>elete</button>" +
-    "</form>";
+    "<form name='save'><button type='submit' class='custom-menu-button'><b>S</b>ave</button></form>" +
+    "<form name='close'><button type='submit' class='custom-menu-button'><b>C</b>lose</button></form>" +
+    "<form name='remove'><button type='submit' class='custom-menu-button'><b>D</b>elete</button></form>";
   
-  var OBJECT_LIST_MENU = "<form><span>Search:</span><input type=\"text\" value=\"\" /></form>";
+  var OBJECT_LIST_MENU = "<span>Search:</span><input type=\"text\" value=\"\" />" +
+    "<span class='custom-menu-typewriter'>CTRL+ALT+</span>" +
+    "<form name='search'><button type='submit' class='custom-menu-button'><b>F</b>ind</button></form>";
 
   CodeMirror.navigationMenu = {"position": "idle"};
   
