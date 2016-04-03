@@ -53,12 +53,15 @@
       //
       function close(my_newVal) {
         console.log("CLOSING");
+        console.log(my_newVal);
         if (typeof my_newVal == 'string') {
           inp.value = my_newVal;
         } else {
           if (closed) {
             return;
           }
+          console.log("resetting external close");
+          CodeMirror.navigationMenu.externalClose = null;
           closed = true;
           dialog.parentNode.removeChild(dialog);
           my_context.focus();
@@ -67,7 +70,6 @@
             my_option_dict.onClose(dialog);
           }
         }
-        CodeMirror.navigationMenu.externalClose = null;
       }
 
       inp = dialog.getElementsByTagName("input")[0];
