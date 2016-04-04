@@ -215,6 +215,8 @@
         }
       })
       .push(function (result) {
+        console.log("result received");
+        console.log(resul);
         return result;
       });
   };

@@ -188,7 +188,26 @@
             closeNotification(my_context, null);
             return RSVP.all(storage_interaction_list);
           })
-          .push(function () {
+          .push(function (my_result_list) {
+
+            // XXX until gadget_jio_serviceworker_storage updates...
+            var response_dict = my_result_list.data.rows.data,
+              directory_conten_list = [],
+              i;
+
+            if (my_result_list !== undefined) {
+              for (i = 0; i < response_dict.total_rows; i += 1) {
+                directory_content_list.push(
+                  my_gadget.jio_allAttachments(my_result_list.rows[i].id)
+                );
+              }
+            }
+            return RSVP.all(directory_content_list);
+          })
+          .push(function (my_directory_content) {
+            console.log("Yeah");
+            console.log(my_directory_content);
+
             return RSVP.any([
               RSVP.all(event_list),
               RSVP.any(closing_event_list)
