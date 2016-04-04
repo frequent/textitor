@@ -93,22 +93,31 @@
             })
           );
         }
+        
+        // default onkeydown, won't be used
+        /*
+        // if (my_option_dict && my_option_dict.onKeyDown) {
+          event_list.push(
+            loopEventListener(inp, "keydown", false, function (my_event) {
+              my_option_dict.onKeyDown(my_event, inp.value, close);
+          })
+        );
+        //}
+        */
+        
 
         closing_event_list.push(
           loopEventListener(inp, "keydown", false, function (my_event) {
-
+            console.log("keydown close triggered");
             // close on ESC only
+            // (my_option_dict.closeOnEnter !== false && my_event.keyCode == 13)
             if (my_event.keyCode == 27) {
               inp.blur();
               CodeMirror.e_stop(my_event);
-              my_context.focus();
               return close();
             }
 
-            if (my_option_dict && my_option_dict.onKeyDown) {
-              return my_option_dict.onKeyDown(my_event, inp.value, close);
-            }
-            // closing callback on return necessary?
+            // closing callback necessary?
             //if (my_event.keyCode == 13) {
             //  return my_callback(inp.value, my_event);
             //}    
@@ -124,7 +133,7 @@
               return promiseEventListener(inp, "blur", false);
             })
             .push(function (my_event) {
-              return close(my_event);
+              close(my_event);
             })
           );
       }
