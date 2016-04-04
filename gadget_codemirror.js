@@ -96,27 +96,25 @@
           );
         }
 
-        /*
-        event_list.push(
-          loopEventListener(inp, "keydown", false, function (my_event) {
-            console.log("keydown");
-            // close on ESC only
-            if (my_event.keyCode == 27) {
-              inp.blur();
-              CodeMirror.e_stop(my_event);
-              return close();
-            }
+        if (my_option_dict.onKeyDown) {
+          event_list.push(
+            loopEventListener(inp, "keydown", false, function (my_event) {
 
-            if (my_option_dict && my_option_dict.onKeyDown) {
+              // close on ESC only
+              if (my_event.keyCode == 27) {
+                inp.blur();
+                CodeMirror.e_stop(my_event);
+                return close();
+              }
+              // closing callback on return necessary?
+              //if (my_event.keyCode == 13) {
+              //  return my_callback(inp.value, my_event);
+              //}
+
               return my_option_dict.onKeyDown(my_event, inp.value, close);
-            }
-            // closing callback on return necessary?
-            //if (my_event.keyCode == 13) {
-            //  return my_callback(inp.value, my_event);
-            //}    
-          })
-        );
-        */
+            })
+          );
+        }
       }
 
       // won't apply - still...
