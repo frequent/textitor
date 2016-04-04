@@ -55,6 +55,7 @@
   }
   
   // custom CodeMirror openDialog handler
+  // XXX break up!
   function setOpenDialog(my_gadget) {
     return CodeMirror.defineExtension(
       "openDialog",
@@ -63,6 +64,7 @@
           recurring_event_list = [],
           storage_interaction_list = [],
           event_list = [],
+          entry_dict,
           dialog,
           closed,
           inp,
@@ -169,6 +171,7 @@
         }
         */
   
+        // create file menu
         if (CodeMirror.navigationMenu.position === 'left') {
           storage_interaction_list.push(
             new RSVP.Queue()
@@ -178,23 +181,40 @@
               .push(function (my_directory_list) {
                 var response_dict = my_directory_list.data.rows.data,
                   directory_content_list = [],
+                  cache_id,
                   i;
 
-                // XXX until gadget_jio_serviceworker_storage updates...
-                console.log(response_dict);
-                
                 if (my_directory_list !== undefined) {
+                  entry_dict = {};
                   for (i = 0; i < response_dict.total_rows; i += 1) {
+                    cache_id = response_dict.rows[i].id;
+                    entry_dict[cache_id] = [];
                     directory_content_list.push(
-                      my_gadget.jio_allAttachments(response_dict.rows[i].id)
+                      my_gadget.jio_allAttachments(cache_id)
                     );
                   }
                 }
                 return RSVP.all(directory_content_list);
               })
               .push(function (my_directory_content) {
-                console.log("Yeah");
                 console.log(my_directory_content);
+                var len = my_directory_content.length,
+                  item,
+                  i;
+                
+                if (len > 0) {
+                  for (i = 0; i < len; i += 1) {
+                    response = my_directory_content[i].data;
+                    for (item in response) {
+                      if (response.hasOwnProperty(item)) {
+                        entry_dict[i].push(response[item]);
+                      }
+                    }  
+                  }
+                }
+                  
+                console.log("DONE");
+                console.log(entry_dict);
               })
             );
         }
@@ -212,7 +232,6 @@
             ]);
           })
           .push(function (my_return_close) {
-            console.log("DONE");
             return close;
           })
           .push(undefined, function (e) {
@@ -238,6 +257,13 @@
   ["Ctrl-Alt-D"] Delete File
   ["Ctrl-Alt-H"] List of Shortcuts
   */
+
+  var FILE_MENU_TEMPLATE = "<div class='custom-file-menu'>%s</div>";
+  
+  var FILE_MENU_ENTRY_TEMPLATE = "<div class='row'>" +
+    "<span class='checkbox-overlay'>%s</span>" +
+    "<input type='checkbox' checked='false' />" +
+    "</div>";
   
   var OBJECT_MENU = "<span>Name:</span><input type=\"text\" value=\"\" />" +
     "<span class='custom-menu-typewriter'>CTRL+ALT+</span>" +
