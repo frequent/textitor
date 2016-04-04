@@ -81,7 +81,7 @@
         if (my_option_dict.onInput) {
           event_list.push(
             loopEventListener(inp, "input", false, function (my_event) {
-              return my_option_dict.onInput(my_event, inp.value, close);
+              my_option_dict.onInput(my_event, inp.value, close);
             })
           );
         }
@@ -89,7 +89,7 @@
         if (my_option_dict.onKeyUp) {
           event_list.push(
             loopEventListener(inp, "keyup", false, function (my_event) {
-              return my_option_dict.onKeyUp(my_event, inp.value, close);
+              my_option_dict.onKeyUp(my_event, inp.value, close);
             })
           );
         }
