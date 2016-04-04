@@ -215,12 +215,7 @@
         }
       })
       .push(function (result) {
-        return {
-          data: {
-            rows: result,
-            total_rows: result.length
-          }
-        };
+        return result;
       });
   };
 
@@ -240,4 +235,3 @@
   jIO.addStorage('serviceworker', ServiceWorkerStorage);
 
 }(jIO, RSVP, Blob));
-

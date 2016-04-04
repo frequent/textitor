@@ -76,17 +76,10 @@
         dialog = setDialog(my_context, my_template, my_option_dict.bottom);
         closed = false;
         action_form = dialog.querySelector("form");
-
-        console.log("setter");
-        console.log(my_gadget);
-        console.log(my_template);
-        console.log(my_callback);
-        console.log(my_option_dict);
-        console.log(CodeMirror.navigationMenu.position);
   
         // wrap in Promise?
         function close(my_newVal) {
-          console.log("called close");        
+          console.log("CLOSING");        
           if (typeof my_newVal == 'string') {
             inp.value = my_newVal;
           } else {
@@ -160,6 +153,7 @@
           );
         }
 
+        /*
         if (action_form) {
           //recurring_event_list.push(
             var baz = loopEventListener(
@@ -173,9 +167,9 @@
             )
           // );
         }
+        */
   
         if (CodeMirror.navigationMenu.position === 'left') {
-          console.log("left, let's see what's on store");
           storage_interaction_list.push(
             new RSVP.Queue()
               .push(function () {
@@ -326,15 +320,11 @@
           "value": null,
           "selectValueOnOpen": false,
           "onKeyUp": function (e, val, close) {
-            console.log("KEYUP");
-            console.log(e);
             setNavigationCallback(e, val, close);
             return true;
           },
-          // "onClose": function () {},
           "onInput": function (e, val, close) {
-            console.log("INPUT");
-            console.log(e);
+
           }
         }
       );
@@ -352,14 +342,11 @@
         "value": null,
         "selectValueOnOpen": false,
         "onKeyUp": function (e, val, close) {
-          console.log("KEYUP");
-          console.log(e);
           setNavigationCallback(e, val, close);
           return true;
         },
         "onInput": function (e, val, close) {
-          console.log("INPUT");
-          console.log(e)
+
         }
       });
     }
