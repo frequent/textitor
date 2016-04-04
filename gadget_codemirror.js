@@ -2,8 +2,7 @@
 /*global window, rJS, document, location, alert, prompt, confirm, setTimeout,
   toolbox, CodeMirror */
 
-  /* Codemirror Extension/Overwrites */
-  function dialogDiv(my_context, my_template, my_bottom) {
+  function setDialog(my_context, my_template, my_bottom) {
     var wrap = my_context.getWrapperElement(),
       dialog = wrap.appendChild(document.createElement("div"));
 
@@ -42,14 +41,13 @@
 
       my_context = my_context || this;
       my_option_dict = my_option_dict || {};
-      dialog = dialogDiv(my_context, my_template, my_option_dict.bottom);
+      dialog = setDialog(my_context, my_template, my_option_dict.bottom);
       closed = false;
       action_form = dialog.querySelector("form");
 
-      // wrap in Promise!
+      // wrap in Promise?
       function close(my_newVal) {
-        console.log("CLOSING");
-        console.log(my_newVal);
+        
         if (typeof my_newVal == 'string') {
           inp.value = my_newVal;
         } else {
@@ -81,7 +79,6 @@
         if (my_option_dict.onInput) {
           event_list.push(
             loopEventListener(inp, "input", false, function (my_event) {
-              console.log("input");
               return my_option_dict.onInput(my_event, inp.value, close);
             })
           );
@@ -90,7 +87,6 @@
         if (my_option_dict.onKeyUp) {
           event_list.push(
             loopEventListener(inp, "keyup", false, function (my_event) {
-              console.log("keyup");
               return my_option_dict.onKeyUp(my_event, inp.value, close);
             })
           );
@@ -106,10 +102,6 @@
                 CodeMirror.e_stop(my_event);
                 return close();
               }
-              // closing callback on return necessary?
-              //if (my_event.keyCode == 13) {
-              //  return my_callback(inp.value, my_event);
-              //}
 
               return my_option_dict.onKeyDown(my_event, inp.value, close);
             })
@@ -265,20 +257,19 @@
   function navigateRight(cm) {
     
     var menu = setNavigationMenu("right");
-    if (menu === undefined) {
-      // need to close
-    }
-    if (cm.openDialog) {
+    if (menu && cm.openDialog) {
       cm.openDialog(
         menu,
         enterCallback,
         {
           "bottom": false,
           "closeOnEnter": false,
-          "closeOnBlur": false,
+          "closeOnBlur": true,
           "value": null,
           "selectValueOnOpen": false,
           "onKeyUp": function (e, val, close) {
+            console.log("KEYUP");
+            console.log(e);
             setNavigationCallback(e, val, close);
             return true;
           },
@@ -286,7 +277,6 @@
           "onInput": function (e, val, close) {
             console.log("INPUT");
             console.log(e);
-            console.log(val);
           }
         }
       );
@@ -296,22 +286,22 @@
 
   function navigateLeft(cm) {
     var menu = setNavigationMenu("left");
-    if (menu !== undefined) {
-      // need to close
-    }
-    if (cm.openDialog) {
+    if (menu && cm.openDialog) {
       cm.openDialog(menu, enterCallback, {
         "bottom": false,
         "closeOnEnter": false,
-        "closeOnBlur": false,
+        "closeOnBlur": true,
         "value": null,
         "selectValueOnOpen": false,
         "onKeyUp": function (e, val, close) {
+          console.log("KEYUP");
+          console.log(e);
           setNavigationCallback(e, val, close);
           return true;
         },
         "onInput": function (e, val, close) {
-          
+          console.log("INPUT");
+          console.log(e)
         }
       });
     }
@@ -404,6 +394,7 @@
     "sh": "shell"
   };
 
+  /*
   function promiseEventListener(target, type, useCapture) {
     var handle_event_callback;
 
@@ -424,6 +415,7 @@
     }
     return new RSVP.Promise(resolver, canceller);
   }
+  */
   
   function setModified(cm) { cm.modified = true; }
 
@@ -459,7 +451,6 @@
     })
     .ready(function (my_gadget) {
 
-      // overwrite dialog
       setOpenDialog();
 
       //////////
