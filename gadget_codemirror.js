@@ -182,7 +182,7 @@
                 console.log(my_directory_list.data);
                 console.log(my_directory_list.data.rows);
                 var response_dict = my_directory_list.data.rows.data,
-                  directory_conten_list = [],
+                  directory_content_list = [],
                   i;
 
                 if (my_directory_list !== undefined) {
