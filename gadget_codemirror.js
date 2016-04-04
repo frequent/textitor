@@ -61,6 +61,7 @@
       function(my_template, my_callback, my_option_dict) {
         var closing_event_list = [],
           recurring_event_list = [],
+          storage_interaction_list = [],
           event_list = [],
           dialog,
           closed,
@@ -69,15 +70,19 @@
           button,
           action_form,
           my_context;
-  
-        console.log(my_gadget);
-        console.log(my_callback);
 
         my_context = my_context || this;
         my_option_dict = my_option_dict || {};
         dialog = setDialog(my_context, my_template, my_option_dict.bottom);
         closed = false;
         action_form = dialog.querySelector("form");
+
+        console.log("setter");
+        console.log(my_gadget);
+        console.log(my_template);
+        console.log(my_callback);
+        console.log(my_option_dict);
+        console.log(CodeMirror.navigationMenu.position);
   
         // wrap in Promise?
         function close(my_newVal) {
@@ -169,11 +174,27 @@
           // );
         }
   
+        if (CodeMirror.navigationMenu.position === 'left') {
+          console.log("left, let's see what's on store");
+          storage_interaction_list.push(
+            new RSVP.Queue()
+              .push(function () {
+                return my_gadget.jioAllDocs();
+              })
+              .push(function (my_result_list) {
+                console.log("OLA");
+                console.log(my_result_list);
+              })
+            );
+        }
+  
         // gogo-gadget-oh rsvp...
         return new RSVP.Queue()
           .push(function () {
             closeNotification(my_context, null);
-  
+            return RSVP.all(storage_interaction_list);
+          })
+          .push(function () {
             return RSVP.any(
               RSVP.all(event_list),
               RSVP.any(closing_event_list)
