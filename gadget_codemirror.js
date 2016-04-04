@@ -7,7 +7,11 @@
     var handle_event_callback;
 
     function canceller() {
-      target.removeEventListener(my_type, handle_event_callback, my_useCapture);
+      my_target.removeEventListener(
+        my_type,
+        handle_event_callback,
+        my_useCapture
+      );
     }
 
     function resolver(resolve) {
