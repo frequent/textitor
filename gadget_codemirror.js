@@ -176,15 +176,13 @@
                 return my_gadget.jio_allDocs();
               })
               .push(function (my_directory_list) {
-
-                // XXX until gadget_jio_serviceworker_storage updates...
-                console.log(my_directory_list);
-                console.log(my_directory_list.data);
-                console.log(my_directory_list.data.rows);
                 var response_dict = my_directory_list.data.rows.data,
                   directory_content_list = [],
                   i;
 
+                // XXX until gadget_jio_serviceworker_storage updates...
+                console.log(response_dict);
+                
                 if (my_directory_list !== undefined) {
                   for (i = 0; i < response_dict.total_rows; i += 1) {
                     directory_content_list.push(
