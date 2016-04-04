@@ -200,7 +200,7 @@
   // returns a list of all caches ~ folders
   ServiceWorkerStorage.prototype.allDocs = function (options) {
     var context = this;
-
+    console.log("allDocs called");
     if (options === undefined) {
       options = {};
     }
@@ -211,6 +211,7 @@
       })
       .push(function () {
         if (context.hasCapacity("list")) {
+          console.log("allDocs possible");
           return context.buildQuery(options);
         }
       })
@@ -227,6 +228,7 @@
         return validateConnection();
       })
       .push(function () {
+        console.log("sending message to serviceworker");
         return sendMessage({
           command: 'allDocs',
           options: options
