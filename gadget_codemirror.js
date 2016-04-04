@@ -179,7 +179,7 @@
           storage_interaction_list.push(
             new RSVP.Queue()
               .push(function () {
-                return my_gadget.jioAllDocs();
+                return my_gadget.jio_allDocs();
               })
               .push(function (my_result_list) {
                 console.log("OLA");
@@ -203,8 +203,11 @@
           .push(function (my_return_close) {
             console.log("DONE");
             return close;
+          })
+          .push(undefined, function (e) {
+            console.log(e);
+            throw e;
           });
-  
       }
     );
   }
@@ -487,8 +490,6 @@
         });
     })
     .ready(function (my_gadget) {
-
-      setOpenDialog(my_gadget);
       editorURI = my_gadget.property_dict.uri || window.location.hash.slice(1);
       if (my_gadget.property_dict.textarea) {
         editorTextarea = my_gadget.property_dict.textarea;
@@ -541,8 +542,8 @@
         }
         cm.setOption("theme", args.slice(1).join(" ") || "default");
       };
-
-
+      
+      return setOpenDialog(my_gadget);
     })
 
     /////////////////////////////
