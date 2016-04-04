@@ -219,7 +219,11 @@
         console.log("RESULT RECEIVED");
         console.log(result);
         return result;
-      });
+      })
+      .push(null, function (e) {
+        console.log(e);
+        throw e;
+      })
   };
 
   ServiceWorkerStorage.prototype.buildQuery = function (options) {
