@@ -87,6 +87,7 @@
           );
         }
 
+        /*
         if (my_option_dict.onKeyUp) {
           event_list.push(
             loopEventListener(inp, "keyup", false, function (my_event) {
@@ -95,7 +96,9 @@
             })
           );
         }
+        */
         
+        /*
         event_list.push(
           loopEventListener(inp, "keydown", false, function (my_event) {
             console.log("keydown");
@@ -115,6 +118,7 @@
             //}    
           })
         );
+        */
       }
 
       // won't apply - still...
