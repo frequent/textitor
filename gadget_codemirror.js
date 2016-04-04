@@ -66,7 +66,6 @@
           }
         }
       }
-      CodeMirror.navigationMenu.externalClose = close;
 
       inp = dialog.getElementsByTagName("input")[0];
       if (inp) {
@@ -102,6 +101,7 @@
             if (my_event.keyCode == 27) {
               inp.blur();
               CodeMirror.e_stop(my_event);
+              my_context.focus();
               return close();
             }
 
@@ -148,6 +148,7 @@
       return new RSVP.Queue()
         .push(function () {
           closeNotification(my_context, null);
+
           return RSVP.any(
             RSVP.all(event_list),
             RSVP.any(closing_event_list)
@@ -200,6 +201,7 @@
         if (my_direction === "left") {
           return OBJECT_LIST_MENU;
         }
+        CodeMirror.navigationMenu.position = "idle";
         return;
       case "right":
         if (my_direction === "left") {
@@ -262,8 +264,9 @@
     
     var menu = setNavigationMenu("right");
     if (menu === undefined) {
-      CodeMirror.navigationMenu.externalClose();
-    } else if (cm.openDialog) {
+      // need to close
+    }
+    if (cm.openDialog) {
       cm.openDialog(
         menu,
         enterCallback,
@@ -292,8 +295,9 @@
   function navigateLeft(cm) {
     var menu = setNavigationMenu("left");
     if (menu !== undefined) {
-      CodeMirror.navigationMenu.externalClose()
-    } else if (cm.openDialog) {
+      // need to close
+    }
+    if (cm.openDialog) {
       cm.openDialog(menu, enterCallback, {
         "bottom": false,
         "closeOnEnter": false,
