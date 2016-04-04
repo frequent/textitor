@@ -216,7 +216,7 @@
       })
       .push(function (result) {
         console.log("RESULT RECEIVED");
-        console.log(resul);
+        console.log(result);
         return result;
       });
   };
