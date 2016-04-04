@@ -186,7 +186,7 @@
                 if (my_directory_list !== undefined) {
                   for (i = 0; i < response_dict.total_rows; i += 1) {
                     directory_content_list.push(
-                      my_gadget.jio_allAttachments(my_directory_list.rows[i].id)
+                      my_gadget.jio_allAttachments(response_dict.rows[i].id)
                     );
                   }
                 }
