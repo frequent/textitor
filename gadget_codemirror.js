@@ -1,7 +1,30 @@
 /*jslint indent: 2, vars: true, nomen: true, maxerr: 3 */
 /*global window, rJS, document, location, alert, prompt, confirm, setTimeout,
-  toolbox, CodeMirror */
+  toolbox, CodeMirror, loopEventListener */
 
+  // NOTE: RenderJS method, only declared here
+  function promiseEventListener(my_target, my_type, my_useCapture) {
+    var handle_event_callback;
+
+    function canceller() {
+      target.removeEventListener(my_type, handle_event_callback, my_useCapture);
+    }
+
+    function resolver(resolve) {
+      handle_event_callback = function (my_event) {
+        canceller();
+        my_event.stopPropagation();
+        my_event.preventDefault();
+        resolve(my_event);
+        return false;
+      };
+
+      my_target.addEventListener(my_type, handle_event_callback, my_useCapture);
+    }
+    return new RSVP.Promise(resolver, canceller);
+  }
+
+  // create dialog html
   function setDialog(my_context, my_template, my_bottom) {
     var wrap = my_context.getWrapperElement(),
       dialog = wrap.appendChild(document.createElement("div"));
@@ -19,6 +42,7 @@
     return dialog;
   }
 
+  // required by CodeMirror
   function closeNotification(my_context, my_newVal) {
     if (my_context.state.currentNotificationClose) {
       my_context.state.currentNotificationClose();
@@ -26,68 +50,88 @@
     my_context.state.currentNotificationClose = my_newVal;
   }
   
-  // overwrite openDialog
-  function setOpenDialog() {
-    return CodeMirror.defineExtension("openDialog", function(my_template, my_callback, my_option_dict) {
-      var closing_event_list = [],
-        recurring_event_list = [],
-        event_list = [],
-        dialog,
-        closed,
-        inp,
-        button,
-        action_form,
-        my_context;
-
-      my_context = my_context || this;
-      my_option_dict = my_option_dict || {};
-      dialog = setDialog(my_context, my_template, my_option_dict.bottom);
-      closed = false;
-      action_form = dialog.querySelector("form");
-
-      // wrap in Promise?
-      function close(my_newVal) {
-        
-        if (typeof my_newVal == 'string') {
-          inp.value = my_newVal;
-        } else {
-          if (closed) {
-            return;
-          }
-          
-          closed = true;
-          dialog.parentNode.removeChild(dialog);
-          my_context.focus();
+  // custom CodeMirror openDialog handler
+  function setOpenDialog(my_gadget) {
+    return CodeMirror.defineExtension(
+      "openDialog",
+      function(my_template, my_callback, my_option_dict) {
+        var closing_event_list = [],
+          recurring_event_list = [],
+          event_list = [],
+          dialog,
+          closed,
+          inp,
+          input_value,
+          button,
+          action_form,
+          my_context;
   
-          if (my_option_dict.onClose) {
-            my_option_dict.onClose(dialog);
+        console.log(my_gadget);
+        console.log(my_callback);
+
+        my_context = my_context || this;
+        my_option_dict = my_option_dict || {};
+        dialog = setDialog(my_context, my_template, my_option_dict.bottom);
+        closed = false;
+        action_form = dialog.querySelector("form");
+  
+        // wrap in Promise?
+        function close(my_newVal) {
+          console.log("called close");        
+          if (typeof my_newVal == 'string') {
+            inp.value = my_newVal;
+          } else {
+            if (closed) {
+              return;
+            }
+            
+            closed = true;
+            dialog.parentNode.removeChild(dialog);
+            my_context.focus();
+    
+            if (my_option_dict.onClose) {
+              my_option_dict.onClose(dialog);
+            }
           }
         }
-      }
-
-      inp = dialog.getElementsByTagName("input")[0];
-      if (inp) {
-        if (my_option_dict.value) {
-          inp.value = my_option_dict.value;
-          if (my_option_dict.selectValueOnOpen !== false) {
-            inp.select();
+  
+        inp = dialog.getElementsByTagName("input")[0];
+        if (inp) {
+          inp.focus();
+          
+          if (my_option_dict.value) {
+            inp.value = my_option_dict.value;
+            if (my_option_dict.selectValueOnOpen !== false) {
+              inp.select();
+            }
           }
-        }
+          input_value = inp.value;
 
+          if (my_option_dict.onInput) {
+            event_list.push(
+              loopEventListener(inp, "input", false, function (my_event) {
+                return my_option_dict.onInput(my_event, input_value, close);
+              })
+            );
+          }
 
-        // NOTE: bind via RSVP vs CodeMirror breaks browser compat
-        if (my_option_dict.onInput) {
-          event_list.push(
-            loopEventListener(inp, "input", false, function (my_event) {
-              return my_option_dict.onInput(my_event, inp.value, close);
-            })
-          );
+          if (my_option_dict.closeOnBlur !== false) {
+            closing_event_list.push(
+              new RSVP.Queue()
+                .push(function () {
+                  return promiseEventListener(inp, "blur", false);
+                })
+                .push(function (my_event) {
+                  close(my_event);
+                })
+              );
+          }
         }
 
         if (my_option_dict.onKeyUp) {
           event_list.push(
             loopEventListener(inp, "keyup", false, function (my_event) {
-              return my_option_dict.onKeyUp(my_event, inp.value, close);
+              return my_option_dict.onKeyUp(my_event, input_value, close);
             })
           );
         }
@@ -96,63 +140,48 @@
           event_list.push(
             loopEventListener(inp, "keydown", false, function (my_event) {
 
-              // close on ESC only
+              // close on ESC
               if (my_event.keyCode == 27) {
                 inp.blur();
                 CodeMirror.e_stop(my_event);
                 return close();
               }
-
-              return my_option_dict.onKeyDown(my_event, inp.value, close);
+              return my_option_dict.onKeyDown(my_event, input_value, close);
             })
           );
         }
+
+        if (action_form) {
+          //recurring_event_list.push(
+            var baz = loopEventListener(
+              action_form,
+              "submit",
+              false, 
+              function (my_event) {
+                var target = my_event.target,
+                  action = target.submit.name;
+              }
+            )
+          // );
+        }
+  
+        // gogo-gadget-oh rsvp...
+        return new RSVP.Queue()
+          .push(function () {
+            closeNotification(my_context, null);
+  
+            return RSVP.any(
+              RSVP.all(event_list),
+              RSVP.any(closing_event_list)
+            );
+          })
+          .push(function (my_return_close) {
+            console.log("DONE");
+            return close;
+          });
+  
       }
-
-      // won't apply - still...
-      if (my_option_dict.closeOnBlur !== false) {
-        closing_event_list.push(
-          new RSVP.Queue()
-            .push(function () {
-              return promiseEventListener(inp, "blur", false);
-            })
-            .push(function (my_event) {
-              close(my_event);
-            })
-          );
-      }
-      inp.focus();
-
-      if (action_form) {
-        //recurring_event_list.push(
-          var baz = loopEventListener(
-            action_form,
-            "submit",
-            false, 
-            function (my_event) {
-              var target = my_event.target,
-                action = target.submit.name;
-            }
-          )
-        // );
-      }
-
-      // gogo-gadget-oh rsvp...
-      return new RSVP.Queue()
-        .push(function () {
-          closeNotification(my_context, null);
-
-          return RSVP.any(
-            RSVP.all(event_list),
-            RSVP.any(closing_event_list)
-          );
-        })
-        .push(function (my_return_close) {
-          console.log("DONE");
-          return close;
-        });
-
-    });
+    );
   }
       
 
@@ -250,6 +279,7 @@
   }
 
   function enterCallback(my_selected_value, my_event) {
+    console.log("callback passed to openDialog. do what here?");
     return;
   }
   
@@ -393,29 +423,6 @@
     "py": "python",
     "sh": "shell"
   };
-
-  /*
-  function promiseEventListener(target, type, useCapture) {
-    var handle_event_callback;
-
-    function canceller() {
-      target.removeEventListener(type, handle_event_callback, useCapture);
-    }
-
-    function resolver(resolve) {
-      handle_event_callback = function (evt) {
-        canceller();
-        evt.stopPropagation();
-        evt.preventDefault();
-        resolve(evt);
-        return false;
-      };
-
-      target.addEventListener(type, handle_event_callback, useCapture);
-    }
-    return new RSVP.Promise(resolver, canceller);
-  }
-  */
   
   function setModified(cm) { cm.modified = true; }
 
@@ -437,8 +444,13 @@
   "use strict";
 
   rJS(window)
+  
+    /////////////////////////////
+    // ready
+    /////////////////////////////
     .ready(function (my_gadget) {
       my_gadget.property_dict = {};
+      
       return new RSVP.Queue()
         .push(function () {
           return my_gadget.getElement();
@@ -451,11 +463,7 @@
     })
     .ready(function (my_gadget) {
 
-      setOpenDialog();
-
-      //////////
-      // Init //
-      //////////
+      setOpenDialog(my_gadget);
       editorURI = my_gadget.property_dict.uri || window.location.hash.slice(1);
       if (my_gadget.property_dict.textarea) {
         editorTextarea = my_gadget.property_dict.textarea;
@@ -464,11 +472,7 @@
         my_gadget.property_dict.textarea = editorTextarea;
         my_gadget.property_dict.element.appendChild(editorTextarea);
       }
-    
-      //////////////////
-      // Set commands //
-      //////////////////
-    
+
       commands["help doc"] = "Shows this help.";
       commands.help = function () {
         alert(Object.keys(commands).reduce(function (prev, curr) {
@@ -516,13 +520,12 @@
 
     })
 
+    /////////////////////////////
+    // declared methods
+    /////////////////////////////
     .declareMethod('render', function (my_option_dict) {
       var gadget = this;
-      
-      /////////////////
-      // Init editor //
-      /////////////////
-    
+
       CodeMirror.commands.save = function (cm) { commands.save(cm, ["save"]); };
       CodeMirror.keyMap.default.F3 = "findNext";
       CodeMirror.keyMap.default["Shift-F3"] = "findPrev";
@@ -577,13 +580,16 @@
       window.editor = editor;
       return gadget;
     })
-    
+
+    /////////////////////////////
+    // declared service
+    /////////////////////////////    
     .declareService(function () {
       var exec_queue = new RSVP.Queue();
 
       window.editor.refresh();
       window.editor.focus();
-      
+
       exec_queue.push(function () {
         return RSVP.any([
           //loopEventListener(editor, 'change', false, setModified),
@@ -600,6 +606,16 @@
       });
 
       return exec_queue;
-    });
+    })
+
+    /////////////////////////////
+    // published methods
+    /////////////////////////////
+
+    /////////////////////////////
+    // acquired methods
+    /////////////////////////////
+    .declareAcquiredMethod('jio_allDocs', 'jio_allDocs')
+    .declareAcquiredMethod('jio_allAttachments', 'jio_allAttachments');
 
 }(window, rJS));
