@@ -181,14 +181,14 @@
                 console.log(my_directory_list);
                 console.log(my_directory_list.data);
                 console.log(my_directory_list.data.rows);
-                var response_dict = my_result_list.data.rows.data,
+                var response_dict = my_directory_list.data.rows.data,
                   directory_conten_list = [],
                   i;
 
-                if (my_result_list !== undefined) {
+                if (my_directory_list !== undefined) {
                   for (i = 0; i < response_dict.total_rows; i += 1) {
                     directory_content_list.push(
-                      my_gadget.jio_allAttachments(my_result_list.rows[i].id)
+                      my_gadget.jio_allAttachments(my_directory_list.rows[i].id)
                     );
                   }
                 }
