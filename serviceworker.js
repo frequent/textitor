@@ -202,7 +202,7 @@ self.addEventListener('message', function (event) {
       caches.open(CURRENT_CACHE)
         .then(function(cache) {
           cache.keys().then(function (request_list) {
-            result_list = requests.map(function(request) {
+            result_list = request_list.map(function(request) {
               return request.url;
             }),
             attachment_dict = {},
