@@ -175,9 +175,28 @@
               .push(function () {
                 return my_gadget.jio_allDocs();
               })
-              .push(function (my_result_list) {
-                console.log("OLA");
-                console.log(my_result_list);
+              .push(function (my_directory_list) {
+
+                // XXX until gadget_jio_serviceworker_storage updates...
+                console.log(my_directory_list);
+                console.log(my_directory_list.data);
+                console.log(my_directory_list.data.rows);
+                var response_dict = my_result_list.data.rows.data,
+                  directory_conten_list = [],
+                  i;
+
+                if (my_result_list !== undefined) {
+                  for (i = 0; i < response_dict.total_rows; i += 1) {
+                    directory_content_list.push(
+                      my_gadget.jio_allAttachments(my_result_list.rows[i].id)
+                    );
+                  }
+                }
+                return RSVP.all(directory_content_list);
+              })
+              .push(function (my_directory_content) {
+                console.log("Yeah");
+                console.log(my_directory_content);
               })
             );
         }
@@ -188,29 +207,7 @@
             closeNotification(my_context, null);
             return RSVP.all(storage_interaction_list);
           })
-          .push(function (my_result_list) {
-
-            // XXX until gadget_jio_serviceworker_storage updates...
-            console.log(my_result_list);
-            console.log(my_result_list.data);
-            console.log(my_result_list.data.rows);
-            var response_dict = my_result_list.data.rows.data,
-              directory_conten_list = [],
-              i;
-
-            if (my_result_list !== undefined) {
-              for (i = 0; i < response_dict.total_rows; i += 1) {
-                directory_content_list.push(
-                  my_gadget.jio_allAttachments(my_result_list.rows[i].id)
-                );
-              }
-            }
-            return RSVP.all(directory_content_list);
-          })
-          .push(function (my_directory_content) {
-            console.log("Yeah");
-            console.log(my_directory_content);
-
+          .push(function () {
             return RSVP.any([
               RSVP.all(event_list),
               RSVP.any(closing_event_list)
