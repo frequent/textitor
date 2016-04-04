@@ -209,7 +209,7 @@
                     response = my_directory_content[i].data;
                     for (item in response) {
                       if (response.hasOwnProperty(item)) {
-                        entry_dict[i].item_list.push(response[item]);
+                        entry_dict[i].item_list.push(item);
                       }
                     }  
                   }
