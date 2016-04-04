@@ -201,15 +201,16 @@ self.addEventListener('message', function (event) {
 
       caches.open(CURRENT_CACHE)
         .then(function(cache) {
-          cache.keys().then(function (request_list) {
-            result_list = request_list.map(function(request) {
+          cache.keys()
+          .then(function (request_list) {
+            var result_list = request_list.map(function(request) {
               return request.url;
             }),
-            attachment_dict = {},
-            i, 
-            i_len;
+              attachment_dict = {},
+              i, 
+              len;
               
-            for (i = 0, i_len = result_list.length; i < i_len; i += 1) {
+            for (i = 0, len = result_list.length; i < len; i += 1) {
               attachment_dict[result_list[i]] = {};
             }
             event.ports[0].postMessage({
