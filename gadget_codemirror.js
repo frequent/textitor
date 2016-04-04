@@ -191,6 +191,9 @@
           .push(function (my_result_list) {
 
             // XXX until gadget_jio_serviceworker_storage updates...
+            console.log(my_result_list);
+            console.log(my_result_list.data);
+            console.log(my_result_list.data.rows);
             var response_dict = my_result_list.data.rows.data,
               directory_conten_list = [],
               i;
