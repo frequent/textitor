@@ -46,7 +46,7 @@
       closed = false;
       action_form = dialog.querySelector("form");
 
-      //
+      // wrap in Promise!
       function close(my_newVal) {
         console.log("CLOSING");
         console.log(my_newVal);
@@ -81,7 +81,8 @@
         if (my_option_dict.onInput) {
           event_list.push(
             loopEventListener(inp, "input", false, function (my_event) {
-              my_option_dict.onInput(my_event, inp.value, close);
+              console.log("input");
+              return my_option_dict.onInput(my_event, inp.value, close);
             })
           );
         }
@@ -89,35 +90,26 @@
         if (my_option_dict.onKeyUp) {
           event_list.push(
             loopEventListener(inp, "keyup", false, function (my_event) {
-              my_option_dict.onKeyUp(my_event, inp.value, close);
+              console.log("keyup");
+              return my_option_dict.onKeyUp(my_event, inp.value, close);
             })
           );
         }
         
-        // default onkeydown, won't be used
-        /*
-        // if (my_option_dict && my_option_dict.onKeyDown) {
-          event_list.push(
-            loopEventListener(inp, "keydown", false, function (my_event) {
-              my_option_dict.onKeyDown(my_event, inp.value, close);
-          })
-        );
-        //}
-        */
-        
-
-        closing_event_list.push(
+        event_list.push(
           loopEventListener(inp, "keydown", false, function (my_event) {
-            console.log("keydown close triggered");
+            console.log("keydown");
             // close on ESC only
-            // (my_option_dict.closeOnEnter !== false && my_event.keyCode == 13)
             if (my_event.keyCode == 27) {
               inp.blur();
               CodeMirror.e_stop(my_event);
               return close();
             }
 
-            // closing callback necessary?
+            if (my_option_dict && my_option_dict.onKeyDown) {
+              return my_option_dict.onKeyDown(my_event, inp.value, close);
+            }
+            // closing callback on return necessary?
             //if (my_event.keyCode == 13) {
             //  return my_callback(inp.value, my_event);
             //}    
@@ -164,6 +156,7 @@
           );
         })
         .push(function (my_return_close) {
+          console.log("DONE");
           return close;
         });
 
