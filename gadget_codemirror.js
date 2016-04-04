@@ -188,12 +188,14 @@
                   entry_dict = {};
                   for (i = 0; i < response_dict.total_rows; i += 1) {
                     cache_id = response_dict.rows[i].id;
-                    entry_dict[cache_id] = [];
+                    entry_dict[i] = {"name": cache_id, "item_list": []};
                     directory_content_list.push(
                       my_gadget.jio_allAttachments(cache_id)
                     );
                   }
                 }
+                console.log("DONE caches");
+                console.log(entry_dict);
                 return RSVP.all(directory_content_list);
               })
               .push(function (my_directory_content) {
@@ -207,7 +209,7 @@
                     response = my_directory_content[i].data;
                     for (item in response) {
                       if (response.hasOwnProperty(item)) {
-                        entry_dict[i].push(response[item]);
+                        entry_dict[i].item_list.push(response[item]);
                       }
                     }  
                   }
