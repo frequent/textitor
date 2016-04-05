@@ -2,32 +2,52 @@
 /*global window, rJS, document, location, alert, prompt, confirm, setTimeout,
   toolbox, CodeMirror, loopEventListener */
 
-  // NOTE: RenderJS method, only declared here
-  function promiseEventListener(my_target, my_type, my_useCapture) {
-    var handle_event_callback;
+  var FILE_MENU_TEMPLATE = "<div class='custom-file-menu'>%s</div>";
+  var FILE_ENTRY_TEMPLATE = "<div class='custom-file-menu-row'>" +
+      "<span class='custom-file-menu-checkbox-overlay'>%s</span>" +
+      "<input type='checkbox' checked='false' />" +
+      "</div>";
 
-    function canceller() {
-      my_target.removeEventListener(
-        my_type,
-        handle_event_callback,
-        my_useCapture
-      );
-    }
-
-    function resolver(resolve) {
-      handle_event_callback = function (my_event) {
-        canceller();
-        my_event.stopPropagation();
-        my_event.preventDefault();
-        resolve(my_event);
-        return false;
+  // mini templating Python-style
+  function parseTemplate(my_template, my_value_list) {
+    var html_content = [],
+      counter = 0,
+      setHtmlContent = function (my_content_list) {
+        return function (my_snippet) {
+          var value = my_value_list[counter] || "";
+          my_content_list.push(my_snippet + value);
+          counter += 1;
+        };
       };
-
-      my_target.addEventListener(my_type, handle_event_callback, my_useCapture);
-    }
-    return new RSVP.Promise(resolver, canceller);
+    my_template.split("%s").map(setHtmlContent(html_content));
+    return html_content.join();
   }
 
+  // create file menu html
+  function setFileMenu(my_file_dict) {
+    var fragment = document.createDocumentFragment(), 
+      i,
+      len,
+      folder,
+      counter;
+
+    for (counter in my_file_dict) {
+      if (my_file_dict.hasOwnProperty(counter)) {
+        folder = my_file_dict[counter];
+        for (i = 0, len = folder.item_list.length; i < len; i += 1) {
+          fragment.appendChild(
+            parseTemplate(
+              FILE_ENTRY_TEMPLATE,
+              [folder.name + "|" + folder.item_list[i]]
+            )
+          );
+        }
+      }
+    }
+    return parseTemplate(FILE_MENU_TEMPLATE, [fragment]);
+  }
+
+    
   // create dialog html
   function setDialog(my_context, my_template, my_bottom) {
     var wrap = my_context.getWrapperElement(),
@@ -194,8 +214,6 @@
                     );
                   }
                 }
-                console.log("DONE caches");
-                console.log(entry_dict);
                 return RSVP.all(directory_content_list);
               })
               .push(function (my_directory_content) {
@@ -214,9 +232,7 @@
                     }  
                   }
                 }
-                  
-                console.log("DONE");
-                console.log(entry_dict);
+                dialog.appendChild(setFileMenu(entry_dict));
               })
             );
         }
@@ -259,13 +275,6 @@
   ["Ctrl-Alt-D"] Delete File
   ["Ctrl-Alt-H"] List of Shortcuts
   */
-
-  var FILE_MENU_TEMPLATE = "<div class='custom-file-menu'>%s</div>";
-  
-  var FILE_MENU_ENTRY_TEMPLATE = "<div class='row'>" +
-    "<span class='checkbox-overlay'>%s</span>" +
-    "<input type='checkbox' checked='false' />" +
-    "</div>";
   
   var OBJECT_MENU = "<span>Name:</span><input type=\"text\" value=\"\" />" +
     "<span class='custom-menu-typewriter'>CTRL+ALT+</span>" +
