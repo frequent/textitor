@@ -232,7 +232,10 @@
                     }  
                   }
                 }
-                dialog.appendChild(setFileMenu(entry_dict));
+                dialog.insertBefore(
+                  setFileMenu(entry_dict),
+                  dialog.querySelector('span')
+                );
               })
             );
         }
