@@ -111,7 +111,6 @@
           event_list = [],
           entry_dict,
           dialog,
-          closed,
           inp,
           input_value,
           button,
@@ -121,7 +120,7 @@
         my_context = my_context || this;
         my_option_dict = my_option_dict || {};
         dialog = setDialog(my_context, my_template, my_option_dict.bottom);
-        closed = false;
+        CodeMirror.navigationMenu.is_closed = false;
         action_form = dialog.querySelector("form");
   
         // wrap in Promise?
@@ -130,11 +129,11 @@
           if (typeof my_newVal == 'string') {
             inp.value = my_newVal;
           } else {
-            if (closed) {
+            if (CodeMirror.navigationMenu.is_closed) {
               return;
             }
             
-            closed = true;
+            CodeMirror.navigationMenu.is_closed = true;
             dialog.parentNode.removeChild(dialog);
             my_context.focus();
     
@@ -159,6 +158,7 @@
           if (my_option_dict.onInput) {
             event_list.push(
               loopEventListener(inp, "input", false, function (my_event) {
+                console.log("input");
                 return my_option_dict.onInput(my_event, input_value, close);
               })
             );
@@ -170,8 +170,13 @@
                 .push(function () {
                   return promiseEventListener(inp, "blur", false);
                 })
-                .push(function (my_event) {
-                  close(my_event);
+                .push(function () {
+                  console.log("blur");
+                  close();
+                })
+                .push(null, function (e) {
+                  console.log(e);
+                  throw e;
                 })
               );
           }
@@ -180,6 +185,7 @@
         if (my_option_dict.onKeyUp) {
           event_list.push(
             loopEventListener(inp, "keyup", false, function (my_event) {
+              console.log("keyup");
               return my_option_dict.onKeyUp(my_event, input_value, close);
             })
           );
@@ -188,7 +194,7 @@
         if (my_option_dict.onKeyDown) {
           event_list.push(
             loopEventListener(inp, "keydown", false, function (my_event) {
-
+              console.log("keydown");
               // close on ESC
               if (my_event.keyCode == 27) {
                 inp.blur();
@@ -246,7 +252,7 @@
                 var len = my_directory_content.length,
                   item,
                   i;
-                
+
                 if (len > 0) {
                   for (i = 0; i < len; i += 1) {
                     response = my_directory_content[i].data;
@@ -278,6 +284,7 @@
             ]);
           })
           .push(function (my_return_close) {
+            console.log("FINISHED");
             return close;
           })
           .push(undefined, function (e) {
@@ -398,7 +405,7 @@
         {
           "bottom": false,
           "closeOnEnter": false,
-          "closeOnBlur": true,
+          "closeOnBlur": false,
           "value": null,
           "selectValueOnOpen": false,
           "onKeyUp": function (e, val, close) {
@@ -420,7 +427,7 @@
       cm.openDialog(menu, enterCallback, {
         "bottom": false,
         "closeOnEnter": false,
-        "closeOnBlur": true,
+        "closeOnBlur": false,
         "value": null,
         "selectValueOnOpen": false,
         "onKeyUp": function (e, val, close) {
