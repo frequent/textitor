@@ -111,6 +111,7 @@
           event_list = [],
           entry_dict,
           dialog,
+          closed,
           inp,
           input_value,
           button,
@@ -120,7 +121,7 @@
         my_context = my_context || this;
         my_option_dict = my_option_dict || {};
         dialog = setDialog(my_context, my_template, my_option_dict.bottom);
-        CodeMirror.navigationMenu.is_closed = false;
+        closed = false;
         action_form = dialog.querySelector("form");
   
         // wrap in Promise?
@@ -129,11 +130,11 @@
           if (typeof my_newVal == 'string') {
             inp.value = my_newVal;
           } else {
-            if (CodeMirror.navigationMenu.is_closed) {
+            if (closed) {
               return;
             }
             
-            CodeMirror.navigationMenu.is_closed = true;
+            closed = true;
             dialog.parentNode.removeChild(dialog);
             my_context.focus();
     
