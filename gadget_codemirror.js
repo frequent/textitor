@@ -111,7 +111,6 @@
           event_list = [],
           entry_dict,
           dialog,
-          closed,
           inp,
           input_value,
           button,
@@ -121,7 +120,7 @@
         my_context = my_context || this;
         my_option_dict = my_option_dict || {};
         dialog = setDialog(my_context, my_template, my_option_dict.bottom);
-        closed = false;
+        CodeMirror.navigationMenu.is_closed = false;
         action_form = dialog.querySelector("form");
   
         // wrap in Promise?
@@ -130,11 +129,11 @@
           if (typeof my_newVal == 'string') {
             inp.value = my_newVal;
           } else {
-            if (closed) {
+            if (CodeMirror.navigationMenu.is_closed) {
               return;
             }
             
-            closed = true;
+            CodeMirror.navigationMenu.is_closed = true;
             dialog.parentNode.removeChild(dialog);
             my_context.focus();
     
@@ -398,7 +397,7 @@
         {
           "bottom": false,
           "closeOnEnter": false,
-          "closeOnBlur": true,
+          "closeOnBlur": false,
           "value": null,
           "selectValueOnOpen": false,
           "onKeyUp": function (e, val, close) {
@@ -420,7 +419,7 @@
       cm.openDialog(menu, enterCallback, {
         "bottom": false,
         "closeOnEnter": false,
-        "closeOnBlur": true,
+        "closeOnBlur": false,
         "value": null,
         "selectValueOnOpen": false,
         "onKeyUp": function (e, val, close) {
