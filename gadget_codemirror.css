@@ -22,3 +22,19 @@ body {
 .CodeMirror-dialog form {
   display: inline-block;
 }
+
+/* file menu */
+.CodeMirror .custom-file-menu-row {
+  position: relative;
+}
+.CodeMirror .custom-file-menu-checkbox-overlay {
+  position: absolute;
+  left: 0;
+  right: 0;
+  width: 100%;
+  background: white;
+  pointer-events: none;
+}
+.CodeMirror .custom-file-menu-row > input:first-child {
+  width: 100%;
+}
