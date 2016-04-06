@@ -69,7 +69,7 @@
     str = parseTemplate(FILE_MENU_TEMPLATE, [str]);
     div = document.createElement("div");
     div.innerHTML = str;
-    return str.firstChild;
+    return div.firstChild;
   }
 
     
