@@ -47,7 +47,8 @@
 
   // create file menu html
   function setFileMenu(my_file_dict) {
-    var fragment = document.createDocumentFragment(), 
+    var str,
+      div,
       i,
       len,
       folder,
@@ -57,22 +58,18 @@
       if (my_file_dict.hasOwnProperty(counter)) {
         folder = my_file_dict[counter];
         for (i = 0, len = folder.item_list.length; i < len; i += 1) {
-          console.log(FILE_ENTRY_TEMPLATE);
-          console.log(folder.name + "|" + folder.item_list[i]);
-          console.log(parseTemplate(
+          str = parseTemplate(
             FILE_ENTRY_TEMPLATE,
             [folder.name + "|" + folder.item_list[i]]
-          ));
-          fragment.appendChild(
-            parseTemplate(
-              FILE_ENTRY_TEMPLATE,
-              [folder.name + "|" + folder.item_list[i]]
-            )
           );
         }
       }
     }
-    return parseTemplate(FILE_MENU_TEMPLATE, [fragment]);
+    // XXX: hm...
+    str = parseTemplate(FILE_MENU_TEMPLATE, [str]);
+    div = document.createElement("div");
+    div.innerHTML = str;
+    return str.firstChild;
   }
 
     
