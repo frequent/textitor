@@ -8,6 +8,28 @@
       "<input type='checkbox' checked='false' />" +
       "</div>";
 
+  // not declared elsewhere
+  function promiseEventListener(target, type, useCapture) {
+    var handle_event_callback;
+
+    function canceller() {
+      target.removeEventListener(type, handle_event_callback, useCapture);
+    }
+
+    function resolver(resolve) {
+      handle_event_callback = function (evt) {
+        canceller();
+        evt.stopPropagation();
+        evt.preventDefault();
+        resolve(evt);
+        return false;
+      };
+
+      target.addEventListener(type, handle_event_callback, useCapture);
+    }
+    return new RSVP.Promise(resolver, canceller);
+  }
+  
   // mini templating Python-style
   function parseTemplate(my_template, my_value_list) {
     var html_content = [],
