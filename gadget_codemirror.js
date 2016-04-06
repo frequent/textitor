@@ -42,7 +42,7 @@
         };
       };
     my_template.split("%s").map(setHtmlContent(html_content));
-    return html_content.join();
+    return html_content.join("");
   }
 
   // create file menu html
@@ -60,7 +60,7 @@
         for (i = 0, len = folder.item_list.length; i < len; i += 1) {
           str = parseTemplate(
             FILE_ENTRY_TEMPLATE,
-            [folder.name + "|" + folder.item_list[i]]
+            [folder.name + " | " + folder.item_list[i]]
           );
         }
       }
