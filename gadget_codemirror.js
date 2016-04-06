@@ -57,6 +57,12 @@
       if (my_file_dict.hasOwnProperty(counter)) {
         folder = my_file_dict[counter];
         for (i = 0, len = folder.item_list.length; i < len; i += 1) {
+          console.log(FILE_ENTRY_TEMPLATE);
+          console.log(folder.name + "|" + folder.item_list[i]);
+          console.log(parseTemplate(
+            FILE_ENTRY_TEMPLATE,
+            [folder.name + "|" + folder.item_list[i]]
+          ));
           fragment.appendChild(
             parseTemplate(
               FILE_ENTRY_TEMPLATE,
