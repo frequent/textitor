@@ -398,7 +398,7 @@
         {
           "bottom": false,
           "closeOnEnter": false,
-          "closeOnBlur": false,
+          "closeOnBlur": true,
           "value": null,
           "selectValueOnOpen": false,
           "onKeyUp": function (e, val, close) {
@@ -420,7 +420,7 @@
       cm.openDialog(menu, enterCallback, {
         "bottom": false,
         "closeOnEnter": false,
-        "closeOnBlur": false,
+        "closeOnBlur": true,
         "value": null,
         "selectValueOnOpen": false,
         "onKeyUp": function (e, val, close) {
