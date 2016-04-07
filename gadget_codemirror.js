@@ -387,44 +387,39 @@
   
   // http://codemirror.net/doc/manual.html#addon_dialog
   function navigateRight(cm) {
-    
-    var menu = setNavigationMenu("right");
-    console.log("navright");
-    console.log(menu);
-    console.log(CodeMirror.navigationMenu.position);
-    console.log(CodeMirror.navigationMenu.is_closed);
-
-    if (cm.openDialog) {
+    var direction = "right", 
+      menu = setNavigationMenu(direction);
+    console.log("nav right");
+    if (CodeMirror.navigationMenu.position !== direction) {
       cm.openDialog(
-        menu,
-        enterCallback,
-        {
-          "bottom": false,
-          "closeOnEnter": false,
-          "closeOnBlur": false,
-          "value": null,
-          "selectValueOnOpen": false,
-          "onKeyUp": function (e, val, close) {
-            setNavigationCallback(e, val, close);
-            return true;
-          },
-          "onInput": function (e, val, close) {
-
+          menu,
+          enterCallback,
+          {
+            "bottom": false,
+            "closeOnEnter": false,
+            "closeOnBlur": false,
+            "value": null,
+            "selectValueOnOpen": false,
+            "onKeyUp": function (e, val, close) {
+              setNavigationCallback(e, val, close);
+              return true;
+            },
+            "onInput": function (e, val, close) {
+  
+            }
           }
-        }
-      );
+        );
+    } else {
+      console.log("right and right. do nothing and at least focus?");
     }
   }
   CodeMirror.commands.myNavigateRight = navigateRight;
 
   function navigateLeft(cm) {
-    var menu = setNavigationMenu("left");
-    console.log("navright");
-    console.log(menu);
-    console.log(CodeMirror.navigationMenu.position);
-    console.log(CodeMirror.navigationMenu.is_closed);
-
-    if (cm.openDialog) {
+    var direction = "left", 
+      menu = setNavigationMenu(direction);
+    console.log("nav left");
+    if (CodeMirror.navigationMenu.position !== direction) {
       cm.openDialog(menu, enterCallback, {
         "bottom": false,
         "closeOnEnter": false,
@@ -439,6 +434,8 @@
 
         }
       });
+    } else {
+      console.log("left and left. do nothing and at least focus?");
     }
   }
   
