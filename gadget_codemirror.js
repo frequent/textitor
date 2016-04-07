@@ -2,12 +2,41 @@
 /*global window, rJS, document, location, alert, prompt, confirm, setTimeout,
   toolbox, CodeMirror, loopEventListener */
 
+  /*
+  ["Ctrl-Alt-0"] Open
+  ["Ctrl-Alt-Up"] Up in current folder
+  ["Ctrl-Alt-Down"] Down in current folder
+  ["Ctrl-Alt-Right"] Up one folder/Close file
+  ["Ctrl-Alt-Left"] Down one folder/Open file
+  ["Ctrl-Alt-S"] Save File (*)
+  ["Ctrl-Alt-X"] Close File
+  ["Ctrl-Alt-D"] Delete File
+  ["Ctrl-Alt-H"] List of Shortcuts
+  */
+ 
   var FILE_MENU_TEMPLATE = "<div class='custom-file-menu'>%s</div>";
 
   var FILE_ENTRY_TEMPLATE = "<div class='custom-file-menu-row'>" +
       "<input type='checkbox' checked='false' />" +
       "<span class='custom-file-menu-checkbox-overlay'>%s</span>" +
       "</div>";
+  
+  var OBJECT_MENU_TEMPLATE = "<span>Name:</span><input type=\"text\" />" +
+    "<span class='custom-menu-typewriter'>CTRL+ALT+</span>" +
+    "<form name='save'><button type='submit' class='custom-menu-button'>" +
+    "<b>S</b>ave</button></form>" +
+    "<form name='close'><button type='submit' class='custom-menu-button'>" +
+    "<b>C</b>lose</button></form>" +
+    "<form name='remove'><button type='submit' class='custom-menu-button'>" + 
+    "<b>D</b>elete</button></form>";
+  
+  var OBJECT_LIST_TEMPLATE = "<span>Search:</span><input type=\"text\" />" +
+    "<span class='custom-menu-typewriter'>CTRL+ALT+</span>" +
+    "<form name='search'><button type='submit' class='custom-menu-button'>" +
+    "<b>F</b>ind</button></form>";
+
+  CodeMirror.keyMap.my = {"fallthrough": "default"};
+  CodeMirror.navigationMenu = {"position": "idle"};
 
   // not declared elsewhere
   function promiseEventListener(target, type, useCapture) {
@@ -287,44 +316,18 @@
   }
       
 
-  /* Keymap */
-  CodeMirror.keyMap.my = {"fallthrough": "default"};
-
-  /*
-  ["Ctrl-Alt-0"] Open
-  ["Ctrl-Alt-Up"] Up in current folder
-  ["Ctrl-Alt-Down"] Down in current folder
-  ["Ctrl-Alt-Right"] Up one folder/Close file
-  ["Ctrl-Alt-Left"] Down one folder/Open file
-  ["Ctrl-Alt-S"] Save File (*)
-  ["Ctrl-Alt-X"] Close File
-  ["Ctrl-Alt-D"] Delete File
-  ["Ctrl-Alt-H"] List of Shortcuts
-  */
-  
-  var OBJECT_MENU = "<span>Name:</span><input type=\"text\" value=\"\" />" +
-    "<span class='custom-menu-typewriter'>CTRL+ALT+</span>" +
-    "<form name='save'><button type='submit' class='custom-menu-button'><b>S</b>ave</button></form>" +
-    "<form name='close'><button type='submit' class='custom-menu-button'><b>C</b>lose</button></form>" +
-    "<form name='remove'><button type='submit' class='custom-menu-button'><b>D</b>elete</button></form>";
-  
-  var OBJECT_LIST_MENU = "<span>Search:</span><input type=\"text\" value=\"\" />" +
-    "<span class='custom-menu-typewriter'>CTRL+ALT+</span>" +
-    "<form name='search'><button type='submit' class='custom-menu-button'><b>F</b>ind</button></form>";
-
-  CodeMirror.navigationMenu = {"position": "idle"};
   
   function setNavigationMenu(my_direction) {
     switch (CodeMirror.navigationMenu.position) {
       case "idle":
         CodeMirror.navigationMenu.position = my_direction;
         if (my_direction === "right") {
-          return OBJECT_MENU;
+          return OBJECT_MENU_TEMPLATE;
         }
-        return OBJECT_LIST_MENU;
+        return OBJECT_LIST_TEMPLATE;
       case "left":
         if (my_direction === "left") {
-          return OBJECT_LIST_MENU;
+          return OBJECT_LIST_TEMPLATE;
         }
         CodeMirror.navigationMenu.position = "idle";
         return;
@@ -333,7 +336,7 @@
           CodeMirror.navigationMenu.position = "idle";
           return;
         }
-        return OBJECT_LIST_MENU;
+        return OBJECT_LIST_TEMPLATE;
     }
   }
 
@@ -380,67 +383,51 @@
     }
   }
 
-  function enterCallback(my_selected_value, my_event) {
-    console.log("callback passed to openDialog. do what here?");
-    return;
-  }
-  
+
   // http://codemirror.net/doc/manual.html#addon_dialog
-  function navigateRight(cm) {
-    var direction = "right", 
-      menu;
-    console.log("nav right");
-    console.log(CodeMirror.navigationMenu.position)
-    if (CodeMirror.navigationMenu.position !== direction) {
-      cm.openDialog(
-          setNavigationMenu(direction),
-          enterCallback,
-          {
-            "bottom": false,
-            "closeOnEnter": false,
-            "closeOnBlur": false,
-            "value": null,
-            "selectValueOnOpen": false,
-            "onKeyUp": function (e, val, close) {
-              setNavigationCallback(e, val, close);
-              return true;
-            },
-            "onInput": function (e, val, close) {
+  function enterCallback(my_selected_value, my_event) {
+    console.log("enter callback, run on close?");
+    return;
+  }  
   
-            }
+  function navigateHorizontal(my_codemirror, my_direction) {
+    console.log(my_direction);
+    console.log(CodeMirror.navigationMenu.position);
+
+    // dialog only opens if in idle
+    if (CodeMirror.navigationMenu.position === "idle") {
+      console.log(setNavigationMenu(my_direction));
+      my_codemirror.openDialog(
+        menu,
+        enterCallback,
+        {
+          "bottom": false,
+          "closeOnEnter": false,
+          "closeOnBlur": false,
+          "value": null,
+          "selectValueOnOpen": false,
+          "onKeyUp": function (e, val, close) {
+            setNavigationCallback(e, val, close);
+            return true;
+          },
+          "onInput": function (e, val, close) {
+            setNavigationCallback(e, val, close);
+            return true;
           }
-        );
+        }
+      );
     } else {
-      console.log("right and right. do nothing and at least focus?");
+      console.log("Nope, not idle");
     }
+  }
+
+  function navigateRight(cm) {
+    return navigateHorizontal(cm, "right");
   }
   CodeMirror.commands.myNavigateRight = navigateRight;
 
   function navigateLeft(cm) {
-    var direction = "left", 
-      menu;
-    console.log("nav left");
-    console.log(CodeMirror.navigationMenu.position)
-    if (CodeMirror.navigationMenu.position !== direction) {
-      cm.openDialog(
-        setNavigationMenu(direction), 
-        enterCallback, {
-        "bottom": false,
-        "closeOnEnter": false,
-        "closeOnBlur": false,
-        "value": null,
-        "selectValueOnOpen": false,
-        "onKeyUp": function (e, val, close) {
-          setNavigationCallback(e, val, close);
-          return true;
-        },
-        "onInput": function (e, val, close) {
-
-        }
-      });
-    } else {
-      console.log("left and left. do nothing and at least focus?");
-    }
+    return navigateHorizontal(cm, "left");
   }
   
   CodeMirror.commands.myNavigateLeft = navigateLeft;
