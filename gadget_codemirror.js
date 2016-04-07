@@ -390,6 +390,7 @@
     var direction = "right", 
       menu = setNavigationMenu(direction);
     console.log("nav right");
+    console.log(CodeMirror.navigationMenu.position)
     if (CodeMirror.navigationMenu.position !== direction) {
       cm.openDialog(
           menu,
@@ -419,6 +420,7 @@
     var direction = "left", 
       menu = setNavigationMenu(direction);
     console.log("nav left");
+    console.log(CodeMirror.navigationMenu.position)
     if (CodeMirror.navigationMenu.position !== direction) {
       cm.openDialog(menu, enterCallback, {
         "bottom": false,
