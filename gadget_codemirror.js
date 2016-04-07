@@ -155,8 +155,7 @@
         action_form = dialog.querySelector("form");
   
         // wrap in Promise?
-        function close(my_newVal) {
-          console.log("CLOSING");        
+        function close(my_newVal) {      
           if (typeof my_newVal == 'string') {
             inp.value = my_newVal;
           } else {
@@ -193,7 +192,6 @@
           if (my_option_dict.onInput) {
             event_list.push(
               loopEventListener(inp, "input", false, function (my_event) {
-                console.log("input");
                 return my_option_dict.onInput(my_event, input_value, close);
               })
             );
@@ -203,7 +201,6 @@
           if (my_option_dict.closeOnBlur !== false) {
             event_list.push(
               loopEventListener(inp, "blur", false, function (my_event) {
-                console.log("blur");
                 if (my_option_dict.onBlur) {
                   return my_option_dict.onBlur(my_event, input_value, close);
                 }
@@ -215,7 +212,6 @@
         if (my_option_dict.onKeyUp) {
           event_list.push(
             loopEventListener(inp, "keyup", false, function (my_event) {
-              console.log("keyup");
               return my_option_dict.onKeyUp(my_event, input_value, close);
             })
           );
@@ -224,7 +220,6 @@
         if (my_option_dict.onKeyDown) {
           event_list.push(
             loopEventListener(inp, "keydown", false, function (my_event) {
-              console.log("keydown");
               // close on ESC
               if (my_event.keyCode == 27) {
                 inp.blur();
@@ -313,7 +308,6 @@
             ]);
           })
           .push(function (my_return_close) {
-            console.log("FINISHED - we should not get here!");
             return close;
           });
       }
@@ -391,8 +385,6 @@
 
   // http://codemirror.net/doc/manual.html#addon_dialog
   function enterCallback(my_selected_value, my_event) {
-    console.log("enter callback, run on close?");
-    return;
   }  
   
   function navigateHorizontal(my_codemirror, my_direction) {
@@ -417,7 +409,6 @@
         }
       );
     } else if (my_direction !== CodeMirror.navigationMenu.position) {
-      console.log("Should close");
       CodeMirror.navigationMenu.closer();
     }
   }
