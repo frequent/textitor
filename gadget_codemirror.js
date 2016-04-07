@@ -389,10 +389,11 @@
   function navigateRight(cm) {
     
     var menu = setNavigationMenu("right");
-    if (menu === undefined) {
-      console.log("we should close");
-      console.log(CodeMirror.navigationMenu.position);
-    }
+    console.log("navright");
+    console.log(menu);
+    console.log(CodeMirror.navigationMenu.position);
+    console.log(CodeMirror.navigationMenu.is_closed);
+
     if (cm.openDialog) {
       cm.openDialog(
         menu,
@@ -418,10 +419,11 @@
 
   function navigateLeft(cm) {
     var menu = setNavigationMenu("left");
-    if (menu === undefined) {
-      console.log("we should close");
-      console.log(CodeMirror.navigationMenu.position);
-    }
+    console.log("navright");
+    console.log(menu);
+    console.log(CodeMirror.navigationMenu.position);
+    console.log(CodeMirror.navigationMenu.is_closed);
+
     if (cm.openDialog) {
       cm.openDialog(menu, enterCallback, {
         "bottom": false,
