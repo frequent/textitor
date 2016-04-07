@@ -31,9 +31,11 @@ body {
   position: absolute;
   left: 0;
   right: 0;
+  top: 0;
   width: 100%;
   background: white;
   pointer-events: none;
+  cursor: pointer;
 }
 .CodeMirror .custom-file-menu-row > input:first-child {
   width: 100%;
