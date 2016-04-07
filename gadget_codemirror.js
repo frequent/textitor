@@ -244,7 +244,6 @@
                 return RSVP.all(directory_content_list);
               })
               .push(function (my_directory_content) {
-                console.log(my_directory_content);
                 var len = my_directory_content.length,
                   item,
                   i;
@@ -390,7 +389,11 @@
   function navigateRight(cm) {
     
     var menu = setNavigationMenu("right");
-    if (menu && cm.openDialog) {
+    if (menu === undefined) {
+      console.log("we should close");
+      console.log(CodeMirror.navigationMenu.position);
+    }
+    if (cm.openDialog) {
       cm.openDialog(
         menu,
         enterCallback,
@@ -415,7 +418,11 @@
 
   function navigateLeft(cm) {
     var menu = setNavigationMenu("left");
-    if (menu && cm.openDialog) {
+    if (menu === undefined) {
+      console.log("we should close");
+      console.log(CodeMirror.navigationMenu.position);
+    }
+    if (cm.openDialog) {
       cm.openDialog(menu, enterCallback, {
         "bottom": false,
         "closeOnEnter": false,
