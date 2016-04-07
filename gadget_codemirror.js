@@ -3,6 +3,7 @@
   toolbox, CodeMirror, loopEventListener */
 
   var FILE_MENU_TEMPLATE = "<div class='custom-file-menu'>%s</div>";
+
   var FILE_ENTRY_TEMPLATE = "<div class='custom-file-menu-row'>" +
       "<input type='checkbox' checked='false' />" +
       "<span class='custom-file-menu-checkbox-overlay'>%s</span>" +
@@ -164,22 +165,14 @@
             );
           }
 
+          // never close on blur of textinput
           if (my_option_dict.closeOnBlur !== false) {
-            closing_event_list.push(
-              new RSVP.Queue()
-                .push(function () {
-                  return promiseEventListener(inp, "blur", false);
-                })
-                .push(function () {
-                  console.log("blur");
-                  close();
-                })
-                .push(null, function (e) {
-                  console.log(e);
-                  throw e;
-                })
-              );
-          }
+            event_list.push(
+              loopEventListener(inp, "blur", false, function (my_event) {
+              console.log("blur");
+              return my_option_dict.onBlur(my_event, input_value, close);
+            })
+          );
         }
 
         if (my_option_dict.onKeyUp) {
@@ -284,12 +277,8 @@
             ]);
           })
           .push(function (my_return_close) {
-            console.log("FINISHED");
+            console.log("FINISHED - we should not get here!");
             return close;
-          })
-          .push(undefined, function (e) {
-            console.log(e);
-            throw e;
           });
       }
     );
