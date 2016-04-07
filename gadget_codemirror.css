@@ -38,3 +38,6 @@ body {
 .CodeMirror .custom-file-menu-row > input:first-child {
   width: 100%;
 }
+.CodeMirror .custom-file-menu-row > input:first-child:checked + span {
+  font-weight: bold;
+}

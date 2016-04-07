@@ -4,8 +4,8 @@
 
   var FILE_MENU_TEMPLATE = "<div class='custom-file-menu'>%s</div>";
   var FILE_ENTRY_TEMPLATE = "<div class='custom-file-menu-row'>" +
-      "<span class='custom-file-menu-checkbox-overlay'>%s</span>" +
       "<input type='checkbox' checked='false' />" +
+      "<span class='custom-file-menu-checkbox-overlay'>%s</span>" +
       "</div>";
 
   // not declared elsewhere
