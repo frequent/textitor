@@ -170,7 +170,9 @@
             event_list.push(
               loopEventListener(inp, "blur", false, function (my_event) {
               console.log("blur");
-              return my_option_dict.onBlur(my_event, input_value, close);
+              if (my_option_dict.onBlur) {
+                return my_option_dict.onBlur(my_event, input_value, close);
+              }
             })
           );
         }
