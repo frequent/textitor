@@ -167,6 +167,7 @@
             closed = true;
             dialog.parentNode.removeChild(dialog);
             my_context.focus();
+            CodeMirror.navigationMenu.position = "idle";
     
             if (my_option_dict.onClose) {
               my_option_dict.onClose(dialog);
