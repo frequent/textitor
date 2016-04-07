@@ -388,12 +388,12 @@
   // http://codemirror.net/doc/manual.html#addon_dialog
   function navigateRight(cm) {
     var direction = "right", 
-      menu = setNavigationMenu(direction);
+      menu;
     console.log("nav right");
     console.log(CodeMirror.navigationMenu.position)
     if (CodeMirror.navigationMenu.position !== direction) {
       cm.openDialog(
-          menu,
+          setNavigationMenu(direction),
           enterCallback,
           {
             "bottom": false,
@@ -418,11 +418,13 @@
 
   function navigateLeft(cm) {
     var direction = "left", 
-      menu = setNavigationMenu(direction);
+      menu;
     console.log("nav left");
     console.log(CodeMirror.navigationMenu.position)
     if (CodeMirror.navigationMenu.position !== direction) {
-      cm.openDialog(menu, enterCallback, {
+      cm.openDialog(
+        setNavigationMenu(direction), 
+        enterCallback, {
         "bottom": false,
         "closeOnEnter": false,
         "closeOnBlur": false,
