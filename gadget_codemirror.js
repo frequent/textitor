@@ -393,7 +393,6 @@
   function navigateHorizontal(my_codemirror, my_direction) {
     console.log(my_direction);
     console.log(CodeMirror.navigationMenu.position);
-    console.log(setNavigationMenu(my_direction));
 
     // dialog only opens if in idle
     if (CodeMirror.navigationMenu.position === "idle") {
