@@ -141,6 +141,7 @@
           event_list = [],
           entry_dict,
           dialog,
+          closed,
           inp,
           input_value,
           button,
@@ -150,7 +151,7 @@
         my_context = my_context || this;
         my_option_dict = my_option_dict || {};
         dialog = setDialog(my_context, my_template, my_option_dict.bottom);
-        CodeMirror.navigationMenu.is_closed = false;
+        closed = false;
         action_form = dialog.querySelector("form");
   
         // wrap in Promise?
@@ -159,11 +160,11 @@
           if (typeof my_newVal == 'string') {
             inp.value = my_newVal;
           } else {
-            if (CodeMirror.navigationMenu.is_closed) {
+            if (closed) {
               return;
             }
             
-            CodeMirror.navigationMenu.is_closed = true;
+            closed = true;
             dialog.parentNode.removeChild(dialog);
             my_context.focus();
     
@@ -172,6 +173,9 @@
             }
           }
         }
+
+        // expose
+        CodeMirror.navigationMenu.closer = close;
   
         inp = dialog.getElementsByTagName("input")[0];
         if (inp) {
@@ -391,10 +395,6 @@
   }  
   
   function navigateHorizontal(my_codemirror, my_direction) {
-    console.log(my_direction);
-    console.log(CodeMirror.navigationMenu.position);
-
-    // dialog only opens if in idle
     if (CodeMirror.navigationMenu.position === "idle") {
       my_codemirror.openDialog(
         setNavigationMenu(my_direction),
@@ -415,8 +415,9 @@
           }
         }
       );
-    } else {
-      console.log("Nope, not idle");
+    } else if (my_direction !== CodeMirror.navigationMenu.position) {
+      console.log("Should close");
+      CodeMirror.navigationMenu.closer();
     }
   }
 
