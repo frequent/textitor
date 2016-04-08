@@ -17,7 +17,7 @@
   var FILE_MENU_TEMPLATE = "<div class='custom-file-menu'>%s</div>";
 
   var FILE_ENTRY_TEMPLATE = "<div class='custom-file-menu-row'>" +
-      "<input type='checkbox' checked='false' />" +
+      "<input type='checkbox' autocomplete='false' />" +
       "<span class='custom-file-menu-checkbox-overlay'>%s</span>" +
       "</div>";
   
