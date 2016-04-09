@@ -149,7 +149,7 @@
     console.log(my_gadget);
     console.log(my_is_submit_event);
     // XXX resolve promise chain! not just close
-    CodeMirror.navigationMenu.closer();
+    CodeMirror.navigationMenu.evaluateState();
   }
   
   function setFormSubmitListeners(my_dialog, my_gadget) {
@@ -174,10 +174,22 @@
     return event_list;
   }
   
+  function dialog_getTextInput(my_dialog) {
+    var input_list = my_dialog.querySelectorAll("input"),
+      input,
+      len,
+      i;
+    for (i = 0, len = input_list.length; i < len; i += 1) {
+      if (input_list[i].type === 'text') {
+        return input[i];
+      }
+    }
+  }
+  
   /////////////////////////////
   // dialog extension
   /////////////////////////////
-  function setOpenDialog(my_gadget) {
+  function dialog_setDialogExtension(my_gadget) {
     return CodeMirror.defineExtension(
       "openDialog",
       function(my_template, my_callback, my_option_dict) {
@@ -187,8 +199,8 @@
           entry_dict,
           dialog,
           closed,
-          inp,
-          input_value,
+          text_input,
+          text_input_value,
           button,
           my_context;
 
@@ -198,9 +210,9 @@
         closed = false;
         
         // wrap in Promise?
-        function close(my_newVal) {      
+        function dialog_evaluateState(my_parameter) {      
           if (typeof my_newVal == 'string') {
-            inp.value = my_newVal;
+            text_input.value = my_parameter;
           } else {
             if (closed) {
               return;
@@ -218,24 +230,24 @@
         }
 
         // expose
-        CodeMirror.navigationMenu.closer = close;
+        CodeMirror.navigationMenu.evaluateState = dialog_evaluateState;
   
-        inp = dialog.getElementsByTagName("input")[0];
-        if (inp) {
-          inp.focus();
+        text_input = dialog_getTextInput(dialog);
+        if (text_input) {
+          text_input.focus();
           
           if (my_option_dict.value) {
-            inp.value = my_option_dict.value;
+            text_input.value = my_option_dict.value;
             if (my_option_dict.selectValueOnOpen !== false) {
-              inp.select();
+              text_input.select();
             }
           }
-          input_value = inp.value;
+          text_input_value = text_input.value;
 
           if (my_option_dict.onInput) {
             event_list.push(
-              loopEventListener(inp, "input", false, function (my_event) {
-                return my_option_dict.onInput(my_event, input_value, close);
+              loopEventListener(text_input, "input", false, function (my_event) {
+                return my_option_dict.onInput(my_event, text_input_value, dialog_evaluateState);
               })
             );
           }
@@ -243,9 +255,9 @@
           // never close on blur of textinput
           if (my_option_dict.closeOnBlur !== false) {
             event_list.push(
-              loopEventListener(inp, "blur", false, function (my_event) {
+              loopEventListener(text_input, "blur", false, function (my_event) {
                 if (my_option_dict.onBlur) {
-                  return my_option_dict.onBlur(my_event, input_value, close);
+                  return my_option_dict.onBlur(my_event, text_input_value, dialog_evaluateState);
                 }
               })
             );
@@ -254,24 +266,24 @@
 
         if (my_option_dict.onKeyUp) {
           event_list.push(
-            loopEventListener(inp, "keyup", false, function (my_event) {
-              return my_option_dict.onKeyUp(my_event, input_value, close);
+            loopEventListener(text_input, "keyup", false, function (my_event) {
+              return my_option_dict.onKeyUp(my_event, text_input_value, dialog_evaluateState);
             })
           );
         }
 
         if (my_option_dict.onKeyDown) {
           event_list.push(
-            loopEventListener(inp, "keydown", false, function (my_event) {
+            loopEventListener(text_input, "keydown", false, function (my_event) {
               
               // close on ESC
               // XXX Move to resolve handler vs just closing here
               if (my_event.keyCode == 27) {
-                inp.blur();
+                text_input.blur();
                 CodeMirror.e_stop(my_event);
-                return close();
+                return dialog_evaluateState();
               }
-              return my_option_dict.onKeyDown(my_event, input_value, close);
+              return my_option_dict.onKeyDown(my_event, text_input_value, dialog_evaluateState);
             })
           );
         }
@@ -341,7 +353,7 @@
             ]);
           })
           .push(function (my_return_close) {
-            return close();
+            return dialog_evaluateState();
           });
       }
     );
@@ -429,12 +441,12 @@
           "closeOnBlur": false,
           "value": null,
           "selectValueOnOpen": false,
-          "onKeyUp": function (e, val, close) {
-            setNavigationCallback(e, val, close);
+          "onKeyUp": function (my_event, my_value, my_callback) {
+            setNavigationCallback(my_event, my_value, my_callback);
             return true;
           },
-          "onInput": function (e, val, close) {
-            setNavigationCallback(e, val, close);
+          "onInput": function (my_event, my_value, my_callback) {
+            setNavigationCallback(my_event, my_value, my_callback);
             return true;
           }
         }
@@ -442,7 +454,7 @@
     } else if (my_direction !== CodeMirror.navigationMenu.position) {
       
       // resolve promise chain, not just close
-      CodeMirror.navigationMenu.closer();
+      CodeMirror.navigationMenu.evaluateState();
     }
   }
 
@@ -632,7 +644,7 @@
         cm.setOption("theme", args.slice(1).join(" ") || "default");
       };
       
-      return setOpenDialog(my_gadget);
+      return dialog_setDialogExtension(my_gadget);
     })
 
     /////////////////////////////
