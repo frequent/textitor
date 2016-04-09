@@ -167,7 +167,7 @@
     }
     
     for (i = 0, len = form_list.length; i < len; i += 1) {
-      event_list.push(setSubmit(form_list[i]));
+      event_list.push(setFormSubmit(form_list[i]));
     }
     return event_list;
   }
