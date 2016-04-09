@@ -14609,7 +14609,7 @@ CodeMirror.defineMode("sql", function(config, parserConfig) {
     wrapped, writable, y
 */
 
-var jslint = (function JSLint() {
+var JSLINT = (function JSLint() {
     "use strict";
 
     function empty() {
