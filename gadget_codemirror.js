@@ -460,6 +460,7 @@
           break;
 
         case 88:  // x Close
+          console.log("X")
           my_callback(true);
           break;
       
@@ -473,6 +474,9 @@
           if (setNavigationMenu("right") === undefined) {
             my_callback();
           }
+          break;
+        default:
+          console.log(my_event.keyVode);
           break;
       }  
     }
@@ -520,6 +524,7 @@
   }
 
   function editor_closeDialog(my_codemirror) {
+    console.log("closing via x, but not open?")
     CodeMirror.menu_dict.evaluateState(true);
   }
   CodeMirror.commands.myEditor_closeDialog = editor_closeDialog;
