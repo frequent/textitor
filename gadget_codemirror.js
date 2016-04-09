@@ -59,7 +59,7 @@
   // Templates
   /////////////////////////////
   var MIME_MENU_TEMPLATE = "<div class='custom-mime-menu'>" +
-    "<select tabindex='1'>%s</select>" +
+    "<span>Mime Type:</span><select tabindex='1'>%s</select>" +
     "<span class='custom-menu-typewriter'>CTRL+ALT+</span>" +
     "<form name='set'>" +
       "<button type='submit' tabindex='2' class='custom-menu-button'>" +
@@ -455,36 +455,25 @@
     }
     if (my_event.ctrlKey && my_event.altKey) {
       switch(my_event.keyCode) {
-        case 83:  // Save
-          console.log("DELETE 83");
-          break;
-        
-        case 68:  // Delete
-          console.log("DELETE 68");
+        case 83:  // s Save
+          my_callback(true);
           break;
 
-        case 67:  // Close
-          console.log("CLOSE 67");
+        case 88:  // x Close
           my_callback(true);
-        break;
+          break;
       
         case 37:  // Left
           if (setNavigationMenu("left") === undefined) {
-            console.log("CLOSE 37");
             my_callback(true);
           }
           break;
           
         case 39:  // Right
           if (setNavigationMenu("right") === undefined) {
-            console.log("CLOSE 39");
             my_callback();
           }
           break;
-
-        default:
-          console.log("keycode:", my_event.keyCode);
-        break;
       }  
     }
   }
@@ -530,8 +519,13 @@
     }
   }
 
+  function editor_closeDialog(my_codemirror) {
+    CodeMirror.menu_dict.evaluateState(true);
+  }
+  CodeMirror.commands.myEditor_closeDialog = editor_closeDialog;
+
   function enterCallback(my_selected_value, my_event) {
-  
+
   }
   
   // Mime Type Select
@@ -553,8 +547,6 @@
         dialog_option_dict
       );
     } else if (my_direction !== CodeMirror.menu_dict.position) {
-      
-      // resolve promise chain, not just close
       CodeMirror.menu_dict.evaluateState();
     }
   }
@@ -592,7 +584,7 @@
   // CodeMirror.keyMap.my["Ctrl-Alt-U"] = undefined;
   // CodeMirror.keyMap.my["Ctrl-Alt-V"] = undefined;
   // CodeMirror.keyMap.my["Ctrl-Alt-W"] = undefined;
-  // CodeMirror.keyMap.my["Ctrl-Alt-X"] = undefined;
+  CodeMirror.keyMap.my["Ctrl-Alt-X"] = "myEditor_closeDialog";
   // CodeMirror.keyMap.my["Ctrl-Alt-Y"] = undefined;
   // CodeMirror.keyMap.my["Ctrl-Alt-Z"] = undefined;
   // CodeMirror.keyMap.my["Ctrl-Alt--"] = undefined;
