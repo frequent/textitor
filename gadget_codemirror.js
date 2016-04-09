@@ -1,22 +1,73 @@
 /*jslint indent: 2, vars: true, nomen: true, maxerr: 3 */
 /*global window, rJS, document, location, alert, prompt, confirm, setTimeout,
-  toolbox, CodeMirror, loopEventListener */
+  CodeMirror, loopEventListener */
 
   /*
-  ["Ctrl-Alt-0"] Open
   ["Ctrl-Alt-Up"] Up in current folder
   ["Ctrl-Alt-Down"] Down in current folder
   ["Ctrl-Alt-Right"] Up one folder/Close file
   ["Ctrl-Alt-Left"] Down one folder/Open file
+  (["Ctrl-Alt-Enter] Save + Close Menu)
+  (["Ctrl-Alt-Esc] Close Menu)
+  ["Ctrl-Alt-0"] Open File
+  ["Ctrl-Alt-M"] Open Mime
   ["Ctrl-Alt-S"] Save File (*)
   ["Ctrl-Alt-X"] Close File
   ["Ctrl-Alt-D"] Delete File
   ["Ctrl-Alt-H"] List of Shortcuts
   */
+
+  /////////////////////////////
+  // Supported Modes
+  /////////////////////////////
+  var modeMimes = {
+    "undefined": "text/plain",
+    "null": "text/plain",
+    "css": "text/css",
+    "javascript": "application/javascript",
+    "htmlmixed": "text/html",
+    "xml": "application/xml",
+    "python": "text/x-python",
+    "markdown": "text/x-markdown",
+    "php": "text/x-php",
+    "diff": "text/x-diff",
+    "sql": "text/x-sql",
+  };
+
+  var modeShortcuts = {
+    "html": "htmlmixed",
+    "js": "javascript",
+    "md": "markdown",
+    "py": "python"
+  };
  
+  var dialog_option_dict = {
+    "bottom": false,
+    "closeOnEnter": false,
+    "closeOnBlur": false,
+    "value": null,
+    "selectValueOnOpen": false,
+    "onKeyUp": function (my_event, my_value, my_callback) {
+      return setNavigationCallback(my_event, my_value, my_callback);
+    },
+    "onInput": function (my_event, my_value, my_callback) {
+      return setNavigationCallback(my_event, my_value, my_callback);
+    }
+  };
+
   /////////////////////////////
-  // templates
+  // Templates
   /////////////////////////////
+  var MIME_MENU_TEMPLATE = "<div class='custom-mime-menu'>" +
+    "<select tabindex='1'>%s</select>" +
+    "<span class='custom-menu-typewriter'>CTRL+ALT+</span>" +
+    "<form name='set'>" +
+      "<button type='submit' tabindex='2' class='custom-menu-button'>" +
+        "<b>S</b>elect</button></form>" +
+    "</div>";
+  
+  var MIME_ENTRY_TEMPLATE = "<option %s>%s</option>";
+
   var FILE_MENU_TEMPLATE = "<div class='custom-file-menu'>%s</div>";
 
   var FILE_ENTRY_TEMPLATE = "<div class='custom-file-menu-row'>" +
@@ -48,7 +99,7 @@
   // CodeMirror "Globals"
   /////////////////////////////
   CodeMirror.keyMap.my = {"fallthrough": "default"};
-  CodeMirror.navigationMenu = {"position": "idle"};
+  CodeMirror.menu_dict = {"position": "idle"};
 
   /////////////////////////////
   // dependency scripts
@@ -181,7 +232,7 @@
     }
 
     // XXX resolve promise chain! not just close
-    // CodeMirror.navigationMenu.evaluateState();
+    // CodeMirror.menu_dict.evaluateState();
     if (my_value !== undefined) {
       return false;
     }
@@ -261,7 +312,7 @@
                 closed = true;
                 dialog.parentNode.removeChild(dialog);
                 my_context.focus();
-                CodeMirror.navigationMenu.position = "idle";
+                CodeMirror.menu_dict.position = "idle";
         
                 if (my_option_dict.onClose) {
                   my_option_dict.onClose(dialog);
@@ -271,7 +322,7 @@
         }
 
         // expose
-        CodeMirror.navigationMenu.evaluateState = dialog_evaluateState;
+        CodeMirror.menu_dict.evaluateState = dialog_evaluateState;
   
         text_input = dialog_getTextInput(dialog);
         if (text_input) {
@@ -331,7 +382,7 @@
         closing_event_list.concat(setFormSubmitListeners(dialog, my_gadget));
   
         // create file menu
-        if (CodeMirror.navigationMenu.position === 'left') {
+        if (CodeMirror.menu_dict.position === 'left') {
           storage_interaction_list.push(
             new RSVP.Queue()
               .push(function () {
@@ -398,29 +449,6 @@
     );
   }
 
-  function setNavigationMenu(my_direction) {
-    switch (CodeMirror.navigationMenu.position) {
-      case "idle":
-        CodeMirror.navigationMenu.position = my_direction;
-        if (my_direction === "right") {
-          return OBJECT_MENU_TEMPLATE;
-        }
-        return OBJECT_LIST_TEMPLATE;
-      case "left":
-        if (my_direction === "left") {
-          return OBJECT_LIST_TEMPLATE;
-        }
-        CodeMirror.navigationMenu.position = "idle";
-        return;
-      case "right":
-        if (my_direction === "left") {
-          CodeMirror.navigationMenu.position = "idle";
-          return;
-        }
-        return OBJECT_LIST_TEMPLATE;
-    }
-  }
-
   function setNavigationCallback(my_event, my_value, my_callback) {
     if (my_event.type === "input") {
       my_callback(my_value);
@@ -461,45 +489,85 @@
     }
   }
 
-  // http://codemirror.net/doc/manual.html#addon_dialog
-  function enterCallback(my_selected_value, my_event) {
-  }  
-  
-  function navigateHorizontal(my_codemirror, my_direction) {
-    if (CodeMirror.navigationMenu.position === "idle") {
-      my_codemirror.openDialog(
-        setNavigationMenu(my_direction),
-        enterCallback,
-        {
-          "bottom": false,
-          "closeOnEnter": false,
-          "closeOnBlur": false,
-          "value": null,
-          "selectValueOnOpen": false,
-          "onKeyUp": function (my_event, my_value, my_callback) {
-            return setNavigationCallback(my_event, my_value, my_callback);
-          },
-          "onInput": function (my_event, my_value, my_callback) {
-            return setNavigationCallback(my_event, my_value, my_callback);
-          }
+  function setMimeModeMenu() {
+    var str = "",
+      is_active = "",
+      mime_to_set,
+      mime;
+    
+    for (mime in modeMimes) {
+      if (modeMimes.hasOwnProperty(mime)) {
+        mime_to_set = modeMimes[mime];
+        if (mime_to_set === CodeMirror.menu_dict.active_mime) {
+          is_active = " selected='selected'";
         }
-      );
-    } else if (my_direction !== CodeMirror.navigationMenu.position) {
-      
-      // resolve promise chain, not just close
-      CodeMirror.navigationMenu.evaluateState();
+        str += parseTemplate(MIME_ENTRY_TEMPLATE, [is_active, modeMimes[mime]]);  
+      }
+    }
+    return parseTemplate(MIME_MENU_TEMPLATE, [str]);
+  }
+
+  function setNavigationMenu(my_direction) {
+    switch (CodeMirror.menu_dict.position) {
+      case "idle":
+        CodeMirror.menu_dictCodeMirror.menu_dict = my_direction;
+        if (my_direction === "right") {
+          return OBJECT_MENU_TEMPLATE;
+        }
+        return OBJECT_LIST_TEMPLATE;
+      case "left":
+        if (my_direction === "left") {
+          return OBJECT_LIST_TEMPLATE;
+        }
+        CodeMirror.menu_dict.position = "idle";
+        return;
+      case "right":
+        if (my_direction === "left") {
+          CodeMirror.menu_dict.position = "idle";
+          return;
+        }
+        return OBJECT_LIST_TEMPLATE;
     }
   }
 
-  function navigateRight(cm) {
-    return navigateHorizontal(cm, "right");
+  function enterCallback(my_selected_value, my_event) {
+  
   }
-  CodeMirror.commands.myNavigateRight = navigateRight;
+  
+  // Mime Type Select
+  function editor_selectMimeMode(my_codemirror) {
+    my_codemirror.openDialog(
+      setMimeModeMenu(),
+      enterCallback,
+      dialog_option_dict
+    );
+  }
+  CodeMirror.commands.myEditor_selectMimeMode = editor_selectMimeMode;
 
-  function navigateLeft(cm) {
-    return navigateHorizontal(cm, "left");
+  // File Menu Navigation
+  function editor_navigateHorizontal(my_codemirror, my_direction) {
+    if (CodeMirror.menu_dict.position === "idle") {
+      my_codemirror.openDialog(
+        setNavigationMenu(my_direction),
+        enterCallback,
+        dialog_option_dict
+      );
+    } else if (my_direction !== CodeMirror.menu_dict.position) {
+      
+      // resolve promise chain, not just close
+      CodeMirror.menu_dict.evaluateState();
+    }
   }
-  CodeMirror.commands.myNavigateLeft = navigateLeft;
+
+  function editor_navigateRight(cm) {
+    return editor_navigateHorizontal(cm, "right");
+  }
+  CodeMirror.commands.myEditor_navigateRight = editor_navigateRight;
+
+  function editor_navigateLeft(cm) {
+    return editor_navigateHorizontal(cm, "left");
+  }
+  CodeMirror.commands.myEditor_navigateLeft = editor_navigateLeft;
   
   // CodeMirror.keyMap.my["Ctrl-Alt-A"] = undefined;
   // CodeMirror.keyMap.my["Ctrl-Alt-B"] = undefined;
@@ -513,7 +581,7 @@
   // CodeMirror.keyMap.my["Ctrl-Alt-J"] = undefined;
   // CodeMirror.keyMap.my["Ctrl-Alt-K"] = undefined;
   // CodeMirror.keyMap.my["Ctrl-Alt-L"] = undefined;
-  // CodeMirror.keyMap.my["Ctrl-Alt-M"] = undefined;
+  CodeMirror.keyMap.my["Ctrl-Alt-M"] = "myEditor_selectMimeMode";
   // CodeMirror.keyMap.my["Ctrl-Alt-N"] = undefined;
   // CodeMirror.keyMap.my["Ctrl-Alt-O"] = undefined;
   // CodeMirror.keyMap.my["Ctrl-Alt-P"] = undefined;
@@ -528,64 +596,15 @@
   // CodeMirror.keyMap.my["Ctrl-Alt-Y"] = undefined;
   // CodeMirror.keyMap.my["Ctrl-Alt-Z"] = undefined;
   // CodeMirror.keyMap.my["Ctrl-Alt--"] = undefined;
-  CodeMirror.keyMap.my["Ctrl-Alt-Right"] = "myNavigateRight";
-  CodeMirror.keyMap.my["Ctrl-Alt-Left"] = "myNavigateLeft";
+  CodeMirror.keyMap.my["Ctrl-Alt-Right"] = "myEditor_navigateRight";
+  CodeMirror.keyMap.my["Ctrl-Alt-Left"] = "myEditor_navigateLeft";
   // CodeMirror.keyMap.my["Ctrl-Alt-Return"] = undefined;
-
-
 
   var editorURI;
   var editorTextarea;
   var editor;
   var commands = {};
-  var ecc = new toolbox.ExtendedCancellableChain();
 
-
-
-
-  ///////////
-  // Tools //
-  ///////////
-
-  // Object.keys(CodeMirror.mimeModes).map(function (mime) {
-  //  return '"' + CodeMirror.mimeModes[mime] + '": "' + mime + '"'; })
-  //    .join(",\n")
-
-  var modeMimes = {
-    "undefined": "text/plain",
-    "null": "text/plain",
-    "css": "text/css",
-    "javascript": "application/javascript",
-    "htmlmixed": "text/html",
-    "xml": "application/xml",
-    "python": "text/x-python",
-    "clike": "text/x-c",
-    "java": "text/x-java",
-    "csharp": "text/x-csharp",
-    "scala": "text/x-scala",
-    "markdown": "text/x-markdown",
-    "php": "text/x-php",
-    "diff": "text/x-diff",
-    "rst": "text/x-rst",
-    "stex": "text/x-stex",
-    "perl": "text/x-perl",
-    "ruby": "text/x-ruby",
-    "shell": "text/x-sh",
-    "sql": "text/x-sql",
-    "go": "text/x-go"
-  };
-
-  var modeShortcuts = {
-    "c": "clike",
-    "c++": "clike",
-    "c#": "csharp",
-    "html": "htmlmixed",
-    "js": "javascript",
-    "md": "markdown",
-    "py": "python",
-    "sh": "shell"
-  };
-  
   function setModified(cm) { cm.modified = true; }
 
   function commandPrompt(cm) {
