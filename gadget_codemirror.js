@@ -14,10 +14,13 @@
   ["Ctrl-Alt-H"] List of Shortcuts
   */
  
+  /////////////////////////////
+  // templates
+  /////////////////////////////
   var FILE_MENU_TEMPLATE = "<div class='custom-file-menu'>%s</div>";
 
   var FILE_ENTRY_TEMPLATE = "<div class='custom-file-menu-row'>" +
-      "<input type='checkbox' autocomplete='false' />" +
+      "<input type='checkbox' autocomplete='off' />" +
       "<span class='custom-file-menu-checkbox-overlay'>%s</span>" +
       "</div>";
   
@@ -35,10 +38,15 @@
     "<form name='search'><button type='submit' class='custom-menu-button'>" +
     "<b>F</b>ind</button></form>";
 
+  /////////////////////////////
+  // CodeMirror "Globals"
+  /////////////////////////////
   CodeMirror.keyMap.my = {"fallthrough": "default"};
   CodeMirror.navigationMenu = {"position": "idle"};
 
-  // not declared elsewhere
+  /////////////////////////////
+  // dependency scripts
+  /////////////////////////////
   function promiseEventListener(target, type, useCapture) {
     var handle_event_callback;
 
@@ -60,7 +68,9 @@
     return new RSVP.Promise(resolver, canceller);
   }
   
-  // mini templating Python-style
+  /////////////////////////////
+  // template rendering
+  /////////////////////////////
   function parseTemplate(my_template, my_value_list) {
     var html_content = [],
       counter = 0,
@@ -128,15 +138,48 @@
     }
     my_context.state.currentNotificationClose = my_newVal;
   }
+
+  /////////////////////////////
+  // form handling
+  /////////////////////////////
+  function formSubmitCallback(my_event, my_gadget, my_is_submit_event) {
+    console.log("inside form submit callback");
+    console.log(my_event);
+    console.log(my_event.target);
+    console.log(my_gadget);
+    console.log(my_is_submit_event);
+  }
   
-  // custom CodeMirror openDialog handler
-  // XXX break up!
+  function setFormSubmitListeners(my_dialog, my_gadget) {
+    var form_list = my_dialog.querySelectorAll('form'),
+      event_list = [],
+      len,
+      i;
+    
+    function setFormSubmit(my_form) {
+      return new RSVP.Queue()
+        .push(function () {
+          return promiseEventListener(my_form, "submit", false);
+        })
+        .push(function (my_event) {
+          return formSubmitCallback(my_event, my_gadget, true);
+        });
+    }
+    
+    for (i = 0, len = form_list.length; i < len; i += 1) {
+      event_list.push(setSubmit(form_list[i]));
+    }
+    return event_list;
+  }
+  
+  /////////////////////////////
+  // dialog extension
+  /////////////////////////////
   function setOpenDialog(my_gadget) {
     return CodeMirror.defineExtension(
       "openDialog",
       function(my_template, my_callback, my_option_dict) {
         var closing_event_list = [],
-          recurring_event_list = [],
           storage_interaction_list = [],
           event_list = [],
           entry_dict,
@@ -145,15 +188,13 @@
           inp,
           input_value,
           button,
-          action_form,
           my_context;
 
         my_context = my_context || this;
         my_option_dict = my_option_dict || {};
         dialog = setDialog(my_context, my_template, my_option_dict.bottom);
         closed = false;
-        action_form = dialog.querySelector("form");
-  
+        
         // wrap in Promise?
         function close(my_newVal) {      
           if (typeof my_newVal == 'string') {
@@ -231,21 +272,8 @@
           );
         }
 
-        /*
-        if (action_form) {
-          //recurring_event_list.push(
-            var baz = loopEventListener(
-              action_form,
-              "submit",
-              false, 
-              function (my_event) {
-                var target = my_event.target,
-                  action = target.submit.name;
-              }
-            )
-          // );
-        }
-        */
+        // form submits
+        closing_event_list.concat(setFormSubmitListeners(dialog, my_gadget));
   
         // create file menu
         if (CodeMirror.navigationMenu.position === 'left') {
@@ -313,9 +341,7 @@
       }
     );
   }
-      
 
-  
   function setNavigationMenu(my_direction) {
     switch (CodeMirror.navigationMenu.position) {
       case "idle":
