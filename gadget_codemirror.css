@@ -43,3 +43,6 @@ body {
 .CodeMirror .custom-file-menu-row > input:first-child:checked + span {
   font-weight: bold;
 }
+.CodeMirror .custom-invalid {
+  color: red;
+}
