@@ -221,6 +221,8 @@
               return false;
             })
             .push(function (my_close_dialog) {
+              console.log("SO??")
+              console.log(my_close_dialog)
               if (my_close_dialog === true) {
                 closed = true;
                 dialog.parentNode.removeChild(dialog);
