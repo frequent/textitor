@@ -256,7 +256,7 @@
             console.log(text_input);
             event_list.push(
               loopEventListener(text_input, "input", false, function (my_event) {
-                return my_option_dict.onInput(my_event, text_input_value, dialog_evaluateState);
+                return my_option_dict.onInput(my_event, text_input.value, dialog_evaluateState);
               })
             );
           }
@@ -266,7 +266,7 @@
             event_list.push(
               loopEventListener(text_input, "blur", false, function (my_event) {
                 if (my_option_dict.onBlur) {
-                  return my_option_dict.onBlur(my_event, text_input_value, dialog_evaluateState);
+                  return my_option_dict.onBlur(my_event, text_input.value, dialog_evaluateState);
                 }
               })
             );
@@ -276,7 +276,7 @@
         if (my_option_dict.onKeyUp) {
           event_list.push(
             loopEventListener(text_input, "keyup", false, function (my_event) {
-              return my_option_dict.onKeyUp(my_event, text_input_value, dialog_evaluateState);
+              return my_option_dict.onKeyUp(my_event, text_input.value, dialog_evaluateState);
             })
           );
         }
