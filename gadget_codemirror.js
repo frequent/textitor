@@ -209,10 +209,10 @@
         dialog = setDialog(my_context, my_template, my_option_dict.bottom);
         closed = false;
         
-        function dialog_evaluateState(my_parameter) {      
+        function dialog_evaluateState(my_parameter) {
           return new RSVP.Queue()
             .push(function () {
-              if (typeof my_newVal == 'string') {
+              if (typeof my_parameter === 'string') {
                 text_input.value = my_parameter;
               }
               if (closed !== true) {
@@ -221,8 +221,6 @@
               return my_parameter;
             })
             .push(function (my_close_dialog) {
-              console.log("SO??")
-              console.log(my_close_dialog)
               if (my_close_dialog === true) {
                 closed = true;
                 dialog.parentNode.removeChild(dialog);
