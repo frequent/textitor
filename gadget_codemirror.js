@@ -24,19 +24,25 @@
       "<span class='custom-file-menu-checkbox-overlay'>%s</span>" +
       "</div>";
   
-  var OBJECT_MENU_TEMPLATE = "<span>Name:</span><input type=\"text\" />" +
+  var OBJECT_MENU_TEMPLATE = "<span>Name:</span>" +
+    "<input type='text' tabindex='1' />" +
     "<span class='custom-menu-typewriter'>CTRL+ALT+</span>" +
-    "<form name='save'><button type='submit' class='custom-menu-button'>" +
-    "<b>S</b>ave</button></form>" +
-    "<form name='close'><button type='submit' class='custom-menu-button'>" +
-    "<b>C</b>lose</button></form>" +
-    "<form name='remove'><button type='submit' class='custom-menu-button'>" + 
-    "<b>D</b>elete</button></form>";
+    "<form name='save'>" +
+      "<button type='submit' tabindex='2' class='custom-menu-button'>" +
+        "<b>S</b>ave</button></form>" +
+    "<form name='close'>" +
+      "<button type='submit' tabindex='3' class='custom-menu-button'>" +
+        "<b>C</b>lose</button></form>" +
+    "<form name='remove'>" +
+      "<button type='submit' tabindex='4' class='custom-menu-button'>" + 
+        "<b>D</b>elete</button></form>";
   
-  var OBJECT_LIST_TEMPLATE = "<span>Search:</span><input type=\"text\" />" +
+  var OBJECT_LIST_TEMPLATE = "<span>Search:</span>" +
+    "<input type='text' tabindex='1' />" +
     "<span class='custom-menu-typewriter'>CTRL+ALT+</span>" +
-    "<form name='search'><button type='submit' class='custom-menu-button'>" +
-    "<b>F</b>ind</button></form>";
+    "<form name='search'>" +
+      "<button type='submit' tabindex='2' class='custom-menu-button'>" +
+        "<b>F</b>ind</button></form>";
 
   /////////////////////////////
   // CodeMirror "Globals"
@@ -143,10 +149,18 @@
   // form handling
   /////////////////////////////
   function dialog_updateStorage(my_gadget, my_dialog, my_event, my_text_input) {
-    console.log("inside form submit callback");
-    console.log(my_gadget);
-    console.log(my_dialog);
-    console.log(my_event);
+    var action;
+
+    console.log(my_text_input)
+    console.log(my_dialog.querSelector('input'))
+    // submits
+    if (my_event && my_event.target) {
+      action = my_event.target.name;
+      if (action === "save") {
+        
+      }
+    }
+    
     // XXX resolve promise chain! not just close
     // CodeMirror.navigationMenu.evaluateState();
     if (my_text_input !== undefined) {
