@@ -460,8 +460,7 @@
           break;
 
         case 88:  // x Close
-          console.log("X")
-          my_callback(true);
+          my_callback();
           break;
       
         case 37:  // Left
@@ -525,7 +524,7 @@
 
   function editor_closeDialog(my_codemirror) {
     if (CodeMirror.menu_dict.evaluateState) {
-      CodeMirror.menu_dict.evaluateState(true);
+      CodeMirror.menu_dict.evaluateState();
     }
   }
   CodeMirror.commands.myEditor_closeDialog = editor_closeDialog;
