@@ -215,10 +215,10 @@
               if (typeof my_newVal == 'string') {
                 text_input.value = my_parameter;
               }
-              if (closed === true) {
+              if (closed !== true) {
                 return dialog_updateStorage(my_gadget, dialog);
               }
-              return false;
+              return my_parameter;
             })
             .push(function (my_close_dialog) {
               console.log("SO??")
