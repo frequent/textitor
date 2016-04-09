@@ -200,7 +200,6 @@
           dialog,
           closed,
           text_input,
-          text_input_value,
           button,
           my_context;
 
@@ -210,13 +209,8 @@
         closed = false;
         
         function dialog_evaluateState(my_parameter) {
-          console.log(my_parameter)
-          console.log(typeof my_parameter)
           return new RSVP.Queue()
             .push(function () {
-              if (typeof my_parameter === 'string') {
-                text_input.value = my_parameter;
-              }
               if (closed !== true) {
                 return dialog_updateStorage(my_gadget, dialog);
               }
@@ -249,11 +243,7 @@
               text_input.select();
             }
           }
-          text_input_value = text_input.value;
-
           if (my_option_dict.onInput) {
-            console.log("Binding to input");
-            console.log(text_input);
             event_list.push(
               loopEventListener(text_input, "input", false, function (my_event) {
                 return my_option_dict.onInput(my_event, text_input.value, dialog_evaluateState);
@@ -292,7 +282,7 @@
                 CodeMirror.e_stop(my_event);
                 return dialog_evaluateState();
               }
-              return my_option_dict.onKeyDown(my_event, text_input_value, dialog_evaluateState);
+              return my_option_dict.onKeyDown(my_event, text_input.value, dialog_evaluateState);
             })
           );
         }
@@ -392,8 +382,9 @@
   }
 
   function setNavigationCallback(my_event, my_value, my_callback) {
-    console.log("inside setNavCallback");
-    console.log(my_value);
+    if (my_event.type === "input") {
+      my_callback(my_value);
+    }
     if (my_event.ctrlKey && my_event.altKey) {
       switch(my_event.keyCode) {
         
@@ -410,14 +401,14 @@
         // Close
         case 67:
           console.log("CLOSE 67");
-          my_callback();
+          my_callback(true);
         break;
       
         // Left
         case 37:
           if (setNavigationMenu("left") === undefined) {
             console.log("CLOSE 37");
-            my_callback();
+            my_callback(true);
           }
           break;
           
