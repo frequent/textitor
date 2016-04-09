@@ -524,8 +524,9 @@
   }
 
   function editor_closeDialog(my_codemirror) {
-    console.log("closing via x, but not open?")
-    CodeMirror.menu_dict.evaluateState(true);
+    if (CodeMirror.menu_dict.evaluateState) {
+      CodeMirror.menu_dict.evaluateState(true);
+    }
   }
   CodeMirror.commands.myEditor_closeDialog = editor_closeDialog;
 
