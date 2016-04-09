@@ -148,6 +148,8 @@
     console.log(my_event.target);
     console.log(my_gadget);
     console.log(my_is_submit_event);
+    // XXX resolve promise chain! not just close
+    CodeMirror.navigationMenu.closer();
   }
   
   function setFormSubmitListeners(my_dialog, my_gadget) {
@@ -261,7 +263,9 @@
         if (my_option_dict.onKeyDown) {
           event_list.push(
             loopEventListener(inp, "keydown", false, function (my_event) {
+              
               // close on ESC
+              // XXX Move to resolve handler vs just closing here
               if (my_event.keyCode == 27) {
                 inp.blur();
                 CodeMirror.e_stop(my_event);
@@ -324,20 +328,20 @@
         }
   
         // gogo-gadget-oh rsvp...
+        // XXX always close the dialog through this, resolve all promises?
         return new RSVP.Queue()
           .push(function () {
             closeNotification(my_context, null);
             return RSVP.all(storage_interaction_list);
           })
           .push(function () {
-            return RSVP.any([
+            return RSVP.all([
               RSVP.all(event_list),
               RSVP.any(closing_event_list)
             ]);
           })
           .push(function (my_return_close) {
-            console.log("UPS, we close");
-            return close;
+            return close();
           });
       }
     );
@@ -436,6 +440,8 @@
         }
       );
     } else if (my_direction !== CodeMirror.navigationMenu.position) {
+      
+      // resolve promise chain, not just close
       CodeMirror.navigationMenu.closer();
     }
   }
