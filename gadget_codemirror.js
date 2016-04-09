@@ -112,13 +112,11 @@
     return div.firstChild;
   }
 
-    
-  // create dialog html
-  function setDialog(my_context, my_template, my_bottom) {
+  function dialog_createDialog(my_context, my_template, my_option_dict) {
     var wrap = my_context.getWrapperElement(),
       dialog = wrap.appendChild(document.createElement("div"));
 
-    if (my_bottom) {
+    if (my_option_dict.bottom) {
       dialog.className = "CodeMirror-dialog CodeMirror-dialog-bottom";
     } else {
       dialog.className = "CodeMirror-dialog CodeMirror-dialog-top";
@@ -132,7 +130,7 @@
   }
 
   // required by CodeMirror
-  function closeNotification(my_context, my_newVal) {
+  function dialog_closeNotification(my_context, my_newVal) {
     if (my_context.state.currentNotificationClose) {
       my_context.state.currentNotificationClose();
     }
@@ -142,14 +140,18 @@
   /////////////////////////////
   // form handling
   /////////////////////////////
-  function formSubmitCallback(my_event, my_gadget, my_is_submit_event) {
+  function dialog_updateStorage(my_event, my_gadget, my_close_dialog) {
+    
+    // return + click + close + filter + shortcuts
     console.log("inside form submit callback");
     console.log(my_event);
     console.log(my_event.target);
     console.log(my_gadget);
     console.log(my_is_submit_event);
-    // XXX resolve promise chain! not just close
-    CodeMirror.navigationMenu.closer();
+    
+    // if I want to close, return true
+    // I must run through close because I need gadget
+    return my_close_dialog;
   }
   
   function setFormSubmitListeners(my_dialog, my_gadget) {
@@ -164,7 +166,7 @@
           return promiseEventListener(my_form, "submit", false);
         })
         .push(function (my_event) {
-          return formSubmitCallback(my_event, my_gadget, true);
+          return dialog_updateStorage(my_event, my_gadget);
         });
     }
     
@@ -174,10 +176,21 @@
     return event_list;
   }
   
+  function dialog_getTextInput(my_dialog) {
+    var input_list = my_dialog.querySelectorAll("input"),
+      len,
+      i;
+    for (i = 0, len = input_list.length; i < len; i += 1) {
+      if (input_list[i].type === 'text') {
+        return input_list[i];
+      }
+    }
+  }
+  
   /////////////////////////////
   // dialog extension
   /////////////////////////////
-  function setOpenDialog(my_gadget) {
+  function dialog_setDialog(my_gadget) {
     return CodeMirror.defineExtension(
       "openDialog",
       function(my_template, my_callback, my_option_dict) {
@@ -187,55 +200,62 @@
           entry_dict,
           dialog,
           closed,
-          inp,
-          input_value,
+          text_input,
+          text_input_value,
           button,
           my_context;
 
         my_context = my_context || this;
         my_option_dict = my_option_dict || {};
-        dialog = setDialog(my_context, my_template, my_option_dict.bottom);
+        dialog = dialog_createDialog(my_context, my_template, my_option_dict);
         closed = false;
-        
-        // wrap in Promise?
-        function close(my_newVal) {      
-          if (typeof my_newVal == 'string') {
-            inp.value = my_newVal;
-          } else {
-            if (closed) {
-              return;
-            }
-            
-            closed = true;
-            dialog.parentNode.removeChild(dialog);
-            my_context.focus();
-            CodeMirror.navigationMenu.position = "idle";
-    
-            if (my_option_dict.onClose) {
-              my_option_dict.onClose(dialog);
-            }
-          }
+
+        function dialog_evaluateState(my_parameter) {      
+          return new RSVP.Queue()
+            .push(function () {
+              if (typeof my_parameter == 'string') {
+                text_input.value = my_parameter;
+              } else {
+                if (closed === false) {
+                  // XXX passing dialog instead of event?
+                  return dialog_updateStorage(dialog, my_gadget, my_parameter);
+                }
+              }
+              return false;
+            })
+            .push(function (my_close_dialog) {
+              if (my_close_dialog === true) {
+                closed = true;
+                dialog.parentNode.removeChild(dialog);
+                my_context.focus();
+                CodeMirror.navigationMenu.position = "idle";
+
+                if (my_option_dict.onClose) {
+                  my_option_dict.onClose(dialog);
+                } 
+              }
+            });
         }
 
         // expose
-        CodeMirror.navigationMenu.closer = close;
+        CodeMirror.navigationMenu.dialog_evaluateState = dialog_evaluateState;
   
-        inp = dialog.getElementsByTagName("input")[0];
-        if (inp) {
-          inp.focus();
+        text_input = dialog_getTextInput(dialog);
+        if (text_input) {
+          text_input.focus();
           
           if (my_option_dict.value) {
-            inp.value = my_option_dict.value;
+            text_input.value = my_option_dict.value;
             if (my_option_dict.selectValueOnOpen !== false) {
-              inp.select();
+              text_input.select();
             }
           }
-          input_value = inp.value;
+          text_input_value = text_input.value;
 
           if (my_option_dict.onInput) {
             event_list.push(
-              loopEventListener(inp, "input", false, function (my_event) {
-                return my_option_dict.onInput(my_event, input_value, close);
+              loopEventListener(text_input, "input", false, function (my_event) {
+                return my_option_dict.onInput(my_event, text_input_value, dialog_evaluateState);
               })
             );
           }
@@ -243,9 +263,9 @@
           // never close on blur of textinput
           if (my_option_dict.closeOnBlur !== false) {
             event_list.push(
-              loopEventListener(inp, "blur", false, function (my_event) {
+              loopEventListener(text_input, "blur", false, function (my_event) {
                 if (my_option_dict.onBlur) {
-                  return my_option_dict.onBlur(my_event, input_value, close);
+                  return my_option_dict.onBlur(my_event, text_input_value, dialog_evaluateState);
                 }
               })
             );
@@ -254,24 +274,24 @@
 
         if (my_option_dict.onKeyUp) {
           event_list.push(
-            loopEventListener(inp, "keyup", false, function (my_event) {
-              return my_option_dict.onKeyUp(my_event, input_value, close);
+            loopEventListener(text_input, "keyup", false, function (my_event) {
+              return my_option_dict.onKeyUp(my_event, text_input_value, dialog_evaluateState);
             })
           );
         }
 
         if (my_option_dict.onKeyDown) {
           event_list.push(
-            loopEventListener(inp, "keydown", false, function (my_event) {
+            loopEventListener(text_input, "keydown", false, function (my_event) {
               
               // close on ESC
               // XXX Move to resolve handler vs just closing here
               if (my_event.keyCode == 27) {
-                inp.blur();
+                text_input.blur();
                 CodeMirror.e_stop(my_event);
-                return close();
+                return dialog_evaluateState(my_event, my_gadget, true);
               }
-              return my_option_dict.onKeyDown(my_event, input_value, close);
+              return my_option_dict.onKeyDown(my_event, text_input_value, dialog_evaluateState);
             })
           );
         }
@@ -331,7 +351,7 @@
         // XXX always close the dialog through this, resolve all promises?
         return new RSVP.Queue()
           .push(function () {
-            closeNotification(my_context, null);
+            dialog_closeNotification(my_context, null);
             return RSVP.all(storage_interaction_list);
           })
           .push(function () {
@@ -341,33 +361,10 @@
             ]);
           })
           .push(function (my_return_close) {
-            return close();
+            return dialog_evaluateState();
           });
       }
     );
-  }
-
-  function setNavigationMenu(my_direction) {
-    switch (CodeMirror.navigationMenu.position) {
-      case "idle":
-        CodeMirror.navigationMenu.position = my_direction;
-        if (my_direction === "right") {
-          return OBJECT_MENU_TEMPLATE;
-        }
-        return OBJECT_LIST_TEMPLATE;
-      case "left":
-        if (my_direction === "left") {
-          return OBJECT_LIST_TEMPLATE;
-        }
-        CodeMirror.navigationMenu.position = "idle";
-        return;
-      case "right":
-        if (my_direction === "left") {
-          CodeMirror.navigationMenu.position = "idle";
-          return;
-        }
-        return OBJECT_LIST_TEMPLATE;
-    }
   }
 
   function setNavigationCallback(my_event, my_value, my_callback) {
@@ -392,17 +389,17 @@
       
         // Left
         case 37:
-          if (setNavigationMenu("left") === undefined) {
+          if (setDialogContent("left") === undefined) {
             console.log("CLOSE 37");
-            my_callback();
+            my_callback(true);
           }
           break;
           
         // Right
         case 39:
-          if (setNavigationMenu("right") === undefined) {
+          if (setDialogContent("right") === undefined) {
             console.log("CLOSE 39");
-            my_callback();
+            my_callback(true);
           }
           break;
 
@@ -413,15 +410,38 @@
     }
   }
 
+  function setDialogContent(my_direction) {
+    switch (CodeMirror.navigationMenu.position) {
+      case "idle":
+        CodeMirror.navigationMenu.position = my_direction;
+        if (my_direction === "right") {
+          return OBJECT_MENU_TEMPLATE;
+        }
+        return OBJECT_LIST_TEMPLATE;
+      case "left":
+        if (my_direction === "left") {
+          return OBJECT_LIST_TEMPLATE;
+        }
+        CodeMirror.navigationMenu.position = "idle";
+        return;
+      case "right":
+        if (my_direction === "left") {
+          CodeMirror.navigationMenu.position = "idle";
+          return;
+        }
+        return OBJECT_LIST_TEMPLATE;
+    }
+  }
 
   // http://codemirror.net/doc/manual.html#addon_dialog
   function enterCallback(my_selected_value, my_event) {
+    console.log("ENTERCALLBACK");
   }  
   
   function navigateHorizontal(my_codemirror, my_direction) {
     if (CodeMirror.navigationMenu.position === "idle") {
       my_codemirror.openDialog(
-        setNavigationMenu(my_direction),
+        setDialogContent(my_direction),
         enterCallback,
         {
           "bottom": false,
@@ -429,20 +449,18 @@
           "closeOnBlur": false,
           "value": null,
           "selectValueOnOpen": false,
-          "onKeyUp": function (e, val, close) {
-            setNavigationCallback(e, val, close);
+          "onKeyUp": function (event, value, callback) {
+            setNavigationCallback(event, value, callback);
             return true;
           },
-          "onInput": function (e, val, close) {
-            setNavigationCallback(e, val, close);
+          "onInput": function (event, value, callback) {
+            setNavigationCallback(event, value, callback);
             return true;
           }
         }
       );
     } else if (my_direction !== CodeMirror.navigationMenu.position) {
-      
-      // resolve promise chain, not just close
-      CodeMirror.navigationMenu.closer();
+      CodeMirror.navigationMenu.dialog_evaluateState();
     }
   }
 
@@ -454,7 +472,6 @@
   function navigateLeft(cm) {
     return navigateHorizontal(cm, "left");
   }
-  
   CodeMirror.commands.myNavigateLeft = navigateLeft;
   
   // CodeMirror.keyMap.my["Ctrl-Alt-A"] = undefined;
@@ -633,7 +650,7 @@
         cm.setOption("theme", args.slice(1).join(" ") || "default");
       };
       
-      return setOpenDialog(my_gadget);
+      return dialog_setDialog(my_gadget);
     })
 
     /////////////////////////////
@@ -701,27 +718,24 @@
     // declared service
     /////////////////////////////    
     .declareService(function () {
-      var exec_queue = new RSVP.Queue();
-
       window.editor.refresh();
       window.editor.focus();
 
-      exec_queue.push(function () {
-        return RSVP.any([
-          //loopEventListener(editor, 'change', false, setModified),
-          promiseEventListener(window, "onbeforeunload", true)
-        ]);
-      })
-      .push(function () {
-        if (editor.getOption("readOnly")) {
-          return "An action is on going! May be saving your work!";
-        }
-        if (editor.modified) {
-          return "Don't forget to save your work!";
-        }
-      });
-
-      return exec_queue;
+      return new RSVP.Queue()
+        .push(function () {
+          return RSVP.any([
+            //loopEventListener(editor, 'change', false, setModified),
+            promiseEventListener(window, "onbeforeunload", true)
+          ]);
+        })
+        .push(function () {
+          if (editor.getOption("readOnly")) {
+            return "An action is on going! May be saving your work!";
+          }
+          if (editor.modified) {
+            return "Don't forget to save your work!";
+          }
+        });
     })
 
     /////////////////////////////
