@@ -181,7 +181,7 @@
       i;
     for (i = 0, len = input_list.length; i < len; i += 1) {
       if (input_list[i].type === 'text') {
-        return input[i];
+        return input_list[i];
       }
     }
   }
