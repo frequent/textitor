@@ -458,7 +458,7 @@
         }
       );
     } else if (my_direction !== CodeMirror.navigationMenu.position) {
-      CodeMirror.navigationMenu.dialog_evaluateState();
+      CodeMirror.navigationMenu.dialog_evaluateState(true);
     }
   }
 
