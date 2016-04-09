@@ -451,12 +451,12 @@
           "value": null,
           "selectValueOnOpen": false,
           "onKeyUp": function (my_event, my_value, my_callback) {
-            setNavigationCallback(my_event, my_value, my_callback);
-            return true;
+            console.log("keyup");
+            return setNavigationCallback(my_event, my_value, my_callback);
           },
           "onInput": function (my_event, my_value, my_callback) {
-            setNavigationCallback(my_event, my_value, my_callback);
-            return true;
+            console.log("input");
+            return setNavigationCallback(my_event, my_value, my_callback);
           }
         }
       );
