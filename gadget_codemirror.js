@@ -142,13 +142,16 @@
   /////////////////////////////
   // form handling
   /////////////////////////////
-  function dialog_updateStorage(my_gadget, my_dialog, my_event) {
+  function dialog_updateStorage(my_gadget, my_dialog, my_event, my_text_input) {
     console.log("inside form submit callback");
     console.log(my_gadget);
     console.log(my_dialog);
     console.log(my_event);
     // XXX resolve promise chain! not just close
     // CodeMirror.navigationMenu.evaluateState();
+    if (my_text_input !== undefined) {
+      return false;
+    }
     return true;
   }
   
@@ -212,7 +215,7 @@
           return new RSVP.Queue()
             .push(function () {
               if (closed !== true) {
-                return dialog_updateStorage(my_gadget, dialog);
+                return dialog_updateStorage(my_gadget, dialog, null, my_parameter);
               }
               return my_parameter;
             })
