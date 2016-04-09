@@ -142,7 +142,7 @@
   /////////////////////////////
   // form handling
   /////////////////////////////
-  function formSubmitCallback(my_event, my_gadget, my_is_submit_event) {
+  function dialog_updateStorage(my_gadget, my_dialog, my_event) {
     console.log("inside form submit callback");
     console.log(my_event);
     console.log(my_event.target);
@@ -158,18 +158,18 @@
       len,
       i;
     
-    function setFormSubmit(my_form) {
+    function dialog_setFormSubmitHandler(my_form) {
       return new RSVP.Queue()
         .push(function () {
           return promiseEventListener(my_form, "submit", false);
         })
         .push(function (my_event) {
-          return formSubmitCallback(my_event, my_gadget, true);
+          return dialog_updateStorage(my_gadget, my_form.parentNode, my_event);
         });
     }
     
     for (i = 0, len = form_list.length; i < len; i += 1) {
-      event_list.push(setFormSubmit(form_list[i]));
+      event_list.push(dialog_setFormSubmitHandler(form_list[i]));
     }
     return event_list;
   }
@@ -209,24 +209,29 @@
         dialog = setDialog(my_context, my_template, my_option_dict.bottom);
         closed = false;
         
-        // wrap in Promise?
         function dialog_evaluateState(my_parameter) {      
-          if (typeof my_newVal == 'string') {
-            text_input.value = my_parameter;
-          } else {
-            if (closed) {
-              return;
-            }
-            
-            closed = true;
-            dialog.parentNode.removeChild(dialog);
-            my_context.focus();
-            CodeMirror.navigationMenu.position = "idle";
-    
-            if (my_option_dict.onClose) {
-              my_option_dict.onClose(dialog);
-            }
-          }
+          return new RSVP.Queue()
+            .push(function () {
+              if (typeof my_newVal == 'string') {
+                text_input.value = my_parameter;
+              }
+              if (closed === true) {
+                return dialog_updateStorage(my_gadget, dialog);
+              }
+              return false;
+            })
+            .push(function (my_close_dialog) {
+              if (my_close_dialog === true) {
+                closed = true;
+                dialog.parentNode.removeChild(dialog);
+                my_context.focus();
+                CodeMirror.navigationMenu.position = "idle";
+        
+                if (my_option_dict.onClose) {
+                  my_option_dict.onClose(dialog);
+                }  
+              }
+            });
         }
 
         // expose
