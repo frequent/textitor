@@ -392,6 +392,8 @@
   }
 
   function setNavigationCallback(my_event, my_value, my_callback) {
+    console.log("inside setNavCallback");
+    console.log(my_value);
     if (my_event.ctrlKey && my_event.altKey) {
       switch(my_event.keyCode) {
         
@@ -452,10 +454,14 @@
           "selectValueOnOpen": false,
           "onKeyUp": function (my_event, my_value, my_callback) {
             console.log("keyup");
+            console.log(my_value)
+            console.log(my_callback)
             return setNavigationCallback(my_event, my_value, my_callback);
           },
           "onInput": function (my_event, my_value, my_callback) {
             console.log("input");
+            console.log(my_value);
+            console.log(my_callback);
             return setNavigationCallback(my_event, my_value, my_callback);
           }
         }
