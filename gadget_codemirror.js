@@ -330,12 +330,13 @@
             return RSVP.all(storage_interaction_list);
           })
           .push(function () {
-            return RSVP.all([
+            return RSVP.any([
               RSVP.all(event_list),
               RSVP.any(closing_event_list)
             ]);
           })
           .push(function (my_return_close) {
+            console.log("UPS, we close");
             return close;
           });
       }
