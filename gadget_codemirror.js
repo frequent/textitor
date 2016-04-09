@@ -144,12 +144,12 @@
   /////////////////////////////
   function dialog_updateStorage(my_gadget, my_dialog, my_event) {
     console.log("inside form submit callback");
-    console.log(my_event);
-    console.log(my_event.target);
     console.log(my_gadget);
-    console.log(my_is_submit_event);
+    console.log(my_dialog);
+    console.log(my_event);
     // XXX resolve promise chain! not just close
-    CodeMirror.navigationMenu.evaluateState();
+    // CodeMirror.navigationMenu.evaluateState();
+    return true;
   }
   
   function setFormSubmitListeners(my_dialog, my_gadget) {
