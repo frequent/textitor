@@ -152,7 +152,7 @@
     var text_input,
       action;
 
-    console.log(my_text_input)
+    console.log(my_value)
     console.log(my_dialog)
     console.log(my_gadget)
     console.log(my_event)
@@ -187,7 +187,7 @@
     }
     return true;
   }
-  
+
   function setFormSubmitListeners(my_dialog, my_gadget) {
     var form_list = my_dialog.querySelectorAll('form'),
       event_list = [],
@@ -201,6 +201,10 @@
         })
         .push(function (my_event) {
           return dialog_updateStorage(my_gadget, my_form.parentNode, my_event);
+        })
+        .push(undefined, function (e) {
+          console.log(e);
+          throw e;
         });
     }
     
