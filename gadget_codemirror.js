@@ -145,7 +145,6 @@
     // return + click + close + filter + shortcuts
     console.log("inside form submit callback");
     console.log(my_event);
-    console.log(my_event.target);
     console.log(my_gadget);
     console.log(my_is_submit_event);
     
@@ -210,7 +209,9 @@
         dialog = dialog_createDialog(my_context, my_template, my_option_dict);
         closed = false;
 
-        function dialog_evaluateState(my_parameter) {      
+        function dialog_evaluateState(my_parameter) {
+          console.log("evaluating");
+          console.log(my_parameter);
           return new RSVP.Queue()
             .push(function () {
               if (typeof my_parameter == 'string') {
@@ -224,6 +225,8 @@
               return false;
             })
             .push(function (my_close_dialog) {
+              console.log("could close");
+              console.log(my_close_dialog);
               if (my_close_dialog === true) {
                 closed = true;
                 dialog.parentNode.removeChild(dialog);
@@ -373,33 +376,28 @@
         
         // Save
         case 83:
-          console.log("DELETE 83");
           break;
         
         // Delete
         case 68:
-          console.log("DELETE 68");
           break;
 
         // Close
         case 67:
-          console.log("CLOSE 67");
           my_callback();
         break;
       
         // Left
         case 37:
           if (setDialogContent("left") === undefined) {
-            console.log("CLOSE 37");
-            my_callback(true);
+            my_callback();
           }
           break;
           
         // Right
         case 39:
           if (setDialogContent("right") === undefined) {
-            console.log("CLOSE 39");
-            my_callback(true);
+            my_callback();
           }
           break;
 
@@ -435,7 +433,7 @@
 
   // http://codemirror.net/doc/manual.html#addon_dialog
   function enterCallback(my_selected_value, my_event) {
-    console.log("ENTERCALLBACK");
+    console.log("enter callback, unused")
   }  
   
   function navigateHorizontal(my_codemirror, my_direction) {
