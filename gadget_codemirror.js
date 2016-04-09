@@ -510,7 +510,7 @@
   function setNavigationMenu(my_direction) {
     switch (CodeMirror.menu_dict.position) {
       case "idle":
-        CodeMirror.menu_dictCodeMirror.menu_dict = my_direction;
+        CodeMirror.menu_dict.position = my_direction;
         if (my_direction === "right") {
           return OBJECT_MENU_TEMPLATE;
         }
