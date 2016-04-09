@@ -152,15 +152,18 @@
     var action;
 
     console.log(my_text_input)
-    console.log(my_dialog.querSelector('input'))
+    console.log(my_dialog)
+    console.log(my_gadget)
+    console.log(my_event)
     // submits
+    /*
     if (my_event && my_event.target) {
       action = my_event.target.name;
       if (action === "save") {
         
       }
     }
-    
+    */
     // XXX resolve promise chain! not just close
     // CodeMirror.navigationMenu.evaluateState();
     if (my_text_input !== undefined) {
