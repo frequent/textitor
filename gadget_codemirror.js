@@ -148,25 +148,41 @@
   /////////////////////////////
   // form handling
   /////////////////////////////
-  function dialog_updateStorage(my_gadget, my_dialog, my_event, my_text_input) {
-    var action;
+  function dialog_updateStorage(my_gadget, my_dialog, my_event, my_value) {
+    var text_input,
+      action;
 
     console.log(my_text_input)
     console.log(my_dialog)
     console.log(my_gadget)
     console.log(my_event)
-    // submits
-    /*
+    // form submits
     if (my_event && my_event.target) {
       action = my_event.target.name;
       if (action === "save") {
+        text_input = my_dialog.querySelector('input');
         
+        // validate
+        if (text_input.value) {
+          
+        } else {
+          text_input.className += ' custom-invalid';
+          text_input.value = 'Enter a valid url';
+          return new RSVP.Queue()
+            .push(function () {
+              return promiseEventListener(text_input, 'focus', false);
+            })
+            .push(function () {
+              text_input.className.replace(' custom-invalid', '');
+              text_input.value = '';
+            });
+        }
       }
     }
-    */
+
     // XXX resolve promise chain! not just close
     // CodeMirror.navigationMenu.evaluateState();
-    if (my_text_input !== undefined) {
+    if (my_value !== undefined) {
       return false;
     }
     return true;
@@ -753,6 +769,7 @@
     // acquired methods
     /////////////////////////////
     .declareAcquiredMethod('jio_allDocs', 'jio_allDocs')
-    .declareAcquiredMethod('jio_allAttachments', 'jio_allAttachments');
+    .declareAcquiredMethod('jio_allAttachments', 'jio_allAttachments')
+    .declareAcquiredMethod('jio_putAttachment', 'jio_putAttachment');
 
 }(window, rJS));
