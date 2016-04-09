@@ -390,33 +390,27 @@
     }
     if (my_event.ctrlKey && my_event.altKey) {
       switch(my_event.keyCode) {
-        
-        // Save
-        case 83:
+        case 83:  // Save
           console.log("DELETE 83");
           break;
         
-        // Delete
-        case 68:
+        case 68:  // Delete
           console.log("DELETE 68");
           break;
 
-        // Close
-        case 67:
+        case 67:  // Close
           console.log("CLOSE 67");
           my_callback(true);
         break;
       
-        // Left
-        case 37:
+        case 37:  // Left
           if (setNavigationMenu("left") === undefined) {
             console.log("CLOSE 37");
             my_callback(true);
           }
           break;
           
-        // Right
-        case 39:
+        case 39:  // Right
           if (setNavigationMenu("right") === undefined) {
             console.log("CLOSE 39");
             my_callback();
@@ -429,7 +423,6 @@
       }  
     }
   }
-
 
   // http://codemirror.net/doc/manual.html#addon_dialog
   function enterCallback(my_selected_value, my_event) {
@@ -447,15 +440,9 @@
           "value": null,
           "selectValueOnOpen": false,
           "onKeyUp": function (my_event, my_value, my_callback) {
-            console.log("keyup");
-            console.log(my_value)
-            console.log(my_callback)
             return setNavigationCallback(my_event, my_value, my_callback);
           },
           "onInput": function (my_event, my_value, my_callback) {
-            console.log("input");
-            console.log(my_value);
-            console.log(my_callback);
             return setNavigationCallback(my_event, my_value, my_callback);
           }
         }
