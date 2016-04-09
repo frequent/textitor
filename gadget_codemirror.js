@@ -210,6 +210,8 @@
         closed = false;
         
         function dialog_evaluateState(my_parameter) {
+          console.log(my_parameter)
+          console.log(typeof my_parameter)
           return new RSVP.Queue()
             .push(function () {
               if (typeof my_parameter === 'string') {
@@ -250,6 +252,8 @@
           text_input_value = text_input.value;
 
           if (my_option_dict.onInput) {
+            console.log("Binding to input");
+            console.log(text_input);
             event_list.push(
               loopEventListener(text_input, "input", false, function (my_event) {
                 return my_option_dict.onInput(my_event, text_input_value, dialog_evaluateState);
