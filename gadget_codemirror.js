@@ -587,8 +587,10 @@
         && CodeMirror.menu_dict.active_file) {
         parameter = {"target":{"name":"save"}};
       }
-      return CodeMirror.menu_dict.evaluateState(parameter || true);
+      return CodeMirror.menu_dict.evaluateState(parameter);
     }
+    console.log("here?")
+    return CodeMirror.menu_dict.evaluateState(true);
   }
 
   function editor_navigateRight(cm) {
