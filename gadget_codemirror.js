@@ -494,22 +494,26 @@
     if (my_event.ctrlKey && my_event.altKey) {
       switch(my_event.keyCode) {
         case 83:  // s Save
+          console.log("KEY SAVE")
           my_callback(true);
           break;
 
         case 88:  // x Close
-          my_callback();
+          console.log("KEX CLOSE")
+          my_callback(true);
           break;
       
         case 37:  // Left
+          console.log("KEY LEFT")
           if (editor_setNavigationMenu("left") === undefined) {
             my_callback(true);
           }
           break;
           
         case 39:  // Right
+          console.log("KEY_RIGHT")
           if (editor_setNavigationMenu("right") === undefined) {
-            my_callback();
+            my_callback(true);
           }
           break;
       }  
