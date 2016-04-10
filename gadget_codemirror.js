@@ -575,7 +575,10 @@
   function editor_navigateHorizontal(my_codemirror, my_direction) {
     var position = CodeMirror.menu_dict.position,
       parameter;
+    console.log("in horizontal");
     console.log(position);
+    console.log(my_direction);
+
     if (position === "idle") {
       return my_codemirror.openDialog(
         editor_setNavigationMenu(my_direction),
@@ -584,15 +587,17 @@
       );
     }
     console.log("not idle");
+
     if (position === "right" && my_direction === "left" 
       && CodeMirror.menu_dict.active_file) {
       console.log("we should save");
       parameter = {"target":{"name":"save"}};
     }
-    return CodeMirror.menu_dict.evaluateState(parameter);
+    return CodeMirror.menu_dict.evaluateState(parameter || true);
   }
 
   function editor_navigateRight(cm) {
+    console.log("detected naivagte right");
     return editor_navigateHorizontal(cm, "right");
   }
   CodeMirror.commands.myEditor_navigateRight = editor_navigateRight;
