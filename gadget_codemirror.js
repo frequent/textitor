@@ -267,18 +267,17 @@
   }
   
   function dialog_getTextInput(my_dialog, my_index) {
-    var input_list,
+    var text_input_list = [], 
+      input_list,
       len,
       i;
     input_list = Array.prototype.slice.call(my_dialog.querySelectorAll("input"));
-    console.log(input_list);
     for (i = 0, len = input_list.length; i < len; i += 1) {
-      console.log(input_list[i]);
-      if (input_list[i].type !== 'text') {
-        input_list.splice(i, 1);
+      if (input_list[i].type === 'text') {
+        text_input_list.push(input_list[i]);
       }
     }
-    return input_list[my_index];
+    return text_input_list[my_index];
   }
 
   /////////////////////////////
