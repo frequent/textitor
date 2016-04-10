@@ -495,25 +495,25 @@
       switch(my_event.keyCode) {
         case 83:  // s Save
           console.log("KEY SAVE")
-          my_callback(true);
+          my_callback();
           break;
 
         case 88:  // x Close
           console.log("KEX CLOSE")
-          my_callback(true);
+          my_callback();
           break;
       
         case 37:  // Left
           console.log("KEY LEFT")
           if (editor_setNavigationMenu("left") === undefined) {
-            my_callback(true);
+            my_callback();
           }
           break;
           
         case 39:  // Right
           console.log("KEY_RIGHT")
           if (editor_setNavigationMenu("right") === undefined) {
-            my_callback(true);
+            my_callback();
           }
           break;
       }  
