@@ -136,7 +136,7 @@
       len,
       folder,
       counter;
-
+    console.log(my_file_list);
     for (counter in my_file_dict) {
       if (my_file_dict.hasOwnProperty(counter)) {
         folder = my_file_dict[counter];
@@ -427,6 +427,7 @@
                 if (len > 0) {
                   for (i = 0; i < len; i += 1) {
                     response = my_directory_content[i].data;
+                    console.log(response);
                     for (item in response) {
                       if (response.hasOwnProperty(item)) {
                         entry_dict[i].item_list.push(item);
@@ -434,6 +435,7 @@
                     }  
                   }
                 }
+                console.log(entry_dict);
                 dialog.insertBefore(
                   setFileMenu(entry_dict),
                   dialog.querySelector('span')
