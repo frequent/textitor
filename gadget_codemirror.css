@@ -13,7 +13,7 @@ body {
   height: 100%;
 }
 .cm-trailingspace {
-  background-color: #e00;
+  background-color: #ee0000;
   background-color: rgba(255, 0, 0, 0.8);
 }
 .CodeMirror-gutters .CodeMirror-gutter.CodeMirror-linenumbers {
@@ -44,5 +44,9 @@ body {
   font-weight: bold;
 }
 .CodeMirror .custom-invalid {
-  color: red;
+  color: #ee0000;
+}
+/* placeholder */
+.CodeMirror .CodeMirror-placeholder {
+  color: #3E7087;
 }
