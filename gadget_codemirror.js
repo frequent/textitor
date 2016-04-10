@@ -675,53 +675,28 @@
     .declareMethod('render', function (my_option_dict) {
       var gadget = this;
 
-      CodeMirror.commands.save = function (cm) { commands.save(cm, ["save"]); };
-      CodeMirror.keyMap.default.F3 = "findNext";
-      CodeMirror.keyMap.default["Shift-F3"] = "findPrev";
-      CodeMirror.lint["application/javascript"] = CodeMirror.lint.javascript;
+      CodeMirror.lint["text/javascript"] = CodeMirror.lint.javascript;
       CodeMirror.lint["application/json"] = CodeMirror.lint.json;
       CodeMirror.lint["text/css"] = CodeMirror.lint.css;
     
-    
+      // http://codemirror.net/doc/manual.html#config
       editor = CodeMirror.fromTextArea(gadget.property_dict.textarea, {
         readOnly: false,
-
-        // addon/edit/matchbrackets.js
         matchBrackets: true,
-        // addon/edit/closebrackets.js
         autoCloseBrackets: false,
-        // addon/edit/trailingspace.js
         showTrailingSpace: true,
-        // addon/display/fullscreen
         fullScreen: true,
-        // addon/display/placeholder
         placeholder: PLACEHOLDER,
-    
-        // http://codemirror.net/doc/manual.html#config
-    
         keyMap: "my", // default "default"
         showCursorWhenSelecting: true,
-    
-        extraKeys: {
-          "Ctrl-O": function (cm) {
-            setTimeout(commands.open, 0, cm, ["open"]);
-          },
-          "Alt-;": commandPrompt,
-          "Alt-:": commandPrompt,
-          "Shift-Alt-;": commandPrompt,
-          "Shift-Alt-:": commandPrompt
-        },
-    
+        extraKeys: null,
         lineNumbers: true, // default false
-    
         tabSize: 2, // default 4
         smartIndent: true, // default true
         indentWithTabs: false, // default false
-    
         lint: false,
         gutters: ["CodeMirror-lint-markers"],
         myAutoLint: true,
-    
         autofocus: true, // default false
         theme: "rubyblue", // default "default"
         mode: "text"
@@ -740,17 +715,15 @@
       gadget.property_dict.editor.refresh();
       gadget.property_dict.editor.focus();
 
+      // XXX only works once!
       return new RSVP.Queue()
         .push(function () {
-          return RSVP.any([
+          return RSVP.all([
             //loopEventListener(editor, 'change', false, setModified),
             promiseEventListener(window, "onbeforeunload", true)
           ]);
         })
         .push(function () {
-          if (editor.getOption("readOnly")) {
-            return "An action is on going! May be saving your work!";
-          }
           if (editor.modified) {
             return "Don't forget to save your work!";
           }
