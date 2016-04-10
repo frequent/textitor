@@ -218,9 +218,6 @@
       file_name,
       action;
 
-    console.log("Updating storage")
-    console.log(my_parameter);
-
     // determine action
     if (my_parameter && my_parameter.target) {
       action = my_parameter.target.name;
@@ -228,7 +225,7 @@
     
     // save and close
     if (action === "save") {
-
+      console.log("saving...");
       file_name_input = dialog_getTextInput(my_dialog, 0);
       mime_type_input = dialog_getTextInput(my_dialog, 1);
       is_cache_name = my_dialog.querySelector('input:checked');
@@ -579,7 +576,7 @@
 
   function editor_saveFromDialog(my_codemirror) {
     if (CodeMirror.menu_dict.position !== "idle") {
-      CodeMirror.menu_dict.evaluateState();
+      return CodeMirror.menu_dict.evaluateState({"target":{"name":"save"}});
     }
   }
   CodeMirror.commands.myEditor_saveFromDialog = editor_saveFromDialog;
@@ -588,13 +585,13 @@
 
   function editor_navigateHorizontal(my_codemirror, my_direction) {
     if (CodeMirror.menu_dict.position === "idle") {
-      my_codemirror.openDialog(
+      return my_codemirror.openDialog(
         editor_setNavigationMenu(my_direction),
         editor_closeCallback,
         dialog_option_dict
       );
     } else if (my_direction !== CodeMirror.menu_dict.position) {
-      return CodeMirror.menu_dict.evaluateState();
+      return CodeMirror.menu_dict.evaluateState({"target":{"name":"save"}});
     }
   }
 
