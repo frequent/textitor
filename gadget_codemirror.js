@@ -3,6 +3,12 @@
   CodeMirror, loopEventListener */
 
   /////////////////////////////
+  // Placeholder
+  /////////////////////////////
+  var PLACEHOLDER = "Textitor Shortcuts:\n" +
+    "[CTRL+ALT+x] Close Dialog";
+
+  /////////////////////////////
   // Supported Modes
   /////////////////////////////
   var modeMimes = {
@@ -680,15 +686,16 @@
       editor = CodeMirror.fromTextArea(gadget.property_dict.textarea, {
         readOnly: false,
 
-        // http://codemirror.net/doc/manual.html#addons
         // addon/edit/matchbrackets.js
         matchBrackets: true,
         // addon/edit/closebrackets.js
         autoCloseBrackets: false,
         // addon/edit/trailingspace.js
         showTrailingSpace: true,
-        // addon/display/fullscreen.{js,css}
-        fullScreen: true, // start full screen
+        // addon/display/fullscreen
+        fullScreen: true,
+        // addon/display/placeholder
+        placeholder: PLACEHOLDER,
     
         // http://codemirror.net/doc/manual.html#config
     
