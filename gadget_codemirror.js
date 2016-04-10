@@ -217,6 +217,8 @@
       mime_type,
       action;
 
+    console.log("inside dialog_updateStorage");
+
     // form submits
     if (my_event && my_event.target) {
       action = my_event.target.name;
@@ -251,7 +253,7 @@
           })
           .push(function () {
             my_gadget.property_dict.editor.setOption("mode", mime_type);
-            return false;
+            return true;
           });
       }
     }
