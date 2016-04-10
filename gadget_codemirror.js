@@ -299,7 +299,7 @@
         text_input_list.push(input_list[i]);
       }
     }
-    return text_input_list[my_index];
+    return text_input_list[my_index || 0];
   }
 
   /////////////////////////////
@@ -588,7 +588,8 @@
         dialog_option_dict
       );
     } else if (my_direction !== CodeMirror.menu_dict.position) {
-      if (my_direction === "left" && position === "right") {
+      if (my_direction === "left" && position === "right" 
+        && CodeMirror.menu_dict.active_file) {
         parameter = {"target":{"name":"save"}};
       }
       return CodeMirror.menu_dict.evaluateState(parameter);
