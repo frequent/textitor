@@ -130,25 +130,25 @@
 
   // create file menu html
   function setFileMenu(my_file_dict) {
-    var str,
+    var str = "",
       div,
       i,
       len,
       folder,
       counter;
-    console.log(my_file_list);
+
     for (counter in my_file_dict) {
       if (my_file_dict.hasOwnProperty(counter)) {
         folder = my_file_dict[counter];
         for (i = 0, len = folder.item_list.length; i < len; i += 1) {
-          str = parseTemplate(
+          str += parseTemplate(
             FILE_ENTRY_TEMPLATE,
             [folder.name + " | " + folder.item_list[i]]
           );
         }
       }
     }
-    // XXX: hm...
+    // XXX: WTFix
     str = parseTemplate(FILE_MENU_TEMPLATE, [str]);
     div = document.createElement("div");
     div.innerHTML = str;
@@ -396,7 +396,8 @@
                 return my_gadget.jio_allDocs();
               })
               .push(function (my_directory_list) {
-                console.log(my_directory_list);
+                
+                // XXX: WTFix
                 var response_dict = my_directory_list.data.rows.data,
                   directory_content_list = [],
                   len = response_dict.total_rows,
@@ -419,7 +420,6 @@
                 return RSVP.all(directory_content_list);
               })
               .push(function (my_directory_content) {
-                console.log(my_directory_content)
                 var len = my_directory_content.length,
                   item,
                   i;
@@ -427,7 +427,6 @@
                 if (len > 0) {
                   for (i = 0; i < len; i += 1) {
                     response = my_directory_content[i].data;
-                    console.log(response);
                     for (item in response) {
                       if (response.hasOwnProperty(item)) {
                         entry_dict[i].item_list.push(item);
@@ -435,7 +434,6 @@
                     }  
                   }
                 }
-                console.log(entry_dict);
                 dialog.insertBefore(
                   setFileMenu(entry_dict),
                   dialog.querySelector('span')
