@@ -575,7 +575,8 @@
   CodeMirror.commands.myEditor_closeDialog = editor_closeDialog;
 
   function editor_saveFromDialog(my_codemirror) {
-    if (CodeMirror.menu_dict.position !== "idle") {
+    if (my_direction === "left" && CodeMirror.menu_dict.position === "right") {
+      console.log("saving on S")
       return CodeMirror.menu_dict.evaluateState({"target":{"name":"save"}});
     }
   }
@@ -584,14 +585,21 @@
   function editor_closeCallback(my_selected_value, my_event) {}
 
   function editor_navigateHorizontal(my_codemirror, my_direction) {
-    if (CodeMirror.menu_dict.position === "idle") {
+    var position = CodeMirror.menu_dict.position,
+      parameter;
+
+    if (position === "idle") {
       return my_codemirror.openDialog(
         editor_setNavigationMenu(my_direction),
         editor_closeCallback,
         dialog_option_dict
       );
     } else if (my_direction !== CodeMirror.menu_dict.position) {
-      return CodeMirror.menu_dict.evaluateState({"target":{"name":"save"}});
+      if (my_direction === "left" && position === "right") {
+        console.log("saving on close");
+        parameter = {"target":{"name":"save"}};
+      }
+      return CodeMirror.menu_dict.evaluateState(parameter);
     }
   }
 
