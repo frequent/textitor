@@ -193,7 +193,8 @@
         return promiseEventListener(my_input, 'focus', false);
       })
       .push(function () {
-        my_input.className.replace(' custom-invalid', '');
+        console.log(my_input.className)
+        my_input.className.replace('custom-invalid', '');
         my_input.value = '';
       });
   }
@@ -207,8 +208,6 @@
       is_cache_name,
       action,
       flagged;
-
-    console.log("update");
 
     // form submits
     if (my_event && my_event.target) {
@@ -247,17 +246,9 @@
       i;
     
     function dialog_setFormSubmitHandler(my_form) {
-      return new RSVP.Queue()
-        .push(function () {
-          return promiseEventListener(my_form, "submit", false);
-        })
-        .push(function (my_event) {
+      return loopEventListener(my_form, "submit", false, function (my_event) {
           return dialog_updateStorage(my_gadget, my_form.parentNode, my_event);
-        })
-        .push(undefined, function (e) {
-          console.log(e);
-          throw e;
-        });
+      });
     }
     
     for (i = 0, len = form_list.length; i < len; i += 1) {
