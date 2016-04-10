@@ -235,27 +235,13 @@
           return dialog_flagInput(mime_type_input, 'Invalid/Unsupported mime-type');
         }
         active_cache = CodeMirror.menu_dict.active_cache || "textitor";
-        console.log("saving");
-        console.log(active_cache);
-        console.log(my_gadget.property_dict.editor.getValue())
-        return new RSVP.Queue()
-          .push(function () {
-            return my_gadget.jio_putAttachment(
-              active_cache,
-              file_name_input.value,
-              new Blob([my_gadget.property_dict.editor.getValue()], {
-                type: mime_type_input.value,
-              })
-            );
+        return my_gadget.jio_putAttachment(
+          active_cache,
+          file_name_input.value,
+          new Blob([my_gadget.property_dict.editor.getValue()], {
+            type: mime_type_input.value,
           })
-          .push(function (my_response) {
-            console.log("SAVED");
-            console.log(my_response);
-          })
-          .push(null, function (e) {
-            console.log(e);
-            throw e;
-          });
+        );
       }
     }
 
@@ -410,6 +396,7 @@
                 return my_gadget.jio_allDocs();
               })
               .push(function (my_directory_list) {
+                console.log(my_directory_list);
                 var response_dict = my_directory_list.data.rows.data,
                   directory_content_list = [],
                   len = response_dict.total_rows,
@@ -432,6 +419,7 @@
                 return RSVP.all(directory_content_list);
               })
               .push(function (my_directory_content) {
+                console.log(my_directory_content)
                 var len = my_directory_content.length,
                   item,
                   i;
@@ -450,6 +438,10 @@
                   setFileMenu(entry_dict),
                   dialog.querySelector('span')
                 );
+              })
+              .push(null, function (e) {
+                console.log(e);
+                throw e;
               })
             );
         }
