@@ -209,7 +209,7 @@
   /////////////////////////////
   // form handling
   /////////////////////////////
-  function dialog_updateStorage(my_gadget, my_dialog, my_event) {
+  function dialog_updateStorage(my_gadget, my_dialog, my_parameter) {
     var active_cache, 
       file_name_input,
       mime_type_input,
@@ -219,12 +219,11 @@
       action;
 
     console.log("Updating storage")
-    console.log(my_event)
-    console.log(my_value)
+    console.log(my_parameter);
 
     // determine action
-    if (my_event && my_event.target) {
-      action = my_event.target.name;
+    if (my_parameter && my_parameter.target) {
+      action = my_parameter.target.name;
     }
     
     // save and close
@@ -269,7 +268,7 @@
     }
 
     // XXX resolve promise chain! not just close
-    if (my_value !== undefined) {
+    if (my_parameter !== undefined) {
       return false;
     }
     return true;
@@ -809,3 +808,4 @@
     .declareAcquiredMethod('jio_getAttachment', 'jio_getAttachment');
 
 }(window, rJS));
+
