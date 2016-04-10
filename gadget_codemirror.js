@@ -256,18 +256,23 @@
           );
         })
         .push(function () {
+          console.log("done");
           my_gadget.property_dict.editor.setOption("mode", mime_type);
           editor_setActiveFile(file_name, mime_type);
           
           // close dialog
-          return false;
+          return true;
         })
         .push(undefined, function (my_error) {
-          throw e;
+          console.log(my_error);
+          throw my_error;
         });
     }
 
     // XXX resolve promise chain! not just close
+    // no parameter, 
+    console.log("so, my_parameter")
+    console.log(my_parameter);
     if (my_parameter !== undefined) {
       return false;
     }
@@ -808,4 +813,3 @@
     .declareAcquiredMethod('jio_getAttachment', 'jio_getAttachment');
 
 }(window, rJS));
-
