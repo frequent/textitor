@@ -2,21 +2,6 @@
 /*global window, rJS, document, location, alert, prompt, confirm, setTimeout,
   CodeMirror, loopEventListener */
 
-  /*
-  ["Ctrl-Alt-Up"] Up in current folder
-  ["Ctrl-Alt-Down"] Down in current folder
-  ["Ctrl-Alt-Right"] Up one folder/Close file
-  ["Ctrl-Alt-Left"] Down one folder/Open file
-  (["Ctrl-Alt-Enter] Save + Close Menu)
-  (["Ctrl-Alt-Esc] Close Menu)
-  ["Ctrl-Alt-0"] Open File
-  ["Ctrl-Alt-M"] Open Mime
-  ["Ctrl-Alt-S"] Save File (*)
-  ["Ctrl-Alt-X"] Close File
-  ["Ctrl-Alt-D"] Delete File
-  ["Ctrl-Alt-H"] List of Shortcuts
-  */
-
   /////////////////////////////
   // Supported Modes
   /////////////////////////////
@@ -24,9 +9,10 @@
     "undefined": "text/plain",
     "null": "text/plain",
     "css": "text/css",
-    "javascript": "application/javascript",
+    "javascript": "text/javascript",
     "htmlmixed": "text/html",
     "xml": "application/xml",
+    "json": "application/json",
     "python": "text/x-python",
     "markdown": "text/x-markdown",
     "php": "text/x-php",
@@ -58,16 +44,6 @@
   /////////////////////////////
   // Templates
   /////////////////////////////
-  var MIME_MENU_TEMPLATE = "<div class='custom-mime-menu'>" +
-    "<span>Mime Type:</span><select tabindex='1'>%s</select>" +
-    "<span class='custom-menu-typewriter'>CTRL+ALT+</span>" +
-    "<form name='set'>" +
-      "<button type='submit' tabindex='2' class='custom-menu-button'>" +
-        "<b>S</b>elect</button></form>" +
-    "</div>";
-  
-  var MIME_ENTRY_TEMPLATE = "<option %s>%s</option>";
-
   var FILE_MENU_TEMPLATE = "<div class='custom-file-menu'>%s</div>";
 
   var FILE_ENTRY_TEMPLATE = "<div class='custom-file-menu-row'>" +
@@ -76,16 +52,18 @@
       "</div>";
   
   var OBJECT_MENU_TEMPLATE = "<span>Name:</span>" +
-    "<input type='text' tabindex='1' />" +
+    "<input type='text' tabindex='1' placeholder='file name'/>" +
+    "<input type='checkbox' autocomplete='off' />" +
+    "<input type='text' tabindex='2' placeholder='mime-type' />" +
     "<span class='custom-menu-typewriter'>CTRL+ALT+</span>" +
     "<form name='save'>" +
-      "<button type='submit' tabindex='2' class='custom-menu-button'>" +
+      "<button type='submit' tabindex='4' class='custom-menu-button'>" +
         "<b>S</b>ave</button></form>" +
     "<form name='close'>" +
-      "<button type='submit' tabindex='3' class='custom-menu-button'>" +
+      "<button type='submit' tabindex='5' class='custom-menu-button'>" +
         "<b>C</b>lose</button></form>" +
     "<form name='remove'>" +
-      "<button type='submit' tabindex='4' class='custom-menu-button'>" + 
+      "<button type='submit' tabindex='6' class='custom-menu-button'>" + 
         "<b>D</b>elete</button></form>";
   
   var OBJECT_LIST_TEMPLATE = "<span>Search:</span>" +
@@ -196,38 +174,61 @@
     my_context.state.currentNotificationClose = my_newVal;
   }
 
+  function is_validMimeType(my_mime_type) {
+    var mime;
+    for (mime in modeMimes) {
+      if (modeMimes.hasOwnProperty(mime)) {
+        if (my_mime_type == modeMimes[mime]) {
+          return true;
+        }
+      }
+    }
+  }
+
+  function dialog_flagInput(my_input, my_message) {
+    return new RSVP.Queue()
+      .push(function () {
+        my_input.className += ' custom-invalid';
+        my_input.value = my_message;
+        return promiseEventListener(my_input, 'focus', false);
+      })
+      .push(function () {
+        my_input.className.replace(' custom-invalid', '');
+        my_input.value = '';
+      });
+  }
+
   /////////////////////////////
   // form handling
   /////////////////////////////
   function dialog_updateStorage(my_gadget, my_dialog, my_event, my_value) {
-    var text_input,
-      action;
+    var file_name_input,
+      mime_type_input,
+      is_cache_name,
+      action,
+      flagged;
 
-    console.log(my_value)
-    console.log(my_dialog)
-    console.log(my_gadget)
-    console.log(my_event)
+    console.log("update");
+
     // form submits
     if (my_event && my_event.target) {
       action = my_event.target.name;
       if (action === "save") {
-        text_input = my_dialog.querySelector('input');
+        
+        file_name_input = dialog_getTextInput(my_dialog, 0);
+        mime_type_input = dialog_getTextInput(my_dialog, 1);
+        is_cache_name = my_dialog.querySelector('input:checked');
         
         // validate
-        if (text_input.value) {
-          
-        } else {
-          text_input.className += ' custom-invalid';
-          text_input.value = 'Enter a valid url';
-          return new RSVP.Queue()
-            .push(function () {
-              return promiseEventListener(text_input, 'focus', false);
-            })
-            .push(function () {
-              text_input.className.replace(' custom-invalid', '');
-              text_input.value = '';
-            });
+        if (!file_name_input.value) {
+          return dialog_flagInput(file_name_input, 'Enter valid URL.');
         }
+        if (!mime_type_input) {
+          return dialog_flagInput(mime_type_input, 'Enter mime-type/cache name.');
+        } else if (!is_validMimeType(mime_type_input.value) && !is_cache_name) {
+          return dialog_flagInput(mime_type_input, 'Invalid/Unsupported mime-type');
+        }
+        
       }
     }
 
@@ -265,18 +266,19 @@
     return event_list;
   }
   
-  function dialog_getTextInput(my_dialog) {
-    var input_list = my_dialog.querySelectorAll("input"),
-      input,
+  function dialog_getTextInput(my_dialog, my_index) {
+    var input_list,
       len,
       i;
+    input_list = Array.prototype.slice.call(my_dialog.querySelectorAll("input"));
     for (i = 0, len = input_list.length; i < len; i += 1) {
-      if (input_list[i].type === 'text') {
-        return input_list[i];
+      if (input_list[i].type !== 'text') {
+        input_list.splice(i, 1);
       }
     }
+    return input_list[my_index];
   }
-  
+
   /////////////////////////////
   // dialog extension
   /////////////////////////////
@@ -291,7 +293,6 @@
           dialog,
           closed,
           text_input,
-          button,
           my_context;
 
         my_context = my_context || this;
@@ -464,13 +465,13 @@
           break;
       
         case 37:  // Left
-          if (setNavigationMenu("left") === undefined) {
+          if (editor_setNavigationMenu("left") === undefined) {
             my_callback(true);
           }
           break;
           
         case 39:  // Right
-          if (setNavigationMenu("right") === undefined) {
+          if (editor_setNavigationMenu("right") === undefined) {
             my_callback();
           }
           break;
@@ -481,25 +482,7 @@
     }
   }
 
-  function setMimeModeMenu() {
-    var str = "",
-      is_active = "",
-      mime_to_set,
-      mime;
-    
-    for (mime in modeMimes) {
-      if (modeMimes.hasOwnProperty(mime)) {
-        mime_to_set = modeMimes[mime];
-        if (mime_to_set === CodeMirror.menu_dict.active_mime) {
-          is_active = " selected='selected'";
-        }
-        str += parseTemplate(MIME_ENTRY_TEMPLATE, [is_active, modeMimes[mime]]);  
-      }
-    }
-    return parseTemplate(MIME_MENU_TEMPLATE, [str]);
-  }
-
-  function setNavigationMenu(my_direction) {
+  function editor_setNavigationMenu(my_direction) {
     switch (CodeMirror.menu_dict.position) {
       case "idle":
         CodeMirror.menu_dict.position = my_direction;
@@ -529,26 +512,16 @@
   }
   CodeMirror.commands.myEditor_closeDialog = editor_closeDialog;
 
-  function enterCallback(my_selected_value, my_event) {
+  function editor_closeCallback(my_selected_value, my_event) {
 
   }
-  
-  // Mime Type Select
-  function editor_selectMimeMode(my_codemirror) {
-    my_codemirror.openDialog(
-      setMimeModeMenu(),
-      enterCallback,
-      dialog_option_dict
-    );
-  }
-  CodeMirror.commands.myEditor_selectMimeMode = editor_selectMimeMode;
 
   // File Menu Navigation
   function editor_navigateHorizontal(my_codemirror, my_direction) {
     if (CodeMirror.menu_dict.position === "idle") {
       my_codemirror.openDialog(
-        setNavigationMenu(my_direction),
-        enterCallback,
+        editor_setNavigationMenu(my_direction),
+        editor_closeCallback,
         dialog_option_dict
       );
     } else if (my_direction !== CodeMirror.menu_dict.position) {
@@ -578,7 +551,7 @@
   // CodeMirror.keyMap.my["Ctrl-Alt-J"] = undefined;
   // CodeMirror.keyMap.my["Ctrl-Alt-K"] = undefined;
   // CodeMirror.keyMap.my["Ctrl-Alt-L"] = undefined;
-  CodeMirror.keyMap.my["Ctrl-Alt-M"] = "myEditor_selectMimeMode";
+  // CodeMirror.keyMap.my["Ctrl-Alt-M"] = undefined;
   // CodeMirror.keyMap.my["Ctrl-Alt-N"] = undefined;
   // CodeMirror.keyMap.my["Ctrl-Alt-O"] = undefined;
   // CodeMirror.keyMap.my["Ctrl-Alt-P"] = undefined;
@@ -597,6 +570,7 @@
   CodeMirror.keyMap.my["Ctrl-Alt-Left"] = "myEditor_navigateLeft";
   // CodeMirror.keyMap.my["Ctrl-Alt-Return"] = undefined;
 
+  // ==========================================================================
   var editorURI;
   var editorTextarea;
   var editor;
@@ -753,7 +727,7 @@
         mode: "text"
       });
 
-      window.editor = editor;
+      gadget.property_dict.editor = editor;
       return gadget;
     })
 
@@ -761,8 +735,10 @@
     // declared service
     /////////////////////////////    
     .declareService(function () {
-      window.editor.refresh();
-      window.editor.focus();
+      var gadget = this;
+      
+      gadget.property_dict.editor.refresh();
+      gadget.property_dict.editor.focus();
 
       return new RSVP.Queue()
         .push(function () {
