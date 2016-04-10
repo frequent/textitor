@@ -58,9 +58,9 @@
       "</div>";
   
   var OBJECT_MENU_TEMPLATE = "<span class='custom-menu-label'>Name:</span>" +
-    "<input type='text' tabindex='1' placeholder='file name'/>" +
+    "<input type='text' tabindex='1' placeholder='file name' value='%s' />" +
     "<span class='custom-menu-label'>Mime-Type:</span>" +
-    "<input type='text' tabindex='2' placeholder='mime-type' />" +
+    "<input type='text' tabindex='2' placeholder='mime-type' value='%s' />" +
     "<span class='custom-menu-label'>Create as Cache</span>" +
     "<input type='checkbox' autocomplete='off' />" +
     "<span class='custom-menu-typewriter'>CTRL+ALT+</span>" +
@@ -215,6 +215,7 @@
       mime_type_input,
       is_cache_name,
       mime_type,
+      file_name,
       action;
 
     console.log("inside dialog_updateStorage");
@@ -241,11 +242,12 @@
         }
         active_cache = CodeMirror.menu_dict.active_cache || "textitor";
         mime_type = mime_type_input.value;
+        file_name = file_name_input.value;
         return new RSVP.Queue()
           .push(function() {
             return my_gadget.jio_putAttachment(
               active_cache,
-              file_name_input.value,
+              file_name,
               new Blob([my_gadget.property_dict.editor.getValue()], {
                 type: mime_type,
               })
@@ -253,6 +255,7 @@
           })
           .push(function () {
             my_gadget.property_dict.editor.setOption("mode", mime_type);
+            editor_setActiveFile(file_name, mime_type);
             return true;
           });
       }
@@ -319,6 +322,13 @@
         dialog = setDialog(my_context, my_template, my_option_dict.bottom);
         closed = false;
         
+        // be aware of content changes
+        function setModified() {
+          my_context.modified = true;
+        }
+        CodeMirror.menu_dict.setModified = setModified;
+
+        // evaluate state
         function dialog_evaluateState(my_parameter) {
           return new RSVP.Queue()
             .push(function () {
@@ -328,6 +338,8 @@
               return my_parameter;
             })
             .push(function (my_close_dialog) {
+              console.log("CLOSING if true");
+              console.log(my_close_dialog);
               if (my_close_dialog === true) {
                 closed = true;
                 dialog.parentNode.removeChild(dialog);
@@ -340,8 +352,6 @@
               }
             });
         }
-
-        // expose
         CodeMirror.menu_dict.evaluateState = dialog_evaluateState;
   
         text_input = dialog_getTextInput(dialog);
@@ -516,7 +526,7 @@
       case "idle":
         CodeMirror.menu_dict.position = my_direction;
         if (my_direction === "right") {
-          return OBJECT_MENU_TEMPLATE;
+          return parseTemplate(OBJECT_MENU_TEMPLATE, editor_getActiveFile(true));
         }
         return OBJECT_LIST_TEMPLATE;
       case "left":
@@ -532,6 +542,22 @@
         }
         return OBJECT_LIST_TEMPLATE;
     }
+  }
+
+  function editor_setActiveFile(my_name, my_mime_type) {
+    CodeMirror.menu_dict.active_file = {
+      "name": my_name,
+      "mime_type": my_mime_type
+    };
+  }
+
+  function editor_getActiveFile(my_as_array) {
+    var active_file = CodeMirror.menu_dict.active_file;
+    if (my_as_array) {
+      active_file = active_file || {};
+      return [active_file.name || "", active_file.mime_type || ""];
+    }
+    return active_file;
   }
 
   function editor_closeDialog(my_codemirror) {
@@ -605,8 +631,7 @@
   var editor;
   var commands = {};
 
-  function setModified(cm) { cm.modified = true; }
-
+  
   function commandPrompt(cm) {
     // XXX allow the use of space character (like in bash interpreter)
     var text = prompt("Command (type `help` to get a list of commands)"), args;
@@ -749,7 +774,7 @@
       return new RSVP.Queue()
         .push(function () {
           return RSVP.all([
-            //loopEventListener(editor, 'change', false, setModified),
+            //loopEventListener(editor, 'change', false, CodeMirror.menu_dict.setModified),
             promiseEventListener(window, "onbeforeunload", true)
           ]);
         })
@@ -769,6 +794,8 @@
     /////////////////////////////
     .declareAcquiredMethod('jio_allDocs', 'jio_allDocs')
     .declareAcquiredMethod('jio_allAttachments', 'jio_allAttachments')
-    .declareAcquiredMethod('jio_putAttachment', 'jio_putAttachment');
+    .declareAcquiredMethod('jio_putAttachment', 'jio_putAttachment')
+    .declareAcquiredMethod('jio_removeAttachment', 'jio_removeAttachment')
+    .declareAcquiredMethod('jio_getAttachment', 'jio_getAttachment');
 
 }(window, rJS));
