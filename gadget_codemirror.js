@@ -256,7 +256,12 @@
           .push(function () {
             my_gadget.property_dict.editor.setOption("mode", mime_type);
             editor_setActiveFile(file_name, mime_type);
+            console.log("returning true");
             return true;
+          })
+          .push(undefined, function (e) {
+            console.log(e);
+            throw e;
           });
       }
     }
@@ -329,6 +334,7 @@
         CodeMirror.menu_dict.setModified = setModified;
 
         // evaluate state
+        console.log("evaluating from ... opendialog");
         function dialog_evaluateState(my_parameter) {
           return new RSVP.Queue()
             .push(function () {
