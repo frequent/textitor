@@ -282,7 +282,7 @@
     
     function dialog_setFormSubmitHandler(my_form) {
       return loopEventListener(my_form, "submit", false, function (my_event) {
-          return dialog_updateStorage(my_gadget, my_form.parentNode, my_event);
+        return CodeMirror.menu_dict.evaluateState(my_event);
       });
     }
     
