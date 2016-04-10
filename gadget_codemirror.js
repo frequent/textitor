@@ -218,6 +218,10 @@
       file_name,
       action;
 
+    console.log("Updating storage")
+    console.log(my_event)
+    console.log(my_value)
+
     // determine action
     if (my_event && my_event.target) {
       action = my_event.target.name;
