@@ -51,10 +51,12 @@
       "<span class='custom-file-menu-checkbox-overlay'>%s</span>" +
       "</div>";
   
-  var OBJECT_MENU_TEMPLATE = "<span>Name:</span>" +
+  var OBJECT_MENU_TEMPLATE = "<span class='custom-menu-label'>Name:</span>" +
     "<input type='text' tabindex='1' placeholder='file name'/>" +
-    "<input type='checkbox' autocomplete='off' />" +
+    "<span class='custom-menu-label'>Mime-Type:</span>" +
     "<input type='text' tabindex='2' placeholder='mime-type' />" +
+    "<span class='custom-menu-label'>Create as Cache</span>" +
+    "<input type='checkbox' autocomplete='off' />" +
     "<span class='custom-menu-typewriter'>CTRL+ALT+</span>" +
     "<form name='save'>" +
       "<button type='submit' tabindex='4' class='custom-menu-button'>" +
@@ -193,8 +195,7 @@
         return promiseEventListener(my_input, 'focus', false);
       })
       .push(function () {
-        console.log(my_input.className)
-        my_input.className.replace('custom-invalid', '');
+        my_input.className = '';
         my_input.value = '';
       });
   }
