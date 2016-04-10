@@ -210,11 +210,11 @@
   // form handling
   /////////////////////////////
   function dialog_updateStorage(my_gadget, my_dialog, my_event, my_value) {
-    var file_name_input,
+    var active_cache, 
+      file_name_input,
       mime_type_input,
       is_cache_name,
-      action,
-      flagged;
+      action;
 
     // form submits
     if (my_event && my_event.target) {
@@ -234,7 +234,28 @@
         } else if (!is_validMimeType(mime_type_input.value) && !is_cache_name) {
           return dialog_flagInput(mime_type_input, 'Invalid/Unsupported mime-type');
         }
-        
+        active_cache = CodeMirror.menu_dict.active_cache || "textitor";
+        console.log("saving");
+        console.log(active_cache);
+        console.log(my_gadget.property_dict.editor.getValue())
+        return new RSVP.Queue()
+          .push(function () {
+            return my_gadget.jio_putAttachment(
+              active_cache,
+              file_name_input.value,
+              new Blob([my_gadget.property_dict.editor.getValue()], {
+                type: mime_type_input.value,
+              })
+            );
+          })
+          .push(function (my_response) {
+            console.log("SAVED");
+            console.log(my_response);
+          })
+          .push(null, function (e) {
+            console.log(e);
+            throw e;
+          });
       }
     }
 
@@ -391,12 +412,16 @@
               .push(function (my_directory_list) {
                 var response_dict = my_directory_list.data.rows.data,
                   directory_content_list = [],
+                  len = response_dict.total_rows,
                   cache_id,
                   i;
 
                 if (my_directory_list !== undefined) {
                   entry_dict = {};
-                  for (i = 0; i < response_dict.total_rows; i += 1) {
+                  if (len === 1) {
+                    CodeMirror.menu_dict.active_cache = response_dict.rows[1].id
+                  }
+                  for (i = 0; i < len; i += 1) {
                     cache_id = response_dict.rows[i].id;
                     entry_dict[i] = {"name": cache_id, "item_list": []};
                     directory_content_list.push(
