@@ -406,7 +406,7 @@
                 if (my_directory_list !== undefined) {
                   entry_dict = {};
                   if (len === 1) {
-                    CodeMirror.menu_dict.active_cache = response_dict.rows[1].id
+                    CodeMirror.menu_dict.active_cache = response_dict.rows[0].id;
                   }
                   for (i = 0; i < len; i += 1) {
                     cache_id = response_dict.rows[i].id;
