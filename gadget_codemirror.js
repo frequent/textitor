@@ -366,7 +366,6 @@
           if (my_option_dict.onInput) {
             event_list.push(
               loopEventListener(text_input, "input", false, function (my_event) {
-                console.log("input detected")
                 return my_option_dict.onInput(my_event, text_input.value, dialog_evaluateState);
               })
             );
@@ -376,7 +375,6 @@
           if (my_option_dict.closeOnBlur !== false) {
             event_list.push(
               loopEventListener(text_input, "blur", false, function (my_event) {
-                console.log("blur detected")
                 if (my_option_dict.onBlur) {
                   return my_option_dict.onBlur(my_event, text_input.value, dialog_evaluateState);
                 }
@@ -388,7 +386,6 @@
         if (my_option_dict.onKeyUp) {
           event_list.push(
             loopEventListener(text_input, "keyup", false, function (my_event) {
-              console.log("keyup detected")
               return my_option_dict.onKeyUp(my_event, text_input.value, dialog_evaluateState);
             })
           );
@@ -397,7 +394,6 @@
         if (my_option_dict.onKeyDown) {
           event_list.push(
             loopEventListener(text_input, "keydown", false, function (my_event) {
-              console.log("keydown detected")
               // close on ESC
               // XXX Move to resolve handler vs just closing here
               if (my_event.keyCode == 27) {
@@ -481,13 +477,12 @@
             ]);
           })
           .push(function (my_return_close) {
-            console.log("WE ARE DONE, no way back");
             return dialog_evaluateState();
           })
           .push(undefined, function (my_error) {
             console.log(my_error);
             throw my_error;
-          })
+          });
       }
     );
   }
@@ -592,7 +587,7 @@
         && CodeMirror.menu_dict.active_file) {
         parameter = {"target":{"name":"save"}};
       }
-      return CodeMirror.menu_dict.evaluateState(parameter);
+      return CodeMirror.menu_dict.evaluateState(parameter || true);
     }
   }
 
