@@ -62,7 +62,7 @@
     "<span class='custom-menu-label'>Mime-Type:</span>" +
     "<input type='text' tabindex='2' placeholder='mime-type' value='%s' />" +
     "<span class='custom-menu-label'>Create as Cache</span>" +
-    "<input type='checkbox' autocomplete='off' />" +
+    "<input type='checkbox' tabindex='3' autocomplete='off' />" +
     "<span class='custom-menu-typewriter'>CTRL+ALT+</span>" +
     "<form name='save'>" +
       "<button type='submit' tabindex='4' class='custom-menu-button'>" +
@@ -218,51 +218,53 @@
       file_name,
       action;
 
-    // form submits
+    // determine action
     if (my_event && my_event.target) {
       action = my_event.target.name;
+    }
+    
+    // save and close
+    if (action === "save") {
+
+      file_name_input = dialog_getTextInput(my_dialog, 0);
+      mime_type_input = dialog_getTextInput(my_dialog, 1);
+      is_cache_name = my_dialog.querySelector('input:checked');
       
-      // save and close
-      if (action === "save") {
-        
-        file_name_input = dialog_getTextInput(my_dialog, 0);
-        mime_type_input = dialog_getTextInput(my_dialog, 1);
-        is_cache_name = my_dialog.querySelector('input:checked');
-        
-        // validate
-        if (!file_name_input.value) {
-          return dialog_flagInput(file_name_input, 'Enter valid URL.');
-        }
-        if (!mime_type_input) {
-          return dialog_flagInput(mime_type_input, 'Enter mime-type/cache name.');
-        } else if (!is_validMimeType(mime_type_input.value) && !is_cache_name) {
-          return dialog_flagInput(mime_type_input, 'Invalid/Unsupported mime-type');
-        }
-        active_cache = CodeMirror.menu_dict.active_cache || "textitor";
-        mime_type = mime_type_input.value;
-        file_name = file_name_input.value;
-        return new RSVP.Queue()
-          .push(function() {
-            return my_gadget.jio_putAttachment(
-              active_cache,
-              file_name,
-              new Blob([my_gadget.property_dict.editor.getValue()], {
-                type: mime_type,
-              })
-            );
-          })
-          .push(function () {
-            my_gadget.property_dict.editor.setOption("mode", mime_type);
-            editor_setActiveFile(file_name, mime_type);
-            
-            // close dialog
-            return false;
-          });
+      // validate
+      if (!file_name_input.value) {
+        return dialog_flagInput(file_name_input, 'Enter valid URL.');
       }
+      if (!mime_type_input) {
+        return dialog_flagInput(mime_type_input, 'Enter mime-type/cache name.');
+      } else if (!is_validMimeType(mime_type_input.value) && !is_cache_name) {
+        return dialog_flagInput(mime_type_input, 'Invalid/Unsupported mime-type');
+      }
+      active_cache = CodeMirror.menu_dict.active_cache || "textitor";
+      mime_type = mime_type_input.value;
+      file_name = file_name_input.value;
+      return new RSVP.Queue()
+      .push(function() {
+          return my_gadget.jio_putAttachment(
+            active_cache,
+            file_name,
+            new Blob([my_gadget.property_dict.editor.getValue()], {
+              type: mime_type,
+            })
+          );
+        })
+        .push(function () {
+          my_gadget.property_dict.editor.setOption("mode", mime_type);
+          editor_setActiveFile(file_name, mime_type);
+          
+          // close dialog
+          return false;
+        })
+        .push(undefined, function (my_error) {
+          throw e;
+        });
     }
 
     // XXX resolve promise chain! not just close
-    // CodeMirror.menu_dict.evaluateState();
     if (my_value !== undefined) {
       return false;
     }
@@ -332,8 +334,14 @@
         function dialog_evaluateState(my_parameter) {
           return new RSVP.Queue()
             .push(function () {
+              // XXX...
+              var is_event;
               if (closed !== true) {
-                return dialog_updateStorage(my_gadget, dialog, null, my_parameter);
+                if (typeof my_parameter === 'string') {
+                  is_event = my_parameter;
+                  my_parameter = null;
+                }
+                return dialog_updateStorage(my_gadget, dialog, is_event, my_parameter);
               }
               return my_parameter;
             })
@@ -365,6 +373,7 @@
           if (my_option_dict.onInput) {
             event_list.push(
               loopEventListener(text_input, "input", false, function (my_event) {
+                console.log("input detected")
                 return my_option_dict.onInput(my_event, text_input.value, dialog_evaluateState);
               })
             );
@@ -374,6 +383,7 @@
           if (my_option_dict.closeOnBlur !== false) {
             event_list.push(
               loopEventListener(text_input, "blur", false, function (my_event) {
+                console.log("blur detected")
                 if (my_option_dict.onBlur) {
                   return my_option_dict.onBlur(my_event, text_input.value, dialog_evaluateState);
                 }
@@ -385,6 +395,7 @@
         if (my_option_dict.onKeyUp) {
           event_list.push(
             loopEventListener(text_input, "keyup", false, function (my_event) {
+              console.log("keyup detected")
               return my_option_dict.onKeyUp(my_event, text_input.value, dialog_evaluateState);
             })
           );
@@ -393,7 +404,7 @@
         if (my_option_dict.onKeyDown) {
           event_list.push(
             loopEventListener(text_input, "keydown", false, function (my_event) {
-              
+              console.log("keydown detected")
               // close on ESC
               // XXX Move to resolve handler vs just closing here
               if (my_event.keyCode == 27) {
@@ -554,6 +565,7 @@
     return active_file;
   }
 
+  // shortcut handlers
   function editor_closeDialog(my_codemirror) {
     if (CodeMirror.menu_dict.evaluateState) {
       CodeMirror.menu_dict.evaluateState();
@@ -561,11 +573,15 @@
   }
   CodeMirror.commands.myEditor_closeDialog = editor_closeDialog;
 
-  function editor_closeCallback(my_selected_value, my_event) {
-
+  function editor_saveFromDialog(my_codemirror) {
+    if (CodeMirror.menu_dict.position !== "idle") {
+      CodeMirror.menu_dict.evaluateState();
+    }
   }
+  CodeMirror.commands.myEditor_saveFromDialog = editor_saveFromDialog;
 
-  // File Menu Navigation
+  function editor_closeCallback(my_selected_value, my_event) {}
+
   function editor_navigateHorizontal(my_codemirror, my_direction) {
     if (CodeMirror.menu_dict.position === "idle") {
       my_codemirror.openDialog(
@@ -574,7 +590,7 @@
         dialog_option_dict
       );
     } else if (my_direction !== CodeMirror.menu_dict.position) {
-      CodeMirror.menu_dict.evaluateState();
+      return CodeMirror.menu_dict.evaluateState();
     }
   }
 
@@ -606,7 +622,7 @@
   // CodeMirror.keyMap.my["Ctrl-Alt-P"] = undefined;
   // CodeMirror.keyMap.my["Ctrl-Alt-Q"] = undefined;
   // CodeMirror.keyMap.my["Ctrl-Alt-R"] = undefined;
-  // CodeMirror.keyMap.my["Ctrl-Alt-S"] = undefined;
+  CodeMirror.keyMap.my["Ctrl-Alt-S"] = "myEditor_saveFromDialog";
   // CodeMirror.keyMap.my["Ctrl-Alt-T"] = undefined;
   // CodeMirror.keyMap.my["Ctrl-Alt-U"] = undefined;
   // CodeMirror.keyMap.my["Ctrl-Alt-V"] = undefined;
