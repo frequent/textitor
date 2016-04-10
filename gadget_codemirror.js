@@ -214,11 +214,14 @@
       file_name_input,
       mime_type_input,
       is_cache_name,
+      mime_type,
       action;
 
     // form submits
     if (my_event && my_event.target) {
       action = my_event.target.name;
+      
+      // save and close
       if (action === "save") {
         
         file_name_input = dialog_getTextInput(my_dialog, 0);
@@ -235,13 +238,21 @@
           return dialog_flagInput(mime_type_input, 'Invalid/Unsupported mime-type');
         }
         active_cache = CodeMirror.menu_dict.active_cache || "textitor";
-        return my_gadget.jio_putAttachment(
-          active_cache,
-          file_name_input.value,
-          new Blob([my_gadget.property_dict.editor.getValue()], {
-            type: mime_type_input.value,
+        mime_type = mime_type_input.value;
+        return new RSVP.Queue()
+          .push(function() {
+            return my_gadget.jio_putAttachment(
+              active_cache,
+              file_name_input.value,
+              new Blob([my_gadget.property_dict.editor.getValue()], {
+                type: mime_type,
+              })
+            );
           })
-        );
+          .push(function () {
+            my_gadget.property_dict.editor.setOption("mode", mime_type);
+            return false;
+          });
       }
     }
 
