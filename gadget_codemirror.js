@@ -225,7 +225,6 @@
     
     // save and close
     if (action === "save") {
-      console.log("saving...");
       file_name_input = dialog_getTextInput(my_dialog, 0);
       mime_type_input = dialog_getTextInput(my_dialog, 1);
       is_cache_name = my_dialog.querySelector('input:checked');
@@ -253,7 +252,6 @@
           );
         })
         .push(function () {
-          console.log("done");
           my_gadget.property_dict.editor.setOption("mode", mime_type);
           editor_setActiveFile(file_name, mime_type);
           
@@ -261,15 +259,11 @@
           return true;
         })
         .push(undefined, function (my_error) {
-          console.log(my_error);
           throw my_error;
         });
     }
 
     // XXX resolve promise chain! not just close
-    // no parameter, 
-    console.log("so, my_parameter")
-    console.log(my_parameter);
     if (my_parameter !== undefined) {
       return false;
     }
@@ -340,8 +334,6 @@
           return new RSVP.Queue()
             .push(function () {
               if (closed !== true) {
-                console.log("running with my parameter");
-                console.log(my_parameter)
                 return dialog_updateStorage(my_gadget, dialog, my_parameter);
               }
               return my_parameter;
@@ -489,8 +481,13 @@
             ]);
           })
           .push(function (my_return_close) {
+            console.log("WE ARE DONE, no way back");
             return dialog_evaluateState();
-          });
+          })
+          .push(undefined, function (my_error) {
+            console.log(my_error);
+            throw my_error;
+          })
       }
     );
   }
@@ -519,9 +516,6 @@
           if (editor_setNavigationMenu("right") === undefined) {
             my_callback();
           }
-          break;
-        default:
-          console.log(my_event.keyVode);
           break;
       }  
     }
@@ -575,8 +569,7 @@
   CodeMirror.commands.myEditor_closeDialog = editor_closeDialog;
 
   function editor_saveFromDialog(my_codemirror) {
-    if (my_direction === "left" && CodeMirror.menu_dict.position === "right") {
-      console.log("saving on S")
+    if (CodeMirror.menu_dict.position === "right") {
       return CodeMirror.menu_dict.evaluateState({"target":{"name":"save"}});
     }
   }
@@ -596,7 +589,6 @@
       );
     } else if (my_direction !== CodeMirror.menu_dict.position) {
       if (my_direction === "left" && position === "right") {
-        console.log("saving on close");
         parameter = {"target":{"name":"save"}};
       }
       return CodeMirror.menu_dict.evaluateState(parameter);
