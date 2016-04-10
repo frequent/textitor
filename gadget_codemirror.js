@@ -271,7 +271,9 @@
       len,
       i;
     input_list = Array.prototype.slice.call(my_dialog.querySelectorAll("input"));
+    console.log(input_list);
     for (i = 0, len = input_list.length; i < len; i += 1) {
+      console.log(input_list[i]);
       if (input_list[i].type !== 'text') {
         input_list.splice(i, 1);
       }
