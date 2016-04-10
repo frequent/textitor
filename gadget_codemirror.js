@@ -209,7 +209,7 @@
   /////////////////////////////
   // form handling
   /////////////////////////////
-  function dialog_updateStorage(my_gadget, my_dialog, my_event, my_value) {
+  function dialog_updateStorage(my_gadget, my_dialog, my_event) {
     var active_cache, 
       file_name_input,
       mime_type_input,
@@ -338,14 +338,10 @@
         function dialog_evaluateState(my_parameter) {
           return new RSVP.Queue()
             .push(function () {
-              // XXX...
-              var is_event;
               if (closed !== true) {
-                if (typeof my_parameter === 'string') {
-                  is_event = my_parameter;
-                  my_parameter = null;
-                }
-                return dialog_updateStorage(my_gadget, dialog, is_event, my_parameter);
+                console.log("running with my parameter");
+                console.log(my_parameter)
+                return dialog_updateStorage(my_gadget, dialog, my_parameter);
               }
               return my_parameter;
             })
