@@ -383,7 +383,6 @@
           }
         }
 
-        /*
         if (my_option_dict.onKeyUp) {
           event_list.push(
             loopEventListener(text_input, "keyup", false, function (my_event) {
@@ -391,7 +390,6 @@
             })
           );
         }
-        */
 
         if (my_option_dict.onKeyDown) {
           event_list.push(
@@ -485,9 +483,9 @@
   function setNavigationCallback(my_event, my_value, my_callback) {
 
     // esc
-    if (my_event.keyCode == 27) {
-      CodeMirror.commands.myEditor_closeDialog(my_event);
-    }
+    // if (my_event.keyCode == 27) {
+    //  CodeMirror.commands.myEditor_closeDialog(my_event);
+    //}
 
     // input
     if (my_event.type === "input") {
@@ -565,7 +563,7 @@
 
   // shortcut handlers
   function editor_closeDialog(my_event) {
-    CodeMirror.e_stop(my_event);
+    //CodeMirror.e_stop(my_event);
     if (CodeMirror.menu_dict.evaluateState) {
       CodeMirror.menu_dict.evaluateState();
     }
