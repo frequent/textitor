@@ -609,8 +609,8 @@
       parameter = {"target":{"name":"save"}};
     }
     if (position === "left" && my_direction === "right") {
-      console.log("going idle from menu. close");
-      parameter = true;
+      console.log("going idle from menu. try closing with undefined");
+      parameter = undefined;
     }
     console.log(parameter)
     return CodeMirror.menu_dict.evaluateState(parameter);
