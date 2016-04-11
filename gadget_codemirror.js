@@ -599,6 +599,10 @@
     }
     console.log("not idle");
 
+    if (position === my_direction) {
+      console.log("same direction")
+      parameter = false;
+    }
     if (position === "right" && my_direction === "left" 
       && CodeMirror.menu_dict.active_file) {
       console.log("going idle from single. save & close");
@@ -607,10 +611,6 @@
     if (position === "left" && my_direction === "right") {
       console.log("going idle from menu. close");
       parameter = true;
-    }
-    if (position === my_direction) {
-      console.log("same way, stay open")
-      parameter = false;
     }
     console.log(parameter)
     return CodeMirror.menu_dict.evaluateState(parameter);
