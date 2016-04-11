@@ -504,10 +504,19 @@
         case 37:  // Left
           CodeMirror.commands.myEditor_navigateHorizontal(undefined, "left");
           break;
-          
+
+        case 38:  // Up
+          CodeMirror.commands.myEditor_navigateVertical(undefined, "up");
+          break;
+
         case 39:  // Right
           CodeMirror.commands.myEditor_navigateHorizontal(undefined, "right");
           break;
+
+        case 40:  // Down
+          CodeMirror.commands.myEditor_navigateVertical(undefined, "down");
+          break;
+
       }  
     }
   }
@@ -593,6 +602,11 @@
   }
   CodeMirror.commands.myEditor_navigateHorizontal = editor_navigateHorizontal;
 
+  function editor_navigateVertical(my_codemirror, my_direction) {
+    console.log(my_codemirror);
+    console.log(my_direction);
+  }
+
   function editor_navigateRight(cm) {
     return CodeMirror.commands.myEditor_navigateHorizontal(cm, "right");
   }
@@ -603,6 +617,16 @@
   }
   CodeMirror.commands.myEditor_navigateLeft = editor_navigateLeft;
   
+  function editor_navigateUp(cm) {
+    return CodeMirror.commands.myEditor_navigateVertical(cm, "up");
+  }
+  CodeMirror.commands.myEditor_navigateUp = editor_navigateUp;
+  
+  function edtor_navigateDown(cm) {
+    return CodeMirror.commands.myEditor_navigateHorizontal(cm, "down");
+  }
+  CodeMirror.commands.myEditor_navigateDown = editor_navigateDown;
+
   // CodeMirror.keyMap.my["Ctrl-Alt-A"] = undefined;
   // CodeMirror.keyMap.my["Ctrl-Alt-B"] = undefined;
   // CodeMirror.keyMap.my["Ctrl-Alt-C"] = undefined;
@@ -632,6 +656,8 @@
   // CodeMirror.keyMap.my["Ctrl-Alt--"] = undefined;
   CodeMirror.keyMap.my["Ctrl-Alt-Right"] = "myEditor_navigateRight";
   CodeMirror.keyMap.my["Ctrl-Alt-Left"] = "myEditor_navigateLeft";
+  CodeMirror.keyMap.my["Ctrl-Alt-Up"] = "myEditor_navigateUp";
+  CodeMirror.keyMap.my["Ctrl-Alt-Down"] = "myEditor_navigateDown";
   // CodeMirror.keyMap.my["Ctrl-Alt-Return"] = undefined;
 
   // ==========================================================================
