@@ -383,6 +383,7 @@
           }
         }
 
+        /*
         if (my_option_dict.onKeyUp) {
           event_list.push(
             loopEventListener(text_input, "keyup", false, function (my_event) {
@@ -390,17 +391,11 @@
             })
           );
         }
+        */
 
         if (my_option_dict.onKeyDown) {
           event_list.push(
             loopEventListener(text_input, "keydown", false, function (my_event) {
-              // close on ESC
-              // XXX Move to resolve handler vs just closing here
-              if (my_event.keyCode == 27) {
-                text_input.blur();
-                CodeMirror.e_stop(my_event);
-                return dialog_evaluateState();
-              }
               return my_option_dict.onKeyDown(my_event, text_input.value, dialog_evaluateState);
             })
           );
@@ -488,9 +483,17 @@
   }
 
   function setNavigationCallback(my_event, my_value, my_callback) {
+
+    // esc
+    if (my_event.keyCode == 27) {
+      CodeMirror.commands.myEditor_closeDialog(my_event);
+    }
+
+    // input
     if (my_event.type === "input") {
       my_callback(my_value);
     }
+
     if (my_event.ctrlKey && my_event.altKey) {
       switch(my_event.keyCode) {
         case 83:  // s Save
@@ -498,7 +501,7 @@
           break;
 
         case 88:  // x Close
-          CodeMirror.commands.myEditor_closeDialog();
+          CodeMirror.commands.myEditor_closeDialog(my_event);
           break;
       
         case 37:  // Left
@@ -561,7 +564,8 @@
   }
 
   // shortcut handlers
-  function editor_closeDialog() {
+  function editor_closeDialog(my_event) {
+    CodeMirror.e_stop(my_event);
     if (CodeMirror.menu_dict.evaluateState) {
       CodeMirror.menu_dict.evaluateState();
     }
