@@ -607,10 +607,10 @@
     }
     if (position === "left" && my_direction === "right") {
       console.log("going idle from menu. close");
-      parameter = false;
+      parameter = true;
     }
     console.log(parameter)
-    return CodeMirror.menu_dict.evaluateState(parameter || true);
+    return CodeMirror.menu_dict.evaluateState(parameter);
   }
   CodeMirror.commands.myEditor_navigateHorizontal = editor_navigateHorizontal;
 
