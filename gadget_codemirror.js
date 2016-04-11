@@ -488,29 +488,39 @@
   }
 
   function setNavigationCallback(my_event, my_value, my_callback) {
+    console.log("INSIDE NAVIGATION CALLBACK FROM KEY");
+    
     if (my_event.type === "input") {
       my_callback(my_value);
     }
     if (my_event.ctrlKey && my_event.altKey) {
       switch(my_event.keyCode) {
         case 83:  // s Save
-          my_callback(true);
+          console.log("KEY SAVE")
+          CodeMirror.commands.myEditor_saveFromDialog();
+          //my_callback(true);
           break;
 
         case 88:  // x Close
-          my_callback();
+          console.log("KEX CLOSE")
+          // my_callback(true);
+          CodeMirror.commands.myEditor_closeDialog();
           break;
       
         case 37:  // Left
-          if (editor_setNavigationMenu("left") === undefined) {
-            my_callback(true);
-          }
+          console.log("KEY LEFT")
+          CodeMirror.commands.myEditor_navigateHorizontal(undefined, "left");
+          //if (editor_setNavigationMenu("left") === undefined) {
+          //  my_callback(true);
+          //}
           break;
           
         case 39:  // Right
-          if (editor_setNavigationMenu("right") === undefined) {
-            my_callback();
-          }
+          console.log("KEY_RIGHT")
+          CodeMirror.commands.myEditor_navigateHorizontal(undefined, "right");
+          // if (editor_setNavigationMenu("right") === undefined) {
+          //  my_callback(true);
+          //}
           break;
       }  
     }
@@ -556,14 +566,14 @@
   }
 
   // shortcut handlers
-  function editor_closeDialog(my_codemirror) {
+  function editor_closeDialog() {
     if (CodeMirror.menu_dict.evaluateState) {
       CodeMirror.menu_dict.evaluateState();
     }
   }
   CodeMirror.commands.myEditor_closeDialog = editor_closeDialog;
 
-  function editor_saveFromDialog(my_codemirror) {
+  function editor_saveFromDialog() {
     if (CodeMirror.menu_dict.position === "right") {
       return CodeMirror.menu_dict.evaluateState({"target":{"name":"save"}});
     }
@@ -575,7 +585,7 @@
   function editor_navigateHorizontal(my_codemirror, my_direction) {
     var position = CodeMirror.menu_dict.position,
       parameter;
-    console.log("in horizontal");
+    console.log("in horizontal nav");
     console.log(position);
     console.log(my_direction);
 
@@ -595,16 +605,17 @@
     }
     return CodeMirror.menu_dict.evaluateState(parameter || true);
   }
+  CodeMirror.commands.myEditor_navigateHorizontal = editor_navigateHorizontal;
 
   function editor_navigateRight(cm) {
     console.log("detected naivagte right");
-    return editor_navigateHorizontal(cm, "right");
+    return CodeMirror.commands.myEditor_navigateHorizontal(cm, "right");
   }
   CodeMirror.commands.myEditor_navigateRight = editor_navigateRight;
 
   function editor_navigateLeft(cm) {
     console.log("detected navigate left");
-    return editor_navigateHorizontal(cm, "left");
+    return CodeMirror.commands.myEditor_navigateHorizontal(cm, "left");
   }
   CodeMirror.commands.myEditor_navigateLeft = editor_navigateLeft;
   
