@@ -626,7 +626,7 @@
   }
   CodeMirror.commands.myEditor_navigateUp = editor_navigateUp;
   
-  function edtor_navigateDown(cm) {
+  function editor_navigateDown(cm) {
     return CodeMirror.commands.myEditor_navigateHorizontal(cm, "down");
   }
   CodeMirror.commands.myEditor_navigateDown = editor_navigateDown;
