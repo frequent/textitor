@@ -481,11 +481,13 @@
   }
 
   function setNavigationCallback(my_event, my_value, my_callback) {
-
+    console.log(my_event);
+    console.log(my_event.type);
+    console.log(my_event.keyCode);
     // esc
-    // if (my_event.keyCode == 27) {
-    //  CodeMirror.commands.myEditor_closeDialog(my_event);
-    //}
+     if (my_event.keyCode === 27) {
+      CodeMirror.commands.myEditor_closeDialog(my_event);
+    }
 
     // input
     if (my_event.type === "input") {
