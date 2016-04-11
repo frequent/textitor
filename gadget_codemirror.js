@@ -265,10 +265,8 @@
 
     // XXX resolve promise chain! not just close
     if (my_parameter !== undefined) {
-      console.log("storage done, staying open")
       return false;
     }
-    console.log("storage done, closing")
     return true;
   }
 
@@ -490,40 +488,25 @@
   }
 
   function setNavigationCallback(my_event, my_value, my_callback) {
-    console.log("INSIDE NAVIGATION CALLBACK FROM KEY");
-    
     if (my_event.type === "input") {
-      console.log("INPUT. wtf")
       my_callback(my_value);
     }
     if (my_event.ctrlKey && my_event.altKey) {
       switch(my_event.keyCode) {
         case 83:  // s Save
-          console.log("KEY SAVE")
           CodeMirror.commands.myEditor_saveFromDialog();
-          //my_callback(true);
           break;
 
         case 88:  // x Close
-          console.log("KEX CLOSE")
-          // my_callback(true);
           CodeMirror.commands.myEditor_closeDialog();
           break;
       
         case 37:  // Left
-          console.log("KEY LEFT")
           CodeMirror.commands.myEditor_navigateHorizontal(undefined, "left");
-          //if (editor_setNavigationMenu("left") === undefined) {
-          //  my_callback(true);
-          //}
           break;
           
         case 39:  // Right
-          console.log("KEY_RIGHT")
           CodeMirror.commands.myEditor_navigateHorizontal(undefined, "right");
-          // if (editor_setNavigationMenu("right") === undefined) {
-          //  my_callback(true);
-          //}
           break;
       }  
     }
@@ -588,7 +571,6 @@
   function editor_navigateHorizontal(my_codemirror, my_direction) {
     var position = CodeMirror.menu_dict.position,
       parameter;
-    console.log("in horizontal nav");
 
     if (position === "idle") {
       return my_codemirror.openDialog(
@@ -597,34 +579,26 @@
         dialog_option_dict
       );
     }
-    console.log("not idle");
-
     if (position === my_direction) {
-      console.log("same direction")
       parameter = false;
     }
     if (position === "right" && my_direction === "left" 
       && CodeMirror.menu_dict.active_file) {
-      console.log("going idle from single. save & close");
       parameter = {"target":{"name":"save"}};
     }
     if (position === "left" && my_direction === "right") {
-      console.log("going idle from menu. try closing with undefined");
       parameter = undefined;
     }
-    console.log(parameter)
     return CodeMirror.menu_dict.evaluateState(parameter);
   }
   CodeMirror.commands.myEditor_navigateHorizontal = editor_navigateHorizontal;
 
   function editor_navigateRight(cm) {
-    console.log("detected naivagte right");
     return CodeMirror.commands.myEditor_navigateHorizontal(cm, "right");
   }
   CodeMirror.commands.myEditor_navigateRight = editor_navigateRight;
 
   function editor_navigateLeft(cm) {
-    console.log("detected navigate left");
     return CodeMirror.commands.myEditor_navigateHorizontal(cm, "left");
   }
   CodeMirror.commands.myEditor_navigateLeft = editor_navigateLeft;
