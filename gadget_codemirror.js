@@ -598,6 +598,7 @@
     console.log(my_codemirror);
     console.log(my_direction);
   }
+  CodeMirror.commands.myEditor_navigateVertical = editor_navigateVertical;
 
   function editor_navigateRight(cm) {
     return CodeMirror.commands.myEditor_navigateHorizontal(cm, "right");
@@ -615,7 +616,7 @@
   CodeMirror.commands.myEditor_navigateUp = editor_navigateUp;
   
   function editor_navigateDown(cm) {
-    return CodeMirror.commands.myEditor_navigateHorizontal(cm, "down");
+    return CodeMirror.commands.myEditor_navigateVertical(cm, "down");
   }
   CodeMirror.commands.myEditor_navigateDown = editor_navigateDown;
 
