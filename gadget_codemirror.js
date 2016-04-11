@@ -493,6 +493,7 @@
     console.log("INSIDE NAVIGATION CALLBACK FROM KEY");
     
     if (my_event.type === "input") {
+      console.log("INPUT. wtf")
       my_callback(my_value);
     }
     if (my_event.ctrlKey && my_event.altKey) {
@@ -588,8 +589,6 @@
     var position = CodeMirror.menu_dict.position,
       parameter;
     console.log("in horizontal nav");
-    console.log(position);
-    console.log(my_direction);
 
     if (position === "idle") {
       return my_codemirror.openDialog(
@@ -608,6 +607,10 @@
     if (position === "left" && my_direction === "right") {
       console.log("going idle from menu. close");
       parameter = true;
+    }
+    if (my_position === my_direction) {
+      console.log("same way, stay open")
+      parameter = false;
     }
     console.log(parameter)
     return CodeMirror.menu_dict.evaluateState(parameter);
