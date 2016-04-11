@@ -608,7 +608,7 @@
       console.log("going idle from menu. close");
       parameter = true;
     }
-    if (my_position === my_direction) {
+    if (position === my_direction) {
       console.log("same way, stay open")
       parameter = false;
     }
