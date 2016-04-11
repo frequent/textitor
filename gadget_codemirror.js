@@ -265,8 +265,10 @@
 
     // XXX resolve promise chain! not just close
     if (my_parameter !== undefined) {
+      console.log("storage done, staying open")
       return false;
     }
+    console.log("storage done, closing")
     return true;
   }
 
@@ -600,9 +602,14 @@
 
     if (position === "right" && my_direction === "left" 
       && CodeMirror.menu_dict.active_file) {
-      console.log("we should save");
+      console.log("going idle from single. save & close");
       parameter = {"target":{"name":"save"}};
     }
+    if (position === "left" && my_direction === "right") {
+      console.log("going idle from menu. close");
+      parameter = false;
+    }
+    console.log(parameter)
     return CodeMirror.menu_dict.evaluateState(parameter || true);
   }
   CodeMirror.commands.myEditor_navigateHorizontal = editor_navigateHorizontal;
