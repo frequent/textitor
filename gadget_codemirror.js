@@ -481,12 +481,18 @@
   }
 
   function setNavigationCallback(my_event, my_value, my_callback) {
-    console.log(my_event);
-    console.log(my_event.type);
-    console.log(my_event.keyCode);
+
     // esc
-     if (my_event.keyCode === 27) {
+    if (my_event.keyCode === 27) {
       CodeMirror.commands.myEditor_closeDialog(my_event);
+    }
+
+    // ovrride chrome page stard/end shortcut
+    if (my_event.keyCode === 35) {
+      CodeMirror.commands.myEditor_navigateVertical(undefined, "up");
+    }
+    if (my_event.keyCode === 36) {
+      CodeMirror.commands.myEditor_navigateVertical(undefined, "down");
     }
 
     // input
@@ -496,30 +502,12 @@
 
     if (my_event.ctrlKey && my_event.altKey) {
       switch(my_event.keyCode) {
-        case 83:  // s Save
-          CodeMirror.commands.myEditor_saveFromDialog();
-          break;
-
-        case 88:  // x Close
-          CodeMirror.commands.myEditor_closeDialog(my_event);
-          break;
-      
-        case 37:  // Left
-          CodeMirror.commands.myEditor_navigateHorizontal(undefined, "left");
-          break;
-
-        case 38:  // Up
-          CodeMirror.commands.myEditor_navigateVertical(undefined, "up");
-          break;
-
-        case 39:  // Right
-          CodeMirror.commands.myEditor_navigateHorizontal(undefined, "right");
-          break;
-
-        case 40:  // Down
-          CodeMirror.commands.myEditor_navigateVertical(undefined, "down");
-          break;
-
+        case 83: return CodeMirror.commands.myEditor_saveFromDialog(); // (s)ave
+        case 88: return CodeMirror.commands.myEditor_closeDialog(my_event); // (x)lose
+        case 37: return CodeMirror.commands.myEditor_navigateHorizontal(undefined, "left");
+        case 38: return CodeMirror.commands.myEditor_navigateVertical(undefined, "up");
+        case 39: return CodeMirror.commands.myEditor_navigateHorizontal(undefined, "right");
+        case 40: return CodeMirror.commands.myEditor_navigateVertical(undefined, "down");
       }  
     }
   }
@@ -658,6 +646,8 @@
   // CodeMirror.keyMap.my["Ctrl-Alt-Y"] = undefined;
   // CodeMirror.keyMap.my["Ctrl-Alt-Z"] = undefined;
   // CodeMirror.keyMap.my["Ctrl-Alt--"] = undefined;
+  CodeMirror.keyMap.my["Ctrl-Alt-Home"] = "myEditor_navigateUp";
+  CodeMirror.keyMap.my["Ctrl-Alt-End"] = "myEditor_navigateDown";
   CodeMirror.keyMap.my["Ctrl-Alt-Right"] = "myEditor_navigateRight";
   CodeMirror.keyMap.my["Ctrl-Alt-Left"] = "myEditor_navigateLeft";
   CodeMirror.keyMap.my["Ctrl-Alt-Up"] = "myEditor_navigateUp";
