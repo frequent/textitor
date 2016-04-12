@@ -374,8 +374,9 @@
           // never close on blur of textinput
           if (my_option_dict.closeOnBlur !== false) {
             event_list.push(
-              loopEventListener(text_input, "blur", false, function (my_event) {
+              loopEventListener(dialog, "blur", false, function (my_event) {
                 if (my_option_dict.onBlur) {
+                  console.log("dialog-blur");
                   return my_option_dict.onBlur(my_event, text_input.value, dialog_evaluateState);
                 }
               })
@@ -385,7 +386,8 @@
 
         if (my_option_dict.onKeyUp) {
           event_list.push(
-            loopEventListener(text_input, "keyup", false, function (my_event) {
+            loopEventListener(dialog, "keyup", false, function (my_event) {
+              console.log("dialog-keyup");
               return my_option_dict.onKeyUp(my_event, text_input.value, dialog_evaluateState);
             })
           );
@@ -393,7 +395,8 @@
 
         if (my_option_dict.onKeyDown) {
           event_list.push(
-            loopEventListener(text_input, "keydown", false, function (my_event) {
+            loopEventListener(dialog, "keydown", false, function (my_event) {
+              console.log("dialog-keydown");
               return my_option_dict.onKeyDown(my_event, text_input.value, dialog_evaluateState);
             })
           );
