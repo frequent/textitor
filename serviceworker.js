@@ -178,10 +178,7 @@ self.addEventListener('message', function (event) {
         });
         event.ports[0].postMessage({
           error: null,
-          data: {
-            rows: result_list,
-            total_rows: result_list.length
-          }
+          data: result_list
         });
       })
       .catch(function(error) {
