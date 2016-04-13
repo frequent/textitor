@@ -45,10 +45,15 @@
   function sendMessage(message) {
     return new RSVP.Promise(function (resolve, reject, notify) {
       var messageChannel = new MessageChannel();
+      console.log("messagechannel")
+      console.log(messageChannel)
       messageChannel.port1.onmessage = function (event) {
+        console.log(event);
         if (event.data.error) {
+          console.log("throw?")
           reject(event.data.error);
         } else {
+          console.log("return")
           resolve(event.data);
         }
       };
