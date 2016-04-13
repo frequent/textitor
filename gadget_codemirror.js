@@ -264,7 +264,7 @@
           .push(function () {
             return my_gadget.jio_getAttachment(
               active_cache,
-              file_name_input.splite(" | ")[1]
+              file_name_input.split(" | ")[1]
             );
           })
           .push(function (my_response) {
