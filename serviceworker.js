@@ -258,7 +258,7 @@ self.addEventListener('message', function (event) {
             if (response) {
               event.ports[0].postMessage({
                 error: null,
-                data: "response"
+                data: response.body
               });
             } else {
               event.ports[0].postMessage({
