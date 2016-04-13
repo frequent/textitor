@@ -46,12 +46,10 @@
     return new RSVP.Promise(function (resolve, reject, notify) {
       var messageChannel = new MessageChannel();
       messageChannel.port1.onmessage = function (event) {
-        console.log("so")
-        console.log(event)
         if (event.data.error) {
           reject(event.data.error);
         } else {
-          resolve(event.data);
+          resolve(event.data.data);
         }
       };
 
