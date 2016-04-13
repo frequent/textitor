@@ -295,6 +295,9 @@
       }
       active_cache = CodeMirror.menu_dict.active_cache || "textitor";
       mime_type = mime_type_input.value;
+      console.log("saving with")
+      console.log(mime_type_input)
+      console.log(mime_type_input.value)
       file_name = file_name_input.value;
       return new RSVP.Queue()
       .push(function() {
