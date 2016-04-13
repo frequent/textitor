@@ -256,11 +256,9 @@ self.addEventListener('message', function (event) {
           return cache.match(param.name)
           .then(function(response) {
             if (response) {
-              console.log(response)
-              console.log(event)
               event.ports[0].postMessage({
                 error: null,
-                data: response
+                data: "response"
               });
             } else {
               event.ports[0].postMessage({
