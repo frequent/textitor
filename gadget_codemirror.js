@@ -476,7 +476,6 @@
                   len = response_dict.total_rows,
                   cache_id,
                   i;
-                console.log(response_dict)
                 if (my_directory_list !== undefined) {
                   entry_dict = {};
                   if (len === 1) {
@@ -493,14 +492,13 @@
                 return RSVP.all(directory_content_list);
               })
               .push(function (my_directory_content) {
-                console.log(my_directory_content)
                 var len = my_directory_content.length,
                   item,
                   i;
 
                 if (len > 0) {
                   for (i = 0; i < len; i += 1) {
-                    response = my_directory_content[i].data;
+                    response = my_directory_content[i];
                     for (item in response) {
                       if (response.hasOwnProperty(item)) {
                         entry_dict[i].item_list.push(item);
