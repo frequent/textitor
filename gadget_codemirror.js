@@ -168,13 +168,14 @@
       input_element,
       len,
       i;
+
       for (i = 0, len = input_list.length; i < len; i += 1) {
         if (input_list[i].checked) {
           selected_index = i;
           input_list[i].checked = false;
         }
       }
-      
+      console.log(my_direction);
       if (my_direction === "up") {
         selected_index = selected_index || len - 1;
         input_element = input_list[selected_index - 1] || input_list[len - 1];
@@ -182,7 +183,7 @@
         selected_index = selected_index || 0;
         input_element = input_list[selected_index + 1] || input_list[0];
       }
-      input_list[selected_index] = true;
+      input_list[selected_index].checked = true;
     }
   }
 
