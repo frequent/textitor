@@ -165,7 +165,7 @@
 
     if (file_menu) {
       input_list = Array.prototype.slice.call(
-        file_menu.querySelector('input[type=checkbox')
+        file_menu.querySelector('input[type="checkbox"]')
       ),
       input_element,
       len,
