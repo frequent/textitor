@@ -164,32 +164,27 @@
       i;
 
     if (file_menu) {
-      input_list = file_menu.querySelector('input[type=checkbox');
+      input_list = Array.prototype.slice.call(
+        file_menu.querySelector('input[type=checkbox')
+      ),
       input_element,
       len,
       i;
 
       for (i = 0, len = input_list.length; i < len; i += 1) {
-        console.log("checking");
-        console.log(input_list[i]);
         if (input_list[i].checked) {
-          console.log("found a checked one, uncecking");
-          console.log(i);
           selected_index = i;
           input_list[i].checked = false;
         }
       }
 
       if (my_direction === "up") {
-        console.log("up");
         selected_index = selected_index || len - 1;
         input_element = input_list[selected_index - 1] || input_list[len - 1];
       } else {
-        console.log("down");
         selected_index = selected_index || 0;
         input_element = input_list[selected_index + 1] || input_list[0];
       }
-      console.log(selected_index);
       input_list[selected_index].checked = true;
     }
   }
