@@ -515,6 +515,10 @@
                   dialog.querySelector('span')
                 );
               })
+              .push(null, function (e) {
+                console.log(e)
+                throw e
+              })
             );
         }
   
