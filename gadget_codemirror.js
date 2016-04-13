@@ -170,7 +170,7 @@
       input_element,
       len,
       i;
-
+      console.log(input_list);
       for (i = 0, len = input_list.length; i < len; i += 1) {
         if (input_list[i].checked) {
           selected_index = i;
@@ -185,7 +185,11 @@
         selected_index = selected_index || 0;
         input_element = input_list[selected_index + 1] || input_list[0];
       }
-      input_list[selected_index].checked = true;
+      console.log(selected_index);
+      console.log(input_list);
+      console.log(input_element);
+      console.log(input_list[selected_index]);
+      input_element.checked = true;
     }
   }
 
