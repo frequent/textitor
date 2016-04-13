@@ -473,7 +473,8 @@
               .push(function (my_directory_list) {
                 
                 // XXX: WTFix
-                var response_dict = my_directory_list.data.rows.rows,
+                console.log(my_directory_list)
+                var response_dict = my_directory_list.data.rows,
                   directory_content_list = [],
                   len = response_dict.total_rows,
                   cache_id,
