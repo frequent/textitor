@@ -264,9 +264,10 @@ self.addEventListener('message', function (event) {
           })
           .then(function (converted_response) {
             if (converted_response) {
+              console.log(converted_response)
               event.ports[0].postMessage({
                 error: null,
-                data: converted_response.data
+                data: converted_response
               });
             } else {
               event.ports[0].postMessage({
