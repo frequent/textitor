@@ -250,20 +250,23 @@ self.addEventListener('message', function (event) {
     break;
 
     case 'getAttachment':
-      console.log("GETATTACHMENT")
       CURRENT_CACHE = param.id + "-v" + CURRENT_CACHE_VERSION;
       caches.open(CURRENT_CACHE)
         .then(function(cache) {
           return cache.match(param.name)
           .then(function(response) {
-            if (response) {
-              console.log(response);
-              console.log(response.body)
-              console.log(response.body.blob())
-              console.log(event);
+            
+            // the response body is a readableByteStream which cannot be
+            // passed back through postMessage apparently. This link
+            // https://jakearchibald.com/2015/thats-so-fetch/ explains
+            // what can be done to get a Blob to return
+            return response.clone().blob();
+          })
+          .then(function (converted_response) {
+            if (converted_response) {
               event.ports[0].postMessage({
                 error: null,
-                data: response.body.blob()
+                data: converted_response
               });
             } else {
               event.ports[0].postMessage({
