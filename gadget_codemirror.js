@@ -255,6 +255,29 @@
       action = my_parameter.target.name;
     }
     
+    // open and close
+    if (action === "open") {
+      file_name_input = my_dialog.querySelector('input:checked');
+      if (file_name_input) {
+        active_cache = CodeMirror.menu_dict.active_cache || "textitor";
+        return new RSVP.Queue()
+          .push(function () {
+            return my_gadget.jio_getAttachment(
+              active_cache,
+              file_name_input.splite(" | ")[1]
+            );
+          })
+          .push(function (my_response) {
+            console.log(my_response);
+            //my_gadget.property_dict.editor.setOption("mode", mime_type);
+            //editor_setActiveFile(file_name, mime_type);
+          
+            // close dialog
+            return true;
+          });
+      }
+    }
+
     // save and close
     if (action === "save") {
       file_name_input = dialog_getTextInput(my_dialog, 0);
@@ -540,6 +563,7 @@
 
     if (my_event.ctrlKey && my_event.altKey) {
       switch(my_event.keyCode) {
+        case 79: return Codemirror.commands.myEditor_openFromDialog(); // (o)pen
         case 83: return CodeMirror.commands.myEditor_saveFromDialog(); // (s)ave
         case 88: return CodeMirror.commands.myEditor_closeDialog(my_event); // (x)lose
         case 37: return CodeMirror.commands.myEditor_navigateHorizontal(undefined, "left");
@@ -600,10 +624,17 @@
 
   function editor_saveFromDialog() {
     if (CodeMirror.menu_dict.position === "right") {
-      return CodeMirror.menu_dict.evaluateState({"target":{"name":"save"}});
+      return CodeMirror.menu_dict.evaluateState({"target":{"name": "save"}});
     }
   }
   CodeMirror.commands.myEditor_saveFromDialog = editor_saveFromDialog;
+
+  function editor_openFromDialog() {
+    if (CodeMirror.menu_dict.position === "left") {
+      return CodeMirror.menu_dict.evaluateState({"target":{"name": "open"}});
+    }
+  }
+  CodeMirror.commands.myEditor_openFromDialog = editor_openFromDialog;
 
   function editor_closeCallback(my_selected_value, my_event) {}
 
@@ -623,10 +654,10 @@
     }
     if (position === "right" && my_direction === "left" 
       && CodeMirror.menu_dict.active_file) {
-      parameter = {"target":{"name":"save"}};
+      parameter = {"target": {"name": "save"}};
     }
     if (position === "left" && my_direction === "right") {
-      parameter = undefined;
+      parameter = {"target": {"name": "open"}};
     }
     return CodeMirror.menu_dict.evaluateState(parameter);
   }
@@ -671,7 +702,7 @@
   // CodeMirror.keyMap.my["Ctrl-Alt-L"] = undefined;
   // CodeMirror.keyMap.my["Ctrl-Alt-M"] = undefined;
   // CodeMirror.keyMap.my["Ctrl-Alt-N"] = undefined;
-  // CodeMirror.keyMap.my["Ctrl-Alt-O"] = undefined;
+  CodeMirror.keyMap.my["Ctrl-Alt-O"] = "myEditor_openFromDialog";
   // CodeMirror.keyMap.my["Ctrl-Alt-P"] = undefined;
   // CodeMirror.keyMap.my["Ctrl-Alt-Q"] = undefined;
   // CodeMirror.keyMap.my["Ctrl-Alt-R"] = undefined;
