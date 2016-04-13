@@ -258,10 +258,12 @@ self.addEventListener('message', function (event) {
           .then(function(response) {
             if (response) {
               console.log(response);
-              console.log(events);
+              console.log(response.body)
+              console.log(response.body.blob())
+              console.log(event);
               event.ports[0].postMessage({
                 error: null,
-                data: response.body
+                data: response.body.blob()
               });
             } else {
               event.ports[0].postMessage({
