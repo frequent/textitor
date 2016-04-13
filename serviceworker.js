@@ -1,4 +1,4 @@
-/**
+/*
  * JIO Service Worker Storage Backend.
  */
 
