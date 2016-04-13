@@ -250,11 +250,16 @@ self.addEventListener('message', function (event) {
     break;
 
     case 'getAttachment':
+      console.log("INSIDE getAttachment")
       CURRENT_CACHE = param.id + "-v" + CURRENT_CACHE_VERSION;
+      console.log(CURRENT_CACHE)
       caches.open(CURRENT_CACHE)
         .then(function(cache) {
+          console.log(cache)
+          console.log(param.name)
           return cache.match(param.name)
           .then(function(response) {
+            console.log(response)
             if (response) {
               event.ports[0].postMessage({
                 error: null,
