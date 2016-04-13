@@ -170,19 +170,26 @@
       i;
 
       for (i = 0, len = input_list.length; i < len; i += 1) {
+        console.log("checking");
+        console.log(input_list[i]);
         if (input_list[i].checked) {
+          console.log("found a checked one, uncecking");
+          console.log(i);
           selected_index = i;
           input_list[i].checked = false;
         }
       }
-      console.log(my_direction);
+
       if (my_direction === "up") {
+        console.log("up");
         selected_index = selected_index || len - 1;
         input_element = input_list[selected_index - 1] || input_list[len - 1];
       } else {
+        console.log("down");
         selected_index = selected_index || 0;
         input_element = input_list[selected_index + 1] || input_list[0];
       }
+      console.log(selected_index);
       input_list[selected_index].checked = true;
     }
   }
