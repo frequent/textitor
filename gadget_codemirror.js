@@ -164,14 +164,12 @@
       i;
 
     if (file_menu) {
-      console.log(file_menu)
-      console.log(file_menu.querySelector('input[type="checkbox"]'));
-      file_list = file_menu.querySelector('input[type="checkbox"]')
-      input_list = Array.prototype.slice.call(file_list),
+      input_list = Array.prototype.slice.call(
+        file_menu.querySelectorAll('input[type="checkbox"]')
+      ),
       input_element,
       len,
       i;
-      console.log(file_list)
       console.log(input_list);
       for (i = 0, len = input_list.length; i < len; i += 1) {
         if (input_list[i].checked) {
