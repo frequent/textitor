@@ -156,7 +156,7 @@
   }
 
   function setFileMenuItem(my_dialog, my_direction) {
-    var file_menu = dialg.querySelector(".custom-file-menu"),
+    var file_menu = my_dialog.querySelector(".custom-file-menu"),
       input_list,
       input_element,
       selected_index,
