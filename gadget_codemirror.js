@@ -164,7 +164,7 @@
       i;
 
     if (file_menu) {
-      input_list.querySelector('input[type=checkbox');
+      input_list = file_menu.querySelector('input[type=checkbox');
       input_element,
       len,
       i;
