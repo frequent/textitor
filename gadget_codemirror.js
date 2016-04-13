@@ -155,7 +155,7 @@
     return div.firstChild;
   }
 
-  function setFileMenuSelectCheckbox(my_dialog, my_direction) {
+  function setFileMenuItem(my_dialog, my_direction) {
     var file_menu = dialg.querySelector(".custom-file-menu"),
       input_list,
       input_element,
@@ -382,6 +382,12 @@
             });
         }
         CodeMirror.menu_dict.evaluateState = dialog_evaluateState;
+        
+        function dialog_updateFileMenu(my_parameter) {
+          return setFileMenuItem(dialog, my_parameter);
+        }
+        
+        CodeMirror.menu_dict.updateFileMenu = dialog_updateFileMenu;
   
         text_input = dialog_getTextInput(dialog);
         if (text_input) {
@@ -625,8 +631,7 @@
   CodeMirror.commands.myEditor_navigateHorizontal = editor_navigateHorizontal;
 
   function editor_navigateVertical(my_codemirror, my_direction) {
-    console.log(my_codemirror);
-    console.log(my_direction);
+    return CodeMirror.menu_dict.updateFileMenu(my_direction);
   }
   CodeMirror.commands.myEditor_navigateVertical = editor_navigateVertical;
 
