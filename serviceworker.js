@@ -257,6 +257,8 @@ self.addEventListener('message', function (event) {
             // passed back through postMessage apparently. This link
             // https://jakearchibald.com/2015/thats-so-fetch/ explains
             // what can be done to get a Blob to return
+            
+            // https://github.com/whatwg/streams/blob/master/docs/ReadableByteStream.md
             console.log(response);
             console.log(response.body)
             var x = response.body
@@ -264,7 +266,7 @@ self.addEventListener('message', function (event) {
             console.log(y)
             //return response.clone().blob();
             //return response.clone();
-            return response
+            return y.read()
           })
           .then(function (x) {
             console.log(x)
