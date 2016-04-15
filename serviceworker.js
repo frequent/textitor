@@ -258,6 +258,10 @@ self.addEventListener('message', function (event) {
             // https://jakearchibald.com/2015/thats-so-fetch/ explains
             // what can be done to get a Blob to return
             console.log(response);
+            console.log(response.body)
+            var x = response.body
+            console.log(x.read)
+            console.log(x.read())
             //return response.clone().blob();
             return response.clone();
           })
@@ -288,10 +292,7 @@ self.addEventListener('message', function (event) {
       CURRENT_CACHE = param.id + "-v" + CURRENT_CACHE_VERSION;
       caches.open(CURRENT_CACHE)
         .then(function(cache) {
-          console.log("STORING")
-          console.log(param)
-          console.log(param.content)
-          console.log(param.content.type)
+
           // If event.data.url isn't a valid URL, new Request() will throw a 
           // TypeError which will be handled by the outer .catch().
           // Hardcode {mode: 'no-cors} since the default for new Requests 
