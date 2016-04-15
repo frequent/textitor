@@ -263,7 +263,12 @@ self.addEventListener('message', function (event) {
             var y = x.getReader()
             console.log(y)
             //return response.clone().blob();
-            return response.clone();
+            //return response.clone();
+            return response
+          })
+          .then(function (x) {
+            console.log(x)
+            return x;
           })
           .then(function (converted_response) {
             if (converted_response) {
