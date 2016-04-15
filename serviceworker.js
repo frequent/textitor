@@ -286,14 +286,15 @@ self.addEventListener('message', function (event) {
       CURRENT_CACHE = param.id + "-v" + CURRENT_CACHE_VERSION;
       caches.open(CURRENT_CACHE)
         .then(function(cache) {
-          
+          console.log("STORING")
+          console.log(param)
           // If event.data.url isn't a valid URL, new Request() will throw a 
           // TypeError which will be handled by the outer .catch().
           // Hardcode {mode: 'no-cors} since the default for new Requests 
           // constructed from strings is to require CORS, and we don't have any 
           // way of knowing whether an arbitrary URL that a user entered 
           // supports CORS.
-          request = new Request(param.name, {mode: 'no-cors'}),
+          request = new Request(param.name, {mode: 'no-cors'});
           response = new Response(param.content);
           cache.put(request, response)
             .then(function() {
