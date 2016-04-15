@@ -257,7 +257,9 @@ self.addEventListener('message', function (event) {
             // passed back through postMessage apparently. This link
             // https://jakearchibald.com/2015/thats-so-fetch/ explains
             // what can be done to get a Blob to return
-            return response.clone().blob();
+            console.log(response);
+            //return response.clone().blob();
+            return response.clone();
           })
           .then(function (converted_response) {
             if (converted_response) {
@@ -288,6 +290,8 @@ self.addEventListener('message', function (event) {
         .then(function(cache) {
           console.log("STORING")
           console.log(param)
+          console.log(param.content)
+          console.log(param.content.type)
           // If event.data.url isn't a valid URL, new Request() will throw a 
           // TypeError which will be handled by the outer .catch().
           // Hardcode {mode: 'no-cors} since the default for new Requests 
