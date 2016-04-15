@@ -260,8 +260,8 @@ self.addEventListener('message', function (event) {
             console.log(response);
             console.log(response.body)
             var x = response.body
-            console.log(x.read)
-            console.log(x.read())
+            var y = x.getReader()
+            console.log(y)
             //return response.clone().blob();
             return response.clone();
           })
