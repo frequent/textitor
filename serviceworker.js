@@ -262,7 +262,7 @@ self.addEventListener('message', function (event) {
             // http://stackoverflow.com/questions/15341912/how-to-go-from-blob-to-arraybuffer
             // https://streams.spec.whatwg.org/
             console.log(response);
-            console.log(resposnse.headers);
+            console.log(response.headers);
             console.log(response.body)
             var x = response.body
             // var y = x.getReader()
