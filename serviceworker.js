@@ -252,21 +252,25 @@ self.addEventListener('message', function (event) {
         .then(function(cache) {
           return cache.match(param.name)
           .then(function(response) {
-            
+
             // the response body is a readableByteStream which cannot be
             // passed back through postMessage apparently. This link
             // https://jakearchibald.com/2015/thats-so-fetch/ explains
             // what can be done to get a Blob to return
             
             // https://github.com/whatwg/streams/blob/master/docs/ReadableByteStream.md
+            // http://stackoverflow.com/questions/15341912/how-to-go-from-blob-to-arraybuffer
+            // https://streams.spec.whatwg.org/
             console.log(response);
+            console.log(resposnse.headers);
             console.log(response.body)
             var x = response.body
-            var y = x.getReader()
-            console.log(y)
+            // var y = x.getReader()
+            
             //return response.clone().blob();
             //return response.clone();
-            return y.read()
+            //return y.read()
+            return x.pipeTo(writableStream);
           })
           .then(function (x) {
             console.log(x)
