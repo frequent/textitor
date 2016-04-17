@@ -265,7 +265,7 @@ self.addEventListener('message', function (event) {
             // and returned (to be read again)
             // https://github.com/whatwg/streams/blob/master/docs/ReadableByteStream.md
             mime_type = response.headers.get('Content-Type');
-            return answer.clone().blob();
+            return response.clone().blob();
           })
           .then(function (response_as_blob) {
             return new Promise(function(resolve) {
