@@ -6056,10 +6056,6 @@ return new Parser;
     return result;
   }, function (argument_list, blob, convert) {
     var result;
-    console.log("we have");
-    console.log(blob);
-    console.log(argument_list);
-    console.log(convert);
     if (!(blob instanceof Blob)) {
       throw new jIO.util.jIOError(
         "'getAttachment' (" + argument_list[0] + " , " +

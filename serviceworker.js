@@ -280,6 +280,7 @@ self.addEventListener('message', function (event) {
             });
           })
           .then(function (converted_response) {
+            console.log(converted_response);
             if (converted_response) {
               event.ports[0].postMessage({
                 error: null,
