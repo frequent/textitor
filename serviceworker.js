@@ -276,7 +276,7 @@ self.addEventListener('message', function (event) {
           })
           .then(function (reader_response) {
             return new Blob([reader_response.target.result], {
-              "type": mime-type
+              "type": mime_type
             });
           })
           .then(function (converted_response) {
