@@ -49,6 +49,7 @@
         if (event.data.error) {
           reject(event.data.error);
         } else {
+          console.log(event.data.data);
           resolve(event.data.data);
         }
       };
@@ -164,6 +165,7 @@
         });
       })
       .push(function (my_blob_response) {
+        console.log(my_blob_response);
         return jIO.util.readBlobAsText(my_blob_response);
       });
   };
