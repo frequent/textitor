@@ -110,6 +110,7 @@ self.addEventListener('fetch', function (event) {
 self.addEventListener('message', function (event) {
   var param = event.data,
     item,
+    mime_type,
     result_list;
 
   switch (param.command) {
@@ -253,28 +254,30 @@ self.addEventListener('message', function (event) {
           return cache.match(param.name)
           .then(function(response) {
 
-            // the response body is a readableByteStream which cannot be
+            // the response body is a ReadableByteStream which cannot be
             // passed back through postMessage apparently. This link
             // https://jakearchibald.com/2015/thats-so-fetch/ explains
             // what can be done to get a Blob to return
             
+            // XXX Improve
+            // However, calling blob() does not allow to set mime-type, so
+            // for currently the blob is created, read, stored as new blob
+            // and returned (to be read again)
             // https://github.com/whatwg/streams/blob/master/docs/ReadableByteStream.md
-            // http://stackoverflow.com/questions/15341912/how-to-go-from-blob-to-arraybuffer
-            // https://streams.spec.whatwg.org/
-            console.log(response);
-            console.log(response.headers);
-            console.log(response.body)
-            var x = response.body
-            // var y = x.getReader()
-            
-            //return response.clone().blob();
-            //return response.clone();
-            //return y.read()
-            return x.pipeTo(writableStream);
+            mime_type = response.headers.get('Content-Type');
+            return answer.clone().blob();
           })
-          .then(function (x) {
-            console.log(x)
-            return x;
+          .then(function (response_as_blob) {
+            return new Promise(function(resolve) {
+              var blob_reader = new FileReader();
+              blob_reader.onload = resolve;
+              blob_reader.readAsText(response_as_blob);
+            });
+          })
+          .then(function (reader_response) {
+            return new Blob([reader_response.target.result], {
+              "type": mime-type
+            });
           })
           .then(function (converted_response) {
             if (converted_response) {
