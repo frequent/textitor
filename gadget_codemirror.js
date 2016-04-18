@@ -15,7 +15,7 @@
     "undefined": "text/plain",
     "null": "text/plain",
     "css": "text/css",
-    "javascript": "text/javascript",
+    "javascript": "application/javascript",
     "htmlmixed": "text/html",
     "xml": "application/xml",
     "json": "application/json",
@@ -268,12 +268,17 @@
             );
           })
           .push(function (my_response) {
+            console.log("got a response");
             console.log(my_response);
             //my_gadget.property_dict.editor.setOption("mode", mime_type);
             //editor_setActiveFile(file_name, mime_type);
           
             // close dialog
             return true;
+          })
+          .push(null, function (e) {
+            console.log(e);
+            throw e;
           });
       }
     }
@@ -295,9 +300,7 @@
       }
       active_cache = CodeMirror.menu_dict.active_cache || "textitor";
       mime_type = mime_type_input.value;
-      console.log("saving with")
-      console.log(mime_type_input)
-      console.log(mime_type_input.value)
+
       file_name = file_name_input.value;
       return new RSVP.Queue()
       .push(function() {
@@ -832,7 +835,7 @@
     .declareMethod('render', function (my_option_dict) {
       var gadget = this;
 
-      CodeMirror.lint["text/javascript"] = CodeMirror.lint.javascript;
+      CodeMirror.lint["application/javascript"] = CodeMirror.lint.javascript;
       CodeMirror.lint["application/json"] = CodeMirror.lint.json;
       CodeMirror.lint["text/css"] = CodeMirror.lint.css;
     
