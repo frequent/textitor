@@ -266,16 +266,13 @@
             return my_gadget.jio_getAttachment(active_cache, file_name);
           })
           .push(function (my_response) {
-            console.log("got a response");
-            console.log(my_response);
-            console.log(my_response.type);
             my_gadget.property_dict.editor.setOption("mode", my_response.type);
             editor_setActiveFile(file_name, my_response.type);
             return jIO.util.readBlobAsText(my_response);
           })
           .push(function (my_converted_response) {
             console.log(my_converted_response);
-            my_gadget.property_dict.editor.setValue(my_converted_response);
+            my_gadget.property_dict.editor.setValue(my_converted_response.target.result);
 
             // close dialog
             return true;
