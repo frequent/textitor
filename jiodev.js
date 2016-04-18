@@ -6056,6 +6056,8 @@ return new Parser;
     return result;
   }, function (argument_list, blob, convert) {
     var result;
+    console.log("?")
+    console.log(blob)
     if (!(blob instanceof Blob)) {
       throw new jIO.util.jIOError(
         "'getAttachment' (" + argument_list[0] + " , " +
