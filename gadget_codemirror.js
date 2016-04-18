@@ -271,7 +271,6 @@
             return jIO.util.readBlobAsText(my_response);
           })
           .push(function (my_converted_response) {
-            console.log(my_converted_response);
             my_gadget.property_dict.editor.setValue(my_converted_response.target.result);
 
             // close dialog
