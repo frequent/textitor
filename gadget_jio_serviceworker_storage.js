@@ -166,7 +166,8 @@
       })
       .push(function (my_blob_response) {
         console.log(my_blob_response);
-        return jIO.util.readBlobAsText(my_blob_response);
+        //return jIO.util.readBlobAsText(my_blob_response);
+        return my_blob_response;
       });
   };
   
