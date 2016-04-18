@@ -258,21 +258,25 @@
     // open and close
     if (action === "open") {
       file_name_input = my_dialog.querySelector('input:checked');
+      file_name = file_name_input.nextSibling.textContent.split(" | ")[1];
       if (file_name_input) {
         active_cache = CodeMirror.menu_dict.active_cache || "textitor";
         return new RSVP.Queue()
           .push(function () {
-            return my_gadget.jio_getAttachment(
-              active_cache,
-              file_name_input.nextSibling.textContent.split(" | ")[1]
-            );
+            return my_gadget.jio_getAttachment(active_cache, file_name);
           })
           .push(function (my_response) {
             console.log("got a response");
             console.log(my_response);
-            //my_gadget.property_dict.editor.setOption("mode", mime_type);
-            //editor_setActiveFile(file_name, mime_type);
-          
+            console.log(my_response.type);
+            my_gadget.property_dict.editor.setOption("mode", my_response.type);
+            editor_setActiveFile(file_name, my_response.type);
+            return jIO.util.readBlobAsText(my_response);
+          })
+          .push(function (my_converted_response) {
+            console.log(my_converted_response);
+            my_gadget.property_dict.editor.setValue(my_converted_response);
+
             // close dialog
             return true;
           })
