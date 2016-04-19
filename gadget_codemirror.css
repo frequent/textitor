@@ -50,3 +50,10 @@ body {
 .CodeMirror .CodeMirror-placeholder {
   color: #3E7087;
 }
+/* save hint */
+.CodeMirror-gutters:before {
+    display: none;
+    content: "Save";
+    position: fixed;
+    padding-top: 4px;
+}

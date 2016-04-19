@@ -315,7 +315,9 @@
         .push(function () {
           my_gadget.property_dict.editor.setOption("mode", mime_type);
           editor_setActiveFile(file_name, mime_type);
-          
+          console.log("unsetting")
+          my_gadget.property_dict.editor.setModified = null;
+
           // close dialog
           return true;
         })
@@ -386,7 +388,8 @@
         
         // be aware of content changes
         function setModified() {
-          my_context.modified = true;
+          console.log("setting modified");
+          my_gadget.property_dict.modified = true;
         }
         CodeMirror.menu_dict.setModified = setModified;
 
@@ -879,7 +882,7 @@
       return new RSVP.Queue()
         .push(function () {
           return RSVP.all([
-            //loopEventListener(editor, 'change', false, CodeMirror.menu_dict.setModified),
+            loopEventListener(editor, 'change', false, CodeMirror.menu_dict.setModified),
             promiseEventListener(window, "onbeforeunload", true)
           ]);
         })
