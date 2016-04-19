@@ -178,15 +178,9 @@
       }
 
       if (my_direction === "down") {
-        console.log("DOWN")
-        console.log(selected_index)
-        console.log(len - 1)
-        selected_index = selected_index || len - 1;
+        selected_index = selected_index || len;
         input_element = input_list[selected_index - 1] || input_list[len - 1];
       } else {
-        console.log("UP")
-        console.log(selected_index)
-        console.log(len - 1)
         selected_index = selected_index || 0;
         input_element = input_list[selected_index + 1] || input_list[0];
       }
