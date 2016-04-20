@@ -873,16 +873,18 @@
     // declared service
     /////////////////////////////    
     .declareService(function () {
-      var gadget = this;
+      var gadget = this,
+        editor = gadget.property_dict.editor,
+        edotor_setModified = CodeMirror.menu_dict.setModified;
       
-      gadget.property_dict.editor.refresh();
-      gadget.property_dict.editor.focus();
+      editor.refresh();
+      editor.focus();
 
       // XXX only works once!
       return new RSVP.Queue()
         .push(function () {
           return RSVP.all([
-            loopEventListener(editor, 'change', false, CodeMirror.menu_dict.setModified),
+            loopEventListener(editor, 'change', false, editor_setModified),
             promiseEventListener(window, "onbeforeunload", true)
           ]);
         })
