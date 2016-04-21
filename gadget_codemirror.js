@@ -879,7 +879,9 @@
       
       editor.refresh();
       editor.focus();
-
+      console.log(editor)
+      console.log(CodeMirror)
+      console.log(gadget.property_dict)
       // XXX only works once!
       return new RSVP.Queue()
         .push(function () {
