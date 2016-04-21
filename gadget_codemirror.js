@@ -875,7 +875,7 @@
     .declareService(function () {
       var gadget = this,
         editor = gadget.property_dict.editor,
-        edotor_setModified = CodeMirror.menu_dict.setModified;
+        editor_setModified = CodeMirror.menu_dict.setModified;
       
       editor.refresh();
       editor.focus();
