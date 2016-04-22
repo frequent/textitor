@@ -874,11 +874,21 @@
     /////////////////////////////    
     .declareService(function () {
       var gadget = this,
-        editor = gadget.property_dict.editor,
-        editor_setModified = CodeMirror.menu_dict.setModified;
+        editor = gadget.property_dict.editor;
       
+      function onModified(my_parameter_dict) {
+        return new RSVP.Promise(function (resolve) {
+          console.log("change");
+          console.log(my_parameter_dict);
+          CodeMirror.menu_dict.setModified();
+          resolve();
+        });
+      }
+
       editor.refresh();
       editor.focus();
+      editor.setOption("onchange", onModified);
+      
       console.log(editor)
       console.log(CodeMirror)
       console.log(gadget.property_dict)
@@ -886,7 +896,7 @@
       return new RSVP.Queue()
         .push(function () {
           return RSVP.all([
-            loopEventListener(editor, 'change', false, editor_setModified),
+            //loopEventListener(editor, 'change', false, editor_setModified),
             promiseEventListener(window, "onbeforeunload", true)
           ]);
         })
