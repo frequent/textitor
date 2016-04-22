@@ -887,7 +887,7 @@
 
       editor.refresh();
       editor.focus();
-      editor.setOption("onchange", onModified);
+      editor.on("change", onModified);
       
       console.log(editor)
       console.log(CodeMirror)
