@@ -857,26 +857,28 @@
     /////////////////////////////
     .declareMethod('render', function (my_option_dict) {
       var gadget = this,
-        property_dict = gadget.property_dict;
+        dict = gadget.property_dict;
 
       CodeMirror.lint["application/javascript"] = CodeMirror.lint.javascript;
       CodeMirror.lint["application/json"] = CodeMirror.lint.json;
       CodeMirror.lint["text/css"] = CodeMirror.lint.css;
 
       CodeMirror.menu_dict.editor_setModified = function () {
-        if (property_dict.modified !== true) {
-          property_dict.modified = true;
-          property_dict.element.querySelector(".CodeMirror").className += " custom-set-modified";
+        if (dict.modified === null) {
+          dict.modified = true;
+          dict.element.querySelector(".CodeMirror").className += 
+            " custom-set-modified";
         }
       };
       
       CodeMirror.menu_dict.editor_resetModified = function () {
-        property_dict.modified = null;
-        property_dict.element.className.replace(" custom-set-modified", "");
+        dict.modified = null;
+        dict.element.querySelector(".CodeMirror").className
+          .split("custom-set-modified").join("");
       };
     
       // http://codemirror.net/doc/manual.html#config
-      editor = CodeMirror.fromTextArea(gadget.property_dict.textarea, {
+      editor = CodeMirror.fromTextArea(dict.textarea, {
         readOnly: false,
         matchBrackets: true,
         autoCloseBrackets: false,
@@ -898,7 +900,7 @@
         mode: "text"
       });
 
-      gadget.property_dict.editor = editor;
+      dict.editor = editor;
       return gadget;
     })
 
