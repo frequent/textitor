@@ -798,6 +798,8 @@
           my_gadget.property_dict.element = my_element;
           my_gadget.property_dict.uri = undefined;
           my_gadget.property_dict.textarea = my_element.querySelector("textarea");
+          
+          console.log("setting up.")
           return my_gadget.jio_create({"type": "memory"});
         })
         .push(function (my_memory_cache) {
@@ -814,6 +816,50 @@
         my_gadget.property_dict.element.appendChild(editorTextarea);
       }
 
+      commands["help doc"] = "Shows this help.";
+      commands.help = function () {
+        alert(Object.keys(commands).reduce(function (prev, curr) {
+          if (curr.indexOf(" ") !== -1) {
+            return prev;
+          }
+          prev += curr;
+          if (commands[curr + " doc"]) {
+            prev += "\t\t\t" + commands[curr + " doc"];
+          }
+          return prev + "\n";
+        }, ""));
+      };
+      commands["mode doc"] = "{javascript|html|python|...}";
+      commands.mode = function (cm, args) {
+        cm.setOption("mode", modeShortcuts[args[1]] || args[1]);
+        cm.setOption("lint", false);
+        if (cm.getOption("myAutoLint") && CodeMirror.lint[cm.getOption("mode")]) {
+          setTimeout(function () { cm.setOption("lint", true); });
+        }
+      };
+      commands["lint doc"] = "Toggle automatic lint";
+      commands.lint = function (cm) {
+        if (cm.getOption("lint")) {
+          cm.setOption("myAutoLint", false);
+          cm.setOption("lint", false);
+        } else if (CodeMirror.lint[cm.getOption("mode")]) {
+          cm.setOption("myAutoLint", true);
+          cm.setOption("lint", true);
+        }
+      };
+      commands["keyMap doc"] = "{default|my|emacs|vim}";
+      commands.keyMap = function (cm, args) {
+        cm.setOption("keyMap", args[1] || "default");
+      };
+      commands["theme doc"] = "{default|random|rubyblue|monokai|blackboard|...}";
+      commands.theme = function (cm, args) {
+        if (args[1] === "random") {
+          cm.setOption("theme", randomChoose(["3024-night", "monokai", "blackboard", "rubyblue", "cobalt"]));
+          return;
+        }
+        cm.setOption("theme", args.slice(1).join(" ") || "default");
+      };
+      
       return dialog_setDialogExtension(my_gadget);
     })
 
