@@ -864,7 +864,7 @@
       CodeMirror.lint["text/css"] = CodeMirror.lint.css;
 
       CodeMirror.menu_dict.editor_setModified = function () {
-        if (dict.modified === null) {
+        if (dict.modified !== true) {
           dict.modified = true;
           dict.element.querySelector(".CodeMirror").className += 
             " custom-set-modified";
