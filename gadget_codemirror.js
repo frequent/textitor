@@ -113,10 +113,6 @@
   
   // loopEventListener for CodeMirror events (non DOM)
   function codeMirrorLoopEventListener(target, type, callback) {
-    console.log("setting");
-    console.log(target);
-    console.log(type);
-    console.log(callback);
     var handle_event_callback,
       callback_promise;
 
@@ -134,9 +130,7 @@
     }
     function itsANonResolvableTrap(resolve, reject) {
       handle_event_callback = function (evt) {
-        console.log("EVENT");
-        console.log(evt);
-        //CodeMirror.e_stop(evt);
+        //CodeMirror.e_stop(evt); XXX Not an event
         cancelResolver();
         callback_promise = new RSVP.Queue()
           .push(function () {
@@ -316,10 +310,6 @@
           .push(function (my_converted_response) {
             my_gadget.property_dict.editor.setValue(my_converted_response.target.result);
             return true;
-          })
-          .push(null, function (e) {
-            console.log(e);
-            throw e;
           });
       
       // close if no file is selected on opening
@@ -364,9 +354,6 @@
 
           // close dialog
           return true;
-        })
-        .push(undefined, function (my_error) {
-          throw my_error;
         });
     }
 
@@ -556,10 +543,6 @@
                   setFileMenu(entry_dict),
                   dialog.querySelector('span')
                 );
-              })
-              .push(null, function (e) {
-                console.log(e)
-                throw e
               })
             );
         }
@@ -880,7 +863,6 @@
       CodeMirror.lint["text/css"] = CodeMirror.lint.css;
 
       CodeMirror.menu_dict.setModified = function () {
-        console.log("CALLBACK");
         my_gadget.property_dict.modified = true;
       };
     
@@ -930,7 +912,6 @@
           ]);
         })
         .push(function () {
-          console.log("the end");
           if (editor.modified) {
             return "Don't forget to save your work!";
           }
