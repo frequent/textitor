@@ -51,13 +51,15 @@
         .push(function () {
           return RSVP.all([
             gadget.getDeclaredGadget("codemirror"),
+            gadget.getDeclaredGadget("jio_gadget"),
             gadget.getDeclaredGadget("serviceworker"),
           ]);
         })
         .push(function (my_declared_gadget_list) {
           return RSVP.all([
             my_declared_gadget_list[0].render(my_option_dict || {}),
-            my_declared_gadget_list[1].render(my_option_dict || {})
+            my_declared_gadget_list[1].render(my_option_dict || {}),
+            my_declared_gadget_list[2].render(my_option_dict || {})
           ]);
         })
         .push(function (my_rendered_gadget_list) {
