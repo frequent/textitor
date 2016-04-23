@@ -350,7 +350,7 @@
         .push(function () {
           my_gadget.property_dict.editor.setOption("mode", mime_type);
           editor_setActiveFile(file_name, mime_type);
-          my_gadget.property_dict.editor.setModified = null;
+          CodeMirror.menu_dict.editor_resetModified();
 
           // close dialog
           return true;
@@ -856,14 +856,23 @@
     // declared methods
     /////////////////////////////
     .declareMethod('render', function (my_option_dict) {
-      var gadget = this;
+      var gadget = this,
+        property_dict = my_gadget.property_dict;
 
       CodeMirror.lint["application/javascript"] = CodeMirror.lint.javascript;
       CodeMirror.lint["application/json"] = CodeMirror.lint.json;
       CodeMirror.lint["text/css"] = CodeMirror.lint.css;
 
-      CodeMirror.menu_dict.setModified = function () {
-        my_gadget.property_dict.modified = true;
+      CodeMirror.menu_dict.editor_setModified = function () {
+        property_dict.modified = true;
+        console.log("setting");
+        property_dict.element.querySelector(".CodeMirror").className += " custom-set-modified";
+      };
+      
+      CodeMirror.menu_dict.editor_resetModified = function () {
+        property_dict.modified = null;
+        console.log("unsetting");
+        property_dict.element.className.replace(" custom-set-modified", "");
       };
     
       // http://codemirror.net/doc/manual.html#config
@@ -899,7 +908,7 @@
     .declareService(function () {
       var gadget = this,
         editor = gadget.property_dict.editor,
-        editor_setModified = CodeMirror.menu_dict.setModified;
+        editor_setModified = CodeMirror.menu_dict.editor_setModified;
 
       editor.refresh();
       editor.focus();

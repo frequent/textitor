@@ -57,3 +57,7 @@ body {
     position: fixed;
     padding-top: 4px;
 }
+.CodeMirror.custom-set-modified .CoreMirror-gutters:before {
+  display: inline-block;
+}
+
