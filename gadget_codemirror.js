@@ -857,7 +857,7 @@
     /////////////////////////////
     .declareMethod('render', function (my_option_dict) {
       var gadget = this,
-        property_dict = my_gadget.property_dict;
+        property_dict = gadget.property_dict;
 
       CodeMirror.lint["application/javascript"] = CodeMirror.lint.javascript;
       CodeMirror.lint["application/json"] = CodeMirror.lint.json;
