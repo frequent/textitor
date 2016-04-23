@@ -864,14 +864,14 @@
       CodeMirror.lint["text/css"] = CodeMirror.lint.css;
 
       CodeMirror.menu_dict.editor_setModified = function () {
-        property_dict.modified = true;
-        console.log("setting");
-        property_dict.element.querySelector(".CodeMirror").className += " custom-set-modified";
+        if (property_dict.modified !== true) {
+          property_dict.modified = true;
+          property_dict.element.querySelector(".CodeMirror").className += " custom-set-modified";
+        }
       };
       
       CodeMirror.menu_dict.editor_resetModified = function () {
         property_dict.modified = null;
-        console.log("unsetting");
         property_dict.element.className.replace(" custom-set-modified", "");
       };
     
