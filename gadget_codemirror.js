@@ -129,6 +129,7 @@
       cancelResolver();
     }
     function itsANonResolvableTrap(resolve, reject) {
+      console.log("CALLBACK");
       handle_event_callback = function (evt) {
         CodeMirror.e_stop(evt);
         cancelResolver();
@@ -911,7 +912,7 @@
     .declareService(function () {
       var gadget = this,
         editor = gadget.property_dict.editor,
-        editor_setModified = CodeMirror.menu_dict.setModified();
+        editor_setModified = CodeMirror.menu_dict.setModified;
 
       function onModified(my_parameter_dict) {
         return new RSVP.Promise(function (resolve) {
