@@ -111,6 +111,43 @@
     return new RSVP.Promise(resolver, canceller);
   }
   
+  // loopEventListener for CodeMirror events (non DOM)
+  function codeMirrorLoopEventListener(target, type, callback) {
+    var handle_event_callback,
+      callback_promise;
+    
+    function cancelResolver() {
+      if ((callback_promise !== undefined) &&
+        (typeof callback_promise.cancel === "function")) {
+        callback_promise.cancel();
+      }
+    }
+    function canceller() {
+      if (handel_event_callback !== undefined) {
+        CodeMirror.off(target, type, handle_event_callback);
+      }
+      cancelResolver();
+    }
+    function itsANonResolvableTrap(resolve, reject) {
+      handle_event_callback = function (evt) {
+        CodeMirror.e_stop(evt);
+        cancelResolver();
+        callback_promise = new RSVP.Queue()
+          .push(function () {
+            return callback(evt);
+          })
+          .push(undefined, function (error) {
+            if (!(error instanceof RSVP.CancellationError)) {
+              canceller();
+              reject(error);
+            }
+          });
+      };
+      CodeMirror.on(target, type, handle_event_callback);
+    }
+    return new RSVP.Promise(itsANonResolveableTrap, canceller);
+  }
+  
   /////////////////////////////
   // template rendering
   /////////////////////////////
@@ -388,7 +425,6 @@
         
         // be aware of content changes
         function setModified() {
-          console.log("setting modified");
           my_gadget.property_dict.modified = true;
         }
         CodeMirror.menu_dict.setModified = setModified;
@@ -874,12 +910,11 @@
     /////////////////////////////    
     .declareService(function () {
       var gadget = this,
-        editor = gadget.property_dict.editor;
-      
+        editor = gadget.property_dict.editor,
+        editor_setModified = CodeMirror.menu_dict.setModified();
+
       function onModified(my_parameter_dict) {
         return new RSVP.Promise(function (resolve) {
-          console.log("change");
-          console.log(my_parameter_dict);
           CodeMirror.menu_dict.setModified();
           resolve();
         });
@@ -887,16 +922,12 @@
 
       editor.refresh();
       editor.focus();
-      editor.on("change", onModified);
-      
-      console.log(editor)
-      console.log(CodeMirror)
-      console.log(gadget.property_dict)
-      // XXX only works once!
+      //editor.on("change", onModified);
+
       return new RSVP.Queue()
         .push(function () {
           return RSVP.all([
-            //loopEventListener(editor, 'change', false, editor_setModified),
+            codeMirrorLoopEventListener(editor, 'change', editor_setModified),
             promiseEventListener(window, "onbeforeunload", true)
           ]);
         })
