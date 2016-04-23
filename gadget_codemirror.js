@@ -309,6 +309,7 @@
           })
           .push(function (my_converted_response) {
             my_gadget.property_dict.editor.setValue(my_converted_response.target.result);
+            CodeMirror.menu_dict.editor_resetModified();
             return true;
           });
       
@@ -866,16 +867,15 @@
       CodeMirror.menu_dict.editor_setModified = function () {
         if (dict.modified !== true) {
           dict.modified = true;
-          console.log("SETTING");
           dict.element.querySelector(".CodeMirror").className += 
             " custom-set-modified";
         }
       };
       
       CodeMirror.menu_dict.editor_resetModified = function () {
+        var element = dict.element.querySelector(".CodeMirror");
         dict.modified = null;
-        console.log("UNSETTING")
-        dict.element.querySelector(".CodeMirror").className
+        element.className = element.className
           .split("custom-set-modified").join("");
       };
     
