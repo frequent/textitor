@@ -129,7 +129,6 @@
       cancelResolver();
     }
     function itsANonResolvableTrap(resolve, reject) {
-      console.log("CALLBACK");
       handle_event_callback = function (evt) {
         CodeMirror.e_stop(evt);
         cancelResolver();
@@ -296,8 +295,8 @@
     // open and close
     if (action === "open") {
       file_name_input = my_dialog.querySelector('input:checked');
-      file_name = file_name_input.nextSibling.textContent.split(" | ")[1];
       if (file_name_input) {
+        file_name = file_name_input.nextSibling.textContent.split(" | ")[1];
         active_cache = CodeMirror.menu_dict.active_cache || "textitor";
         return new RSVP.Queue()
           .push(function () {
@@ -353,7 +352,6 @@
         .push(function () {
           my_gadget.property_dict.editor.setOption("mode", mime_type);
           editor_setActiveFile(file_name, mime_type);
-          console.log("unsetting")
           my_gadget.property_dict.editor.setModified = null;
 
           // close dialog
@@ -426,6 +424,7 @@
         
         // be aware of content changes
         function setModified() {
+          console.log("CALLBACK");
           my_gadget.property_dict.modified = true;
         }
         CodeMirror.menu_dict.setModified = setModified;
