@@ -23,7 +23,7 @@
           my_id,
           "http://foo.css",
           new Blob(["span%2C%20div%20%7Bborder%3A%201px%20solid%20red%20!important%3B%7D"], {
-            type: "text/css",
+            type: "text/css"
           })
         ]);
       });
@@ -68,15 +68,18 @@
           return return_gadget;
         });
     })
-
+    
     .declareMethod('routeStorageRequest', function (my_method, my_param_list) {
       var gadget = this;
       return new RSVP.Queue()
         .push(function () {
-          return gadget.getDeclaredGadget("serviceworker");
+          return gadget.getDeclaredGadget("jio_gadget");
         })
-        .push(function (my_serviceworker_gadget) {
-          return my_serviceworker_gadget.passRequest(my_method, my_param_list);
+        .push(function (my_jio_gadget) {
+          return my_jio_gadget[my_method].apply(
+            my_jio_gadget,
+            [].concat(my_param_list)
+          );
         })
         .push(undefined, function (error) {
           throw error;
