@@ -429,13 +429,6 @@
         my_option_dict = my_option_dict || {};
         dialog = setDialog(my_context, my_template, my_option_dict.bottom);
         closed = false;
-        
-        // be aware of content changes
-        function setModified() {
-          console.log("CALLBACK");
-          my_gadget.property_dict.modified = true;
-        }
-        CodeMirror.menu_dict.setModified = setModified;
 
         // evaluate state
         function dialog_evaluateState(my_parameter) {
@@ -885,6 +878,11 @@
       CodeMirror.lint["application/javascript"] = CodeMirror.lint.javascript;
       CodeMirror.lint["application/json"] = CodeMirror.lint.json;
       CodeMirror.lint["text/css"] = CodeMirror.lint.css;
+
+      CodeMirror.menu_dict.setModified = function () {
+        console.log("CALLBACK");
+        my_gadget.property_dict.modified = true;
+      };
     
       // http://codemirror.net/doc/manual.html#config
       editor = CodeMirror.fromTextArea(gadget.property_dict.textarea, {
