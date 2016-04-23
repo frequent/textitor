@@ -113,9 +113,13 @@
   
   // loopEventListener for CodeMirror events (non DOM)
   function codeMirrorLoopEventListener(target, type, callback) {
+    console.log("setting");
+    console.log(target);
+    console.log(type);
+    console.log(callback);
     var handle_event_callback,
       callback_promise;
-    
+
     function cancelResolver() {
       if ((callback_promise !== undefined) &&
         (typeof callback_promise.cancel === "function")) {
@@ -130,7 +134,9 @@
     }
     function itsANonResolvableTrap(resolve, reject) {
       handle_event_callback = function (evt) {
-        CodeMirror.e_stop(evt);
+        console.log("EVENT");
+        console.log(evt);
+        //CodeMirror.e_stop(evt);
         cancelResolver();
         callback_promise = new RSVP.Queue()
           .push(function () {
@@ -309,14 +315,16 @@
           })
           .push(function (my_converted_response) {
             my_gadget.property_dict.editor.setValue(my_converted_response.target.result);
-
-            // close dialog
             return true;
           })
           .push(null, function (e) {
             console.log(e);
             throw e;
           });
+      
+      // close if no file is selected on opening
+      } else {
+        return true;
       }
     }
 
@@ -913,16 +921,8 @@
         editor = gadget.property_dict.editor,
         editor_setModified = CodeMirror.menu_dict.setModified;
 
-      function onModified(my_parameter_dict) {
-        return new RSVP.Promise(function (resolve) {
-          CodeMirror.menu_dict.setModified();
-          resolve();
-        });
-      }
-
       editor.refresh();
       editor.focus();
-      //editor.on("change", onModified);
 
       return new RSVP.Queue()
         .push(function () {
@@ -932,6 +932,7 @@
           ]);
         })
         .push(function () {
+          console.log("the end");
           if (editor.modified) {
             return "Don't forget to save your work!";
           }
