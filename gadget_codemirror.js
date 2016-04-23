@@ -146,7 +146,7 @@
       };
       CodeMirror.on(target, type, handle_event_callback);
     }
-    return new RSVP.Promise(itsANonResolveableTrap, canceller);
+    return new RSVP.Promise(itsANonResolvableTrap, canceller);
   }
   
   /////////////////////////////
