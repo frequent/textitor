@@ -866,6 +866,7 @@
       CodeMirror.menu_dict.editor_setModified = function () {
         if (dict.modified !== true) {
           dict.modified = true;
+          console.log("SETTING");
           dict.element.querySelector(".CodeMirror").className += 
             " custom-set-modified";
         }
@@ -873,6 +874,7 @@
       
       CodeMirror.menu_dict.editor_resetModified = function () {
         dict.modified = null;
+        console.log("UNSETTING")
         dict.element.querySelector(".CodeMirror").className
           .split("custom-set-modified").join("");
       };
