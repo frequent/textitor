@@ -798,10 +798,6 @@
           my_gadget.property_dict.element = my_element;
           my_gadget.property_dict.uri = undefined;
           my_gadget.property_dict.textarea = my_element.querySelector("textarea");
-          //return my_gadget.jio_create({"type": "memory"});
-        })
-        .push(function (my_memory_cache) {
-          //my_gadget.property_dict.memory_cache = my_memory_cache;
         });
     })
     .ready(function (my_gadget) {
@@ -911,7 +907,15 @@
       });
 
       dict.editor = editor;
-      return gadget;
+      
+      return new RSVP.Queue()
+        .push(function () {
+          return gadget.jio_create({"type": "memory"});
+        })
+        .push(function (my_memory_cache) {
+          dict.memory_cache = my_memory_cache;
+          return gadget;
+        });
     })
 
     /////////////////////////////
