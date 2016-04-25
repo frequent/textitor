@@ -3,7 +3,7 @@
 (function (window, rJS) {
   "use strict";
 
-  function initializeStorage(my_gadget) {
+  function initializeStorage(my_gadget, my_name) {
 
     // calling without method acquisition, so call direct method
     return new RSVP.Queue()
@@ -69,14 +69,24 @@
         .push(function (my_rendered_gadget_list) {
           var list = my_rendered_gadget_list;
           return_gadget = list[0];
+
+          gadget.property_dict.storage_dict = {};
+          gadget.property_dict.storage_dict.serviceworker = list[1];
+          gadget.property_dict.storage_dict.memory = list[2];
+          gadget.property_dict.storage_dict.active = null;
+
           return RSVP.all([
-            initializeStorage(gadget, list[1], "serviceworker"),
-            initializeStorage(gadget, list[2], "memory")
+            initializeStorage(gadget, "serviceworker"),
+            initializeStorage(gadget, "memory")
           ]);
         })
         .push(function () {
           return return_gadget;
         });
+    })
+    
+    .declareMethod('setActiveStorage', function (my_type) {
+      this.property_dict.storage_dict.active = my_type;
     })
     
     .declareMethod('routeStorageRequest', function (my_method, my_param_list) {
@@ -97,6 +107,9 @@
     })
 
     // jIO bridge
+    .allowPublicAcquisition("setActiveStorage", function (param_list) {
+      return this.setActiveStorage(param_list);
+    })
     .allowPublicAcquisition("jio_create", function (param_list) {
       return this.routeStorageRequest("createJIO", param_list);
     })
