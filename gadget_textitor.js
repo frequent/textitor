@@ -15,6 +15,7 @@
       })
 
       // try
+      /*
       .push(function (my_storage) {
         return my_gadget.routeStorageRequest("put", "textitor");
       })
@@ -27,6 +28,7 @@
           })
         ]);
       });
+      */
   }
 
   rJS(window)
@@ -52,6 +54,7 @@
           return RSVP.all([
             gadget.getDeclaredGadget("codemirror"),
             gadget.getDeclaredGadget("jio_gadget"),
+            gadget.getDeclaredGadget("jio_gadget"),
             gadget.getDeclaredGadget("serviceworker"),
           ]);
         })
@@ -59,12 +62,17 @@
           return RSVP.all([
             my_declared_gadget_list[0].render(my_option_dict || {}),
             my_declared_gadget_list[1].render(my_option_dict || {}),
-            my_declared_gadget_list[2].render(my_option_dict || {})
+            my_declared_gadget_list[2].render(my_option_dict || {}),
+            my_declared_gadget_list[3].render(my_option_dict || {})
           ]);
         })
         .push(function (my_rendered_gadget_list) {
-          return_gadget = my_rendered_gadget_list[0];
-          return initializeStorage(gadget);
+          var list = my_rendered_gadget_list;
+          return_gadget = list[0];
+          return RSVP.all([
+            initializeStorage(gadget, list[1], "serviceworker"),
+            initializeStorage(gadget, list[2], "memory")
+          ]);
         })
         .push(function () {
           return return_gadget;
