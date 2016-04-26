@@ -49,6 +49,8 @@
         })
         .push(function (my_element) {
           my_gadget.property_dict.element = my_element;
+          my_gadget.property_dict.storage_dict = {};
+          my_gadget.property_dict.storage_dict.active = null;
         });
     })
 
@@ -77,10 +79,9 @@
           var list = my_rendered_gadget_list;
           return_gadget = list[0];
 
-          gadget.property_dict.storage_dict = {};
           gadget.property_dict.storage_dict.serviceworker = list[1];
           gadget.property_dict.storage_dict.memory = list[2];
-          gadget.property_dict.storage_dict.active = null;
+          
           console.log(gadget)
           return RSVP.all([
             initializeStorage(gadget, "serviceworker"),
