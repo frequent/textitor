@@ -51,6 +51,22 @@
           my_gadget.property_dict.element = my_element;
           my_gadget.property_dict.storage_dict = {};
           my_gadget.property_dict.storage_dict.active = null;
+        })
+        .push(function () {
+          return RSVP.all([
+            gadget.getDeclaredGadget("jio_gadget"),
+            gadget.getDeclaredGadget("jio_gadget")
+          ]);
+        })
+        .push(function (my_declared_gadget_list) {
+          return RSVP.all([
+            my_declared_gadget_list[0].render(my_option_dict || {}),
+            my_declared_gadget_list[1].render(my_option_dict || {})
+          ]);
+        })
+        .push(function (my_rendered_list) {
+          gadget.property_dict.storage_dict.serviceworker = my_rendered_list[0];
+          gadget.property_dict.storage_dict.memory = my_rendered_list[1];
         });
     })
 
@@ -62,27 +78,17 @@
         .push(function () {
           return RSVP.all([
             gadget.getDeclaredGadget("codemirror"),
-            gadget.getDeclaredGadget("jio_gadget"),
-            gadget.getDeclaredGadget("jio_gadget"),
             gadget.getDeclaredGadget("serviceworker"),
           ]);
         })
         .push(function (my_declared_gadget_list) {
           return RSVP.all([
             my_declared_gadget_list[0].render(my_option_dict || {}),
-            my_declared_gadget_list[1].render(my_option_dict || {}),
-            my_declared_gadget_list[2].render(my_option_dict || {}),
-            my_declared_gadget_list[3].render(my_option_dict || {})
+            my_declared_gadget_list[1].render(my_option_dict || {})
           ]);
         })
         .push(function (my_rendered_gadget_list) {
-          var list = my_rendered_gadget_list;
-          return_gadget = list[0];
-
-          gadget.property_dict.storage_dict.serviceworker = list[1];
-          gadget.property_dict.storage_dict.memory = list[2];
-          
-          console.log(gadget)
+          return_gadget = my_rendered_gadget_list[0];
           return RSVP.all([
             initializeStorage(gadget, "serviceworker"),
             initializeStorage(gadget, "memory")
@@ -98,7 +104,6 @@
     })
     
     .declareMethod('routeStorageRequest', function (my_method, my_param_list) {
-      console.log(this)
       var gadget = this,
         dict = gadget.property_dict,
         active_storage = dict.storage_dict[dict.active || "serviceworker"];
