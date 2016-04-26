@@ -81,7 +81,7 @@
           gadget.property_dict.storage_dict.serviceworker = list[1];
           gadget.property_dict.storage_dict.memory = list[2];
           gadget.property_dict.storage_dict.active = null;
-
+          console.log(gadget)
           return RSVP.all([
             initializeStorage(gadget, "serviceworker"),
             initializeStorage(gadget, "memory")
@@ -97,6 +97,7 @@
     })
     
     .declareMethod('routeStorageRequest', function (my_method, my_param_list) {
+      console.log(this)
       var gadget = this,
         dict = gadget.property_dict,
         active_storage = dict.storage_dict[dict.active || "serviceworker"];
