@@ -65,8 +65,8 @@
           ]);
         })
         .push(function (my_rendered_list) {
-          gadget.property_dict.storage_dict.serviceworker = my_rendered_list[0];
-          gadget.property_dict.storage_dict.memory = my_rendered_list[1];
+          my_gadget.property_dict.storage_dict.serviceworker = my_rendered_list[0];
+          my_gadget.property_dict.storage_dict.memory = my_rendered_list[1];
         });
     })
 
