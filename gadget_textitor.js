@@ -54,8 +54,8 @@
         })
         .push(function () {
           return RSVP.all([
-            gadget.getDeclaredGadget("jio_gadget"),
-            gadget.getDeclaredGadget("jio_gadget")
+            my_gadget.getDeclaredGadget("jio_gadget"),
+            my_gadget.getDeclaredGadget("jio_gadget")
           ]);
         })
         .push(function (my_declared_gadget_list) {
