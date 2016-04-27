@@ -471,15 +471,14 @@
                   .push(function () {
                     var menu = CodeMirror.menu_dict,
                       active_storage = menu.active_cache || "textitor",
-                      active_file = menu.active_file;
+                      active_file = menu.active_file,
+                      new_doc = CodeMirror.Doc(""),
+                      old_doc = my_gadget.property_dict.editor.swapDoc(new_doc);
 
-                    console.log(my_gadget.property_dict.editor.getDoc());
                     return my_gadget.putAttachment(
                       active_storage,
                       active_file.name, 
-                      new Blob([my_gadget.property_dict.editor.getDoc()], {
-                        type: active_file.mime_type,
-                      })
+                      new Blob([old_doc], {type: active_file.mime_type})
                     );
                   });
               }
