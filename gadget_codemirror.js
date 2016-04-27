@@ -355,8 +355,6 @@
         .push(function () {
           return my_gadget.removeAttachmemt(active_cache, file_name_input.value);
         })
-        
-        // continue if 404, else throw
         .push(undefined, function (my_error) {
           if (is404(my_error)) {
             throw my_error;
@@ -367,8 +365,10 @@
         })
         .push(function () {
           return my_gadget.removeAttachment(active_cache, file_name_input.value);
+        })
+        .push(function () {
+          return true;
         });
-
     }
     
     // save and close
@@ -376,7 +376,7 @@
       file_name_input = dialog_getTextInput(my_dialog, 0);
       mime_type_input = dialog_getTextInput(my_dialog, 1);
       is_cache_name = my_dialog.querySelector('input:checked');
-      
+
       // validate
       if (!file_name_input.value) {
         return dialog_flagInput(file_name_input, 'Enter valid URL.');
