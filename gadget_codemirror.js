@@ -278,6 +278,13 @@
   /////////////////////////////
   // form handling
   /////////////////////////////
+  function is404(my_error) {
+    if ((my_error instanceof jIO.util.jIOError) &&
+      (my_error.status_code === 404)) {
+      return null; 
+    }
+    return true;
+  }
   function dialog_updateStorage(my_gadget, my_dialog, my_parameter) {
     var active_cache, 
       file_name_input,
@@ -305,17 +312,16 @@
             return my_gadget.jio_getAttachment(active_cache, file_name);
           })
           .push(null, function (my_error) {
-             if ((my_error instanceof jIO.util.jIOError) &&
-              (my_error.status_code === 404)) {
-                return new RSVP.Queue()
-                  .push(function () {
-                    return my_gadget.setActiveStorage("serviceworker");
-                  })
-                  .push(function () {
-                    return my_gadget.jio_getAttachment(active_cache, file_name);
-                  });
-              }
-              throw my_error;
+            if (is404(my_error)) {
+              return new RSVP.Queue()
+                .push(function () {
+                  return my_gadget.setActiveStorage("serviceworker");
+                })
+                .push(function () {
+                  return my_gadget.jio_getAttachment(active_cache, file_name);
+                });
+            }
+            throw my_error;
           })
           .push(function (my_response) {
             my_gadget.property_dict.editor.setOption("mode", my_response.type);
@@ -352,11 +358,9 @@
         
         // continue if 404, else throw
         .push(undefined, function (my_error) {
-          if ((my_error instanceof jIO.util.jIOError) &&
-              (my_error.status_code === 404)) {
-                return; 
-              }
-          throw my_error;
+          if (is404(my_error)) {
+            throw my_error;
+          }
         })
         .push(function () {
           return my_gadget.setActiveStorage("serviceworker");
