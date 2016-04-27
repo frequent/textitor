@@ -332,10 +332,14 @@
             return jIO.util.readBlobAsText(my_response);
           })
           .push(function (my_converted_response) {
+            console.log("we have a response")
+            console.log(my_converted_response);
             var new_doc = CodeMirror.Doc(my_converted_response.target.result);
             
             CodeMirror.menu_dict.digest_doc =
-              my_gadget.property_dict.editor.swapDoc(new_doc, mime_type); 
+              my_gadget.property_dict.editor.swapDoc(new_doc, mime_type);
+            console.log("allset");
+            console.log(CodeMirror.menu_dict)
             CodeMirror.menu_dict.editor_resetModified();
             return true;
           });
@@ -487,6 +491,7 @@
               if (my_close_dialog === true) {
                 
                 console.log("IN MENU CLOSE")
+                console.log(CodeMirror.menu_dict);
                     
                 closed = true;
                 dialog.parentNode.removeChild(dialog);
@@ -508,15 +513,20 @@
                       active_file = menu.active_file,
                       new_doc,
                       old_doc;
-                      
+                    console.log("do we have one??");
+                    console.lgo(CodeMirror.menu_dict.digest_doc);
                     if (CodeMirror.menu_dict.digest_doc) {
                       new_doc = CodeMirror.menu_dict.digest_doc;
+                      console.log("full");
                       CodeMirror.menu_dict.digest_doc = null;
                     } else {
+                      console.log("empty")
                       new_doc = CodeMirror.Doc("");
                     }
-                      
+                    console.log("so?")
+                    console.log(new_doc)
                     old_doc = my_gadget.property_dict.editor.swapDoc(new_doc);
+                    console.log(old_doc)
                     return my_gadget.jio_putAttachment(
                       active_storage,
                       active_file.name, 
