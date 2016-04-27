@@ -304,9 +304,6 @@
           .push(function () {
             return my_gadget.jio_getAttachment(active_cache, file_name);
           })
-          .push(function (my_result) {
-            console.log(my_result);
-          })
           .push(null, function (my_error) {
              if ((my_error instanceof jIO.util.jIOError) &&
               (my_error.status_code === 404)) {
