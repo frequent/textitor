@@ -331,11 +331,11 @@
             return jIO.util.readBlobAsText(my_response);
           })
           .push(function (my_converted_response) {
+            var new_doc = CodeMirror.Doc(my_converted_response.target.result);
             
-            // create a Doc and swap, don't just setValue
-            // return CodeMirror.Doc(text, mode, firstLineNumber)
-            // swap, next promise should give back old doc to store
-            my_gadget.property_dict.editor.setValue(my_converted_response.target.result);
+            //my_gadget.property_dict.editor.setValue(my_converted_response.target.result);
+            CodeMirror.menu_dict.digest_doc =
+              my_gadget.property_dict.editor.swapDoc(new_doc, my_response.type); 
             CodeMirror.menu_dict.editor_resetModified();
             return true;
           });
@@ -506,12 +506,17 @@
                     var menu = CodeMirror.menu_dict,
                       active_storage = menu.active_cache || "textitor",
                       active_file = menu.active_file,
-                      new_doc = CodeMirror.Doc(""),
-                      old_doc = my_gadget.property_dict.editor.swapDoc(new_doc);
-                    console.log("old_doc")
-                    console.log(old_doc)
-                    console.log("new_doc")
-                    console.log(new_doc)
+                      new_doc,
+                      old_doc;
+                      
+                    if (CodeMirror.menu_dict.digest_doc) {
+                      new_doc = CodeMirror.menu_dict.digest_doc;
+                      CodeMirror.menu_dict.digest_doc = null;
+                    } else {
+                      new_doc = CodeMirror.Doc("");
+                    }
+                      
+                    old_doc = my_gadget.property_dict.editor.swapDoc(new_doc);
                     return my_gadget.jio_putAttachment(
                       active_storage,
                       active_file.name, 
