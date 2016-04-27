@@ -461,7 +461,27 @@
         
                 if (my_option_dict.onClose) {
                   my_option_dict.onClose(dialog);
-                }  
+                }
+
+                // closing not saving, add to memory storage, always
+                return new RSVP.Queue()
+                  .push(function () {
+                    return my_gadget.setActiveStorage("memory");
+                  })
+                  .push(function () {
+                    var menu = CodeMirror.menu_dict,
+                      active_storage = menu.active_cache || "textitor",
+                      active_file = menu.active_file;
+
+                    console.log(my_gadget.property_dict.editor.getDoc());
+                    return my_gadget.putAttachment(
+                      active_storage,
+                      active_file.name, 
+                      new Blob([my_gadget.property_dict.editor.getDoc()], {
+                        type: active_file.mime_type,
+                      })
+                    );
+                  });
               }
             });
         }
