@@ -298,8 +298,12 @@
         file_name = file_name_input.nextSibling.textContent.split(" | ")[1];
         active_cache = CodeMirror.menu_dict.active_cache || "textitor";
         return new RSVP.Queue()
+        
+          // first check if this file is on memory!
           .push(function () {
-            // first check if this file is on memory!
+            return my_gadget.setActiveStorage("serviceworker");
+          })
+          .push(function () {
             return my_gadget.jio_getAttachment(active_cache, file_name);
           })
           .push(function (my_response) {
@@ -343,7 +347,10 @@
 
       file_name = file_name_input.value;
       return new RSVP.Queue()
-      .push(function() {
+        .push(function() {
+          return my_gadget.setActiveStorage("serviceworker");
+        })
+        .push(function() {
           return my_gadget.jio_putAttachment(
             active_cache,
             file_name,
@@ -505,6 +512,9 @@
         if (CodeMirror.menu_dict.position === 'left') {
           storage_interaction_list.push(
             new RSVP.Queue()
+              .push(function () {
+                return my_gadget.setActiveStorage("serviceworker");
+              })
               .push(function () {
                 return my_gadget.jio_allDocs();
               })
@@ -907,15 +917,8 @@
       });
 
       dict.editor = editor;
-      
-      return new RSVP.Queue()
-        .push(function () {
-          return gadget.jio_create({"type": "memory"});
-        })
-        .push(function (my_memory_cache) {
-          dict.memory_cache = my_memory_cache;
-          return gadget;
-        });
+
+      return gadget;
     })
 
     /////////////////////////////
@@ -950,6 +953,7 @@
     /////////////////////////////
     // acquired methods
     /////////////////////////////
+    .declareAcquiredMethod('setActiveStorage', 'setActiveStorage')
     .declareAcquiredMethod('jio_create', 'jio_create')
     .declareAcquiredMethod('jio_allDocs', 'jio_allDocs')
     .declareAcquiredMethod('jio_allAttachments', 'jio_allAttachments')
