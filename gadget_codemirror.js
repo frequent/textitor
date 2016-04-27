@@ -326,16 +326,16 @@
             throw my_error;
           })
           .push(function (my_response) {
-            my_gadget.property_dict.editor.setOption("mode", my_response.type);
-            editor_setActiveFile(file_name, my_response.type);
+            mime_type = my_response.type;
+            my_gadget.property_dict.editor.setOption("mode", mime_type);
+            editor_setActiveFile(file_name, mime_type);
             return jIO.util.readBlobAsText(my_response);
           })
           .push(function (my_converted_response) {
             var new_doc = CodeMirror.Doc(my_converted_response.target.result);
             
-            //my_gadget.property_dict.editor.setValue(my_converted_response.target.result);
             CodeMirror.menu_dict.digest_doc =
-              my_gadget.property_dict.editor.swapDoc(new_doc, my_response.type); 
+              my_gadget.property_dict.editor.swapDoc(new_doc, mime_type); 
             CodeMirror.menu_dict.editor_resetModified();
             return true;
           });
