@@ -109,7 +109,7 @@
         active_storage = dict.storage_dict[dict.active || "serviceworker"];
 
       return active_storage[my_method].apply(
-        my_jio_gadget,
+        active_storage,
         [].concat(my_param_list)
       )
       .push(undefined, function (error) {
