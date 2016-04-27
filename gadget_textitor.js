@@ -19,10 +19,12 @@
       })
       .push(function () {
         my_gadget.routeStorageRequest("createJIO", config);
-      });
+      })
 
       // try
-      /*
+      .push(function () {
+        return my_gadget.setActiveStorage(my_name);
+      })
       .push(function (my_storage) {
         return my_gadget.routeStorageRequest("put", "textitor");
       })
@@ -35,7 +37,7 @@
           })
         ]);
       });
-      */
+
   }
 
   rJS(window)
