@@ -298,8 +298,15 @@
         file_name = file_name_input.nextSibling.textContent.split(" | ")[1];
         active_cache = CodeMirror.menu_dict.active_cache || "textitor";
         return new RSVP.Queue()
-        
-          // first check if this file is on memory!
+          .push(function () {
+            return my_gadget.setActiveStorage("memory");
+          })
+          .push(function () {
+            return my_gadget.jio_getAttachment(active_cache, file_name);
+          })
+          .push(undefined, function (my_error) {
+            console.log(my_error);
+          })
           .push(function () {
             return my_gadget.setActiveStorage("serviceworker");
           })
