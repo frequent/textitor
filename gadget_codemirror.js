@@ -349,12 +349,22 @@
         .push(function () {
           return my_gadget.removeAttachmemt(active_cache, file_name_input.value);
         })
+        
+        // continue if 404, else throw
+        .push(undefined, function (my_error) {
+          if ((my_error instanceof jIO.util.jIOError) &&
+              (my_error.status_code === 404)) {
+                return; 
+              }
+          throw my_error;
+        })
         .push(function () {
           return my_gadget.setActiveStorage("serviceworker");
         })
         .push(function () {
           return my_gadget.removeAttachment(active_cache, file_name_input.value);
         });
+
     }
     
     // save and close
