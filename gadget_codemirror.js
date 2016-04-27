@@ -321,6 +321,7 @@
               throw my_error;
           })
           .push(function (my_response) {
+            console.log(my_response)
             my_gadget.property_dict.editor.setOption("mode", my_response.type);
             editor_setActiveFile(file_name, my_response.type);
             return jIO.util.readBlobAsText(my_response);
