@@ -92,8 +92,8 @@
         .push(function (my_rendered_gadget_list) {
           return_gadget = my_rendered_gadget_list[0];
           return RSVP.all([
-            initializeStorage(gadget, "serviceworker"),
-            initializeStorage(gadget, "memory")
+            initializeStorage(gadget, "memory"),
+            initializeStorage(gadget, "serviceworker")
           ]);
         })
         .push(function () {
