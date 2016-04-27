@@ -294,6 +294,8 @@
       file_name,
       action;
 
+    console.log(my_dialog);
+    console.log(my_parameter);
     // determine action
     if (my_parameter && my_parameter.target) {
       action = my_parameter.target.name;
@@ -343,7 +345,6 @@
         return true;
       }
     }
-
 
     if (action === "delete") {
       active_cache = CodeMirror.menu_dict.active_cache || "textitor";
