@@ -318,7 +318,6 @@
               throw my_error;
           })
           .push(function (my_response) {
-            console.log(my_response)
             my_gadget.property_dict.editor.setOption("mode", my_response.type);
             editor_setActiveFile(file_name, my_response.type);
             return jIO.util.readBlobAsText(my_response);
@@ -473,7 +472,7 @@
                       new_doc = CodeMirror.Doc(""),
                       old_doc = my_gadget.property_dict.editor.swapDoc(new_doc);
 
-                    return my_gadget.putAttachment(
+                    return my_gadget.jio_putAttachment(
                       active_storage,
                       active_file.name, 
                       new Blob([old_doc], {type: active_file.mime_type})
