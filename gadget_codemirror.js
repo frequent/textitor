@@ -305,12 +305,11 @@
             return my_gadget.jio_getAttachment(active_cache, file_name);
           })
           .push(function (my_result) {
-            consolt.log("RESPONSE")
             console.log(my_result);
           })
           .push(null, function (my_error) {
-             if ((error instanceof jIO.util.jIOError) &&
-              (error.status_code === 404)) {
+             if ((my_error instanceof jIO.util.jIOError) &&
+              (my_error.status_code === 404)) {
                 return new RSVP.Queue()
                   .push(function () {
                     return my_gadget.setActiveStorage("serviceworker");
@@ -319,6 +318,7 @@
                     return my_gadget.jio_getAttachment(active_cache, file_name);
                   });
               }
+              throw my_error;
           })
           .push(function (my_response) {
             my_gadget.property_dict.editor.setOption("mode", my_response.type);
