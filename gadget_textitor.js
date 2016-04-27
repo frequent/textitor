@@ -102,6 +102,7 @@
     })
     
     .declareMethod('setActiveStorage', function (my_type) {
+      console.log("setting active to " + my_type)
       this.property_dict.storage_dict.active = my_type;
     })
     
@@ -110,6 +111,7 @@
         dict = gadget.property_dict,
         active_storage = dict.storage_dict[dict.active || "serviceworker"];
 
+      console.log(active_storage);
       return active_storage[my_method].apply(
         active_storage,
         [].concat(my_param_list)
