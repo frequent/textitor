@@ -451,6 +451,9 @@
             })
             .push(function (my_close_dialog) {
               if (my_close_dialog === true) {
+                
+                console.log("IN MENU CLOSE")
+                    
                 closed = true;
                 dialog.parentNode.removeChild(dialog);
                 my_context.focus();
@@ -459,7 +462,7 @@
                 if (my_option_dict.onClose) {
                   my_option_dict.onClose(dialog);
                 }
-
+                console.log("ok")
                 // closing not saving, add to memory storage, always
                 return new RSVP.Queue()
                   .push(function () {
@@ -471,7 +474,10 @@
                       active_file = menu.active_file,
                       new_doc = CodeMirror.Doc(""),
                       old_doc = my_gadget.property_dict.editor.swapDoc(new_doc);
-
+                    console.log("old_doc")
+                    console.log(old_doc)
+                    console.log("new_doc")
+                    console.log(new_doc)
                     return my_gadget.jio_putAttachment(
                       active_storage,
                       active_file.name, 
