@@ -299,15 +299,21 @@
         active_cache = CodeMirror.menu_dict.active_cache || "textitor";
         return new RSVP.Queue()
           .push(function () {
+            console.log("setting memory");
             return my_gadget.setActiveStorage("memory");
           })
           .push(function () {
             return my_gadget.jio_getAttachment(active_cache, file_name);
           })
+          .push(function (my_result) {
+            console.log(my_result);
+          })
           .push(undefined, function (my_error) {
             console.log(my_error);
+            throw my_error;
           })
           .push(function () {
+            console.log("setting serviceworker");
             return my_gadget.setActiveStorage("serviceworker");
           })
           .push(function () {
