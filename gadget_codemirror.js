@@ -350,7 +350,7 @@
       }
     }
 
-    if (action === "delete") {
+    if (action === "remove") {
       active_cache = CodeMirror.menu_dict.active_cache || "textitor";
       file_name_input = dialog_getTextInput(my_dialog, 0);
       return new RSVP.Queue()
@@ -514,7 +514,7 @@
                       new_doc,
                       old_doc;
                     console.log("do we have one??");
-                    console.lgo(CodeMirror.menu_dict.digest_doc);
+                    console.log(CodeMirror.menu_dict.digest_doc);
                     if (CodeMirror.menu_dict.digest_doc) {
                       new_doc = CodeMirror.menu_dict.digest_doc;
                       console.log("full");
