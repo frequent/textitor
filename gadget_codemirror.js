@@ -350,7 +350,9 @@
       }
     }
 
+    console.log(action)
     if (action === "remove") {
+      console.log("SO")
       active_cache = CodeMirror.menu_dict.active_cache || "textitor";
       file_name_input = dialog_getTextInput(my_dialog, 0);
       return new RSVP.Queue()
@@ -373,7 +375,11 @@
         })
         .push(function () {
           return true;
-        });
+        })
+        .push(null, function (my_error) {
+          console.log(my_error);
+          throw my_error;
+        })
     }
     
     // save and close
