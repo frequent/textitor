@@ -299,7 +299,7 @@
       file_name,
       action,
       entry_dict;
-
+    console.log("updateStorage!")
     // determine action
     if (my_parameter && my_parameter.target) {
       action = my_parameter.target.name;
