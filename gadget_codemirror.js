@@ -164,6 +164,7 @@
           counter += 1;
         };
       };
+    console.log("improve this");
     my_template.split("%s").map(setHtmlContent(html_content));
     return html_content.join("");
   }
@@ -181,6 +182,8 @@
       if (my_file_dict.hasOwnProperty(counter)) {
         folder = my_file_dict[counter];
         for (i = 0, len = folder.item_list.length; i < len; i += 1) {
+          console.log(folder)
+          console.log("stored for input file menu");
           str += parseTemplate(
             FILE_ENTRY_TEMPLATE,
             [folder.name + " | " + folder.item_list[i]]
