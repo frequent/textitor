@@ -427,10 +427,17 @@
                           new Blob([editor.getValue()], {type: ""})
                         );
                       })
-                  );
+                      .push(function () {
+                        return my_gadget.setActiveStorage("memory");
+                      })
+                      .push(function () {
+                        return my_gadget.removeAttachment(entry_dict[i].name, item);
+                      });
+                  );  
                 }
               }
           }
+          return RSVP.all(store_list);
         })
     }
     
