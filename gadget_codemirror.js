@@ -303,10 +303,13 @@
     }
 
     if (action === "open") {
+      console.log("open");
       file_name_input = my_dialog.querySelector('input:checked');
       if (file_name_input) {
         file_name = file_name_input.nextSibling.textContent.split(" | ")[1].split("*")[0];
         active_cache = CodeMirror.menu_dict.active_cache || "textitor";
+        console.log(file_name)
+        console.log(active_cache)
         return new RSVP.Queue()
           .push(function () {
             return my_gadget.setActiveStorage("memory");
