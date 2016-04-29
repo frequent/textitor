@@ -594,9 +594,12 @@
                       active_file = menu.active_file,
                       new_doc,
                       old_doc;
-
+                    console.log("the doc");
                     if (CodeMirror.menu_dict.digest_doc) {
                       new_doc = CodeMirror.menu_dict.digest_doc;
+                      console.log(new_doc)
+                      console.log(new_doc.getEditor())
+                      
                       CodeMirror.menu_dict.digest_doc = null;
                     } else {
                       new_doc = CodeMirror.Doc("");
