@@ -296,10 +296,12 @@
 
     console.log(my_dialog);
     console.log(my_parameter);
+
     // determine action
     if (my_parameter && my_parameter.target) {
       action = my_parameter.target.name;
     }
+    console.log("action set to " + action);
 
     if (action === "open") {
       file_name_input = my_dialog.querySelector('input:checked');
@@ -350,7 +352,7 @@
       }
     }
 
-    console.log(action)
+    console.log("COME ON")
     if (action === "remove") {
       console.log("SO")
       active_cache = CodeMirror.menu_dict.active_cache || "textitor";
@@ -495,10 +497,7 @@
             })
             .push(function (my_close_dialog) {
               if (my_close_dialog === true) {
-                
-                console.log("IN MENU CLOSE")
-                console.log(CodeMirror.menu_dict);
-                    
+
                 closed = true;
                 dialog.parentNode.removeChild(dialog);
                 my_context.focus();
@@ -507,7 +506,6 @@
                 if (my_option_dict.onClose) {
                   my_option_dict.onClose(dialog);
                 }
-                console.log("ok")
                 // closing not saving, add to memory storage, always
                 return new RSVP.Queue()
                   .push(function () {
@@ -519,8 +517,7 @@
                       active_file = menu.active_file,
                       new_doc,
                       old_doc;
-                    console.log("do we have one??");
-                    console.log(CodeMirror.menu_dict.digest_doc);
+
                     if (CodeMirror.menu_dict.digest_doc) {
                       new_doc = CodeMirror.menu_dict.digest_doc;
                       console.log("full");
@@ -529,10 +526,11 @@
                       console.log("empty")
                       new_doc = CodeMirror.Doc("");
                     }
-                    console.log("so?")
+                    console.log("new doc =")
                     console.log(new_doc)
                     old_doc = my_gadget.property_dict.editor.swapDoc(new_doc);
                     console.log(old_doc)
+                    console.log(swapping)
                     return my_gadget.jio_putAttachment(
                       active_storage,
                       active_file.name, 
