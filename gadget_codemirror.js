@@ -79,7 +79,10 @@
     "<span class='custom-menu-typewriter'>CTRL+ALT+</span>" +
     "<form name='search'>" +
       "<button type='submit' tabindex='2' class='custom-menu-button'>" +
-        "<b>F</b>ind</button></form>";
+        "<b>F</b>ind</button></form>" +
+    "<form name='saveall'>" +
+      "<button type='submit' tabindex='3' class='custom-menu-button'>" +
+        "<b>S</b>ave All</button></form>";
 
   /////////////////////////////
   // CodeMirror "Globals"
@@ -370,7 +373,7 @@
         .push(null, function (my_error) {
           console.log(my_error);
           throw my_error;
-        })
+        });
     }
     
     // save and close
@@ -665,7 +668,7 @@
                     for (item in response) {
                       if (response.hasOwnProperty(item)) {
                         if (memory_list.indexOf(item) > -1) {
-                          item = item + "*"; 
+                          item = item + "*";
                         }
                         entry_dict[i].item_list.push(item);
                       }
