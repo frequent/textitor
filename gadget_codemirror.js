@@ -348,6 +348,7 @@
     }
 
     if (action === "remove") {
+      console.log("removed startes");
       active_cache = CodeMirror.menu_dict.active_cache || "textitor";
       file_name_input = dialog_getTextInput(my_dialog, 0);
       return new RSVP.Queue()
@@ -358,6 +359,7 @@
           return my_gadget.jio_removeAttachmemt(active_cache, file_name_input.value);
         })
         .push(undefined, function (my_error) {
+          console.log("caught an error");
           if (is404(my_error)) {
             throw my_error;
           }
