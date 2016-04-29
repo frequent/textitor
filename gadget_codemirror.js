@@ -1005,7 +1005,6 @@
     return array[parseInt(Math.random() * array.length, 10)];
   }
 
-
 (function (window, rJS) {
   "use strict";
 
@@ -1080,6 +1079,10 @@
         }
         cm.setOption("theme", args.slice(1).join(" ") || "default");
       };
+      console.log("leftover")
+      console.log(commands.theme)
+      console.log(commands["theme doc"])
+      console.log("Still used")
       
       return dialog_setDialogExtension(my_gadget);
     })
