@@ -1097,7 +1097,7 @@
       CodeMirror.lint["application/javascript"] = CodeMirror.lint.javascript;
       CodeMirror.lint["application/json"] = CodeMirror.lint.json;
       CodeMirror.lint["text/css"] = CodeMirror.lint.css;
-
+      console.log(CodeMirror)
       CodeMirror.menu_dict.editor_setModified = function () {
         if (dict.modified !== true) {
           dict.modified = true;
@@ -1151,7 +1151,7 @@
 
       editor.refresh();
       editor.focus();
-
+      console.log("declaring service")
       return new RSVP.Queue()
         .push(function () {
           return RSVP.all([
@@ -1160,6 +1160,7 @@
           ]);
         })
         .push(function () {
+          console.log("and out!")
           if (editor.modified) {
             return "Don't forget to save your work!";
           }
