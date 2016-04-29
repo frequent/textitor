@@ -301,7 +301,7 @@
     if (action === "open") {
       file_name_input = my_dialog.querySelector('input:checked');
       if (file_name_input) {
-        file_name = file_name_input.nextSibling.textContent.split(" | ")[1];
+        file_name = file_name_input.nextSibling.textContent.split(" | ")[1].split("*")[0];
         active_cache = CodeMirror.menu_dict.active_cache || "textitor";
         return new RSVP.Queue()
           .push(function () {
