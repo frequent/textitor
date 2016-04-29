@@ -290,7 +290,6 @@
       file_name_input,
       mime_type_input,
       is_cache_name,
-      mime_type,
       file_name,
       action;
 
@@ -530,7 +529,7 @@
                     console.log(new_doc)
                     old_doc = my_gadget.property_dict.editor.swapDoc(new_doc);
                     console.log(old_doc)
-                    console.log(swapping)
+                    console.log("swapping")
                     return my_gadget.jio_putAttachment(
                       active_storage,
                       active_file.name, 
