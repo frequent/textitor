@@ -565,15 +565,18 @@
 
         // evaluate state
         function dialog_evaluateState(my_parameter) {
+          console.log("evaluate state")
           return new RSVP.Queue()
             .push(function () {
               if (closed !== true) {
                 return dialog_updateStorage(my_gadget, dialog, my_parameter);
               }
+              console.log("done updating")
               console.log(my_parameter)
               return my_parameter;
             })
             .push(function (my_close_dialog) {
+              console.log(my_close_dialog);
               if (my_close_dialog === true) {
 
                 closed = true;
@@ -584,6 +587,7 @@
                 if (my_option_dict.onClose) {
                   my_option_dict.onClose(dialog);
                 }
+                console.log("saving without being asked or memory");
                 // closing not saving, add to memory storage, always
                 return new RSVP.Queue()
                   .push(function () {
