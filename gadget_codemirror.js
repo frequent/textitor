@@ -684,7 +684,6 @@
         if (CodeMirror.menu_dict.position === 'left') {
           storage_interaction_list.push(
             new RSVP.Queue()
-            
               // XXX duplicate, set storage and provide final callback
               .push(function () {
                 return my_gadget.setActiveStorage("memory");
