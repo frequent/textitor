@@ -437,6 +437,10 @@
                       .push(function () {
                         return my_gadget.jio_removeAttachment(entry_dict[i].name, item);
                       })
+                      .push(null, function (my_error) {
+                        console.log(my_error);
+                        throw;
+                      })
                   );
                 }
               }
