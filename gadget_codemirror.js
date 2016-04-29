@@ -294,7 +294,8 @@
       mime_type_input,
       is_cache_name,
       file_name,
-      action;
+      action,
+      entry_dict;
 
     // determine action
     if (my_parameter && my_parameter.target) {
@@ -389,29 +390,48 @@
           var response_dict = my_storage_dict.data,
             file_directory_list = [],
             len = response_dict.total_rows,
-            i;
+            i,
+            cache_id;
           for (i = 0; i < len; i += 1) {
+            cache_id = response_dict.rows[i].id;
+            entry_dict[i] = {"name": cache_id, "item_list": []};
             directory_content_list.push(
-              my_gadget.jio_allAttachments(response_dict.rows[i].id)
+              my_gadget.jio_allAttachments(cache_id)
             );
           }
           return RSVP.all(directory_content_list);  
         })
         .push(function (my_directory_content_list) {
           var len = my_directory_content_list.length,
+            store_list = [],
             item,
-            store_list,
             response,
             i;
           for (i = 0; i < len; i += 1) {
             response = my_directory_content[i];
               for (item in response) {
                 if (response.hasOwnProperty(item)) {
-                  // store this      
+                  store_list.push(
+                    new RSVP.Queue()
+                      .push(function () {
+                        return my_gadget.jio_getAttachment(entry_dict[i].name, item);
+                      })
+                      .push(function (my_document) {
+                        var editor = my_document.getEditor()
+                        return my_gadget.setActiveStorage("serviceworker");
+                      })
+                      .push(function() {
+                        return my_gadget.jio_putAttachment(
+                          cache_id,
+                          item,
+                          new Blob([editor.getValue()], {type: ""})
+                        );
+                      })
+                  );
                 }
               }
           }
-        });
+        })
     }
     
     // save and close
