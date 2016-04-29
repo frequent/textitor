@@ -664,6 +664,9 @@
                     response = my_directory_content[i];
                     for (item in response) {
                       if (response.hasOwnProperty(item)) {
+                        if (memory_list.indexOf(item) > -1) {
+                          item = item + "*"; 
+                        }
                         entry_dict[i].item_list.push(item);
                       }
                     }  
