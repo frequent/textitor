@@ -301,6 +301,7 @@
     if (my_parameter && my_parameter.target) {
       action = my_parameter.target.name;
     }
+    console.log(action);
 
     if (action === "open") {
       console.log("open");
@@ -456,9 +457,13 @@
     
     // save and close
     if (action === "save") {
+      console.log("saving");
+
       file_name_input = dialog_getTextInput(my_dialog, 0);
       mime_type_input = dialog_getTextInput(my_dialog, 1);
       is_cache_name = my_dialog.querySelector('input:checked');
+      console.log(is_cache_name);
+      console.log(mime_type_input);
 
       // validate
       if (!file_name_input.value) {
@@ -472,6 +477,7 @@
       active_cache = CodeMirror.menu_dict.active_cache || "textitor";
       mime_type = mime_type_input.value;
 
+      console.log("now writing to you");
       file_name = file_name_input.value;
       return new RSVP.Queue()
         .push(function() {
@@ -490,7 +496,7 @@
           my_gadget.property_dict.editor.setOption("mode", mime_type);
           editor_setActiveFile(file_name, mime_type);
           CodeMirror.menu_dict.editor_resetModified();
-
+          console.log("made it here")
           // close dialog
           return true;
         });
