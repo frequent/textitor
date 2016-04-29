@@ -464,6 +464,7 @@
         var closing_event_list = [],
           storage_interaction_list = [],
           event_list = [],
+          memory_list = [],
           entry_dict,
           dialog,
           closed,
@@ -584,6 +585,48 @@
         if (CodeMirror.menu_dict.position === 'left') {
           storage_interaction_list.push(
             new RSVP.Queue()
+            
+              // XXX duplicate, set storage and provide final callback
+              .push(function () {
+                return my_gadget.setActiveStorage("memory");
+              })
+              .push(function () {
+                return my_gadget.jio_allDocs();
+              })
+              .push(function (my_directory_list) {
+                var response_dict = my_directory_list.data,
+                  directory_content_list = [],
+                  len = response_dict.total_rows,
+                  cache_id,
+                  i;
+                if (my_directory_list !== undefined) {
+                  for (i = 0; i < len; i += 1) {
+                    cache_id = response_dict.rows[i].id;
+                    entry_dict[i] = {"name": cache_id, "item_list": []};
+                    directory_content_list.push(
+                      my_gadget.jio_allAttachments(cache_id)
+                    );
+                  }
+                }
+                return RSVP.all(directory_content_list);
+              })
+              .push(function (my_memory_content) {
+                var len = my_memory_content.length,
+                  item,
+                  i;
+
+                if (len > 0) {
+                  for (i = 0; i < len; i += 1) {
+                    response = my_directory_content[i];
+                    for (item in response) {
+                      if (response.hasOwnProperty(item)) {
+                        memory_list.push(item);
+                      }
+                    }  
+                  }
+                }
+                
+              })
               .push(function () {
                 return my_gadget.setActiveStorage("serviceworker");
               })
@@ -626,6 +669,7 @@
                     }  
                   }
                 }
+                
                 dialog.insertBefore(
                   setFileMenu(entry_dict),
                   dialog.querySelector('span')
