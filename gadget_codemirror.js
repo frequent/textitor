@@ -570,6 +570,7 @@
               if (closed !== true) {
                 return dialog_updateStorage(my_gadget, dialog, my_parameter);
               }
+              console.log(my_parameter)
               return my_parameter;
             })
             .push(function (my_close_dialog) {
@@ -599,11 +600,15 @@
                       new_doc = CodeMirror.menu_dict.digest_doc;
                       console.log(new_doc)
                       console.log(new_doc.getEditor())
-                      
+                      console.log("cleanup")
+                      console.log(old_doc)
                       CodeMirror.menu_dict.digest_doc = null;
                     } else {
+                      console.log("")
                       new_doc = CodeMirror.Doc("");
                     }
+                    console.log("swapping")
+                    console.log("fix this first, why is it empty?")
                     old_doc = my_gadget.property_dict.editor.swapDoc(new_doc);
                     return my_gadget.jio_putAttachment(
                       active_storage,
