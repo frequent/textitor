@@ -293,14 +293,10 @@
       file_name,
       action;
 
-    console.log(my_dialog);
-    console.log(my_parameter);
-
     // determine action
     if (my_parameter && my_parameter.target) {
       action = my_parameter.target.name;
     }
-    console.log("action set to " + action);
 
     if (action === "open") {
       file_name_input = my_dialog.querySelector('input:checked');
@@ -333,14 +329,10 @@
             return jIO.util.readBlobAsText(my_response);
           })
           .push(function (my_converted_response) {
-            console.log("we have a response")
-            console.log(my_converted_response);
             var new_doc = CodeMirror.Doc(my_converted_response.target.result);
             
             CodeMirror.menu_dict.digest_doc =
               my_gadget.property_dict.editor.swapDoc(new_doc, mime_type);
-            console.log("allset");
-            console.log(CodeMirror.menu_dict)
             CodeMirror.menu_dict.editor_resetModified();
             return true;
           });
@@ -351,9 +343,7 @@
       }
     }
 
-    console.log("COME ON")
     if (action === "remove") {
-      console.log("SO")
       active_cache = CodeMirror.menu_dict.active_cache || "textitor";
       file_name_input = dialog_getTextInput(my_dialog, 0);
       return new RSVP.Queue()
@@ -361,7 +351,7 @@
           return my_gadget.setActiveStorage("memory");
         })
         .push(function () {
-          return my_gadget.removeAttachmemt(active_cache, file_name_input.value);
+          return my_gadget.jio_removeAttachmemt(active_cache, file_name_input.value);
         })
         .push(undefined, function (my_error) {
           if (is404(my_error)) {
@@ -372,7 +362,7 @@
           return my_gadget.setActiveStorage("serviceworker");
         })
         .push(function () {
-          return my_gadget.removeAttachment(active_cache, file_name_input.value);
+          return my_gadget.jio_removeAttachment(active_cache, file_name_input.value);
         })
         .push(function () {
           return true;
@@ -519,17 +509,11 @@
 
                     if (CodeMirror.menu_dict.digest_doc) {
                       new_doc = CodeMirror.menu_dict.digest_doc;
-                      console.log("full");
                       CodeMirror.menu_dict.digest_doc = null;
                     } else {
-                      console.log("empty")
                       new_doc = CodeMirror.Doc("");
                     }
-                    console.log("new doc =")
-                    console.log(new_doc)
                     old_doc = my_gadget.property_dict.editor.swapDoc(new_doc);
-                    console.log(old_doc)
-                    console.log("swapping")
                     return my_gadget.jio_putAttachment(
                       active_storage,
                       active_file.name, 
