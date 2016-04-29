@@ -376,6 +376,44 @@
         });
     }
     
+    // save all and close = retrive what is in memory storage and save
+    if (action === "saveall") {
+      return new RSVP.Queue()
+        .push(function () {
+          return my_gadget.setActiveStorage("memory");
+        })
+        .push(function () {
+          return my_gadget.jio_allDocs();
+        })
+        .push(function (my_storage_dict) {
+          var response_dict = my_storage_dict.data,
+            file_directory_list = [],
+            len = response_dict.total_rows,
+            i;
+          for (i = 0; i < len; i += 1) {
+            directory_content_list.push(
+              my_gadget.jio_allAttachments(response_dict.rows[i].id)
+            );
+          }
+          return RSVP.all(directory_content_list);  
+        })
+        .push(function (my_directory_content_list) {
+          var len = my_directory_content_list.length,
+            item,
+            store_list,
+            response,
+            i;
+          for (i = 0; i < len; i += 1) {
+            response = my_directory_content[i];
+              for (item in response) {
+                if (response.hasOwnProperty(item)) {
+                  // store this      
+                }
+              }
+          }
+        });
+    }
+    
     // save and close
     if (action === "save") {
       file_name_input = dialog_getTextInput(my_dialog, 0);
