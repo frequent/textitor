@@ -379,6 +379,7 @@
     
     // save all and close = retrive what is in memory storage and save
     if (action === "saveall") {
+      console.log("saveall");
       return new RSVP.Queue()
         .push(function () {
           return my_gadget.setActiveStorage("memory");
@@ -387,6 +388,8 @@
           return my_gadget.jio_allDocs();
         })
         .push(function (my_storage_dict) {
+          console.log("memory storage allDocs");
+          console.log(my_storage_dict);
           var response_dict = my_storage_dict.data,
             file_directory_list = [],
             len = response_dict.total_rows,
@@ -402,6 +405,7 @@
           return RSVP.all(directory_content_list);  
         })
         .push(function (my_directory_content_list) {
+          console.log(my_directory_content_list);
           var len = my_directory_content_list.length,
             store_list = [],
             item,
@@ -432,7 +436,7 @@
                       })
                       .push(function () {
                         return my_gadget.jio_removeAttachment(entry_dict[i].name, item);
-                      })         
+                      })
                   );
                 }
               }
