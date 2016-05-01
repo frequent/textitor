@@ -1154,7 +1154,7 @@
 
       editor.refresh();
       editor.focus();
-      console.log("declaring service")
+
       return new RSVP.Queue()
         .push(function () {
           return RSVP.all([
