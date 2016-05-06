@@ -752,7 +752,7 @@
                   i;
 
                 for (i = 0, memory_list = []; i < len; i += 1) {
-                  response = my_directory_content[i];
+                  response = my_memory_content[i];
                   for (item in response) {
                     if (response.hasOwnProperty(item)) {
                       memory_list.push(item);
