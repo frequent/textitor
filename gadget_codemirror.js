@@ -634,6 +634,7 @@
                   console.log("store current doc in memory?")
                 }
                 if (CodeMirror.menu_dict.digest_doc) {
+                  console.log("DOING SOMETHING")
                   return new RSVP.Queue()
                     .push(function () {
                       return my_gadget.setActiveStorage("memory");
