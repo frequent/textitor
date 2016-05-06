@@ -473,7 +473,7 @@
         .push(function () {
           //editor_resetActiveFile();
           dialog_clearTextInput(my_dialog);
-          return editor_setFile(my_gadget, my_gadget.property_dict.editor.getDoc());
+          return editor_setFile(my_gadget);
         })
         .push(null, function (err) {
           console.log(err);
@@ -897,27 +897,27 @@
   }
 
   function editor_setFile(my_gadget, my_file_content, my_mime_type) {
-    var content = my_file_content || "",
-      new_doc;
-    
-    console.log("setting file")
-    console.log(my_file_content)
-    console.log(base_isType(content))
+    var new_doc;
 
-    if (base_isType(content) === "[Object String]") {
-      console.log("string it");
-      new_doc = CodeMirror.Doc(content, my_mime_type);
+    if (my_file_content) {
+      // if I get something, it means I'm opening, will be a blob response
+      console.log(my_file_content)
+      console.log(base_isType(my_file_content))
+      if (base_isType(my_file_content) === "[Object String]") {
+        console.log("string it");
+        new_doc = CodeMirror.Doc(my_file_content, my_mime_type);
+      } else {
+        console.log("object already?");
+        new_doc = content;
+      }
     } else {
-      console.log("straight doc");
-      new_doc = my_file_content;
+      new_doc = CodeMirror.Doc("");      
     }
-
-    //new_doc = CodeMirror.Doc(content, my_mime_type);
+    
+    // set current document for storing in memory
     CodeMirror.menu_dict.digest_doc = my_gadget.property_dict.editor.swapDoc(new_doc);
-    console.log("to store in memory")
-    console.log(CodeMirror.menu_dict.diget_doc)
     CodeMirror.menu_dict.editor_resetModified();
-    return true;
+    return true;    
   }
 
   function editor_setActiveFile(my_name, my_mime_type) {
