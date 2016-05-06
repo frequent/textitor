@@ -18,7 +18,7 @@
     "javascript": "application/javascript",
     "htmlmixed": "text/html",
     "xml": "application/xml",
-    "json": "application/json",b
+    "json": "application/json",
     "python": "text/x-python",
     "markdown": "text/x-markdown",
     "php": "text/x-php",
