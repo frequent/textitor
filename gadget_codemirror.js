@@ -792,6 +792,10 @@
                 console.log(directory_content_list)
                 return RSVP.all(directory_content_list);
               })
+              .push(null, function (err) {
+                console.log(err);
+                throw err;
+              })
               .push(function (my_directory_content) {
                 console.log("got it")
                 console.log(my_directory_content)
