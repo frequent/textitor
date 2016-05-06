@@ -718,11 +718,9 @@
         closing_event_list.concat(setFormSubmitListeners(dialog, my_gadget));
   
         // create file menu
-        console.log("LET'S MAKE A FILEMENU")
         if (CodeMirror.menu_dict.position === 'left') {
           storage_interaction_list.push(
             new RSVP.Queue()
-              // XXX duplicate, set storage and provide final callback
               .push(function () {
                 return my_gadget.setActiveStorage("memory");
               })
@@ -737,15 +735,17 @@
                   len = response_dict.total_rows,
                   cache_id,
                   i;
-                if (my_directory_list !== undefined) {
-                  for (i = 0; i < len; i += 1) {
-                    cache_id = response_dict.rows[i].id;
-                    entry_dict[i] = {"name": cache_id, "item_list": []};
-                    directory_content_list.push(
-                      my_gadget.jio_allAttachments(cache_id)
-                    );
-                  }
+                console.log("so???")
+
+                for (i = 0; i < len; i += 1) {
+                  entry_dict = entry_dict || {};
+                  cache_id = response_dict.rows[i].id;
+                  entry_dict[i] = {"name": cache_id, "item_list": []};
+                  directory_content_list.push(
+                    my_gadget.jio_allAttachments(cache_id)
+                  );
                 }
+                console.log("passed")
                 return RSVP.all(directory_content_list);
               })
               .push(function (my_memory_content) {
