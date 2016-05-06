@@ -480,14 +480,26 @@
             })
           );
         })
-        .push(function (my_result) {
-          console.log("worked?")
-          console.log(my_result)
+        .push(function () {
+          return my_gadget.setActiveStorage("memory");
+        })
+        .push(function () {
+          return my_gadget.removeAttachment(active_cache, file_name);  
+        })
+        .push(function (worked) {
+          console.log(worked);
+          console.log("keep open, and workable")
+        })
+        .push(function () {
+          return my_gadget.allAttachments();
+        })
+        .push(function (test_list) {
+          console.log(test_list);
           my_gadget.property_dict.editor.setOption("mode", mime_type);
           editor_setActiveFile(file_name, mime_type);
           CodeMirror.menu_dict.editor_resetModified();
-          // close dialog
-          return true;
+          // don't close dialog
+          return false;
         });
     }
 
@@ -564,6 +576,8 @@
             .push(function (my_close_dialog) {
               if (my_close_dialog === true) {
 
+                console.log("CLOSING")
+              
                 closed = true;
                 dialog.parentNode.removeChild(dialog);
                 my_context.focus();
