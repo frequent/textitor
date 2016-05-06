@@ -154,6 +154,10 @@
   /////////////////////////////
   // base
   /////////////////////////////
+  function base_isType(my_variable) {
+    return Object.prototype.toString.call(my_variable);
+  }
+  
   function base_convertToArray(my_object) {
     return Array.prototype.slice.call(my_object);
   }
@@ -339,10 +343,6 @@
             throw my_error;
           })
           .push(function (my_response) {
-            console.log("got something?")
-            console.log(my_response)
-            // if it's from memory, it will be the editor object, if from
-            // storage, it will be the file content, so I need to accomdate
             mime_type = my_response.type;
             my_gadget.property_dict.editor.setOption("mode", mime_type);
             editor_setActiveFile(file_name, mime_type);
@@ -882,7 +882,13 @@
   }
 
   function editor_setFile(my_gadget, my_file_content, my_mime_type) {
-    var new_doc = CodeMirror.Doc(my_file_content || "", my_mime_type);
+    var content = my_file_content || "",
+      new_doc;
+    if (base_isType(content) === "[Object String]") {
+      new_doc = CodeMirror.Doc(content, my_mime_type);
+    } else {
+      new_doc = my_file_content;
+    }
     CodeMirror.menu_dict.digest_doc = my_gadget.property_dict.editor.swapDoc(new_doc);
     CodeMirror.menu_dict.editor_resetModified();
     return true;
