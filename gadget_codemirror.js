@@ -643,11 +643,12 @@
                       console.log(active_file)
                       console.log("storing in memory")
                       console.log(CodeMirror.menu_dict.digest_doc)
-                      console.log(JSON.stringify(CodeMirror.menu_dict.digest_doc))
+                      console.log(CodeMirror.menu_dict.digest_doc.getEditor().getValue())
+                      console.log(CodeMirror.menu_dict.digest_doc.getHistory())
                       return my_gadget.jio_putAttachment(
                         active_storage,
                         active_file.name, 
-                        new Blob([CodeMirror.menu_dict.digest_doc], {type: active_file.mime_type})
+                        new Blob([CodeMirror.menu_dict.digest_doc.getEditor().getValue(), CodeMirror.menu-dict.digest_doc.getHistory()], {type: active_file.mime_type})
                       );
                     })
                     .push(function () {
