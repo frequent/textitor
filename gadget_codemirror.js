@@ -471,7 +471,7 @@
       console.log("CLOSING")
       return new RSVP.Queue()
         .push(function () {
-          editor_resetActiveFile();
+          //editor_resetActiveFile();
           dialog_clearTextInput(my_dialog);
           return editor_setFile(my_gadget, my_gadget.property_dict.editor.getDoc());
         })
@@ -638,6 +638,7 @@
                       var menu = CodeMirror.menu_dict,
                         active_storage = menu.active_cache || "textitor",
                         active_file = menu.active_file;
+                      console.log(menu)
                       console.log(active_storage)
                       console.log(active_file)
                       return my_gadget.jio_putAttachment(
