@@ -448,7 +448,7 @@
                       })
                       .push(null, function (my_error) {
                         console.log(my_error);
-                        throw;
+                        throw my_error;
                       })
                   );
                 }
@@ -1154,7 +1154,7 @@
 
       editor.refresh();
       editor.focus();
-
+      console.log("declaring service")
       return new RSVP.Queue()
         .push(function () {
           return RSVP.all([
