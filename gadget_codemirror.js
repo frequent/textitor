@@ -718,6 +718,7 @@
         closing_event_list.concat(setFormSubmitListeners(dialog, my_gadget));
   
         // create file menu
+        console.log("LET'S MAKE A FILEMENU")
         if (CodeMirror.menu_dict.position === 'left') {
           storage_interaction_list.push(
             new RSVP.Queue()
@@ -729,6 +730,8 @@
                 return my_gadget.jio_allDocs();
               })
               .push(function (my_directory_list) {
+                console.log("ON MEMORY");
+                console.log(my_directory_list)
                 var response_dict = my_directory_list.data,
                   directory_content_list = [],
                   len = response_dict.total_rows,
@@ -746,6 +749,8 @@
                 return RSVP.all(directory_content_list);
               })
               .push(function (my_memory_content) {
+                console.log("my_memory_content")
+                console.log(my_memory_content)
                 var len = my_memory_content.length,
                   item,
                   i;
@@ -760,15 +765,18 @@
                     }  
                   }
                 }
-                
+                return;
               })
               .push(function () {
+                console.log("now serviceworker")
                 return my_gadget.setActiveStorage("serviceworker");
               })
               .push(function () {
                 return my_gadget.jio_allDocs();
               })
               .push(function (my_directory_list) {
+                console.log("Alldocs returned")
+                console.log(my_directory_list)
                 var response_dict = my_directory_list.data,
                   directory_content_list = [],
                   len = response_dict.total_rows,
@@ -787,9 +795,13 @@
                     );
                   }
                 }
+                console.log("pulling contents for")
+                console.log(directory_content_list)
                 return RSVP.all(directory_content_list);
               })
               .push(function (my_directory_content) {
+                console.log("got it")
+                console.log(my_directory_content)
                 var len = my_directory_content.length,
                   item,
                   i;
@@ -807,7 +819,7 @@
                     }  
                   }
                 }
-                
+                console.log("et violoa")
                 dialog.insertBefore(
                   setFileMenu(entry_dict),
                   dialog.querySelector('span')
@@ -861,10 +873,10 @@
 
     if (my_event.ctrlKey && my_event.altKey) {
       switch(my_event.keyCode) {
-        case 67: return Codemirror.commands.myEditor_closeFile();
+        case 67: return Codemirror.commands.myEditor_closeFile();      // (c)lose file
         case 79: return Codemirror.commands.myEditor_openFromDialog(); // (o)pen
         case 83: return CodeMirror.commands.myEditor_saveFromDialog(); // (s)ave
-        case 88: return CodeMirror.commands.myEditor_closeDialog(my_event); // (x)lose
+        case 88: return CodeMirror.commands.myEditor_closeDialog(my_event); // (x)lose dialog
         case 37: return CodeMirror.commands.myEditor_navigateHorizontal(undefined, "left");
         case 38: return CodeMirror.commands.myEditor_navigateVertical(undefined, "up");
         case 39: return CodeMirror.commands.myEditor_navigateHorizontal(undefined, "right");
@@ -927,6 +939,7 @@
 
   // shortcut handlers
   function editor_closeFile(my_event) {
+    console.log("Detected CLOSE file");
     return CodeMirror.menu_dict.evaluateState({"target":{"name": "close"}});
   }
   CodeMirror.commands.myEditor_closeFile = editor_closeFile;
