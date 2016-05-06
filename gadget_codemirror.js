@@ -309,6 +309,7 @@
       is_cache_name,
       file_name,
       action,
+      content,
       entry_dict;
     
     // determine action
@@ -320,8 +321,6 @@
       file_name_input = my_dialog.querySelector('input:checked');
       if (file_name_input) {
         file_name = file_name_input.nextSibling.textContent.split(" | ")[1].split("*")[0];
-        console.log("ok...")
-        console.log(file_name)
         active_cache = CodeMirror.menu_dict.active_cache || "textitor";
         return new RSVP.Queue()
           .push(function () {
@@ -329,7 +328,10 @@
           })
           .push(function () {
             console.log("FETCH FROM MEMORY")
-            return my_gadget.jio_getAttachment(active_cache, file_name);
+            return RSVP.all([
+              my_gadget.jio_getAttachment(active_cache, file_name),
+              my_gadget.jio_getAttachment(active_cache, file_name + "_history")
+            ]);
           })
           .push(null, function (my_error) {
             if (is404(my_error)) {
@@ -339,27 +341,29 @@
                 })
                 .push(function () {
                   console.log("FETCH FROM CACHE")
-                  return my_gadget.jio_getAttachment(active_cache, file_name);
+                  return RSVP.all([
+                    my_gadget.jio_getAttachment(active_cache, file_name),
+                    RSVP.Promise.resolve(new Blob(["{}"]))
+                  ]);
                 });
             }
             throw my_error;
           })
-          .push(function (my_response) {
-            
-            console.log("retrieved")
-            console.log(my_response)
-            
-            mime_type = my_response.type;
+          .push(function (my_response_list) {
+            mime_type = my_response_list[0].type;
             my_gadget.property_dict.editor.setOption("mode", mime_type);
             editor_setActiveFile(file_name, mime_type);
-            return jIO.util.readBlobAsText(my_response);
+            return RSVP.all([
+              jIO.util.readBlobAsText(my_response_list[0]),
+              jio.util.readBlobAsText(my_response_list[1])
+            ])
           })
-          .push(function (my_converted_response) {
-            console.log(my_converted_response)
+          .push(function (my_read_response_list) {
+            console.log(my_read_response_list)
             
             return editor_setFile(
               my_gadget,
-              my_converted_response.target.result,
+              my_read_response_list,
               mime_type
             );
           });
@@ -433,6 +437,7 @@
             response = my_directory_content[i];
               for (item in response) {
                 if (response.hasOwnProperty(item)) {
+                  // XXX
                   store_list.push(
                     new RSVP.Queue()
                       .push(function () {
@@ -453,7 +458,10 @@
                         return my_gadget.setActiveStorage("memory");
                       })
                       .push(function () {
-                        return my_gadget.jio_removeAttachment(entry_dict[i].name, item);
+                        return RSVP.all([
+                          my_gadget.jio_removeAttachment(entry_dict[i].name, item),
+                          my_gadget.jio_removeAttachment(entry_dict[i].name, item + "_history")
+                        ]);
                       })
                       .push(null, function (my_error) {
                         throw my_error;
@@ -471,7 +479,6 @@
       console.log("CLOSING")
       return new RSVP.Queue()
         .push(function () {
-          //editor_resetActiveFile();
           dialog_clearTextInput(my_dialog);
           return editor_setFile(my_gadget);
         })
@@ -640,19 +647,24 @@
                         active_storage = menu.active_cache || "textitor",
                         active_file = menu.active_file;
 
-
-                      return my_gadget.jio_putAttachment(
-                        active_storage,
-                        active_file.name, 
-                        new Blob(
-                          [doc.getValue(), JSON.stringify(doc.getHistory())],
-                          {type: active_file.mime_type}
+                      // need to store the history separately, can't store full doc
+                      return RSVP.all([
+                        my_gadget.jio_putAttachment(
+                          active_storage,
+                          active_file.name, 
+                          new Blob([doc.getValue()], {type: active_file.mime_type})
+                        ),
+                        my_gadget.jio_putAttachment(
+                          active_storage,
+                          active_file.name + "_history",
+                          new Blob([JSON.stringify(doc.getHistory()), {
+                            type: "application/json"
+                          }])
                         )
-                      );
+                      ]);
                     })
                     .push(function () {
-                      console.log("swapped")
-                      console.log("what to return and where?")
+                      console.log("stored both")
                       CodeMirror.menu_dict.digest_doc = null;
                     })
                     .push(null, function (err) {
@@ -899,24 +911,22 @@
     }
   }
 
-  function editor_setFile(my_gadget, my_file_content, my_mime_type) {
+  function editor_setFile(my_gadget, my_file_content_list, my_mime_type) {
     var new_doc;
 
     // as before, if we don't get anything, we are closing = make a new file
     // if we get something it will now be fun
+    //           //editor_resetActiveFile();
 
-    if (my_file_content) {
-      console.log(my_file_content)
-      if (base_isType(my_file_content) === "[Object String]") {
-        new_doc = CodeMirror.Doc(my_file_content, my_mime_type);
-      } else {
-        new_doc = content;
-      }
+    if (my_file_content_list) {
+      console.log("GOT CONTENT")
+      console.log(my_file_content_list)
+      new_doc = CodeMirror.Doc(my_file_content_list[0], my_mime_type);
+      new_doc.setHistory(JSON.parse(my_file_content_list[1]));
     } else {
-      new_doc = CodeMirror.Doc("");      
+      new_doc = CodeMirror.Doc("");
     }
     
-    // set current document for storing in memory
     CodeMirror.menu_dict.digest_doc = my_gadget.property_dict.editor.swapDoc(new_doc);
     CodeMirror.menu_dict.editor_resetModified();
     return true;
