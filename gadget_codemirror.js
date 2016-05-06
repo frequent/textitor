@@ -164,7 +164,6 @@
           counter += 1;
         };
       };
-    console.log("improve this");
     my_template.split("%s").map(setHtmlContent(html_content));
     return html_content.join("");
   }
@@ -182,8 +181,6 @@
       if (my_file_dict.hasOwnProperty(counter)) {
         folder = my_file_dict[counter];
         for (i = 0, len = folder.item_list.length; i < len; i += 1) {
-          console.log(folder)
-          console.log("stored for input file menu");
           str += parseTemplate(
             FILE_ENTRY_TEMPLATE,
             [folder.name + " | " + folder.item_list[i]]
@@ -307,13 +304,10 @@
     console.log(action);
 
     if (action === "open") {
-      console.log("open");
       file_name_input = my_dialog.querySelector('input:checked');
       if (file_name_input) {
         file_name = file_name_input.nextSibling.textContent.split(" | ")[1].split("*")[0];
         active_cache = CodeMirror.menu_dict.active_cache || "textitor";
-        console.log(file_name)
-        console.log(active_cache)
         return new RSVP.Queue()
           .push(function () {
             return my_gadget.setActiveStorage("memory");
@@ -355,7 +349,6 @@
     }
 
     if (action === "remove") {
-      console.log("removed startes");
       active_cache = CodeMirror.menu_dict.active_cache || "textitor";
       file_name_input = dialog_getTextInput(my_dialog, 0);
       return new RSVP.Queue()
@@ -366,7 +359,6 @@
           return my_gadget.jio_removeAttachmemt(active_cache, file_name_input.value);
         })
         .push(undefined, function (my_error) {
-          console.log("caught an error");
           if (is404(my_error)) {
             throw my_error;
           }
@@ -381,14 +373,12 @@
           return true;
         })
         .push(null, function (my_error) {
-          console.log(my_error);
           throw my_error;
         });
     }
     
     // save all and close = retrive what is in memory storage and save
     if (action === "saveall") {
-      console.log("saveall");
       return new RSVP.Queue()
         .push(function () {
           return my_gadget.setActiveStorage("memory");
@@ -397,8 +387,6 @@
           return my_gadget.jio_allDocs();
         })
         .push(function (my_storage_dict) {
-          console.log("memory storage allDocs");
-          console.log(my_storage_dict);
           var response_dict = my_storage_dict.data,
             file_directory_list = [],
             len = response_dict.total_rows,
@@ -414,7 +402,6 @@
           return RSVP.all(directory_content_list);  
         })
         .push(function (my_directory_content_list) {
-          console.log(my_directory_content_list);
           var len = my_directory_content_list.length,
             store_list = [],
             item,
@@ -447,7 +434,6 @@
                         return my_gadget.jio_removeAttachment(entry_dict[i].name, item);
                       })
                       .push(null, function (my_error) {
-                        console.log(my_error);
                         throw my_error;
                       })
                   );
@@ -460,13 +446,10 @@
     
     // save and close
     if (action === "save") {
-      console.log("saving");
-
+      console.log("SAVE")
       file_name_input = dialog_getTextInput(my_dialog, 0);
       mime_type_input = dialog_getTextInput(my_dialog, 1);
       is_cache_name = my_dialog.querySelector('input:checked');
-      console.log(is_cache_name);
-      console.log(mime_type_input);
 
       // validate
       if (!file_name_input.value) {
@@ -479,9 +462,11 @@
       }
       active_cache = CodeMirror.menu_dict.active_cache || "textitor";
       mime_type = mime_type_input.value;
-
-      console.log("now writing to you");
       file_name = file_name_input.value;
+      console.log(file_name)
+      console.log(mime_type)
+      console.log(my_gadget.property_dict.editor.getValue())
+      console.log("SAVING stores to serviceworker, clears memory (history, too), don't close")
       return new RSVP.Queue()
         .push(function() {
           return my_gadget.setActiveStorage("serviceworker");
@@ -495,11 +480,12 @@
             })
           );
         })
-        .push(function () {
+        .push(function (my_result) {
+          console.log("worked?")
+          console.log(my_result)
           my_gadget.property_dict.editor.setOption("mode", mime_type);
           editor_setActiveFile(file_name, mime_type);
           CodeMirror.menu_dict.editor_resetModified();
-          console.log("made it here")
           // close dialog
           return true;
         });
@@ -568,18 +554,14 @@
 
         // evaluate state
         function dialog_evaluateState(my_parameter) {
-          console.log("evaluate state")
           return new RSVP.Queue()
             .push(function () {
               if (closed !== true) {
                 return dialog_updateStorage(my_gadget, dialog, my_parameter);
               }
-              console.log("done updating")
-              console.log(my_parameter)
               return my_parameter;
             })
             .push(function (my_close_dialog) {
-              console.log(my_close_dialog);
               if (my_close_dialog === true) {
 
                 closed = true;
@@ -590,7 +572,6 @@
                 if (my_option_dict.onClose) {
                   my_option_dict.onClose(dialog);
                 }
-                console.log("saving without being asked or memory");
                 // closing not saving, add to memory storage, always
                 return new RSVP.Queue()
                   .push(function () {
@@ -602,19 +583,18 @@
                       active_file = menu.active_file,
                       new_doc,
                       old_doc;
-                    console.log("the doc");
+
                     if (CodeMirror.menu_dict.digest_doc) {
                       new_doc = CodeMirror.menu_dict.digest_doc;
+                      console.log("need to digest, new doc with content")
                       console.log(new_doc)
                       console.log(new_doc.getEditor())
-                      console.log("cleanup")
                       console.log(old_doc)
                       CodeMirror.menu_dict.digest_doc = null;
                     } else {
-                      console.log("")
+                      console.log("empty new doc")
                       new_doc = CodeMirror.Doc("");
                     }
-                    console.log("swapping")
                     console.log("fix this first, why is it empty?")
                     old_doc = my_gadget.property_dict.editor.swapDoc(new_doc);
                     return my_gadget.jio_putAttachment(
@@ -799,7 +779,6 @@
             return dialog_evaluateState();
           })
           .push(undefined, function (my_error) {
-            console.log(my_error);
             throw my_error;
           });
       }
@@ -1082,11 +1061,6 @@
         }
         cm.setOption("theme", args.slice(1).join(" ") || "default");
       };
-      console.log("leftover")
-      console.log(commands.theme)
-      console.log(commands["theme doc"])
-      console.log("Still used")
-      
       return dialog_setDialogExtension(my_gadget);
     })
 
@@ -1100,7 +1074,6 @@
       CodeMirror.lint["application/javascript"] = CodeMirror.lint.javascript;
       CodeMirror.lint["application/json"] = CodeMirror.lint.json;
       CodeMirror.lint["text/css"] = CodeMirror.lint.css;
-      console.log(CodeMirror)
       CodeMirror.menu_dict.editor_setModified = function () {
         if (dict.modified !== true) {
           dict.modified = true;
@@ -1154,7 +1127,6 @@
 
       editor.refresh();
       editor.focus();
-      console.log("declaring service")
       return new RSVP.Queue()
         .push(function () {
           return RSVP.all([
@@ -1163,7 +1135,6 @@
           ]);
         })
         .push(function () {
-          console.log("and out!")
           if (editor.modified) {
             return "Don't forget to save your work!";
           }
