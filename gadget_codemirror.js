@@ -336,6 +336,8 @@
           .push(function (my_converted_response) {
             var new_doc = CodeMirror.Doc(my_converted_response.target.result);
             
+            console.log("opening, means we are setting digest_doc by swapping in a new doc and returning the old one to digest = store in memory")
+            console.log("swapping means the new doc should be on screen now, only the old one needs to be stored")
             CodeMirror.menu_dict.digest_doc =
               my_gadget.property_dict.editor.swapDoc(new_doc, mime_type);
             CodeMirror.menu_dict.editor_resetModified();
@@ -484,23 +486,27 @@
           return my_gadget.setActiveStorage("memory");
         })
         .push(function () {
-          return my_gadget.removeAttachment(active_cache, file_name);  
+          return my_gadget.jio_removeAttachment(active_cache, file_name);  
         })
         .push(function (worked) {
           console.log(worked);
           console.log("keep open, and workable")
         })
         .push(function () {
-          return my_gadget.allAttachments();
+          return my_gadget.jio_allAttachments();
         })
         .push(function (test_list) {
           console.log(test_list);
           my_gadget.property_dict.editor.setOption("mode", mime_type);
           editor_setActiveFile(file_name, mime_type);
           CodeMirror.menu_dict.editor_resetModified();
-          // don't close dialog
-          return false;
-        });
+          // close dialog
+          return true;
+        })
+        .push(null, function (err) {
+          console.log(err);
+          throw err;
+        })
     }
 
     // XXX resolve promise chain! not just close
@@ -587,36 +593,44 @@
                   my_option_dict.onClose(dialog);
                 }
                 // closing not saving, add to memory storage, always
-                return new RSVP.Queue()
-                  .push(function () {
-                    return my_gadget.setActiveStorage("memory");
-                  })
-                  .push(function () {
-                    var menu = CodeMirror.menu_dict,
-                      active_storage = menu.active_cache || "textitor",
-                      active_file = menu.active_file,
-                      new_doc,
-                      old_doc;
-
-                    if (CodeMirror.menu_dict.digest_doc) {
+                console.log("we should only add to memory storage if closing (true) and if modified")
+                console.log(my_option_dict)
+                console.log(my_option_dict.modified)
+                if (my_option_dict.modified) {
+                  console.log("something was modified... ok, we are closing the menu, no big deal, or store on memory?");
+                  console.log("store current doc in memory?")
+                }
+                if (CodeMirror.menu_dict.digest_doc) {
+                  return new RSVP.Queue()
+                    .push(function () {
+                      return my_gadget.setActiveStorage("memory");
+                    })
+                    .push(function () {
+                      var menu = CodeMirror.menu_dict,
+                        active_storage = menu.active_cache || "textitor",
+                        active_file = menu.active_file,
+                        new_doc,
+                        old_doc;
+                      console.log("bs section")
+                      console.log(CodeMirror.menu_dict.digest_doc)
                       new_doc = CodeMirror.menu_dict.digest_doc;
-                      console.log("need to digest, new doc with content")
+                      console.log("there is an old doc set from opening a file which needs to be put on memory storage, lets do")
                       console.log(new_doc)
                       console.log(new_doc.getEditor())
                       console.log(old_doc)
                       CodeMirror.menu_dict.digest_doc = null;
-                    } else {
-                      console.log("empty new doc")
-                      new_doc = CodeMirror.Doc("");
-                    }
-                    console.log("fix this first, why is it empty?")
-                    old_doc = my_gadget.property_dict.editor.swapDoc(new_doc);
-                    return my_gadget.jio_putAttachment(
-                      active_storage,
-                      active_file.name, 
-                      new Blob([old_doc], {type: active_file.mime_type})
-                    );
-                  });
+                      //old_doc = my_gadget.property_dict.editor.swapDoc(new_doc);
+                      console.log("storing in memory")
+                      console.log(active_file.name)
+                      console.log(active_file.mime_type)
+                      return my_gadget.jio_putAttachment(
+                        active_storage,
+                        active_file.name, 
+                        new Blob([new_doc], {type: active_file.mime_type})
+                      );
+                      
+                    });
+                }
               }
             });
         }
