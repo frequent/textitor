@@ -150,8 +150,15 @@
     }
     return new RSVP.Promise(itsANonResolvableTrap, canceller);
   }
-  
+
   /////////////////////////////
+  // base
+  /////////////////////////////
+  function base_convertToArray(my_object) {
+    return Array.prototype.slice.call(my_object);
+  }
+
+  //////////////////////////////
   // template rendering
   /////////////////////////////
   function parseTemplate(my_template, my_value_list) {
@@ -448,6 +455,8 @@
     
     // close file - store on memory when closing
     if (action === "close") {
+      CodeMirror.menu_dict.resetActiveFile();
+      dialog_clearTextInput(my_dialog);
       return editor_setFile(my_gadget);
     }
 
@@ -539,12 +548,23 @@
     return event_list;
   }
   
+  function dialog_clearTextInput(my_dialog) {
+    var input_list = base_convertToArray(my_dialog.querySelectorAll("input")),
+      len,
+      i;
+    for (i = 0, len = input_list.length; i < len; i += 1) {
+      if (input_list[i].type === 'text') {
+        input_list[i].value = '';
+      }
+    }
+  }
+
   function dialog_getTextInput(my_dialog, my_index) {
     var text_input_list = [], 
       input_list,
       len,
       i;
-    input_list = Array.prototype.slice.call(my_dialog.querySelectorAll("input"));
+    input_list = base_convertToArray(my_dialog.querySelectorAll("input"));
     for (i = 0, len = input_list.length; i < len; i += 1) {
       if (input_list[i].type === 'text') {
         text_input_list.push(input_list[i]);
@@ -884,6 +904,10 @@
     };
   }
 
+  function editor_resetActiveFile() {
+    CodeMirror.menu_dict.active_file = null;
+  }
+
   function editor_getActiveFile(my_as_array) {
     var active_file = CodeMirror.menu_dict.active_file;
     if (my_as_array) {
@@ -894,6 +918,11 @@
   }
 
   // shortcut handlers
+  function editor_closeFile(my_event) {
+    return CodeMirror.menu_dict.evaluateState({"target":{"name": "close"}});
+  }
+  CodeMirror.commands.myEditor_closeFile = editor_closeFile;
+  
   function editor_closeDialog(my_event) {
     //CodeMirror.e_stop(my_event);
     if (CodeMirror.menu_dict.evaluateState) {
@@ -970,7 +999,7 @@
 
   // CodeMirror.keyMap.my["Ctrl-Alt-A"] = undefined;
   // CodeMirror.keyMap.my["Ctrl-Alt-B"] = undefined;
-  // CodeMirror.keyMap.my["Ctrl-Alt-C"] = undefined;
+  CodeMirror.keyMap.my["Ctrl-Alt-C"] = "my_editor_closeFile";
   // CodeMirror.keyMap.my["Ctrl-Alt-D"] = undefined;
   // CodeMirror.keyMap.my["Ctrl-Alt-E"] = undefined;
   // CodeMirror.keyMap.my["Ctrl-Alt-F"] = undefined;
