@@ -813,7 +813,7 @@
                       if (response.hasOwnProperty(item)) {
                         console.log(item)
                         console.log(response[item])
-                        if (item.indexOf("_history") > -1) {
+                        if (item.indexOf("_history") === -1) {
                           console.log("not a history item")
                           console.log(memory_list)
                           console.log(item)
@@ -821,8 +821,8 @@
                           if (memory_list.indexOf(item) > -1) {
                             item = item + "*";
                           }
+                          entry_dict[i].item_list.push(item);
                         }
-                        entry_dict[i].item_list.push(item);
                       }
                     }  
                   }
