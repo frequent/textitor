@@ -468,11 +468,12 @@
     
     // close file - store on memory when closing
     if (action === "close") {
+      console.log("CLOSING")
       return new RSVP.Queue()
         .push(function () {
           editor_resetActiveFile();
           dialog_clearTextInput(my_dialog);
-          return editor_setFile(my_gadget);
+          return editor_setFile(my_gadget, my_gadget.property_dict.editor.getDoc());
         })
         .push(null, function (err) {
           console.log(err);
@@ -896,7 +897,7 @@
     console.log("setting file")
     console.log(my_file_content)
     console.log(base_isType(content))
-    /*
+
     if (base_isType(content) === "[Object String]") {
       console.log("string it");
       new_doc = CodeMirror.Doc(content, my_mime_type);
@@ -904,9 +905,11 @@
       console.log("straight doc");
       new_doc = my_file_content;
     }
-    */
-    new_doc = CodeMirror.Doc(content, my_mime_type);
+
+    //new_doc = CodeMirror.Doc(content, my_mime_type);
     CodeMirror.menu_dict.digest_doc = my_gadget.property_dict.editor.swapDoc(new_doc);
+    console.log("to store in memory")
+    console.log(CodeMirror.menu_dict.diget_doc)
     CodeMirror.menu_dict.editor_resetModified();
     return true;
   }
