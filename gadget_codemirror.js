@@ -884,9 +884,16 @@
   function editor_setFile(my_gadget, my_file_content, my_mime_type) {
     var content = my_file_content || "",
       new_doc;
+    
+    console.log("setting file")
+    console.log(my_file_content)
+    console.log(base_isType(content))
+    
     if (base_isType(content) === "[Object String]") {
+      console.log("string it");
       new_doc = CodeMirror.Doc(content, my_mime_type);
     } else {
+      console.log("straight doc");
       new_doc = my_file_content;
     }
     CodeMirror.menu_dict.digest_doc = my_gadget.property_dict.editor.swapDoc(new_doc);
