@@ -339,6 +339,10 @@
             throw my_error;
           })
           .push(function (my_response) {
+            console.log("got something?")
+            console.log(my_response)
+            // if it's from memory, it will be the editor object, if from
+            // storage, it will be the file content, so I need to accomdate
             mime_type = my_response.type;
             my_gadget.property_dict.editor.setOption("mode", mime_type);
             editor_setActiveFile(file_name, mime_type);
