@@ -288,8 +288,11 @@
     }
     return true;
   }
+
+
   function dialog_updateStorage(my_gadget, my_dialog, my_parameter) {
-    var active_cache, 
+    var active_cache,
+      active_file,
       file_name_input,
       mime_type_input,
       is_cache_name,
@@ -334,14 +337,11 @@
             return jIO.util.readBlobAsText(my_response);
           })
           .push(function (my_converted_response) {
-            var new_doc = CodeMirror.Doc(my_converted_response.target.result);
-            
-            console.log("opening, means we are setting digest_doc by swapping in a new doc and returning the old one to digest = store in memory")
-            console.log("swapping means the new doc should be on screen now, only the old one needs to be stored")
-            CodeMirror.menu_dict.digest_doc =
-              my_gadget.property_dict.editor.swapDoc(new_doc, mime_type);
-            CodeMirror.menu_dict.editor_resetModified();
-            return true;
+            return editor_setFile(
+              my_gadget,
+              my_converted_response.target.result,
+              mime_type
+            );
           });
       
       // close if no file is selected on opening
@@ -446,7 +446,12 @@
         });
     }
     
-    // save and close
+    // close file - store on memory when closing
+    if (action === "close") {
+      return editor_setFile(my_gadget);
+    }
+
+    // save file - store on cache, remove memory, close menu
     if (action === "save") {
       console.log("SAVE")
       file_name_input = dialog_getTextInput(my_dialog, 0);
@@ -608,32 +613,24 @@
                     .push(function () {
                       var menu = CodeMirror.menu_dict,
                         active_storage = menu.active_cache || "textitor",
-                        active_file = menu.active_file,
-                        new_doc,
-                        old_doc;
-                      console.log("bs section")
-                      console.log(CodeMirror.menu_dict.digest_doc)
-                      new_doc = CodeMirror.menu_dict.digest_doc;
-                      console.log("there is an old doc set from opening a file which needs to be put on memory storage, lets do")
-                      console.log(new_doc)
-                      console.log(new_doc.getEditor())
-                      console.log(old_doc)
-                      CodeMirror.menu_dict.digest_doc = null;
-                      //old_doc = my_gadget.property_dict.editor.swapDoc(new_doc);
-                      console.log("storing in memory")
-                      console.log(active_file.name)
-                      console.log(active_file.mime_type)
+                        active_file = menu.active_file;
+
                       return my_gadget.jio_putAttachment(
                         active_storage,
                         active_file.name, 
-                        new Blob([new_doc], {type: active_file.mime_type})
+                        new Blob([CodeMirror.menu_dict.digest_doc], {type: active_file.mime_type})
                       );
-                      
+                    })
+                    .push(function () {
+                      console.log("swapped")
+                      console.log("what to return and where?")
+                      CodeMirror.menu_dict.digest_doc = null;
                     });
                 }
               }
             });
         }
+
         CodeMirror.menu_dict.evaluateState = dialog_evaluateState;
         
         function dialog_updateFileMenu(my_parameter) {
@@ -867,6 +864,17 @@
         }
         return OBJECT_LIST_TEMPLATE;
     }
+  }
+
+  function editor_setFile(my_gadget, my_file_content, my_mime_type) {
+    var new_doc = CodeMirror.Doc(my_file_content || "", my_mime_type);
+            
+    console.log("opening, means we are setting digest_doc by swapping in a new doc and returning the old one to digest = store in memory")
+    console.log("swapping means the new doc should be on screen now, only the old one needs to be stored")
+    console.log("closing means there is no response or mime-type we only set a new empty doc")
+    CodeMirror.menu_dict.digest_doc = my_gadget.property_dict.editor.swapDoc(new_doc);
+    CodeMirror.menu_dict.editor_resetModified();
+    return true;
   }
 
   function editor_setActiveFile(my_name, my_mime_type) {
