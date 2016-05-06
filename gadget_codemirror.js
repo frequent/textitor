@@ -591,7 +591,7 @@
         var closing_event_list = [],
           storage_interaction_list = [],
           event_list = [],
-          memory_list = [],
+          memory_list,
           entry_dict,
           dialog,
           closed,
@@ -728,14 +728,11 @@
                 return my_gadget.jio_allDocs();
               })
               .push(function (my_directory_list) {
-                console.log("ON MEMORY");
-                console.log(my_directory_list)
                 var response_dict = my_directory_list.data,
                   directory_content_list = [],
                   len = response_dict.total_rows,
                   cache_id,
                   i;
-                console.log("so???")
 
                 for (i = 0; i < len; i += 1) {
                   entry_dict = entry_dict || {};
@@ -745,7 +742,6 @@
                     my_gadget.jio_allAttachments(cache_id)
                   );
                 }
-                console.log("passed")
                 return RSVP.all(directory_content_list);
               })
               .push(function (my_memory_content) {
@@ -755,20 +751,17 @@
                   item,
                   i;
 
-                if (len > 0) {
-                  for (i = 0; i < len; i += 1) {
-                    response = my_directory_content[i];
-                    for (item in response) {
-                      if (response.hasOwnProperty(item)) {
-                        memory_list.push(item);
-                      }
-                    }  
-                  }
+                for (i = 0, memory_list = []; i < len; i += 1) {
+                  response = my_directory_content[i];
+                  for (item in response) {
+                    if (response.hasOwnProperty(item)) {
+                      memory_list.push(item);
+                    }
+                  }  
                 }
-                return;
-              })
-              .push(function () {
-                console.log("now serviceworker")
+                
+                console.log("so?")
+                console.log(memory_list)
                 return my_gadget.setActiveStorage("serviceworker");
               })
               .push(function () {
