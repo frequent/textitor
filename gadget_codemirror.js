@@ -636,19 +636,18 @@
                     })
                     .push(function () {
                       var menu = CodeMirror.menu_dict,
+                        doc = menu.digest_doc,
                         active_storage = menu.active_cache || "textitor",
                         active_file = menu.active_file;
-                      console.log(menu)
-                      console.log(active_storage)
-                      console.log(active_file)
-                      console.log("storing in memory")
-                      console.log(CodeMirror.menu_dict.digest_doc)
-                      console.log(CodeMirror.menu_dict.digest_doc.getValue())
-                      console.log(CodeMirror.menu_dict.digest_doc.getHistory())
+
+
                       return my_gadget.jio_putAttachment(
                         active_storage,
                         active_file.name, 
-                        new Blob([CodeMirror.menu_dict.digest_doc.getValue(), CodeMirror.menu-dict.digest_doc.getHistory()], {type: active_file.mime_type})
+                        new Blob(
+                          [doc.getValue(), JSON.stringify(doc.getHistory())],
+                          {type: active_file.mime_type}
+                        )
                       );
                     })
                     .push(function () {
@@ -902,6 +901,9 @@
 
   function editor_setFile(my_gadget, my_file_content, my_mime_type) {
     var new_doc;
+
+    // as before, if we don't get anything, we are closing = make a new file
+    // if we get something it will now be fun
 
     if (my_file_content) {
       console.log(my_file_content)
