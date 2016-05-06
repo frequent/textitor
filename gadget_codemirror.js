@@ -811,8 +811,16 @@
                     response = my_directory_content[i];
                     for (item in response) {
                       if (response.hasOwnProperty(item)) {
-                        if (memory_list.indexOf(item) > -1) {
-                          item = item + "*";
+                        console.log(item)
+                        console.log(response[item])
+                        if (item.indexOf("_history") > -1) {
+                          console.log("not a history item")
+                          console.log(memory_list)
+                          console.log(item)
+                          console.log(memory_list.indexOf(item))
+                          if (memory_list.indexOf(item) > -1) {
+                            item = item + "*";
+                          }
                         }
                         entry_dict[i].item_list.push(item);
                       }
