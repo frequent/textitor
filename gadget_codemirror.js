@@ -455,9 +455,16 @@
     
     // close file - store on memory when closing
     if (action === "close") {
-      CodeMirror.menu_dict.resetActiveFile();
-      dialog_clearTextInput(my_dialog);
-      return editor_setFile(my_gadget);
+      return new RSVP.Queue()
+        .push(function () {
+          CodeMirror.menu_dict.resetActiveFile();
+          dialog_clearTextInput(my_dialog);
+          return editor_setFile(my_gadget);
+        })
+        .push(null, function (err) {
+          console.log(err);
+          throw err;
+        })
     }
 
     // save file - store on cache, remove memory, close menu
@@ -557,6 +564,7 @@
         input_list[i].value = '';
       }
     }
+    console.log("done");
   }
 
   function dialog_getTextInput(my_dialog, my_index) {
@@ -852,6 +860,7 @@
 
     if (my_event.ctrlKey && my_event.altKey) {
       switch(my_event.keyCode) {
+        case 67: return Codemirror.commands.myEditor_closeFile();
         case 79: return Codemirror.commands.myEditor_openFromDialog(); // (o)pen
         case 83: return CodeMirror.commands.myEditor_saveFromDialog(); // (s)ave
         case 88: return CodeMirror.commands.myEditor_closeDialog(my_event); // (x)lose
