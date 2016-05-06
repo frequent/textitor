@@ -328,6 +328,7 @@
             return my_gadget.setActiveStorage("memory");
           })
           .push(function () {
+            console.log("FETCH FROM MEMORY")
             return my_gadget.jio_getAttachment(active_cache, file_name);
           })
           .push(null, function (my_error) {
@@ -337,18 +338,25 @@
                   return my_gadget.setActiveStorage("serviceworker");
                 })
                 .push(function () {
+                  console.log("FETCH FROM CACHE")
                   return my_gadget.jio_getAttachment(active_cache, file_name);
                 });
             }
             throw my_error;
           })
           .push(function (my_response) {
+            
+            console.log("retrieved")
+            console.log(my_response)
+            
             mime_type = my_response.type;
             my_gadget.property_dict.editor.setOption("mode", mime_type);
             editor_setActiveFile(file_name, mime_type);
             return jIO.util.readBlobAsText(my_response);
           })
           .push(function (my_converted_response) {
+            console.log(my_converted_response)
+            
             return editor_setFile(
               my_gadget,
               my_converted_response.target.result,
