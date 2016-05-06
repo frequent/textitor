@@ -457,7 +457,7 @@
     if (action === "close") {
       return new RSVP.Queue()
         .push(function () {
-          CodeMirror.menu_dict.resetActiveFile();
+          editor_resetActiveFile();
           dialog_clearTextInput(my_dialog);
           return editor_setFile(my_gadget);
         })
@@ -912,11 +912,9 @@
       "mime_type": my_mime_type
     };
   }
-
   function editor_resetActiveFile() {
     CodeMirror.menu_dict.active_file = null;
   }
-
   function editor_getActiveFile(my_as_array) {
     var active_file = CodeMirror.menu_dict.active_file;
     if (my_as_array) {
