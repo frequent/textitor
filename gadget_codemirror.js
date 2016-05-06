@@ -641,6 +641,9 @@
                       console.log(menu)
                       console.log(active_storage)
                       console.log(active_file)
+                      console.log("storing in memory")
+                      console.log(CodeMirror.menu_dict.digest_doc)
+                      console.log(JSON.stringify(CodeMirror.menu_dict.digest_doc))
                       return my_gadget.jio_putAttachment(
                         active_storage,
                         active_file.name, 
@@ -900,14 +903,10 @@
     var new_doc;
 
     if (my_file_content) {
-      // if I get something, it means I'm opening, will be a blob response
       console.log(my_file_content)
-      console.log(base_isType(my_file_content))
       if (base_isType(my_file_content) === "[Object String]") {
-        console.log("string it");
         new_doc = CodeMirror.Doc(my_file_content, my_mime_type);
       } else {
-        console.log("object already?");
         new_doc = content;
       }
     } else {
@@ -917,7 +916,7 @@
     // set current document for storing in memory
     CodeMirror.menu_dict.digest_doc = my_gadget.property_dict.editor.swapDoc(new_doc);
     CodeMirror.menu_dict.editor_resetModified();
-    return true;    
+    return true;
   }
 
   function editor_setActiveFile(my_name, my_mime_type) {
