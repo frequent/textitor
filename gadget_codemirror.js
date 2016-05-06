@@ -493,7 +493,7 @@
           console.log("keep open, and workable")
         })
         .push(function () {
-          return my_gadget.jio_allAttachments();
+          return my_gadget.jio_allAttachments(active_cache);
         })
         .push(function (test_list) {
           console.log(test_list);
