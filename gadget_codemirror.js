@@ -896,7 +896,7 @@
     console.log("setting file")
     console.log(my_file_content)
     console.log(base_isType(content))
-    
+    /*
     if (base_isType(content) === "[Object String]") {
       console.log("string it");
       new_doc = CodeMirror.Doc(content, my_mime_type);
@@ -904,6 +904,8 @@
       console.log("straight doc");
       new_doc = my_file_content;
     }
+    */
+    new_doc = CodeMirror.Doc(content, my_mime_type);
     CodeMirror.menu_dict.digest_doc = my_gadget.property_dict.editor.swapDoc(new_doc);
     CodeMirror.menu_dict.editor_resetModified();
     return true;
