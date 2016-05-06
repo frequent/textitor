@@ -638,7 +638,8 @@
                       var menu = CodeMirror.menu_dict,
                         active_storage = menu.active_cache || "textitor",
                         active_file = menu.active_file;
-
+                      console.log(active_storage)
+                      console.log(active_file)
                       return my_gadget.jio_putAttachment(
                         active_storage,
                         active_file.name, 
@@ -649,7 +650,11 @@
                       console.log("swapped")
                       console.log("what to return and where?")
                       CodeMirror.menu_dict.digest_doc = null;
-                    });
+                    })
+                    .push(null, function (err) {
+                      console.log(err);
+                      throw err;
+                    })
                 }
               }
             });
