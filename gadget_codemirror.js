@@ -985,6 +985,8 @@
 
   // shortcut handlers
   function editor_closeFile() {
+    console.log("hey")
+    console.log(CodeMirror.menu_dict)
     if (CodeMirror.menu_dict.evaluateState) {
       console.log("evaluating")
       return CodeMirror.menu_dict.evaluateState({"target":{"name": "close"}});
