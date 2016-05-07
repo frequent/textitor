@@ -356,6 +356,7 @@
             my_gadget.property_dict.editor.setOption("mode", mime_type);
             editor_setActiveFile(file_name, mime_type);
             console.log("setting active file")
+            console.log(CodeMirror.menu_dict)
             return RSVP.all([
               jIO.util.readBlobAsText(my_response_list[0]),
               jIO.util.readBlobAsText(my_response_list[1])
@@ -983,6 +984,7 @@
   }
   function editor_getActiveFile() {
     var active_file = CodeMirror.menu_dict.active_file;
+    console.log(active_file)
     return [active_file.name || "", active_file.mime_type || ""];
   }
 
