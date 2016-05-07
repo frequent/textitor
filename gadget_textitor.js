@@ -50,8 +50,8 @@
           my_gadget.property_dict.storage_dict.active = null;
 
           return RSVP.all([
-            my_gadget.getDeclaredGadget("jio_gadget"),
-            my_gadget.getDeclaredGadget("jio_gadget")
+            my_gadget.getDeclaredGadget("jio_gadget_1"),
+            my_gadget.getDeclaredGadget("jio_gadget_2")
           ]);
         })
         .push(function (my_declared_gadget_list) {
@@ -147,3 +147,4 @@
     });
 
 }(window, rJS));
+
