@@ -666,6 +666,8 @@
                 //if (my_option_dict.modified) {
                 //  console.log("is modified")
                 //}
+                console.log("HELLO")
+                console.log(my_option_dict.modified)
                 if (CodeMirror.menu_dict.digest_doc) {
                   return new RSVP.Queue()
                     .push(function () {
@@ -694,9 +696,7 @@
                       ]);
                     })
                     .push(function () {
-                      console.log(CodeMirror.menu_dict.digest_doc)
                       CodeMirror.menu_dict.digest_doc = null;
-                      console.log("wiping again?")
                       editor_resetActiveFile();
                     })
                     .push(null, function (err) {
@@ -1297,3 +1297,4 @@
     .declareAcquiredMethod('jio_getAttachment', 'jio_getAttachment');
 
 }(window, rJS));
+
