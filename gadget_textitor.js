@@ -86,7 +86,6 @@
         })
         .push(function (my_rendered_gadget_list) {
           return_gadget = my_rendered_gadget_list[0];
-          console.log("initializing")
           return RSVP.all([
             initializeStorage(gadget, "memory"),
             initializeStorage(gadget, "serviceworker")
@@ -107,12 +106,6 @@
         dict = gadget.property_dict,
         active_storage_label = dict.storage_dict.active || "serviceworker",
         storage = dict.storage_dict[active_storage_label];
-      
-      //active_storage = dict.storage_dict[dict.active || "serviceworker"];
-      console.log("we should have a storage?")
-      console.log(gadget.property_dict.storage_dict)
-      console.log(storage)
-      
       return storage[my_method].apply(storage, [].concat(my_param_list));
     })
 
