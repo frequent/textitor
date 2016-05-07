@@ -300,6 +300,8 @@ self.addEventListener('message', function (event) {
           });
         })
         .catch(function(error) {
+          console.log("getAttachment error");
+          console.log(error);
           event.ports[0].postMessage({
             error: {'message': error.toString()}
           });
@@ -327,8 +329,10 @@ self.addEventListener('message', function (event) {
           });
         })
         .catch(function(error) {
+          console.log("putAttachment error");
+          console.log(error);
           event.ports[0].postMessage({
-            error: {'message': error}
+            error: {'message': error.toString()}
           });
         });
     break;
