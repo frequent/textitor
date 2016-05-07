@@ -482,6 +482,8 @@
     if (action === "close") {
       return new RSVP.Queue()
         .push(function () {
+          console.log("closing")
+          console.log(my_dialog)
           dialog_clearTextInput(my_dialog);
           return editor_setFile(my_gadget);
         })
@@ -571,8 +573,11 @@
     var input_list = base_convertToArray(my_dialog.querySelectorAll("input")),
       len,
       i;
+    console.log(input_list)
     for (i = 0, len = input_list.length; i < len; i += 1) {
       if (input_list[i].type === 'text') {
+        console.log("textinput found")
+        console.log(input_list[i])
         input_list[i].value = '';
       }
     }
