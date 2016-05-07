@@ -907,10 +907,8 @@
     // ctrl + alt +
     if (my_event.ctrlKey && my_event.altKey) {
       switch(my_event.keyCode) {
-        case 67:
-          console.log("hold up, we are closing!")
-          return Codemirror.commands.myEditor_closeFile();   // (c)lose file
-        case 79: return Codemirror.commands.myEditor_openFromDialog(); // (o)pen
+        case 67: return CodeMirror.commands.myEditor_closeFile();   // (c)lose file
+        case 79: return CodeMirror.commands.myEditor_openFromDialog(); // (o)pen
         case 83: return CodeMirror.commands.myEditor_saveFromDialog(); // (s)ave
         case 88: return CodeMirror.commands.myEditor_closeDialog(); // (x)lose dialog
         case 37: return CodeMirror.commands.myEditor_navigateHorizontal(undefined, "left");
