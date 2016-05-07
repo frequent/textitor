@@ -975,7 +975,7 @@
     CodeMirror.menu_dict.active_file = {};
   }
   function editor_getActiveFile() {
-    var active_file = CodeMirror.menu_dict.active_file;
+    var active_file = CodeMirror.menu_dict.active_file || {};
     return [active_file.name || "", active_file.mime_type || ""];
   }
 
