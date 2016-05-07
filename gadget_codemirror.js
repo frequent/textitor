@@ -532,9 +532,9 @@
             .push(function () {
               return my_gadget.setActiveStorage("memory");
             })
-            .push(function () {
-              return my_gadget.jio_getAttachment(active_cache, file_name);
-            })
+            //.push(function () {
+            //  return my_gadget.jio_getAttachment(active_cache, file_name);
+            //})
             .push(function (my_reply) {
               console.log(my_reply);
               return RSVP.all([
@@ -543,7 +543,7 @@
               ]);
             })
             .push(null, function (my_error) {
-              console.log("we couldn't getAttachment in memory");
+              console.log("we couldn't getAttachment from memory");
               console.log(my_error);
               console.log("let's first break!")
               throw my_error;
