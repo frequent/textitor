@@ -355,6 +355,7 @@
             mime_type = my_response_list[0].type;
             my_gadget.property_dict.editor.setOption("mode", mime_type);
             editor_setActiveFile(file_name, mime_type);
+            console.log("setting active file")
             return RSVP.all([
               jIO.util.readBlobAsText(my_response_list[0]),
               jIO.util.readBlobAsText(my_response_list[1])
@@ -390,17 +391,14 @@
         .push(function () {
           return my_gadget.jio_getAttachment(active_cache, file_name);
         })
-        .push(function (my_reply) {
-          console.log(my_reply)
+        .push(function () {
           return RSVP.all([
             my_gadget.jio_removeAttachment(active_cache, file_name),
             my_gadget.jio_removeAttachment(active_cache, file_name + "_history")
           ]);
         })
         .push(null, function (my_error) {
-          console.log(my_error)
           if (is404(my_error)) {
-            console.log("file not found...")
             return;
           }
         })
@@ -414,7 +412,6 @@
           return true;
         })
         .push(null, function (my_error) {
-          console.log("done")
           throw my_error;
         });
     }
@@ -507,7 +504,6 @@
 
     // save file - store on cache, remove memory, close menu
     if (action === "save") {
-      console.log("SAVING")
       file_name_input = dialog_getTextInput(my_dialog, 0);
       mime_type_input = dialog_getTextInput(my_dialog, 1);
       is_cache_name = my_dialog.querySelector('input:checked');
@@ -542,8 +538,6 @@
               ]);
             })
             .push(null, function (my_error) {
-              console.log(my_error)
-              console.log(is404(my_error))
               if (is404(my_error)) {
                 return;
               }
@@ -563,7 +557,6 @@
           );
         })
         .push(function () {
-          console.log("DONE")
           my_gadget.property_dict.editor.setOption("mode", mime_type);
           editor_setActiveFile(file_name, mime_type);
           CodeMirror.menu_dict.editor_resetModified();
@@ -939,7 +932,8 @@
       case "idle":
         CodeMirror.menu_dict.position = my_direction;
         if (my_direction === "right") {
-          return parseTemplate(OBJECT_MENU_TEMPLATE, editor_getActiveFile(true));
+          console.log("filling in active file here")
+          return parseTemplate(OBJECT_MENU_TEMPLATE, editor_getActiveFile());
         }
         return OBJECT_LIST_TEMPLATE;
       case "left":
@@ -987,13 +981,9 @@
   function editor_resetActiveFile() {
     CodeMirror.menu_dict.active_file = null;
   }
-  function editor_getActiveFile(my_as_array) {
+  function editor_getActiveFile() {
     var active_file = CodeMirror.menu_dict.active_file;
-    if (my_as_array) {
-      active_file = active_file || {};
-      return [active_file.name || "", active_file.mime_type || ""];
-    }
-    return active_file;
+    return [active_file.name || "", active_file.mime_type || ""];
   }
 
   // shortcut handlers
