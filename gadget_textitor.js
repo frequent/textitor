@@ -49,7 +49,7 @@
           my_gadget.property_dict.storage_dict = {};
           my_gadget.property_dict.storage_dict.active = null;
           
-          return gadget.getDeclaredGadget("jio_gadget");
+          return my_gadget.getDeclaredGadget("jio_gadget");
         })
         .push(function (my_declared_jio_gadget) {
           return my_declared_jio_gadget.render({"label": "label-serviceworker"});
@@ -57,7 +57,7 @@
         .push(function (my_rendered_jio_gadget) {
           console.log(my_rendered_jio_gadget)
           my_gadget.property_dict.storage_dict.serviceworker = my_rendered_jio_gadget;
-          return gadget.getDeclaredGadget("jio_gadget");
+          return my_gadget.getDeclaredGadget("jio_gadget");
         })
         .push(function (my_declared_jio_gadget) {
           return my_declared_jio_gadget.render({"label": "label-memory"});
