@@ -528,13 +528,12 @@
 
       return new RSVP.Queue()
         .push(function () {
-          return new RSVP.Queue()
-            .push(function () {
-              return my_gadget.setActiveStorage("memory");
-            })
-            //.push(function () {
-            //  return my_gadget.jio_getAttachment(active_cache, file_name);
-            //})
+          return my_gadget.setActiveStorage("memory");
+        })
+        .push(function () {
+          return my_gadget.jio_getAttachment(active_cache, file_name);
+        })
+        /*    
             .push(function (my_reply) {
               console.log(my_reply);
               return RSVP.all([
@@ -549,7 +548,7 @@
               throw my_error;
             });
         })
-        /*
+        
         .push(function() {
           console.log("maybe like this");
           return my_gadget.setActiveStorage("serviceworker");
