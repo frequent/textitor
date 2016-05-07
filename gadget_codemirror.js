@@ -363,6 +363,8 @@
             ])
           })
           .push(function (my_read_response_list) {
+            console.log("we read")
+            window.x = my_read_response_list;
             console.log(my_read_response_list)
             
             return editor_setFile(
@@ -656,11 +658,6 @@
                         active_file = menu.active_file;
 
                       // need to store the history separately, can't store full doc
-                      console.log("lets store history")
-                      console.log(doc.getHistory())
-                      console.log(JSON.stringify(doc.getHistory()))
-                      window.x = new Blob([JSON.stringify(doc.getHistory())], {"type":"application/json"});
-                      
                       return RSVP.all([
                         my_gadget.jio_putAttachment(
                           active_storage,
@@ -673,12 +670,10 @@
                           new Blob([JSON.stringify(doc.getHistory()), {
                             'type': "application/json"
                           }])
-                        ),
-                        jIO.util.readBlobAsText(window.x)
+                        )
                       ]);
                     })
-                    .push(function (foo) {
-                      console.log(foo)
+                    .push(function () {
                       console.log("stored both")
                       CodeMirror.menu_dict.digest_doc = null;
                     })
@@ -943,7 +938,12 @@
 
     if (my_content) {
       new_doc = CodeMirror.Doc(local_returnResult(my_content[0]), my_mime_type);
+      
       if (local_returnResult(my_content[1])) {
+        console.log("have history")
+        console.log(my_content[1].target.result)
+        console.log(JSON.parse(my_content[1].target.result))
+        console.log("wtf")
         new_doc.setHistory(JSON.parse(local_returnResult(my_content[1])));
       }
     } else {
