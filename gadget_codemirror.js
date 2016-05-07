@@ -674,20 +674,19 @@
                       var menu = CodeMirror.menu_dict,
                         doc = menu.digest_doc,
                         active_storage = menu.active_cache || "textitor",
-                        active_file = menu.active_file;
+                        active_file = menu.active_file,
+                        old_file_name = active_file.prev,
+                        old_mime_type = doc.modeOption;
 
-                      console.log(doc);
-                      console.log(active_file)
-                      // need to store the history separately, can't store full doc
                       return RSVP.all([
                         my_gadget.jio_putAttachment(
                           active_storage,
-                          active_file.name, 
-                          new Blob([doc.getValue()], {type: active_file.mime_type})
+                          old_file_name, 
+                          new Blob([doc.getValue()], {type: old_mime_type})
                         ),
                         my_gadget.jio_putAttachment(
                           active_storage,
-                          active_file.name + "_history",
+                          old_file_name + "_history",
                           new Blob([JSON.stringify(doc.getHistory())], {
                             'type': "application/json"
                           })
