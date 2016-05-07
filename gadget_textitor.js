@@ -96,13 +96,8 @@
     })
     
     .declareMethod('setActiveStorage', function (my_type) {
-      var gadget = this;
-      
-      console.log("setting active storage to: " + my_type)
-      console.log(gadget.property_dict.storage_dict);
-      
-      gadget.property_dict.storage_dict.active = my_type[0];
-      return gadget;
+      this.property_dict.storage_dict.active = my_type[0];
+      return this;
     })
     
     .declareMethod('routeStorageRequest', function (my_method, my_param_list) {
@@ -111,9 +106,13 @@
         active_storage_label = dict.storage_dict.active || "serviceworker",
         storage = dict.storage_dict[active_storage_label];
       
-      console.log("have a storage?")
+      //active_storage = dict.storage_dict[dict.active || "serviceworker"];
+      console.log("we should have a storage?")
       console.log(active_storage_label)
       console.log(storage.state_parameter_dict.label)
+      console.log(gadget)
+      console.log(gadget.property_dict)
+      console.log(gadget.property_dict.storage_dict)
       console.log(storage)
       
       return storage[my_method].apply(storage, [].concat(my_param_list));
