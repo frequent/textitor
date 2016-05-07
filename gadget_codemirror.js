@@ -934,7 +934,9 @@
       console.log("GOT CONTENT")
       console.log(my_file_content_list)
       new_doc = CodeMirror.Doc(my_file_content_list[0].target.result, my_mime_type);
-      new_doc.setHistory(JSON.parse(my_file_content_list[1].target.result));
+      console.log(my_file_content_list[1].target.result)
+      console.log(JSON.parse(my_file_content_list[1].target.result))
+      //new_doc.setHistory(JSON.parse(my_file_content_list[1].target.result));
     } else {
       new_doc = CodeMirror.Doc("");
     }
