@@ -677,6 +677,7 @@
                         active_file = menu.active_file,
                         old_file_name = active_file.prev,
                         old_mime_type = doc.modeOption;
+                      console.log(CodeMirror.menu_dict)
 
                       return RSVP.all([
                         my_gadget.jio_putAttachment(
