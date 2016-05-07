@@ -343,7 +343,7 @@
                   console.log("FETCH FROM CACHE")
                   return RSVP.all([
                     my_gadget.jio_getAttachment(active_cache, file_name),
-                    new Blob(["{}"])
+                    new Blob([])
                   ]);
                 })
                 .push(null, function (err) {
@@ -927,16 +927,20 @@
     }
   }
 
-  function editor_setFile(my_gadget, my_file_content_list, my_mime_type) {
+  function editor_setFile(my_gadget, my_content, my_mime_type) {
     var new_doc;
+    
+    function local_returnResult(my_jio_response) {
+      return my_jio_response.target.result;
+    }
 
     if (my_file_content_list) {
-      console.log("GOT CONTENT")
-      console.log(my_file_content_list)
-      new_doc = CodeMirror.Doc(my_file_content_list[0].target.result, my_mime_type);
-      console.log(my_file_content_list[1].target.result)
-      console.log(JSON.parse(my_file_content_list[1].target.result))
-      //new_doc.setHistory(JSON.parse(my_file_content_list[1].target.result));
+      new_doc = CodeMirror.Doc(local_returnResult(my_content[0]), my_mime_type);
+      console.log(local_returnResult(my_content[1]))
+      if (local_returnResult(my_content[1])) {
+        console.log(JSON.parse(local_returnResult(my_content[1])))
+        new_doc.setHistory(JSON.parse(local_returnResult(my_content[1])));
+      }
     } else {
       new_doc = CodeMirror.Doc("");
     }
