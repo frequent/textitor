@@ -401,7 +401,7 @@
           console.log(my_error)
           if (is404(my_error)) {
             console.log("file not found...")
-            throw my_error;
+            return;
           }
         })
         .push(function () {
@@ -558,7 +558,8 @@
             .push(null, function (my_error) {
               console.log(my_error)
               if (is404(my_error)) {
-                throw my_error;
+                console.log("file not found...")
+                return;
               }
             });
         })
