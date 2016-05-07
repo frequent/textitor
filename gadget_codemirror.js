@@ -930,15 +930,11 @@
   function editor_setFile(my_gadget, my_file_content_list, my_mime_type) {
     var new_doc;
 
-    // as before, if we don't get anything, we are closing = make a new file
-    // if we get something it will now be fun
-    //           //editor_resetActiveFile();
-
     if (my_file_content_list) {
       console.log("GOT CONTENT")
       console.log(my_file_content_list)
-      new_doc = CodeMirror.Doc(my_file_content_list[0], my_mime_type);
-      new_doc.setHistory(JSON.parse(my_file_content_list[1]));
+      new_doc = CodeMirror.Doc(my_file_content_list[0].target.result, my_mime_type);
+      new_doc.setHistory(JSON.parse(my_file_content_list[1].target.result));
     } else {
       new_doc = CodeMirror.Doc("");
     }
