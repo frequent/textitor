@@ -19,6 +19,7 @@
       .push(function () {
         my_gadget.routeStorageRequest("createJIO", config);
       })
+      // dummy data
       .push(function () {
         return my_gadget.routeStorageRequest("put", "textitor");
       })
@@ -49,8 +50,8 @@
           my_gadget.property_dict.storage_dict.active = null;
 
           return RSVP.all([
-            my_gadget.getDeclaredGadget("jio_gadget_1"),
-            my_gadget.getDeclaredGadget("jio_gadget_2")
+            my_gadget.getDeclaredGadget("jio_gadget"),
+            my_gadget.getDeclaredGadget("jio_gadget")
           ]);
         })
         .push(function (my_declared_gadget_list) {
@@ -60,8 +61,6 @@
           ]);
         })
         .push(function (my_rendered_list) {
-          console.log("this should give me the gadgets to store and switch")
-          console.log(my_rendered_list)
           my_gadget.property_dict.storage_dict.serviceworker = my_rendered_list[0];
           my_gadget.property_dict.storage_dict.memory = my_rendered_list[1];
         });
@@ -97,7 +96,6 @@
     })
     
     .declareMethod('setActiveStorage', function (my_type) {
-      console.log(my_type[0])
       this.property_dict.storage_dict.active = my_type[0];
       return this;
     })

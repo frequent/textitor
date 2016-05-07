@@ -9,15 +9,12 @@
       gadget.state_parameter_dict = {};
     })
     .declareMethod('render', function (my_option_dict) {
-      this.state_parameter_dict.label = my_option_dict.label;
+      //this.state_parameter_dict.label = my_option_dict.label;
       return this;
     })
 
     .declareMethod('createJIO', function (jio_options) {
-      console.log("called create!")
-      console.log(jio_options)
       this.state_parameter_dict.jio_storage = jIO.createJIO(jio_options);
-      console.log(this.state_parameter_dict)
     })
     .declareMethod('allDocs', function () {
       var storage = this.state_parameter_dict.jio_storage;
