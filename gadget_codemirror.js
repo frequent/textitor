@@ -482,8 +482,6 @@
     if (action === "close") {
       return new RSVP.Queue()
         .push(function () {
-          console.log("closing")
-          console.log(my_dialog)
           dialog_clearTextInput(my_dialog);
           return editor_setFile(my_gadget);
         })
@@ -573,11 +571,8 @@
     var input_list = base_convertToArray(my_dialog.querySelectorAll("input")),
       len,
       i;
-    console.log(input_list)
     for (i = 0, len = input_list.length; i < len; i += 1) {
       if (input_list[i].type === 'text') {
-        console.log("textinput found")
-        console.log(input_list[i])
         input_list[i].value = '';
       }
     }
@@ -815,8 +810,13 @@
                     response = my_directory_content[i];
                     for (item in response) {
                       if (response.hasOwnProperty(item)) {
+                        console.log(item)
                         if (item.indexOf("_history") === -1) {
+                          console.log("not a history file, let's see what we have on memory")
+                          console.log(memory_list)
+                          console.log(memory_list.indexOf(item))
                           if (memory_list.indexOf(item) > -1) {
+                            console.log("star this one because its on memory")
                             item = item + "*";
                           }
                           entry_dict[i].item_list.push(item);
