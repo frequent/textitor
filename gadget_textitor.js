@@ -14,7 +14,7 @@
     // calling without method acquisition, so call direct method
     return new RSVP.Queue()
       .push(function () {
-        return my_gadget.setActiveStorage([my_name]);
+        return my_gadget.setActiveStorage(my_name);
       })
       .push(function () {
         my_gadget.routeStorageRequest("createJIO", config);
@@ -97,6 +97,7 @@
     })
     
     .declareMethod('setActiveStorage', function (my_type) {
+      console.log(my_type[0])
       this.property_dict.storage_dict.active = my_type[0];
       return this;
     })
