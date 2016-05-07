@@ -694,7 +694,9 @@
                       ]);
                     })
                     .push(function () {
+                      console.log(CodeMirror.menu_dict.digest_doc)
                       CodeMirror.menu_dict.digest_doc = null;
+                      console.log("wiping again?")
                       editor_resetActiveFile();
                     })
                     .push(null, function (err) {
@@ -960,7 +962,6 @@
 
     if (my_content) {
       new_doc = CodeMirror.Doc(local_returnResult(my_content[0]), my_mime_type);
-      
       if (local_returnResult(my_content[1])) {
         new_doc.setHistory(JSON.parse(local_returnResult(my_content[1])));
       }
@@ -1296,4 +1297,3 @@
     .declareAcquiredMethod('jio_getAttachment', 'jio_getAttachment');
 
 }(window, rJS));
-
