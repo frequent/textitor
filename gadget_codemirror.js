@@ -316,7 +316,7 @@
     if (my_parameter && my_parameter.target) {
       action = my_parameter.target.name;
     }
-
+    console.log(action)
     if (action === "open") {
       file_name_input = my_dialog.querySelector('input:checked');
       if (file_name_input) {
@@ -651,6 +651,8 @@
               return my_parameter;
             })
             .push(function (my_close_dialog) {
+              console.log("DONE")
+              console.log(my_close_dialog)
               if (my_close_dialog === true) {
                 closed = true;
                 dialog.parentNode.removeChild(dialog);
@@ -984,6 +986,7 @@
   // shortcut handlers
   function editor_closeFile() {
     if (CodeMirror.menu_dict.evaluateState) {
+      console.log("evaluating")
       return CodeMirror.menu_dict.evaluateState({"target":{"name": "close"}});
     }
   }
