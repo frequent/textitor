@@ -531,7 +531,7 @@
           return my_gadget.setActiveStorage("memory");
         })
         .push(function () {
-          return my_gadget.allDocs()
+          return my_gadget.jio_allDocs()
         })
         .push(function (my_docs) {
           console.log(my_docs)
@@ -1313,3 +1313,4 @@
     .declareAcquiredMethod('jio_getAttachment', 'jio_getAttachment');
 
 }(window, rJS));
+
