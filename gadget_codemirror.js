@@ -549,6 +549,7 @@
               throw my_error;
             });
         })
+        /*
         .push(function() {
           console.log("maybe like this");
           return my_gadget.setActiveStorage("serviceworker");
@@ -562,6 +563,7 @@
             })
           );
         })
+        */
         .push(function () {
           console.log("stored in serviceworker")
           my_gadget.property_dict.editor.setOption("mode", mime_type);
@@ -1304,3 +1306,4 @@
     .declareAcquiredMethod('jio_getAttachment', 'jio_getAttachment');
 
 }(window, rJS));
+
