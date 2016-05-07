@@ -527,7 +527,27 @@
       file_name = file_name_input.value;
 
       return new RSVP.Queue()
+        .push(function () {
+          return my_gadget.setActiveStorage("memory");
+        })
+        .push(function () {
+          return my_gadget.jio_getAttachment(active_cache, file_name);
+        })
+        .push(function (my_error) {
+          console.log("attachment not found");
+          if (is404(my_error)) {
+            return;  
+          }
+          throw my_error;
+        }, function (my_reply) {
+          console.log(my_reply)
+          return RSVP.all([
+            my_gadget.jio_removeAttachment(active_cache, file_name),
+            my_gadget.jio_removeAttachment(active_cache, file_name + "_history")
+          ]);
+        })
         .push(function() {
+          console.log("maybe like this");
           return my_gadget.setActiveStorage("serviceworker");
         })
         .push(function() {
@@ -541,30 +561,6 @@
         })
         .push(function () {
           console.log("stored in serviceworker")
-          return new RSVP.Queue()
-            .push(function () {
-              return my_gadget.setActiveStorage("memory");
-            })
-            .push(function () {
-              return my_gadget.jio_getAttachment(active_cache, file_name);
-            })
-            .push(function (my_reply) {
-              console.log(my_reply)
-              return RSVP.all([
-                my_gadget.jio_removeAttachment(active_cache, file_name),
-                my_gadget.jio_removeAttachment(active_cache, file_name + "_history")
-              ]);
-            })
-            .push(null, function (my_error) {
-              console.log(my_error)
-              if (is404(my_error)) {
-                console.log("file not found...")
-                return;
-              }
-            });
-        })
-        .push(function () {
-          console.log("saved and cleared from memory... I suppose")
           my_gadget.property_dict.editor.setOption("mode", mime_type);
           editor_setActiveFile(file_name, mime_type);
           CodeMirror.menu_dict.editor_resetModified();
@@ -572,6 +568,7 @@
           return true;
         })
         .push(null, function (err) {
+          console.log("still errror?")
           console.log(err);
           throw err;
         })
