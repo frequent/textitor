@@ -14,7 +14,7 @@
     // calling without method acquisition, so call direct method
     return new RSVP.Queue()
       .push(function () {
-        return my_gadget.setActiveStorage(my_name);
+        return my_gadget.setActiveStorage([my_name]);
       })
       .push(function () {
         my_gadget.routeStorageRequest("createJIO", config);
@@ -86,10 +86,10 @@
         })
         .push(function (my_rendered_gadget_list) {
           return_gadget = my_rendered_gadget_list[0];
-          return RSVP.all([
-            initializeStorage(gadget, "memory"),
-            initializeStorage(gadget, "serviceworker")
-          ]);
+          return initializeStorage(gadget, "memory");
+        })
+        .push(function () {
+          return initializeStorage(gadget, "serviceworker");
         })
         .push(function () {
           return return_gadget;
