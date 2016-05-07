@@ -981,13 +981,15 @@
 
   // shortcut handlers
   function editor_closeFile() {
-    return CodeMirror.menu_dict.evaluateState({"target":{"name": "close"}});
+    if (CodeMirror.menu_dict.evaluateState) {
+      return CodeMirror.menu_dict.evaluateState({"target":{"name": "close"}});
+    }
   }
   CodeMirror.commands.myEditor_closeFile = editor_closeFile;
   
   function editor_closeDialog(my_event) {
     if (CodeMirror.menu_dict.evaluateState) {
-      CodeMirror.menu_dict.evaluateState();
+      return CodeMirror.menu_dict.evaluateState();
     }
   }
   CodeMirror.commands.myEditor_closeDialog = editor_closeDialog;
