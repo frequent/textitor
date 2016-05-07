@@ -345,6 +345,10 @@
                     my_gadget.jio_getAttachment(active_cache, file_name),
                     RSVP.Promise.resolve(new Blob(["{}"]))
                   ]);
+                })
+                .push(null, function (err) {
+                  console.log(err);
+                  throw err;
                 });
             }
             throw my_error;
@@ -366,6 +370,10 @@
               my_read_response_list,
               mime_type
             );
+          })
+          .push(null, function (err) {
+            console.log(err);
+            throw err;
           });
       
       // close if no file is selected on opening
