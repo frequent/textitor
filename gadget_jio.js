@@ -6,17 +6,17 @@
   rJS(window)
 
     .ready(function (gadget) {
-      // Initialize the gadget local parameters
       gadget.state_parameter_dict = {};
     })
     .declareMethod('render', function (my_option_dict) {
-      var gadget = this;
-      gadget.state_parameter_dict.label = my_option_dict.label;
-      return gadget;
+      this.state_parameter_dict.label = my_option_dict.label;
+      return this;
     })
 
     .declareMethod('createJIO', function (jio_options) {
+      console.log("called create!")
       this.state_parameter_dict.jio_storage = jIO.createJIO(jio_options);
+      console.log(this.state_parameter_dict)
     })
     .declareMethod('allDocs', function () {
       var storage = this.state_parameter_dict.jio_storage;

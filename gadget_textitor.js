@@ -5,7 +5,6 @@
 
   function initializeStorage(my_gadget, my_name) {
     var config;
-    console.log("running setup for: " + my_name)
     if (my_name === "serviceworker") {
       config = {"type": "serviceworker", "cache": "textitor"};
     } else {
@@ -31,11 +30,7 @@
             type: "text/css"
           })
         ]);
-      })
-      .push(undefined, function (my_error) {
-        console.log(my_error);
-        throw my_error;
-      })
+      });
 
   }
 
@@ -65,6 +60,8 @@
           ]);
         })
         .push(function (my_rendered_list) {
+          console.log("this should give me the gadgets to store and switch")
+          console.log(my_rendered_list)
           my_gadget.property_dict.storage_dict.serviceworker = my_rendered_list[0];
           my_gadget.property_dict.storage_dict.memory = my_rendered_list[1];
         });
@@ -113,10 +110,6 @@
       
       //active_storage = dict.storage_dict[dict.active || "serviceworker"];
       console.log("we should have a storage?")
-      console.log(active_storage_label)
-      console.log(storage.state_parameter_dict.label)
-      console.log(gadget)
-      console.log(gadget.property_dict)
       console.log(gadget.property_dict.storage_dict)
       console.log(storage)
       
