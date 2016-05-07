@@ -861,7 +861,7 @@
       CodeMirror.commands.myEditor_closeDialog(my_event);
     }
 
-    // ovrride chrome page stard/end shortcut
+    // ovrride chrome page start/end shortcut
     if (my_event.keyCode === 35) {
       CodeMirror.commands.myEditor_navigateVertical(undefined, "up");
     }
@@ -874,12 +874,13 @@
       my_callback(my_value);
     }
 
+    // ctrl + alt +
     if (my_event.ctrlKey && my_event.altKey) {
       switch(my_event.keyCode) {
-        case 67: return Codemirror.commands.myEditor_closeFile();      // (c)lose file
+        case 67: return Codemirror.commands.myEditor_closeFile();   // (c)lose file
         case 79: return Codemirror.commands.myEditor_openFromDialog(); // (o)pen
         case 83: return CodeMirror.commands.myEditor_saveFromDialog(); // (s)ave
-        case 88: return CodeMirror.commands.myEditor_closeDialog(my_event); // (x)lose dialog
+        case 88: return CodeMirror.commands.myEditor_closeDialog(); // (x)lose dialog
         case 37: return CodeMirror.commands.myEditor_navigateHorizontal(undefined, "left");
         case 38: return CodeMirror.commands.myEditor_navigateVertical(undefined, "up");
         case 39: return CodeMirror.commands.myEditor_navigateHorizontal(undefined, "right");
@@ -951,13 +952,12 @@
   }
 
   // shortcut handlers
-  function editor_closeFile(my_event) {
+  function editor_closeFile() {
     return CodeMirror.menu_dict.evaluateState({"target":{"name": "close"}});
   }
   CodeMirror.commands.myEditor_closeFile = editor_closeFile;
   
   function editor_closeDialog(my_event) {
-    //CodeMirror.e_stop(my_event);
     if (CodeMirror.menu_dict.evaluateState) {
       CodeMirror.menu_dict.evaluateState();
     }
@@ -1065,7 +1065,7 @@
   CodeMirror.keyMap.my["Ctrl-Alt-Down"] = "myEditor_navigateDown";
   // CodeMirror.keyMap.my["Ctrl-Alt-Return"] = undefined;
 
-  // ==========================================================================
+  // XXX remove
   var editorURI;
   var editorTextarea;
   var editor;
@@ -1084,6 +1084,7 @@
   function randomChoose(array) {
     return array[parseInt(Math.random() * array.length, 10)];
   }
+  // XXX remove
 
 (function (window, rJS) {
   "use strict";
@@ -1116,6 +1117,7 @@
         my_gadget.property_dict.element.appendChild(editorTextarea);
       }
 
+      // XXX remove
       commands["help doc"] = "Shows this help.";
       commands.help = function () {
         alert(Object.keys(commands).reduce(function (prev, curr) {
@@ -1159,6 +1161,8 @@
         }
         cm.setOption("theme", args.slice(1).join(" ") || "default");
       };
+      // XXX remove
+
       return dialog_setDialogExtension(my_gadget);
     })
 
@@ -1255,3 +1259,4 @@
     .declareAcquiredMethod('jio_getAttachment', 'jio_getAttachment');
 
 }(window, rJS));
+
