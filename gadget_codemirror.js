@@ -295,9 +295,9 @@
   function is404(my_error) {
     if ((my_error instanceof jIO.util.jIOError) &&
       (my_error.status_code === 404)) {
-      return null; 
+      return true; 
     }
-    return true;
+    return null;
   }
 
 
