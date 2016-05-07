@@ -763,7 +763,7 @@
               })
               .push(function (my_memory_content) {
                 console.log("stored on memory")
-                console.log(my_memory_contemt[0])
+                console.log(my_memory_content[0])
                 var len = my_memory_content.length,
                   item,
                   i;
