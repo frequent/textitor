@@ -343,7 +343,7 @@
                   console.log("FETCH FROM CACHE")
                   return RSVP.all([
                     my_gadget.jio_getAttachment(active_cache, file_name),
-                    RSVP.Promise.resolve(new Blob(["{}"]))
+                    new Blob(["{}"])
                   ]);
                 })
                 .push(null, function (err) {
