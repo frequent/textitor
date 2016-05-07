@@ -531,6 +531,14 @@
           return my_gadget.setActiveStorage("memory");
         })
         .push(function () {
+          return my_gadget.allDocs()
+        })
+        .push(function (my_docs) {
+          console.log(my_docs)
+          return my_gadget.jio_allAttachments(active_cache);
+        })
+        .push(function (result) {
+          console.log(result)
           return my_gadget.jio_getAttachment(active_cache, file_name);
         })
         /*    
@@ -1305,4 +1313,3 @@
     .declareAcquiredMethod('jio_getAttachment', 'jio_getAttachment');
 
 }(window, rJS));
-
