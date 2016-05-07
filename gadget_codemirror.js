@@ -1060,7 +1060,7 @@
 
   // CodeMirror.keyMap.my["Ctrl-Alt-A"] = undefined;
   // CodeMirror.keyMap.my["Ctrl-Alt-B"] = undefined;
-  CodeMirror.keyMap.my["Ctrl-Alt-C"] = "my_editor_closeFile";
+  CodeMirror.keyMap.my["Ctrl-Alt-C"] = "myEditor_closeFile";
   // CodeMirror.keyMap.my["Ctrl-Alt-D"] = undefined;
   // CodeMirror.keyMap.my["Ctrl-Alt-E"] = undefined;
   // CodeMirror.keyMap.my["Ctrl-Alt-F"] = undefined;
