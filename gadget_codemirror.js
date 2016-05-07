@@ -675,9 +675,8 @@
                         doc = menu.digest_doc,
                         active_storage = menu.active_cache || "textitor",
                         active_file = menu.active_file,
-                        old_file_name = active_file.prev,
-                        old_mime_type = doc.modeOption;
-                      console.log(CodeMirror.menu_dict)
+                        old_file_name = active_file.prev_name,
+                        old_mime_type = active_file.prev_mime_type;
 
                       return RSVP.all([
                         my_gadget.jio_putAttachment(
@@ -970,7 +969,8 @@
 
   function editor_setActiveFile(my_name, my_mime_type) {
     CodeMirror.menu_dict.active_file = CodeMirror.menu_dict.active_file || {};
-    CodeMirror.menu_dict.active_file.prev = CodeMirror.menu_dict.active_file.name;
+    CodeMirror.menu_dict.active_file.prev_name = CodeMirror.menu_dict.active_file.name;
+    CodeMirror.menu_dict.active_file.prev_mime_type = CodeMirror.menu_dict.active_file.mime_type; 
     CodeMirror.menu_dict.active_file.name = my_name;
     CodeMirror.menu_dict.active_file.mime_type = my_mime_type;
   }
