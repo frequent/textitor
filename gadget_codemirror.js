@@ -913,6 +913,9 @@
         case 38: return CodeMirror.commands.myEditor_navigateVertical(undefined, "up");
         case 39: return CodeMirror.commands.myEditor_navigateHorizontal(undefined, "right");
         case 40: return CodeMirror.commands.myEditor_navigateVertical(undefined, "down");
+        default: 
+          console.log(my_event.keyCode);
+          break;
       }  
     }
   }
