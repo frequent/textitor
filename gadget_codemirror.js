@@ -359,7 +359,7 @@
             editor_setActiveFile(file_name, mime_type);
             return RSVP.all([
               jIO.util.readBlobAsText(my_response_list[0]),
-              jio.util.readBlobAsText(my_response_list[1])
+              jIO.util.readBlobAsText(my_response_list[1])
             ])
           })
           .push(function (my_read_response_list) {
