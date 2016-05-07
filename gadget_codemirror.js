@@ -883,7 +883,7 @@
   }
 
   function setNavigationCallback(my_event, my_value, my_callback) {
-
+    console.log(my_event)
     // esc
     if (my_event.keyCode === 27) {
       CodeMirror.commands.myEditor_closeDialog(my_event);
