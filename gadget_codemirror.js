@@ -934,7 +934,7 @@
       return my_jio_response.target.result;
     }
 
-    if (my_file_content_list) {
+    if (my_content) {
       new_doc = CodeMirror.Doc(local_returnResult(my_content[0]), my_mime_type);
       console.log(local_returnResult(my_content[1]))
       if (local_returnResult(my_content[1])) {
