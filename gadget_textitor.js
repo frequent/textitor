@@ -48,31 +48,10 @@
           my_gadget.property_dict.element = my_element;
           my_gadget.property_dict.storage_dict = {};
           my_gadget.property_dict.storage_dict.active = null;
-          
-          return my_gadget.getDeclaredGadget("jio_gadget");
-        })
-        .push(function (my_declared_jio_gadget) {
-          return my_declared_jio_gadget.render({"label": "label-serviceworker"});
-        })
-        .push(function (my_rendered_jio_gadget) {
-          console.log(my_rendered_jio_gadget)
-          my_gadget.property_dict.storage_dict.serviceworker = my_rendered_jio_gadget;
-          return my_gadget.getDeclaredGadget("jio_gadget");
-        })
-        .push(function (my_declared_jio_gadget) {
-          return my_declared_jio_gadget.render({"label": "label-memory"});
-        })
-        .push(function (my_rendered_jio_gadget) {
-          console.log(my_rendered_jio_gadget);
-          my_gadget.property_dict.storage_dict.memory = my_rendered_jio_gadget;
-          return;
-        });
 
-        /* XXX: doesn't work
-        .push(function () {
           return RSVP.all([
-            my_gadget.getDeclaredGadget("jio_gadget"),
-            my_gadget.getDeclaredGadget("jio_gadget")
+            my_gadget.getDeclaredGadget("jio_gadget_1"),
+            my_gadget.getDeclaredGadget("jio_gadget_2")
           ]);
         })
         .push(function (my_declared_gadget_list) {
@@ -82,12 +61,9 @@
           ]);
         })
         .push(function (my_rendered_list) {
-          console.log("instantiated two storages")
-          console.log(my_rendered_list)
           my_gadget.property_dict.storage_dict.serviceworker = my_rendered_list[0];
           my_gadget.property_dict.storage_dict.memory = my_rendered_list[1];
         });
-        */
     })
 
     .declareMethod('render', function (my_option_dict) {
