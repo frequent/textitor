@@ -28,6 +28,10 @@
 //    });
 //});
 
+// caches.keys().then(function(key_list) {console.log(key_list);return caches.open(key_list[0]);}).then(function(cache) {return cache.keys().then(function(request_list) {console.log(request_list); return cache.delete(request_list[0]);})});
+// caches.keys().then(function(key_list) {console.log(key_list);return caches.open(key_list[0]);}).then(function(cache) {return cache.keys().then(function(request_list) {console.log(request_list);})});
+
+
 // https://developer.mozilla.org/en-US/docs/Web/API/Service_Worker_API/Using_Service_Workers
 // http://www.html5rocks.com/en/tutorials/service-worker/introduction/
 
@@ -303,6 +307,9 @@ self.addEventListener('message', function (event) {
     break;  
       
     case 'putAttachment':
+      console.log("putting")
+      console.log(param.id)
+      console.log(param.content)
       CURRENT_CACHE = param.id + "-v" + CURRENT_CACHE_VERSION;
       caches.open(CURRENT_CACHE)
         .then(function(cache) {
@@ -317,6 +324,7 @@ self.addEventListener('message', function (event) {
           response = new Response(param.content);
           cache.put(request, response)
             .then(function() {
+              console.log("stored")
               event.ports[0].postMessage({
                 error: null
               });

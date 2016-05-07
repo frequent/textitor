@@ -528,7 +528,8 @@
             })
           );
         })
-        .push(function () {
+        .push(function (so) {
+          console.log(so)
           console.log("worked, I suppose")
           return new RSVP.Queue()
             .push(function () {
@@ -1291,4 +1292,3 @@
     .declareAcquiredMethod('jio_getAttachment', 'jio_getAttachment');
 
 }(window, rJS));
-
