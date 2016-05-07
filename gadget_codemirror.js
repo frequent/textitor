@@ -659,7 +659,8 @@
                       console.log("lets store history")
                       console.log(doc.getHistory())
                       console.log(JSON.stringify(doc.getHistory()))
-                      console.log(new Blob([JSON.stringify(doc.getHistory())], {"type":"application/json"}))
+                      window.x = new Blob([JSON.stringify(doc.getHistory())], {"type":"application/json"});
+                      
                       return RSVP.all([
                         my_gadget.jio_putAttachment(
                           active_storage,
@@ -672,10 +673,12 @@
                           new Blob([JSON.stringify(doc.getHistory()), {
                             'type': "application/json"
                           }])
-                        )
+                        ),
+                        jIO.util.readBlobAsText(window.x)
                       ]);
                     })
-                    .push(function () {
+                    .push(function (foo) {
+                      console.log(foo)
                       console.log("stored both")
                       CodeMirror.menu_dict.digest_doc = null;
                     })
