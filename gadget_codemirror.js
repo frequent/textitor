@@ -316,7 +316,8 @@
     if (my_parameter && my_parameter.target) {
       action = my_parameter.target.name;
     }
-    console.log(action)
+
+    // open = get from memory or serviceworker, close previous file    
     if (action === "open") {
       file_name_input = my_dialog.querySelector('input:checked');
       if (file_name_input) {
@@ -376,6 +377,87 @@
       } else {
         return true;
       }
+    }
+    
+    // close = store on memory
+    if (action === "close") {
+      return new RSVP.Queue()
+        .push(function () {
+          dialog_clearTextInput(my_dialog);
+          return editor_setFile(my_gadget);
+        })
+        .push(null, function (err) {
+          console.log(err);
+          throw err;
+        });
+    }
+
+    // save = store on serviceworker, remove from memory
+    if (action === "save") {
+      file_name_input = dialog_getTextInput(my_dialog, 0);
+      mime_type_input = dialog_getTextInput(my_dialog, 1);
+      is_cache_name = my_dialog.querySelector('input:checked');
+
+      // validate
+      if (!file_name_input.value) {
+        return dialog_flagInput(file_name_input, 'Enter valid URL.');
+      }
+      if (!mime_type_input) {
+        return dialog_flagInput(mime_type_input, 'Enter mime-type/cache name.');
+      } else if (!is_validMimeType(mime_type_input.value) && !is_cache_name) {
+        return dialog_flagInput(mime_type_input, 'Invalid/Unsupported mime-type');
+      }
+
+      active_cache = CodeMirror.menu_dict.active_cache || "textitor";
+      mime_type = mime_type_input.value;
+      file_name = file_name_input.value;
+
+      return new RSVP.Queue()
+        .push(function () {
+          return new RSVP.Queue()
+            .push(function () {
+              return my_gadget.setActiveStorage("memory");
+            })
+            .push(function () {
+              return my_gadget.jio_getAttachment(active_cache, file_name);
+            })
+            .push(function () {
+              return RSVP.all([
+                my_gadget.jio_removeAttachment(active_cache, file_name),
+                my_gadget.jio_removeAttachment(active_cache, file_name + "_history")
+              ]);
+            })
+            .push(null, function (my_error) {
+              if (is404(my_error)) {
+                return;
+              }
+              throw my_error;
+            });
+        })
+        .push(function() {
+          return my_gadget.setActiveStorage("serviceworker");
+        })
+        .push(function() {
+          return my_gadget.jio_putAttachment(
+            active_cache,
+            file_name,
+            new Blob([my_gadget.property_dict.editor.getValue()], {
+              type: mime_type,
+            })
+          );
+        })
+        .push(function () {
+          my_gadget.property_dict.editor.setOption("mode", mime_type);
+          editor_setActiveFile(file_name, mime_type);
+          CodeMirror.menu_dict.editor_resetModified();
+          
+          // close dialog
+          return true;
+        })
+        .push(undefined, function (my_error) {
+          console.log(my_error);
+          throw my_error;
+        });
     }
 
     if (action === "remove") {
@@ -487,87 +569,6 @@
         });
     }
     */
-    
-    // close file - store on memory when closing
-    if (action === "close") {
-      return new RSVP.Queue()
-        .push(function () {
-          dialog_clearTextInput(my_dialog);
-          return editor_setFile(my_gadget);
-        })
-        .push(null, function (err) {
-          console.log(err);
-          throw err;
-        })
-    }
-
-    // save file - store on cache, remove memory, close menu
-    if (action === "save") {
-      file_name_input = dialog_getTextInput(my_dialog, 0);
-      mime_type_input = dialog_getTextInput(my_dialog, 1);
-      is_cache_name = my_dialog.querySelector('input:checked');
-
-      // validate
-      if (!file_name_input.value) {
-        return dialog_flagInput(file_name_input, 'Enter valid URL.');
-      }
-      if (!mime_type_input) {
-        return dialog_flagInput(mime_type_input, 'Enter mime-type/cache name.');
-      } else if (!is_validMimeType(mime_type_input.value) && !is_cache_name) {
-        return dialog_flagInput(mime_type_input, 'Invalid/Unsupported mime-type');
-      }
-
-      active_cache = CodeMirror.menu_dict.active_cache || "textitor";
-      mime_type = mime_type_input.value;
-      file_name = file_name_input.value;
-
-      return new RSVP.Queue()
-        .push(function () {
-          return new RSVP.Queue()
-            .push(function () {
-              return my_gadget.setActiveStorage("memory");
-            })
-            .push(function () {
-              return my_gadget.jio_getAttachment(active_cache, file_name);
-            })
-            .push(function () {
-              return RSVP.all([
-                my_gadget.jio_removeAttachment(active_cache, file_name),
-                my_gadget.jio_removeAttachment(active_cache, file_name + "_history")
-              ]);
-            })
-            .push(null, function (my_error) {
-              if (is404(my_error)) {
-                return;
-              }
-              throw my_error;
-            });
-        })
-        .push(function() {
-          return my_gadget.setActiveStorage("serviceworker");
-        })
-        .push(function() {
-          return my_gadget.jio_putAttachment(
-            active_cache,
-            file_name,
-            new Blob([my_gadget.property_dict.editor.getValue()], {
-              type: mime_type,
-            })
-          );
-        })
-        .push(function () {
-          my_gadget.property_dict.editor.setOption("mode", mime_type);
-          editor_setActiveFile(file_name, mime_type);
-          CodeMirror.menu_dict.editor_resetModified();
-          
-          // close dialog
-          return true;
-        })
-        .push(undefined, function (my_error) {
-          console.log(my_error);
-          throw my_error;
-        });
-    }
 
     // XXX resolve promise chain! not just close
     if (my_parameter !== undefined) {
@@ -651,8 +652,6 @@
               return my_parameter;
             })
             .push(function (my_close_dialog) {
-              console.log("DONE")
-              console.log(my_close_dialog)
               if (my_close_dialog === true) {
                 closed = true;
                 dialog.parentNode.removeChild(dialog);
@@ -677,6 +676,8 @@
                         active_storage = menu.active_cache || "textitor",
                         active_file = menu.active_file;
 
+                      console.log(doc);
+                      console.log(active_file)
                       // need to store the history separately, can't store full doc
                       return RSVP.all([
                         my_gadget.jio_putAttachment(
@@ -885,7 +886,7 @@
   }
 
   function setNavigationCallback(my_event, my_value, my_callback) {
-    console.log(my_event)
+    
     // esc
     if (my_event.keyCode === 27) {
       CodeMirror.commands.myEditor_closeDialog(my_event);
@@ -968,10 +969,10 @@
   }
 
   function editor_setActiveFile(my_name, my_mime_type) {
-    CodeMirror.menu_dict.active_file = {
-      "name": my_name,
-      "mime_type": my_mime_type
-    };
+    CodeMirror.menu_dict.active_file = CodeMirror.menu_dict.active_file || {};
+    CodeMirror.menu_dict.active_file.prev = CodeMirror.menu_dict.active_file.name;
+    CodeMirror.menu_dict.active_file.name = my_name;
+    CodeMirror.menu_dict.active_file.mime_type = my_mime_type;
   }
   function editor_resetActiveFile() {
     CodeMirror.menu_dict.active_file = null;
@@ -983,10 +984,7 @@
 
   // shortcut handlers
   function editor_closeFile() {
-    console.log("hey")
-    console.log(CodeMirror.menu_dict)
     if (CodeMirror.menu_dict.evaluateState) {
-      console.log("evaluating")
       return CodeMirror.menu_dict.evaluateState({"target":{"name": "close"}});
     }
   }
