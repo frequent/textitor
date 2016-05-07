@@ -493,6 +493,7 @@
 
     // save file - store on cache, remove memory, close menu
     if (action === "save") {
+      console.log("SAVING")
       file_name_input = dialog_getTextInput(my_dialog, 0);
       mime_type_input = dialog_getTextInput(my_dialog, 1);
       is_cache_name = my_dialog.querySelector('input:checked');
@@ -506,15 +507,19 @@
       } else if (!is_validMimeType(mime_type_input.value) && !is_cache_name) {
         return dialog_flagInput(mime_type_input, 'Invalid/Unsupported mime-type');
       }
+
       active_cache = CodeMirror.menu_dict.active_cache || "textitor";
       mime_type = mime_type_input.value;
       file_name = file_name_input.value;
-      
+
       return new RSVP.Queue()
         .push(function() {
           return my_gadget.setActiveStorage("serviceworker");
         })
         .push(function() {
+          console.log("storing content")
+          console.log(my_gadget.property_dict.editor.getValue())
+          console.log(mime_type)
           return my_gadget.jio_putAttachment(
             active_cache,
             file_name,
@@ -524,12 +529,29 @@
           );
         })
         .push(function () {
-          return my_gadget.setActiveStorage("memory");
+          console.log("worked, I suppose")
+          return new RSVP.Queue()
+            .push(function () {
+              console.log("Stored on serviceworker, clear from memory")
+              return my_gadget.setActiveStorage("memory");
+            })
+            .push(function () {
+              return my_gadget.jio_getAttachment(active_cache, file_name);
+            })
+            .push(function () {
+              return RSVP.all([
+                my_gadget.jio_removeAttachment(active_cache, file_name),
+                my_gadget.jio_removeAttachment(active_cache, file_name + "_history")
+              ]);
+            })
+            .push(null, function (my_error) {
+              if (is404(my_error)) {
+                return;
+              }
+            });
         })
         .push(function () {
-          return my_gadget.jio_removeAttachment(active_cache, file_name);  
-        })
-        .push(function () {
+          console.log("saved and cleared from memory... I suppose")
           my_gadget.property_dict.editor.setOption("mode", mime_type);
           editor_setActiveFile(file_name, mime_type);
           CodeMirror.menu_dict.editor_resetModified();
