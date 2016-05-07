@@ -666,8 +666,6 @@
                 //if (my_option_dict.modified) {
                 //  console.log("is modified")
                 //}
-                console.log("HELLO")
-                console.log(my_option_dict.modified)
                 if (CodeMirror.menu_dict.digest_doc) {
                   return new RSVP.Queue()
                     .push(function () {
@@ -955,7 +953,9 @@
   }
 
   function editor_setFile(my_gadget, my_content, my_mime_type) {
-    var new_doc;
+    var new_doc,
+      old_doc;
+    
     function local_returnResult(my_jio_response) {
       return my_jio_response.target.result;
     }
@@ -969,7 +969,12 @@
       new_doc = CodeMirror.Doc("");
     }
     
-    CodeMirror.menu_dict.digest_doc = my_gadget.property_dict.editor.swapDoc(new_doc);
+    old_doc = my_gadget.property_dict.editor.swapDoc(new_doc);
+    console.log(old_doc)
+    console.log(old_doc.getValue())
+    if (old_doc.getValue() !== "") {
+      CodeMirror.menu_dict.digest_doc = old_doc;
+    }
     CodeMirror.menu_dict.editor_resetModified();
     return true;
   }
