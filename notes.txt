@@ -1,7 +1,23 @@
-todo: 
-OK - renderjsify tristan editor
-- add listener for editor tab close
 
+=> progress
+- correctly show files on memory in file menu using *
+- correctly clear form when closing a file
+- correctly clear form when saving a file
+- fix mimetype broken
+- setmodified CSS - disk symbol
+- warn of modified content before closing
+- fix shortcuts without open menu (close, save)
+- fix setmodified to only save when something changed
+- save and close all
+- delete open file
+- delete selected file
+- save new cache
+- new cache accessible through arrow left + left
+- open multiple files, use memory storage, make active handle not only one file
+- show only files in cache, not cache itself?
+- opening more than one file will setup memory storage, this keeps unsaved files and retrieves them when switching
+- add listener for editor tab close
+- open multiple files via tabs?
 
 => gitstorage
   - replicate with indexeddb and remote gitstorage
@@ -9,48 +25,16 @@ OK - renderjsify tristan editor
 => cachestorage
   - serviceworker
   - this is my filesystem to work on, create, edit, delete, ....
-  - must work offline, cribjs
+  - must work offline
   - commit will do a diff with local gitstorage, allow to init?
   - can add everything to gitstorage. push will send to master
 
+=> github API
 
-
-
-So Cedric does what?
-- calls jio-configurator which fetches the form
-- calls jio-cribjs, which declares load and save (all)
-  - > load creates jio
-  - uses jio w/ config to allAttachments
-  - fetches all attachments using keys
-  - puts them with sw gadget
-  - returns list of url
-  - > save creates jio
-  - calls allDocs on sw gadget
-  - creates a new entry (counter?) WHY
-  - makes ajax calls to fetch IF file not found?
-  - pushes all attachments to remote storage
-  
-> so load fetches everything from remote using jio and dumps it into cache
-> and save fetches everything from cache and dumps it on remote
-
-load = dav.allAttachments => sw.put -> returns url-list (custom)
-save = sw.allDocs => 
-
-
-
-
-a title bar to click, OPEN, CLOSE, SOURCE, FILES, SAVE, SYNC
-
-SOURCE should allow to define a
-mergly
-
-
-==========================
-
-<!-- https://github.com/michael/github > instructions
-
+https://github.com/michael/github > instructions
 http://rawgit.com/TristanCavelier/apps/master/app/code-editor/index.html
 https://github.com/TristanCavelier/texteditor/blob/master/manifest.appcache
+http://stackoverflow.com/questions/2745076/what-are-the-differences-between-git-commit-and-git-push?answertab=votes#tab-top
 
 var github = new Github({
   username: "frequent",
@@ -60,23 +44,8 @@ var github = new Github({
 serverless = github.getRepo("frequent", "nexedi-serverless-test")
 serverless.getTree("master", function (err, tree) {if (err) {console.log("error");console.log(err);} else {console.log(tree);}});
 
-text editor, should also work offline but be on git,
-
-text editor, cribjs, jio github storage
-
-jio git = I need branches? files?
-one jio per branch or one document per branch
-
-jio > document per branch    master - files are attachements. editing and saving means updating an attachement. Is this a commit, too? No, this should always be local.
-
-how to navigate files?
+  - branches? files?
+  - jio per branch? document = branch?
+  - if document per branch, files are attachments, editing and saving updates attachments
+  - of a diff is a new attachment?
   
-how to open multiple files? > tabs?
-  
-step 1:
---><script type="text/javascript" src="github.js"></script>
-
-http://stackoverflow.com/questions/2745076/what-are-the-differences-between-git-commit-and-git-push?answertab=votes#tab-top
-
-
-    
