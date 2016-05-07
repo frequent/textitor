@@ -381,15 +381,26 @@
     if (action === "remove") {
       active_cache = CodeMirror.menu_dict.active_cache || "textitor";
       file_name_input = dialog_getTextInput(my_dialog, 0);
+      file_name = file_name_input.value;
+      
       return new RSVP.Queue()
         .push(function () {
           return my_gadget.setActiveStorage("memory");
         })
         .push(function () {
-          return my_gadget.jio_removeAttachmemt(active_cache, file_name_input.value);
+          return my_gadget.jio_getAttachment(active_cache, file_name);
         })
-        .push(undefined, function (my_error) {
+        .push(function (my_reply) {
+          console.log(my_reply)
+          return RSVP.all([
+            my_gadget.jio_removeAttachment(active_cache, file_name),
+            my_gadget.jio_removeAttachment(active_cache, file_name + "_history")
+          ]);
+        })
+        .push(null, function (my_error) {
+          console.log(my_error)
           if (is404(my_error)) {
+            console.log("file not found...")
             throw my_error;
           }
         })
@@ -403,11 +414,13 @@
           return true;
         })
         .push(null, function (my_error) {
+          console.log("done")
           throw my_error;
         });
     }
     
     // save all and close = retrive what is in memory storage and save
+    /*
     if (action === "saveall") {
       return new RSVP.Queue()
         .push(function () {
@@ -477,6 +490,7 @@
           return RSVP.all(store_list);
         });
     }
+    */
     
     // close file - store on memory when closing
     if (action === "close") {
@@ -517,9 +531,6 @@
           return my_gadget.setActiveStorage("serviceworker");
         })
         .push(function() {
-          console.log("storing content")
-          console.log(my_gadget.property_dict.editor.getValue())
-          console.log(mime_type)
           return my_gadget.jio_putAttachment(
             active_cache,
             file_name,
@@ -528,26 +539,26 @@
             })
           );
         })
-        .push(function (so) {
-          console.log(so)
-          console.log("worked, I suppose")
+        .push(function () {
+          console.log("stored in serviceworker")
           return new RSVP.Queue()
             .push(function () {
-              console.log("Stored on serviceworker, clear from memory")
               return my_gadget.setActiveStorage("memory");
             })
             .push(function () {
               return my_gadget.jio_getAttachment(active_cache, file_name);
             })
-            .push(function () {
+            .push(function (my_reply) {
+              console.log(my_reply)
               return RSVP.all([
                 my_gadget.jio_removeAttachment(active_cache, file_name),
                 my_gadget.jio_removeAttachment(active_cache, file_name + "_history")
               ]);
             })
             .push(null, function (my_error) {
+              console.log(my_error)
               if (is404(my_error)) {
-                return;
+                throw my_error;
               }
             });
         })
@@ -1292,3 +1303,4 @@
     .declareAcquiredMethod('jio_getAttachment', 'jio_getAttachment');
 
 }(window, rJS));
+
