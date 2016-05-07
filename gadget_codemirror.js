@@ -656,6 +656,10 @@
                         active_file = menu.active_file;
 
                       // need to store the history separately, can't store full doc
+                      console.log("lets store history")
+                      console.log(doc.getHistory())
+                      console.log(JSON.stringify(doc.getHistory()))
+                      console.log(new Blob([JSON.stringify(doc.getHistory())], {"type":"application/json"}))
                       return RSVP.all([
                         my_gadget.jio_putAttachment(
                           active_storage,
@@ -666,7 +670,7 @@
                           active_storage,
                           active_file.name + "_history",
                           new Blob([JSON.stringify(doc.getHistory()), {
-                            type: "application/json"
+                            'type': "application/json"
                           }])
                         )
                       ]);
@@ -929,16 +933,14 @@
 
   function editor_setFile(my_gadget, my_content, my_mime_type) {
     var new_doc;
-    
+    console.log(my_content)
     function local_returnResult(my_jio_response) {
       return my_jio_response.target.result;
     }
 
     if (my_content) {
       new_doc = CodeMirror.Doc(local_returnResult(my_content[0]), my_mime_type);
-      console.log(local_returnResult(my_content[1]))
       if (local_returnResult(my_content[1])) {
-        console.log(JSON.parse(local_returnResult(my_content[1])))
         new_doc.setHistory(JSON.parse(local_returnResult(my_content[1])));
       }
     } else {
