@@ -327,7 +327,6 @@
             return my_gadget.setActiveStorage("memory");
           })
           .push(function () {
-            console.log("FETCH FROM MEMORY")
             return RSVP.all([
               my_gadget.jio_getAttachment(active_cache, file_name),
               my_gadget.jio_getAttachment(active_cache, file_name + "_history")
@@ -340,7 +339,6 @@
                   return my_gadget.setActiveStorage("serviceworker");
                 })
                 .push(function () {
-                  console.log("FETCH FROM CACHE")
                   return RSVP.all([
                     my_gadget.jio_getAttachment(active_cache, file_name),
                     new Blob([])
@@ -357,18 +355,12 @@
             mime_type = my_response_list[0].type;
             my_gadget.property_dict.editor.setOption("mode", mime_type);
             editor_setActiveFile(file_name, mime_type);
-            console.log(".......")
-            console.log(my_response_list)
             return RSVP.all([
               jIO.util.readBlobAsText(my_response_list[0]),
               jIO.util.readBlobAsText(my_response_list[1])
             ])
           })
           .push(function (my_read_response_list) {
-            console.log("we read")
-            window.x = my_read_response_list;
-            console.log(my_read_response_list)
-            
             return editor_setFile(
               my_gadget,
               my_read_response_list,
@@ -488,7 +480,6 @@
     
     // close file - store on memory when closing
     if (action === "close") {
-      console.log("CLOSING")
       return new RSVP.Queue()
         .push(function () {
           dialog_clearTextInput(my_dialog);
@@ -643,12 +634,10 @@
                   my_option_dict.onClose(dialog);
                 }
                 // closing not saving, add to memory storage, always
-                if (my_option_dict.modified) {
-                  console.log("something was modified... ok, we are closing the menu, no big deal, or store on memory?");
-                  console.log("store current doc in memory?")
-                }
+                //if (my_option_dict.modified) {
+                //  console.log("is modified")
+                //}
                 if (CodeMirror.menu_dict.digest_doc) {
-                  console.log("DOING SOMETHING")
                   return new RSVP.Queue()
                     .push(function () {
                       return my_gadget.setActiveStorage("memory");
@@ -676,7 +665,6 @@
                       ]);
                     })
                     .push(function () {
-                      console.log("stored both")
                       CodeMirror.menu_dict.digest_doc = null;
                     })
                     .push(null, function (err) {
@@ -773,8 +761,6 @@
                 return RSVP.all(directory_content_list);
               })
               .push(function (my_memory_content) {
-                console.log("my_memory_content")
-                console.log(my_memory_content)
                 var len = my_memory_content.length,
                   item,
                   i;
@@ -823,13 +809,7 @@
                     response = my_directory_content[i];
                     for (item in response) {
                       if (response.hasOwnProperty(item)) {
-                        console.log(item)
-                        console.log(response[item])
                         if (item.indexOf("_history") === -1) {
-                          console.log("not a history item")
-                          console.log(memory_list)
-                          console.log(item)
-                          console.log(memory_list.indexOf(item))
                           if (memory_list.indexOf(item) > -1) {
                             item = item + "*";
                           }
@@ -933,7 +913,6 @@
 
   function editor_setFile(my_gadget, my_content, my_mime_type) {
     var new_doc;
-    console.log(my_content)
     function local_returnResult(my_jio_response) {
       return my_jio_response.target.result;
     }
@@ -942,10 +921,6 @@
       new_doc = CodeMirror.Doc(local_returnResult(my_content[0]), my_mime_type);
       
       if (local_returnResult(my_content[1])) {
-        console.log("have history")
-        console.log(my_content[1].target.result)
-        console.log(JSON.parse(my_content[1].target.result))
-        console.log("wtf")
         new_doc.setHistory(JSON.parse(local_returnResult(my_content[1])));
       }
     } else {
@@ -977,7 +952,6 @@
 
   // shortcut handlers
   function editor_closeFile(my_event) {
-    console.log("Detected CLOSE file");
     return CodeMirror.menu_dict.evaluateState({"target":{"name": "close"}});
   }
   CodeMirror.commands.myEditor_closeFile = editor_closeFile;
