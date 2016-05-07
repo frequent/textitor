@@ -528,37 +528,27 @@
 
       return new RSVP.Queue()
         .push(function () {
-          return my_gadget.setActiveStorage("memory");
-        })
-        .push(function () {
-          return my_gadget.jio_allDocs()
-        })
-        .push(function (my_docs) {
-          console.log(my_docs)
-          return my_gadget.jio_allAttachments(active_cache);
-        })
-        .push(function (result) {
-          console.log(result)
-          return my_gadget.jio_getAttachment(active_cache, file_name);
-        })
-        /*    
-            .push(function (my_reply) {
-              console.log(my_reply);
+          return new RSVP.Queue()
+            .push(function () {
+              return my_gadget.setActiveStorage("memory");
+            })
+            .push(function () {
+              return my_gadget.jio_getAttachment(active_cache, file_name);
+            })
+            .push(function () {
               return RSVP.all([
                 my_gadget.jio_removeAttachment(active_cache, file_name),
                 my_gadget.jio_removeAttachment(active_cache, file_name + "_history")
               ]);
             })
             .push(null, function (my_error) {
-              console.log("we couldn't getAttachment from memory");
-              console.log(my_error);
-              console.log("let's first break!")
+              if (is404(my_error)) {
+                return;
+              }
               throw my_error;
             });
         })
-        
         .push(function() {
-          console.log("maybe like this");
           return my_gadget.setActiveStorage("serviceworker");
         })
         .push(function() {
@@ -570,20 +560,14 @@
             })
           );
         })
-        */
         .push(function () {
-          console.log("stored in serviceworker")
           my_gadget.property_dict.editor.setOption("mode", mime_type);
           editor_setActiveFile(file_name, mime_type);
           CodeMirror.menu_dict.editor_resetModified();
+          
           // close dialog
           return true;
-        })
-        .push(null, function (err) {
-          console.log("still errror?")
-          console.log(err);
-          throw err;
-        })
+        });
     }
 
     // XXX resolve promise chain! not just close
