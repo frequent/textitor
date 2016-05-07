@@ -696,7 +696,7 @@
                     })
                     .push(function () {
                       CodeMirror.menu_dict.digest_doc = null;
-                      editor_resetActiveFile();
+                      //editor_resetActiveFile();
                     })
                     .push(null, function (err) {
                       console.log(err);
