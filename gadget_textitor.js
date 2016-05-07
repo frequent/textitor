@@ -102,21 +102,27 @@
     })
     
     .declareMethod('setActiveStorage', function (my_type) {
-      this.property_dict.storage_dict.active = my_type;
+      var gadget = this;
+      console.log("setting storage to: " + my_type);
+      gadget.property_dict.storage_dict.active = my_type;
+      console.log(gadget.property_dict.storage_dict);
+      console.log(gadget.property_dict.storage_dict.active);
+      return gadget
     })
     
     .declareMethod('routeStorageRequest', function (my_method, my_param_list) {
       var gadget = this,
         dict = gadget.property_dict,
-        active_storage = dict.storage_dict[dict.active || "serviceworker"];
-      console.log("running request on: " + active_storage.state_parameter_dict.label)
-      return active_storage[my_method].apply(
-        active_storage,
-        [].concat(my_param_list)
-      )
-      .push(undefined, function (error) {
-        throw error;
-      });
+        active_storage_label = dict.storage_dict.active || "serviceworker",
+        storage = dict.storage_dict[active_storage_label];
+      
+      console.log("who is active?")
+      console.log(active_storage_label)
+      console.log("storage set")
+      console.log(storage.state_parameter_dict.label)
+      
+      //active_storage = dict.storage_dict[dict.active || "serviceworker"];
+      return storage[my_method].apply(storage, [].concat(my_param_list));
     })
 
     // jIO bridge
