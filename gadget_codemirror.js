@@ -931,6 +931,7 @@
       }
     } else {
       new_doc = CodeMirror.Doc("");
+      editor_resetActiveFile();
     }
     
     CodeMirror.menu_dict.digest_doc = my_gadget.property_dict.editor.swapDoc(new_doc);
