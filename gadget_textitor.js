@@ -15,7 +15,7 @@
     // calling without method acquisition, so call direct method
     return new RSVP.Queue()
       .push(function () {
-        return my_gadget.setActiveStorage([my_name]);
+        return my_gadget.setActiveStorage(my_name);
       })
       .push(function () {
         my_gadget.routeStorageRequest("createJIO", config);
@@ -96,8 +96,8 @@
     })
     
     .declareMethod('setActiveStorage', function (my_type) {
-      this.property_dict.storage_dict.active = my_type[0];
-      return this;
+      console.log(my_type)
+      this.property_dict.storage_dict.active = my_type;
     })
     
     .declareMethod('routeStorageRequest', function (my_method, my_param_list) {
@@ -110,10 +110,9 @@
       console.log("we should have a storage?")
       console.log(active_storage_label)
       console.log(storage.state_parameter_dict.label)
-      console.log(gadget)
-      console.log(gadget.property_dict)
       console.log(gadget.property_dict.storage_dict)
-      console.log(storage)
+      console.log(my_method)
+      console.log(my_param_list)
       
       return storage[my_method].apply(storage, [].concat(my_param_list));
     })
