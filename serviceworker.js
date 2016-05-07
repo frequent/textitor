@@ -319,7 +319,14 @@ self.addEventListener('message', function (event) {
           // supports CORS.
           request = new Request(param.name, {mode: 'no-cors'});
           response = new Response(param.content);
-          return cache.put(request, response);
+          return cache.put(request, response)
+            .then(function () {
+              return cache.keys()
+            })
+            .then(function (key_list) {
+              console.log("we have");
+              console.log(key_list)
+            })
         })
         .then(function() {
           event.ports[0].postMessage({
