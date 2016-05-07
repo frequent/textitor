@@ -357,6 +357,8 @@
             mime_type = my_response_list[0].type;
             my_gadget.property_dict.editor.setOption("mode", mime_type);
             editor_setActiveFile(file_name, mime_type);
+            console.log(".......")
+            console.log(my_response_list)
             return RSVP.all([
               jIO.util.readBlobAsText(my_response_list[0]),
               jIO.util.readBlobAsText(my_response_list[1])
@@ -667,9 +669,9 @@
                         my_gadget.jio_putAttachment(
                           active_storage,
                           active_file.name + "_history",
-                          new Blob([JSON.stringify(doc.getHistory()), {
+                          new Blob([JSON.stringify(doc.getHistory())], {
                             'type': "application/json"
-                          }])
+                          })
                         )
                       ]);
                     })
