@@ -383,8 +383,6 @@
     if (action === "close") {
       return new RSVP.Queue()
         .push(function () {
-          console.log("closing")
-          console.log(CodeMirror.menu_dict.active_file)
           dialog_clearTextInput(my_dialog);
           return editor_setFile(my_gadget);
         })
@@ -677,11 +675,8 @@
                         doc = menu.digest_doc,
                         active_storage = menu.active_cache || "textitor",
                         active_file = menu.active_file,
-                        old_file_name = active_file.prev_name,
-                        old_mime_type = active_file.prev_mime_type;
-
-                      console.log("just closing?")
-                      console.log(active_file)
+                        old_file_name = active_file.prev_name || active_file.name,
+                        old_mime_type = active_file.prev_mime_type || active_file.mime_type;
 
                       return RSVP.all([
                         my_gadget.jio_putAttachment(
