@@ -542,6 +542,8 @@
               ]);
             })
             .push(null, function (my_error) {
+              console.log(my_error)
+              console.log(is404(my_error))
               if (is404(my_error)) {
                 return;
               }
