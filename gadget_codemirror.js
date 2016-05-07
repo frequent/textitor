@@ -762,6 +762,8 @@
                 return RSVP.all(directory_content_list);
               })
               .push(function (my_memory_content) {
+                console.log("stored on memory")
+                console.log(my_memory_contemt[0])
                 var len = my_memory_content.length,
                   item,
                   i;
@@ -801,6 +803,8 @@
                 return RSVP.all(directory_content_list);
               })
               .push(function (my_directory_content) {
+                console.log("stored on serviceworker")
+                console.log(my_directory_content[0])
                 var len = my_directory_content.length,
                   item,
                   i;
