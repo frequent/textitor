@@ -9,8 +9,10 @@
       // Initialize the gadget local parameters
       gadget.state_parameter_dict = {};
     })
-    .declareMethod('render', function () {
-      return this;
+    .declareMethod('render', function (my_option_dict) {
+      var gadget = this;
+      gadget.state_parameter_dict.label = my_option_dict.label;
+      return gadget;
     })
 
     .declareMethod('createJIO', function (jio_options) {

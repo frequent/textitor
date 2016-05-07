@@ -62,8 +62,8 @@
         })
         .push(function (my_declared_gadget_list) {
           return RSVP.all([
-            my_declared_gadget_list[0].render({}),
-            my_declared_gadget_list[1].render({})
+            my_declared_gadget_list[0].render({"label":"storage-serviceworker"}),
+            my_declared_gadget_list[1].render({"label":"storage-memory"})
           ]);
         })
         .push(function (my_rendered_list) {
