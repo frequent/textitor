@@ -561,12 +561,17 @@
           );
         })
         .push(function () {
+          console.log("DONE")
           my_gadget.property_dict.editor.setOption("mode", mime_type);
           editor_setActiveFile(file_name, mime_type);
           CodeMirror.menu_dict.editor_resetModified();
           
           // close dialog
           return true;
+        })
+        .push(undefined, function (my_error) {
+          console.log(my_error);
+          throw my_error;
         });
     }
 
