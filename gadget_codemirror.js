@@ -789,8 +789,6 @@
                 return RSVP.all(directory_content_list);
               })
               .push(function (my_memory_content) {
-                console.log("stored on memory")
-                console.log(my_memory_content[0])
                 var len = my_memory_content.length,
                   item,
                   i;
@@ -830,8 +828,6 @@
                 return RSVP.all(directory_content_list);
               })
               .push(function (my_directory_content) {
-                console.log("stored on serviceworker")
-                console.log(my_directory_content[0])
                 var len = my_directory_content.length,
                   item,
                   i;
@@ -841,13 +837,8 @@
                     response = my_directory_content[i];
                     for (item in response) {
                       if (response.hasOwnProperty(item)) {
-                        console.log(item)
                         if (item.indexOf("_history") === -1) {
-                          console.log("not a history file, let's see what we have on memory")
-                          console.log(memory_list)
-                          console.log(memory_list.indexOf(item))
                           if (memory_list.indexOf(item) > -1) {
-                            console.log("star this one because its on memory")
                             item = item + "*";
                           }
                           entry_dict[i].item_list.push(item);
@@ -931,7 +922,6 @@
       case "idle":
         CodeMirror.menu_dict.position = my_direction;
         if (my_direction === "right") {
-          console.log("filling in active file here")
           return parseTemplate(OBJECT_MENU_TEMPLATE, editor_getActiveFile());
         }
         return OBJECT_LIST_TEMPLATE;
