@@ -15,17 +15,12 @@
     // calling without method acquisition, so call direct method
     return new RSVP.Queue()
       .push(function () {
-        return my_gadget.setActiveStorage(my_name);
+        return my_gadget.setActiveStorage([my_name]);
       })
       .push(function () {
         my_gadget.routeStorageRequest("createJIO", config);
       })
-
-      // try
       .push(function () {
-        return my_gadget.setActiveStorage(my_name);
-      })
-      .push(function (my_storage) {
         return my_gadget.routeStorageRequest("put", "textitor");
       })
       .push(function (my_id) {
@@ -103,11 +98,10 @@
     
     .declareMethod('setActiveStorage', function (my_type) {
       var gadget = this;
-      console.log("setting storage to: " + my_type);
-      gadget.property_dict.storage_dict.active = my_type;
+      gadget.property_dict.storage_dict.active = my_type[0];
+      console.log("set to:")
       console.log(gadget.property_dict.storage_dict);
-      console.log(gadget.property_dict.storage_dict.active);
-      return gadget
+      return gadget;
     })
     
     .declareMethod('routeStorageRequest', function (my_method, my_param_list) {
@@ -116,12 +110,9 @@
         active_storage_label = dict.storage_dict.active || "serviceworker",
         storage = dict.storage_dict[active_storage_label];
       
-      console.log("who is active?")
       console.log(active_storage_label)
-      console.log("storage set")
       console.log(storage.state_parameter_dict.label)
       
-      //active_storage = dict.storage_dict[dict.active || "serviceworker"];
       return storage[my_method].apply(storage, [].concat(my_param_list));
     })
 
