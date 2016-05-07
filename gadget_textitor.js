@@ -104,7 +104,7 @@
     .declareMethod('routeStorageRequest', function (my_method, my_param_list) {
       var gadget = this,
         dict = gadget.property_dict,
-        active_storage_label = dict.storage_dict.active || "serviceworker",
+        active_storage_label = dict.storage_dict.active,
         storage = dict.storage_dict[active_storage_label];
       return storage[my_method].apply(storage, [].concat(my_param_list));
     })
