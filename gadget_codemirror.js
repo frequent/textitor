@@ -664,7 +664,7 @@
                 //if (my_option_dict.modified) {
                 //  console.log("is modified")
                 //}
-                if (CodeMirror.menu_dict.digest_doc) {
+                if (CodeMirror.menu_dict.digest_doc && CodeMirror.menu_dict.active_file) {
                   return new RSVP.Queue()
                     .push(function () {
                       return my_gadget.setActiveStorage("memory");
@@ -899,7 +899,6 @@
 
     // input
     if (my_event.type === "input") {
-      console.log(my_event.keyCode)
       my_callback(my_value);
     }
 
@@ -914,9 +913,6 @@
         case 38: return CodeMirror.commands.myEditor_navigateVertical(undefined, "up");
         case 39: return CodeMirror.commands.myEditor_navigateHorizontal(undefined, "right");
         case 40: return CodeMirror.commands.myEditor_navigateVertical(undefined, "down");
-        default: 
-          console.log(my_event.keyCode);
-          break;
       }  
     }
   }
@@ -976,7 +972,7 @@
     };
   }
   function editor_resetActiveFile() {
-    CodeMirror.menu_dict.active_file = {};
+    CodeMirror.menu_dict.active_file = null;
   }
   function editor_getActiveFile() {
     var active_file = CodeMirror.menu_dict.active_file || {};
