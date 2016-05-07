@@ -899,6 +899,7 @@
 
     // input
     if (my_event.type === "input") {
+      console.log(my_event.keyCode)
       my_callback(my_value);
     }
 
