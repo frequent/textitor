@@ -528,23 +528,20 @@
 
       return new RSVP.Queue()
         .push(function () {
-          return my_gadget.setActiveStorage("memory");
-        })
-        .push(function () {
-          return my_gadget.jio_getAttachment(active_cache, file_name);
-        })
-        .push(function (my_error) {
-          console.log("attachment not found");
-          if (is404(my_error)) {
-            return;  
-          }
-          throw my_error;
-        }, function (my_reply) {
-          console.log(my_reply)
-          return RSVP.all([
-            my_gadget.jio_removeAttachment(active_cache, file_name),
-            my_gadget.jio_removeAttachment(active_cache, file_name + "_history")
-          ]);
+          return new RSVP.Queue()
+            .push(function () {
+              return my_gadget.setActiveStorage("memory");
+            })
+            .push(function () {
+              return my_gadget.jio_getAttachment(active_cache, file_name);
+            })
+            .push(function (my_reply) {
+              console.log(my_reply);
+              return RSVP.all([
+                my_gadget.jio_removeAttachment(active_cache, file_name),
+                my_gadget.jio_removeAttachment(active_cache, file_name + "_history")
+              ]);
+            });
         })
         .push(function() {
           console.log("maybe like this");
