@@ -541,6 +541,12 @@
                 my_gadget.jio_removeAttachment(active_cache, file_name),
                 my_gadget.jio_removeAttachment(active_cache, file_name + "_history")
               ]);
+            })
+            .push(null, function (my_error) {
+              console.log("we couldn't getAttachment in memory");
+              console.log(my_error);
+              console.log("let's first break!")
+              throw my_error;
             });
         })
         .push(function() {
@@ -1298,4 +1304,3 @@
     .declareAcquiredMethod('jio_getAttachment', 'jio_getAttachment');
 
 }(window, rJS));
-
