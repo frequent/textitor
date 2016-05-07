@@ -57,11 +57,13 @@
         })
         .push(function (my_declared_gadget_list) {
           return RSVP.all([
-            my_declared_gadget_list[0].render({"label":"storage-serviceworker"}),
-            my_declared_gadget_list[1].render({"label":"storage-memory"})
+            my_declared_gadget_list[0].render({"label": "storage-serviceworker"}),
+            my_declared_gadget_list[1].render({"label": "storage-memory"})
           ]);
         })
         .push(function (my_rendered_list) {
+          console.log("instantiated two storages")
+          console.log(my_rendered_list)
           my_gadget.property_dict.storage_dict.serviceworker = my_rendered_list[0];
           my_gadget.property_dict.storage_dict.memory = my_rendered_list[1];
         });
