@@ -307,9 +307,6 @@ self.addEventListener('message', function (event) {
     break;  
       
     case 'putAttachment':
-      console.log("putting")
-      console.log(param.id)
-      console.log(param.content)
       CURRENT_CACHE = param.id + "-v" + CURRENT_CACHE_VERSION;
       caches.open(CURRENT_CACHE)
         .then(function(cache) {
@@ -324,7 +321,6 @@ self.addEventListener('message', function (event) {
           response = new Response(param.content);
           cache.put(request, response)
             .then(function() {
-              console.log("stored")
               event.ports[0].postMessage({
                 error: null
               });
