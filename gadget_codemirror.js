@@ -1005,7 +1005,7 @@
   CodeMirror.commands.myEditor_closeDialog = editor_closeDialog;
 
   function editor_saveFromDialog() {
-    if (CodeMirror.menu_dict.position === "right") {
+    if (CodeMirror.menu_dict.position !== "left") {
       return CodeMirror.menu_dict.evaluateState({"target":{"name": "save"}});
     }
   }
