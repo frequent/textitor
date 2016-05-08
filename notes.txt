@@ -2,7 +2,6 @@
 => progress
 
 - rename files should also remove old files
-- make save and close shortcuts work without open dialog
 - autofill mimetype, remove it altogether if file-ending is set?
 - warn of modified content before closing
 - save and close all
@@ -11,11 +10,12 @@
 - save new cache
 - filter list of files
 - form layout stinks
+- rename all methods consistently
+- merge duplicate storage code in updateStorage
 - new cache accessible through arrow left + left
 - show only files in cache, not cache itself?
 - add listener for editor tab close
 - open multiple files via tabs?
-- clean up Tristan leftovers
 
 => speak?
 
@@ -49,4 +49,3 @@ serverless.getTree("master", function (err, tree) {if (err) {console.log("error"
   - if document per branch, files are attachments, editing and saving updates attachments
   - of a diff is a new attachment?
   
-
