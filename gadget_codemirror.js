@@ -148,7 +148,6 @@
     }
     function itsANonResolvableTrap(resolve, reject) {
       handle_event_callback = function (evt) {
-        //CodeMirror.e_stop(evt); XXX Not an event
         cancelResolver();
         callback_promise = new RSVP.Queue()
           .push(function () {
@@ -1100,26 +1099,6 @@
   CodeMirror.keyMap.my["Ctrl-Alt-Down"] = "myEditor_navigateDown";
   // CodeMirror.keyMap.my["Ctrl-Alt-Return"] = undefined;
 
-  // XXX remove
-  var editorURI;
-  var editorTextarea;
-  var editor;
-  var commands = {};
-
-  
-  function commandPrompt(cm) {
-    // XXX allow the use of space character (like in bash interpreter)
-    var text = prompt("Command (type `help` to get a list of commands)"), args;
-    if (text) {
-      args = text.split(/\s+/);
-      commands[args[0]](cm, args);
-    }
-  }
-      
-  function randomChoose(array) {
-    return array[parseInt(Math.random() * array.length, 10)];
-  }
-  // XXX remove
 
 (function (window, rJS) {
   "use strict";
@@ -1138,12 +1117,11 @@
         })
         .push(function (my_element) {
           my_gadget.property_dict.element = my_element;
-          my_gadget.property_dict.uri = undefined;
           my_gadget.property_dict.textarea = my_element.querySelector("textarea");
         });
     })
     .ready(function (my_gadget) {
-      editorURI = my_gadget.property_dict.uri || window.location.hash.slice(1);
+      var editorTextarea;
       if (my_gadget.property_dict.textarea) {
         editorTextarea = my_gadget.property_dict.textarea;
       } else {
@@ -1161,12 +1139,6 @@
     .declareMethod('render', function (my_option_dict) {
       var gadget = this,
         dict = gadget.property_dict;
-      
-      //XXX Remove
-      CodeMirror.lint["application/javascript"] = CodeMirror.lint.javascript;
-      CodeMirror.lint["application/json"] = CodeMirror.lint.json;
-      CodeMirror.lint["text/css"] = CodeMirror.lint.css;
-      //XXX Remove
 
       CodeMirror.menu_dict.editor_setModified = function () {
         if (CodeMirror.menu_dict.is_modified !== true) {
@@ -1183,7 +1155,7 @@
       };
     
       // http://codemirror.net/doc/manual.html#config
-      editor = CodeMirror.fromTextArea(dict.textarea, {
+      dict.editor = CodeMirror.fromTextArea(dict.textarea, {
         readOnly: false,
         matchBrackets: true,
         autoCloseBrackets: false,
@@ -1204,8 +1176,6 @@
         theme: "rubyblue", // default "default"
         mode: "text"
       });
-
-      dict.editor = editor;
 
       return gadget;
     })
