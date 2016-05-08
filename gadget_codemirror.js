@@ -724,10 +724,10 @@
         function dialog_evaluateState(my_parameter) {
           return new RSVP.Queue()
             .push(function () {
-              if (closed !== true) {
+              //if (closed !== true) {
                 return dialog_updateStorage(my_gadget, dialog, my_parameter);
-              }
-              return my_parameter;
+              //}
+              //return my_parameter;
             })
             .push(function (my_close_dialog) {
               if (my_close_dialog === true) {
