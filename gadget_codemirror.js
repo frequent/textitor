@@ -711,27 +711,21 @@
           memory_list,
           entry_dict,
           dialog,
-          closed,
           text_input,
           my_context;
 
         my_context = my_context || this;
         my_option_dict = my_option_dict || {};
         dialog = setDialog(my_context, my_template, my_option_dict.bottom);
-        closed = false;
 
         // evaluate state
         function dialog_evaluateState(my_parameter) {
           return new RSVP.Queue()
             .push(function () {
-              //if (closed !== true) {
-                return dialog_updateStorage(my_gadget, dialog, my_parameter);
-              //}
-              //return my_parameter;
+              return dialog_updateStorage(my_gadget, dialog, my_parameter);
             })
             .push(function (my_close_dialog) {
               if (my_close_dialog === true) {
-                closed = true;
                 dialog.parentNode.removeChild(dialog);
                 my_context.focus();
                 CodeMirror.menu_dict.position = "idle";
@@ -1157,52 +1151,6 @@
         my_gadget.property_dict.textarea = editorTextarea;
         my_gadget.property_dict.element.appendChild(editorTextarea);
       }
-
-      // XXX remove
-      commands["help doc"] = "Shows this help.";
-      commands.help = function () {
-        alert(Object.keys(commands).reduce(function (prev, curr) {
-          if (curr.indexOf(" ") !== -1) {
-            return prev;
-          }
-          prev += curr;
-          if (commands[curr + " doc"]) {
-            prev += "\t\t\t" + commands[curr + " doc"];
-          }
-          return prev + "\n";
-        }, ""));
-      };
-      commands["mode doc"] = "{javascript|html|python|...}";
-      commands.mode = function (cm, args) {
-        cm.setOption("mode", modeShortcuts[args[1]] || args[1]);
-        cm.setOption("lint", false);
-        if (cm.getOption("myAutoLint") && CodeMirror.lint[cm.getOption("mode")]) {
-          setTimeout(function () { cm.setOption("lint", true); });
-        }
-      };
-      commands["lint doc"] = "Toggle automatic lint";
-      commands.lint = function (cm) {
-        if (cm.getOption("lint")) {
-          cm.setOption("myAutoLint", false);
-          cm.setOption("lint", false);
-        } else if (CodeMirror.lint[cm.getOption("mode")]) {
-          cm.setOption("myAutoLint", true);
-          cm.setOption("lint", true);
-        }
-      };
-      commands["keyMap doc"] = "{default|my|emacs|vim}";
-      commands.keyMap = function (cm, args) {
-        cm.setOption("keyMap", args[1] || "default");
-      };
-      commands["theme doc"] = "{default|random|rubyblue|monokai|blackboard|...}";
-      commands.theme = function (cm, args) {
-        if (args[1] === "random") {
-          cm.setOption("theme", randomChoose(["3024-night", "monokai", "blackboard", "rubyblue", "cobalt"]));
-          return;
-        }
-        cm.setOption("theme", args.slice(1).join(" ") || "default");
-      };
-      // XXX remove
 
       return dialog_setDialogExtension(my_gadget);
     })
