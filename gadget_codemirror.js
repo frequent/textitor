@@ -539,11 +539,9 @@
 
     // delete file from memory and serviceworker
     if (action === "remove") {
-      console.log("removing");
       active_cache = CodeMirror.menu_dict.active_cache || "textitor";
       file_name = CodeMirror.menu_dict.active_file.name;
-      console.log(active_cache);
-      console.log(file_name);
+
       if (file_name) {
         return new RSVP.Queue()
           .push(function () {
@@ -568,7 +566,7 @@
             return my_gadget.setActiveStorage("serviceworker");
           })
           .push(function () {
-            return my_gadget.jio_removeAttachment(active_cache, file_name_input.value);
+            return my_gadget.jio_removeAttachment(active_cache, file_name);
           })
           .push(function () {
             return true;
