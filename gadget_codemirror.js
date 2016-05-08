@@ -527,8 +527,6 @@
           my_gadget.property_dict.editor.setOption("mode", mime_type);
           editor_setActiveFile(file_name, mime_type);
           CodeMirror.menu_dict.editor_resetModified();
-          
-          // close dialog
           return true;
         })
         .push(undefined, function (my_error) {
@@ -569,6 +567,10 @@
             return my_gadget.jio_removeAttachment(active_cache, file_name);
           })
           .push(function () {
+            var new_doc = CodeMirror.Doc(""), 
+              old_doc = my_gadget.property_dict.editor.swapDoc(new_doc);
+            editor_resetActiveFile();
+            CodeMirror.menu_dict.editor_resetModified();
             return true;
           })
           .push(null, function (my_error) {
@@ -974,15 +976,16 @@
         return OBJECT_LIST_TEMPLATE;
     }
   }
-
+  
+  // active file
+  function editor_resetActiveFile() {
+    CodeMirror.menu_dict.active_file = null;
+  }
   function editor_setActiveFile(my_name, my_mime_type) {
     CodeMirror.menu_dict.active_file = CodeMirror.menu_dict.active_file || {};
-    CodeMirror.menu_dict.active_file.prev_name = CodeMirror.menu_dict.active_file.name;
-    CodeMirror.menu_dict.active_file.prev_mime_type = CodeMirror.menu_dict.active_file.mime_type; 
     CodeMirror.menu_dict.active_file.name = my_name;
     CodeMirror.menu_dict.active_file.mime_type = my_mime_type;
   }
-
   function editor_getActiveFile() {
     var active_file = CodeMirror.menu_dict.active_file || {};
     return [active_file.name || "", active_file.mime_type || ""];
