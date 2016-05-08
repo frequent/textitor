@@ -652,10 +652,6 @@
               return my_parameter;
             })
             .push(function (my_close_dialog) {
-              
-              console.log("we are here and we should close?")
-              console.log(my_close_dialog)
-              
               if (my_close_dialog === true) {
                 closed = true;
                 dialog.parentNode.removeChild(dialog);
@@ -682,6 +678,12 @@
                         old_file_name = active_file.prev_name || active_file.name,
                         old_mime_type = active_file.prev_mime_type || active_file.mime_type;
 
+
+                      console.log("saving to memory, but wrong, why not take form values?")
+                      console.log(menu)
+                      console.log(old_file_name)
+                      console.log(old_mime_type)
+
                       return RSVP.all([
                         my_gadget.jio_putAttachment(
                           active_storage,
@@ -706,8 +708,12 @@
                       throw err;
                     });
                 } else {
-                  console.log("oulala, no dialog open, but we'd like to close");
+                  console.log("oulala, no active file not digest_doc");
                 }
+              } else {
+                console.log("oulalal, no dialog to close, shouldn't we save to memory, too?");
+                console.log(CodeMirror.menu_dict.digest_doc)
+                console.log(CodeMirror.menu_dict.active_file)
               }
             });
         }
