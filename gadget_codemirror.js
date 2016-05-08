@@ -539,9 +539,11 @@
 
     // delete file from memory and serviceworker
     if (action === "remove") {
+      console.log("removing");
       active_cache = CodeMirror.menu_dict.active_cache || "textitor";
       file_name = CodeMirror.menu_dict.active_file.name;
-      
+      console.log(active_cache);
+      console.log(file_name);
       if (file_name) {
         return new RSVP.Queue()
           .push(function () {
@@ -557,6 +559,7 @@
             ]);
           })
           .push(null, function (my_error) {
+            console.log(my_error)
             if (is404(my_error)) {
               return;
             }
@@ -571,6 +574,7 @@
             return true;
           })
           .push(null, function (my_error) {
+            console.log(my_error)
             throw my_error;
           });
       }
@@ -937,6 +941,7 @@
     // ctrl + alt +
     if (my_event.ctrlKey && my_event.altKey) {
       switch(my_event.keyCode) {
+        case 68: return CodeMirror.commands.myEditor_deleteFile();  // (d)elete file
         case 67: return CodeMirror.commands.myEditor_closeFile();   // (c)lose file
         case 79: return CodeMirror.commands.myEditor_openFromDialog(); // (o)pen
         case 83: return CodeMirror.commands.myEditor_saveFromDialog(); // (s)ave
@@ -992,6 +997,13 @@
     }
   }
   CodeMirror.commands.myEditor_closeFile = editor_closeFile;
+  
+  function editor_deleteFile() {
+    if (CodeMirror.menu_dict.evaluateState) {
+      return CodeMirror.menu_dict.evaluateState({"target": {"name": "remove"}});
+    }
+  }
+  CodeMirror.commands.myEditor_deleteFile = editor_deleteFile;
   
   function editor_closeDialog(my_event) {
     if (CodeMirror.menu_dict.evaluateState) {
@@ -1069,7 +1081,7 @@
   // CodeMirror.keyMap.my["Ctrl-Alt-A"] = undefined;
   // CodeMirror.keyMap.my["Ctrl-Alt-B"] = undefined;
   CodeMirror.keyMap.my["Ctrl-Alt-C"] = "myEditor_closeFile";
-  // CodeMirror.keyMap.my["Ctrl-Alt-D"] = undefined;
+  CodeMirror.keyMap.my["Ctrl-Alt-D"] = "myEditor_deleteFile";
   // CodeMirror.keyMap.my["Ctrl-Alt-E"] = undefined;
   // CodeMirror.keyMap.my["Ctrl-Alt-F"] = undefined;
   // CodeMirror.keyMap.my["Ctrl-Alt-G"] = undefined;
