@@ -1,23 +1,23 @@
 
 => progress
-- correctly show files on memory in file menu using *
-- correctly clear form when closing a file
-- correctly clear form when saving a file
-- fix mimetype broken
-- setmodified CSS - disk symbol
+
+- rename files should also remove old files
+- make save and close shortcuts work without open dialog
+- autofill mimetype, remove it altogether if file-ending is set?
 - warn of modified content before closing
-- fix shortcuts without open menu (close, save)
-- fix setmodified to only save when something changed
 - save and close all
 - delete open file
 - delete selected file
 - save new cache
+- filter list of files
+- form layout stinks
 - new cache accessible through arrow left + left
-- open multiple files, use memory storage, make active handle not only one file
 - show only files in cache, not cache itself?
-- opening more than one file will setup memory storage, this keeps unsaved files and retrieves them when switching
 - add listener for editor tab close
 - open multiple files via tabs?
+- clean up Tristan leftovers
+
+=> speak?
 
 => gitstorage
   - replicate with indexeddb and remote gitstorage
@@ -49,3 +49,4 @@ serverless.getTree("master", function (err, tree) {if (err) {console.log("error"
   - if document per branch, files are attachments, editing and saving updates attachments
   - of a diff is a new attachment?
   
+
