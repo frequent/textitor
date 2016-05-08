@@ -652,6 +652,10 @@
               return my_parameter;
             })
             .push(function (my_close_dialog) {
+              
+              console.log("we are here and we should close?")
+              console.log(my_close_dialog)
+              
               if (my_close_dialog === true) {
                 closed = true;
                 dialog.parentNode.removeChild(dialog);
@@ -700,7 +704,9 @@
                     .push(null, function (err) {
                       console.log(err);
                       throw err;
-                    })
+                    });
+                } else {
+                  console.log("oulala, no dialog open, but we'd like to close");
                 }
               }
             });
