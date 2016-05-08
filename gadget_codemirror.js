@@ -388,7 +388,7 @@
                   save_file_name,
                   save_mime_type;
 
-                if (menu_dict.active_file) {
+                if (menu_dict.active_file && CodeMirror.menu_dict.is_modified) {
                   active_storage = menu_dict.active_cache || "textitor";
                   save_file_name = menu_dict.active_file.name;
                   save_mime_type = menu_dict.active_file.mime_type;
@@ -442,21 +442,22 @@
             save_mime_type = menu_dict.active_file.mime_type;
             
           // XXX: re-name? check form?
-
-          return RSVP.all([
-            my_gadget.jio_putAttachment(
-              active_storage,
-              save_file_name, 
-              new Blob([old_doc.getValue()], {type: save_mime_type})
-            ),
-            my_gadget.jio_putAttachment(
-              active_storage,
-              save_file_name + "_history",
-              new Blob([JSON.stringify(old_doc.getHistory())], {
-                'type': "application/json"
-              })
-            )
-          ]);
+          if (CodeMirror.menu_dict.is_modified) {
+            return RSVP.all([
+              my_gadget.jio_putAttachment(
+                active_storage,
+                save_file_name, 
+                new Blob([old_doc.getValue()], {type: save_mime_type})
+              ),
+              my_gadget.jio_putAttachment(
+                active_storage,
+                save_file_name + "_history",
+                new Blob([JSON.stringify(old_doc.getHistory())], {
+                  'type': "application/json"
+                })
+              )
+            ]);
+          }
         })
         .push(function () {
           dialog_clearTextInput(my_dialog);
@@ -1220,16 +1221,15 @@
       //XXX Remove
 
       CodeMirror.menu_dict.editor_setModified = function () {
-        if (dict.modified !== true) {
-          dict.modified = true;
+        if (CodeMirror.menu_dict.is_modified !== true) {
+          CodeMirror.menu_dict.is_modified = true;
           dict.element.querySelector(".CodeMirror").className += 
             " custom-set-modified";
         }
       };
-      
       CodeMirror.menu_dict.editor_resetModified = function () {
         var element = dict.element.querySelector(".CodeMirror");
-        dict.modified = null;
+        CodeMirror.menu_dict.is_modified = null;
         element.className = element.className
           .split("custom-set-modified").join("");
       };
