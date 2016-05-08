@@ -537,41 +537,43 @@
         });
     }
 
+    // delete file from memory and serviceworker
     if (action === "remove") {
       active_cache = CodeMirror.menu_dict.active_cache || "textitor";
-      file_name_input = dialog_getTextInput(my_dialog, 0);
-      file_name = file_name_input.value;
+      file_name = CodeMirror.menu_dict.active_file.name;
       
-      return new RSVP.Queue()
-        .push(function () {
-          return my_gadget.setActiveStorage("memory");
-        })
-        .push(function () {
-          return my_gadget.jio_getAttachment(active_cache, file_name);
-        })
-        .push(function () {
-          return RSVP.all([
-            my_gadget.jio_removeAttachment(active_cache, file_name),
-            my_gadget.jio_removeAttachment(active_cache, file_name + "_history")
-          ]);
-        })
-        .push(null, function (my_error) {
-          if (is404(my_error)) {
-            return;
-          }
-        })
-        .push(function () {
-          return my_gadget.setActiveStorage("serviceworker");
-        })
-        .push(function () {
-          return my_gadget.jio_removeAttachment(active_cache, file_name_input.value);
-        })
-        .push(function () {
-          return true;
-        })
-        .push(null, function (my_error) {
-          throw my_error;
-        });
+      if (file_name) {
+        return new RSVP.Queue()
+          .push(function () {
+            return my_gadget.setActiveStorage("memory");
+          })
+          .push(function () {
+            return my_gadget.jio_getAttachment(active_cache, file_name);
+          })
+          .push(function () {
+            return RSVP.all([
+              my_gadget.jio_removeAttachment(active_cache, file_name),
+              my_gadget.jio_removeAttachment(active_cache, file_name + "_history")
+            ]);
+          })
+          .push(null, function (my_error) {
+            if (is404(my_error)) {
+              return;
+            }
+          })
+          .push(function () {
+            return my_gadget.setActiveStorage("serviceworker");
+          })
+          .push(function () {
+            return my_gadget.jio_removeAttachment(active_cache, file_name_input.value);
+          })
+          .push(function () {
+            return true;
+          })
+          .push(null, function (my_error) {
+            throw my_error;
+          });
+      }
     }
     
     // save all and close = retrive what is in memory storage and save
