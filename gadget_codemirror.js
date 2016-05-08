@@ -437,11 +437,15 @@
             old_doc = my_gadget.property_dict.editor.swapDoc(new_doc),
             menu_dict = CodeMirror.menu_dict,
             active_storage = menu_dict.active_cache || "textitor",
+            active_file = menu_dict.active_file,
+            save_file_name,
+            save_mime_type;
+          
+          // XXX rename file, check form here
+          if (active_file && CodeMirror.menu_dict.is_modified) {
             save_file_name = menu_dict.active_file.name,
             save_mime_type = menu_dict.active_file.mime_type;
             
-          // XXX: re-name? check form?
-          if (CodeMirror.menu_dict.is_modified) {
             return RSVP.all([
               my_gadget.jio_putAttachment(
                 active_storage,
@@ -555,7 +559,6 @@
             ]);
           })
           .push(null, function (my_error) {
-            console.log(my_error)
             if (is404(my_error)) {
               return;
             }
@@ -574,7 +577,7 @@
             return true;
           })
           .push(null, function (my_error) {
-            console.log(my_error)
+            console.log(my_error);
             throw my_error;
           });
       }
