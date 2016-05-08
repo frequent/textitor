@@ -384,24 +384,30 @@
                 var new_doc = CodeMirror.menu_dict.editor_createDoc(my_content), 
                   old_doc = my_gadget.property_dict.editor.swapDoc(new_doc),
                   menu_dict = CodeMirror.menu_dict,
-                  active_storage = menu_dict.active_cache || "textitor",
-                  save_file_name = menu_dict.active_file.name,
-                  save_mime_type = menu_dict.active_file.mime_type;
+                  active_storage,
+                  save_file_name,
+                  save_mime_type;
 
-                return RSVP.all([
-                  my_gadget.jio_putAttachment(
-                    active_storage,
-                    save_file_name, 
-                    new Blob([old_doc.getValue()], {type: save_mime_type})
-                  ),
-                  my_gadget.jio_putAttachment(
-                    active_storage,
-                    save_file_name + "_history",
-                    new Blob([JSON.stringify(old_doc.getHistory())], {
-                      'type': "application/json"
-                    })
-                  )
-                ]);
+                if (menu_dict.active_file) {
+                  active_storage = menu_dict.active_cache || "textitor";
+                  save_file_name = menu_dict.active_file.name;
+                  save_mime_type = menu_dict.active_file.mime_type;
+  
+                  return RSVP.all([
+                    my_gadget.jio_putAttachment(
+                      active_storage,
+                      save_file_name, 
+                      new Blob([old_doc.getValue()], {type: save_mime_type})
+                    ),
+                    my_gadget.jio_putAttachment(
+                      active_storage,
+                      save_file_name + "_history",
+                      new Blob([JSON.stringify(old_doc.getHistory())], {
+                        'type': "application/json"
+                      })
+                    )
+                  ]);
+                }
               });      
             })
             .push(function () {
