@@ -701,7 +701,7 @@
                     })
                     .push(function () {
                       CodeMirror.menu_dict.digest_doc = null;
-                      //editor_resetActiveFile();
+                      editor_resetActiveFile();
                     })
                     .push(null, function (err) {
                       console.log(err);
@@ -986,7 +986,9 @@
     CodeMirror.menu_dict.active_file.mime_type = my_mime_type;
   }
   function editor_resetActiveFile() {
-    CodeMirror.menu_dict.active_file = null;
+    //CodeMirror.menu_dict.active_file = null;
+    CodeMirror.menu_dict.active_file.prev_name = null;
+    CodeMirror.menu_dict.active_file.prev_mime_type = null;
   }
   function editor_getActiveFile() {
     var active_file = CodeMirror.menu_dict.active_file || {};
