@@ -1,21 +1,25 @@
 
 => progress
+- saving a file without menu-open should also save to worker and remove star
 - rename in files menu
-- rename in file menu
+- rename in file menu, removes old file
 - delete in files menu
-- rename files should also remove old files
 - warn of modified content before closing
 - save and close all
-- delete selected file
+- delete selected file(s)
 - filter list of files
 - form layout stinks
 - rename all methods consistently
 - merge duplicate storage code in updateStorage
-- save new cache
+- create new cache
 - new cache accessible through arrow left + left
 - show only files in cache, not cache itself?
 - add listener for editor tab close
-- open multiple files via tabs?
+
+=> maintain self
+- create own cache, add all files there to allow editing texitor itself
+
+=> test
 
 => speak?
 
