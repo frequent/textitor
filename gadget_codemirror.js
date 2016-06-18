@@ -26,11 +26,11 @@
     "sql": "text/x-sql",
   };
 
-  var modeShortcuts = {
+  var shimModeMimes = {
     "html": "htmlmixed",
     "js": "javascript",
-    "md": "markdown",
-    "py": "python"
+    "py": "python",
+    "md": "markdown"
   };
  
   var dialog_option_dict = {
@@ -60,18 +60,18 @@
   var OBJECT_MENU_TEMPLATE = "<span class='custom-menu-label'>Name:</span>" +
     "<input type='text' tabindex='1' placeholder='file name' value='%s' />" +
     "<span class='custom-menu-label'>Mime-Type:</span>" +
-    "<input type='text' tabindex='2' placeholder='mime-type' value='%s' />" +
+    "<input type='hidden' placeholder='mime-type' value='%s' />" +
     "<span class='custom-menu-label'>Create as Cache</span>" +
-    "<input type='checkbox' tabindex='3' autocomplete='off' />" +
+    "<input type='checkbox' tabindex='2' autocomplete='off' />" +
     "<span class='custom-menu-typewriter'>CTRL+ALT+</span>" +
     "<form name='save'>" +
-      "<button type='submit' tabindex='4' class='custom-menu-button'>" +
+      "<button type='submit' tabindex='3' class='custom-menu-button'>" +
         "<b>S</b>ave</button></form>" +
     "<form name='close'>" +
-      "<button type='submit' tabindex='5' class='custom-menu-button'>" +
+      "<button type='submit' tabindex='4' class='custom-menu-button'>" +
         "<b>C</b>lose</button></form>" +
     "<form name='remove'>" +
-      "<button type='submit' tabindex='6' class='custom-menu-button'>" + 
+      "<button type='submit' tabindex='5' class='custom-menu-button'>" + 
         "<b>D</b>elete</button></form>";
   
   var OBJECT_LIST_TEMPLATE = "<span>Search:</span>" +
@@ -475,23 +475,27 @@
 
     // save = store on serviceworker, remove from memory
     if (action === "save") {
-      file_name_input = dialog_getTextInput(my_dialog, 0);
-      mime_type_input = dialog_getTextInput(my_dialog, 1);
+      file_name_input = my_dialog.querySelector("input[type='text']");
+      file_name = file_name_input.value;
       is_cache_name = my_dialog.querySelector('input:checked');
 
       // validate
-      if (!file_name_input.value) {
+      if (!file_name) {
         return dialog_flagInput(file_name_input, 'Enter valid URL.');
       }
-      if (!mime_type_input) {
-        return dialog_flagInput(mime_type_input, 'Enter mime-type/cache name.');
-      } else if (!is_validMimeType(mime_type_input.value) && !is_cache_name) {
-        return dialog_flagInput(mime_type_input, 'Invalid/Unsupported mime-type');
+
+      // XXX: missing create cache
+      if (!is_cache_name) {
+        mime_type_input = file_name.split(".").pop();
+        console.log(mime_type_input)
+        mime_type = modeMimes[mime_type_input] ||
+            modeMimes[shimModeMimes[mime_type_input]] ||
+                "text/plain";
+      } else {
+        return dialog_flagInput(file_name_input, 'Create Cache not supported');
       }
 
       active_cache = CodeMirror.menu_dict.active_cache || "textitor";
-      mime_type = mime_type_input.value;
-      file_name = file_name_input.value;
 
       return new RSVP.Queue()
         .push(function () {
@@ -692,20 +696,6 @@
     }
   }
 
-  function dialog_getTextInput(my_dialog, my_index) {
-    var text_input_list = [], 
-      input_list,
-      len,
-      i;
-    input_list = base_convertToArray(my_dialog.querySelectorAll("input"));
-    for (i = 0, len = input_list.length; i < len; i += 1) {
-      if (input_list[i].type === 'text') {
-        text_input_list.push(input_list[i]);
-      }
-    }
-    return text_input_list[my_index || 0];
-  }
-
   /////////////////////////////
   // dialog extension
   /////////////////////////////
@@ -751,7 +741,7 @@
         }
         CodeMirror.menu_dict.updateFileMenu = dialog_updateFileMenu;
   
-        text_input = dialog_getTextInput(dialog);
+        text_input = my_dialog.querySelector("input[type='text']");
         if (text_input) {
           text_input.focus();
           

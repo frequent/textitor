@@ -4,15 +4,14 @@
 - rename in file menu
 - delete in files menu
 - rename files should also remove old files
-- autofill mimetype, based on ending given, if don't know add text/pain
 - warn of modified content before closing
 - save and close all
 - delete selected file
-- save new cache
 - filter list of files
 - form layout stinks
 - rename all methods consistently
 - merge duplicate storage code in updateStorage
+- save new cache
 - new cache accessible through arrow left + left
 - show only files in cache, not cache itself?
 - add listener for editor tab close
