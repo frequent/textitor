@@ -1,11 +1,12 @@
 
 => progress
-
+- rename in files menu
+- rename in file menu
+- delete in files menu
 - rename files should also remove old files
-- autofill mimetype, remove it altogether if file-ending is set?
+- autofill mimetype, based on ending given, if don't know add text/pain
 - warn of modified content before closing
 - save and close all
-- delete open file
 - delete selected file
 - save new cache
 - filter list of files
