@@ -485,7 +485,7 @@
 
       // XXX: missing create cache
       if (!is_cache_name) {
-        mime_type_input = file_name.split(".").pop();
+        mime_type_input = file_name.split(".").pop().replace("/", "");
         console.log(mime_type_input)
         mime_type = modeMimes[mime_type_input] ||
             modeMimes[shimModeMimes[mime_type_input]] ||
