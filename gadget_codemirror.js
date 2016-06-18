@@ -59,8 +59,7 @@
   
   var OBJECT_MENU_TEMPLATE = "<span class='custom-menu-label'>Name:</span>" +
     "<input type='text' tabindex='1' placeholder='file name' value='%s' />" +
-    "<span class='custom-menu-label'>Mime-Type:</span>" +
-    "<input type='hidden' placeholder='mime-type' value='%s' />" +
+    "<input type='hidden' value='%s' />" +
     "<span class='custom-menu-label'>Create as Cache</span>" +
     "<input type='checkbox' tabindex='2' autocomplete='off' />" +
     "<span class='custom-menu-typewriter'>CTRL+ALT+</span>" +
@@ -741,7 +740,7 @@
         }
         CodeMirror.menu_dict.updateFileMenu = dialog_updateFileMenu;
   
-        text_input = my_dialog.querySelector("input[type='text']");
+        text_input = dialog.querySelector("input[type='text']");
         if (text_input) {
           text_input.focus();
           
