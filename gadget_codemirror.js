@@ -482,19 +482,27 @@
       file_name_input = my_dialog.querySelector("input[type='text']");
       file_name = file_name_input.value;
       is_cache_name = my_dialog.querySelector('input:checked');
+      content = my_gadget.property_dict.editor.getValue();
+      
+      // empty
+      if (!file_name && !content) {
+        return true;
+      }
 
       // validate
       if (!file_name) {
         return dialog_flagInput(file_name_input, 'Enter valid URL.');
       }
 
-      // XXX: missing create cache
+      // not a cache
       if (!is_cache_name) {
         mime_type_input = file_name.split(".").pop().replace("/", "");
         mime_type = modeMimes[mime_type_input] ||
             modeMimes[shimModeMimes[mime_type_input]] ||
                 "text/plain";
       } else {
+
+        // XXX: missing cache handling
         return dialog_flagInput(file_name_input, 'Create Cache not supported');
       }
 
@@ -529,9 +537,7 @@
           return my_gadget.jio_putAttachment(
             active_cache,
             file_name,
-            new Blob([my_gadget.property_dict.editor.getValue()], {
-              type: mime_type,
-            })
+            new Blob([content], {type: mime_type})
           );
         })
         .push(function () {
