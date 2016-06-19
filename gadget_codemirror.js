@@ -756,11 +756,9 @@
           console.log("this should not be set on a new file")
           console.log("where does the value come from")
           console.log(dialog_option_dict)
-          if (my_option_dict.value) {
-            text_input.value = my_option_dict.value;
-            if (my_option_dict.selectValueOnOpen !== false) {
-              text_input.select();
-            }
+          text_input.value = my_option_dict.value;
+          if (my_option_dict.selectValueOnOpen !== false) {
+            text_input.select();
           }
           if (my_option_dict.onInput) {
             event_list.push(
