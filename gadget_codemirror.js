@@ -330,7 +330,6 @@
       action = my_parameter.target.name;
     }
 
-    console.log("action = " + action)
     // open = get from memory or serviceworker, close previous file    
     if (action === "open") {
       file_name_input = my_dialog.querySelector('input:checked');
@@ -428,7 +427,7 @@
     
     // close = store file on memory until it is saved
     if (action === "close") {
-      console.log("closing")
+      
       return new RSVP.Queue()
         .push(function () {
           return my_gadget.setActiveStorage("memory");
@@ -441,8 +440,7 @@
             active_file = menu_dict.active_file,
             save_file_name,
             save_mime_type;
-          
-          console.log(old_doc)
+
           // XXX rename file, check form here
           if (active_file && CodeMirror.menu_dict.is_modified) {
             save_file_name = menu_dict.active_file.name,
@@ -465,8 +463,6 @@
           }
         })
         .push(function () {
-          console.log("DONE, stored old_doc in memory and cleared screen")
-          console.log("did we also clear menu?")
           dialog_clearTextInput(my_dialog);
           CodeMirror.menu_dict.editor_resetModified();
           return true;
@@ -595,79 +591,6 @@
           });
       }
     }
-    
-    // save all and close = retrive what is in memory storage and save
-    /*
-    if (action === "saveall") {
-      return new RSVP.Queue()
-        .push(function () {
-          return my_gadget.setActiveStorage("memory");
-        })
-        .push(function () {
-          return my_gadget.jio_allDocs();
-        })
-        .push(function (my_storage_dict) {
-          var response_dict = my_storage_dict.data,
-            file_directory_list = [],
-            len = response_dict.total_rows,
-            i,
-            cache_id;
-          for (i = 0; i < len; i += 1) {
-            cache_id = response_dict.rows[i].id;
-            entry_dict[i] = {"name": cache_id, "item_list": []};
-            directory_content_list.push(
-              my_gadget.jio_allAttachments(cache_id)
-            );
-          }
-          return RSVP.all(directory_content_list);  
-        })
-        .push(function (my_directory_content_list) {
-          var len = my_directory_content_list.length,
-            store_list = [],
-            item,
-            response,
-            i;
-          for (i = 0; i < len; i += 1) {
-            response = my_directory_content[i];
-              for (item in response) {
-                if (response.hasOwnProperty(item)) {
-                  // XXX
-                  store_list.push(
-                    new RSVP.Queue()
-                      .push(function () {
-                        return my_gadget.jio_getAttachment(entry_dict[i].name, item);
-                      })
-                      .push(function (my_document) {
-                        var editor = my_document.getEditor()
-                        return my_gadget.setActiveStorage("serviceworker");
-                      })
-                      .push(function() {
-                        return my_gadget.jio_putAttachment(
-                          cache_id,
-                          item,
-                          new Blob([editor.getValue()], {type: ""})
-                        );
-                      })
-                      .push(function () {
-                        return my_gadget.setActiveStorage("memory");
-                      })
-                      .push(function () {
-                        return RSVP.all([
-                          my_gadget.jio_removeAttachment(entry_dict[i].name, item),
-                          my_gadget.jio_removeAttachment(entry_dict[i].name, item + "_history")
-                        ]);
-                      })
-                      .push(null, function (my_error) {
-                        throw my_error;
-                      })
-                  );
-                }
-              }
-          }
-          return RSVP.all(store_list);
-        });
-    }
-    */
 
     // XXX resolve promise chain! not just close
     if (my_parameter !== undefined) {
@@ -721,13 +644,10 @@
           text_input,
           my_context;
 
-        console.log("Opening dialog (extension)")
         my_context = my_context || this;
         my_option_dict = my_option_dict || {};
         dialog = setDialog(my_context, my_template, my_option_dict.bottom);
 
-        console.log("dialog created")
-        console.log(dialog)
         // evaluate state
         function dialog_evaluateState(my_parameter) {
           return new RSVP.Queue()
@@ -752,16 +672,11 @@
           return setFileMenuItem(dialog, my_parameter);
         }
         CodeMirror.menu_dict.updateFileMenu = dialog_updateFileMenu;
-  
-        console.log("here we go with opening")
+
         text_input = dialog.querySelector("input[type='text']");
         if (text_input) {
           text_input.focus();
-          
-          console.log("we are setting the value of textinput to what was passed in option_dict.value")
-          console.log("this should not be set on a new file")
-          console.log("where does the value come from")
-          console.log(dialog_option_dict)
+
           text_input.value = my_option_dict.value;
           if (my_option_dict.selectValueOnOpen !== false) {
             text_input.select();
@@ -1042,8 +957,6 @@
       parameter;
 
     if (position === "idle") {
-      console.log("opening dialog because there is none")
-      console.log("dialog_option_dict will be passed, value is null")
       return my_codemirror.openDialog(
         editor_setNavigationMenu(my_direction),
         editor_closeCallback,

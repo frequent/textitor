@@ -1,12 +1,9 @@
 
 => progress
 - saving a file without menu-open should also save to worker and remove star
-- rename in files menu
-- rename in file menu, removes old file
-- delete in files menu
-- warn of modified content before closing
-- save and close all
-- delete selected file(s)
+- select all, save all, delete all, use same keys as in single file menu
+- delete file(s) from files menu
+- warn of modified content before closing tab, deleting files
 - filter list of files
 - form layout stinks
 - rename all methods consistently
@@ -14,7 +11,6 @@
 - create new cache
 - new cache accessible through arrow left + left
 - show only files in cache, not cache itself?
-- add listener for editor tab close
 
 => maintain self
 - create own cache, add all files there to allow editing texitor itself
@@ -25,15 +21,32 @@
 
 => gitstorage
   - replicate with indexeddb and remote gitstorage
+  - createJIO = gitinit => create new repo, this method is to update git config
+  - calling createJIO will only update existing git folder if there is one
+  - parameters:
+    * fork - url => else create empty git
+    * upstream - where to send stuff, else local, must be reinitialized
+    * user
+    * pass
+  - documents are branches, attachments are files?
+  - post-document = create new branch
+  - remove-document = delete branch
+  - get-document = checkout branch
+  - put?
+  - putAttachment = commit file
+  - getAttachment = ?
+  - removeAttachment = ?
+  - repair = push all branches? one branch?
 
 => cachestorage
-  - serviceworker
   - this is my filesystem to work on, create, edit, delete, ....
   - must work offline
   - commit will do a diff with local gitstorage, allow to init?
   - can add everything to gitstorage. push will send to master
 
 => github API
+
+
 
 https://github.com/michael/github > instructions
 http://rawgit.com/TristanCavelier/apps/master/app/code-editor/index.html
@@ -53,3 +66,4 @@ serverless.getTree("master", function (err, tree) {if (err) {console.log("error"
   - if document per branch, files are attachments, editing and saving updates attachments
   - of a diff is a new attachment?
   
+
