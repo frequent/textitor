@@ -8,7 +8,7 @@
 - form layout stinks
 - rename all methods consistently
 - merge duplicate storage code in updateStorage
-- create new cache
+- create new cache, consider cache or folders
 - new cache accessible through arrow left + left
 - show only files in cache, not cache itself?
 
