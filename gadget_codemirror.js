@@ -334,8 +334,17 @@
     if (action === "open") {
       file_name_input = my_dialog.querySelector('input:checked');
       if (file_name_input) {
-        file_name = file_name_input.nextSibling.textContent.split(" | ")[1].split("*")[0];
+
         active_cache = CodeMirror.menu_dict.active_cache || "textitor";
+        file_name = file_name_input.nextSibling.textContent.split(" | ")[1];
+
+        // set modified if it's a file which was not saved before
+        if (file_name.indexOf("*") > 0) {
+          CodeMirror.menu_dict.editor_setModified();
+        }
+
+        // drop the star
+        file_name = file_name.split("*")[0];
         
         return new RSVP.Queue()
           .push(function () {
@@ -371,7 +380,7 @@
             return RSVP.all([
               jIO.util.readBlobAsText(my_response_list[0]),
               jIO.util.readBlobAsText(my_response_list[1])
-            ])
+            ]);
           })
           .push(function (my_content) {
             return new RSVP.Queue()
@@ -676,8 +685,10 @@
         text_input = dialog.querySelector("input[type='text']");
         if (text_input) {
           text_input.focus();
-
-          text_input.value = my_option_dict.value;
+          console.log("option or active file?")
+          console.log(my_option_dict.value)
+          console.log(editor_getActiveFile()[0])
+          text_input.value = my_option_dict.value || editor_getActiveFile()[0];
           if (my_option_dict.selectValueOnOpen !== false) {
             text_input.select();
           }
