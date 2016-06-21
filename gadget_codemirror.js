@@ -339,9 +339,9 @@
         file_name = file_name_input.nextSibling.textContent.split(" | ")[1];
 
         // set modified if it's a file which was not saved before
-        if (file_name.indexOf("*") > 0) {
-          CodeMirror.menu_dict.editor_setModified();
-        }
+        //if (file_name.indexOf("*") > 0) {
+        //  CodeMirror.menu_dict.editor_setModified();
+        //}
 
         // drop the star
         file_name = file_name.split("*")[0];
@@ -688,7 +688,8 @@
           console.log("option or active file?")
           console.log(my_option_dict.value)
           console.log(editor_getActiveFile()[0])
-          text_input.value = my_option_dict.value || editor_getActiveFile()[0];
+          //text_input.value = my_option_dict.value || editor_getActiveFile()[0];
+          text_input.value = my_option_dict.value;
           if (my_option_dict.selectValueOnOpen !== false) {
             text_input.select();
           }
