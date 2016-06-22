@@ -74,7 +74,7 @@
         "<b>D</b>elete</button></form>";
   
   var OBJECT_LIST_TEMPLATE = "<span>Search:</span>" +
-    "<input type='text' tabindex='1' />" +
+    "<input type='search' tabindex='1' />" +
     "<span class='custom-menu-typewriter'>CTRL+ALT+</span>" +
     "<form name='search'>" +
       "<button type='submit' tabindex='2' class='custom-menu-button'>" +
