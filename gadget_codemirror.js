@@ -297,8 +297,12 @@
         
         return new RSVP.Queue()
           .push(function () {
-            console.log("binding to focus, but it may be already...")
-            console.log(document.activeElement)
+            
+            // if input already has focus, blur first
+            if (document.activeElement === my_input) {
+              console.log("Blurring")
+              my_input.blur();
+            }
             return promiseEventListener(my_input, 'focus', false);
           })
           .push(function () {
