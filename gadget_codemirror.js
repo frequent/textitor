@@ -332,11 +332,8 @@
 
     // open = get from memory or serviceworker, close previous file    
     if (action === "open") {
-      console.log("opening")
       file_name_input = my_dialog.querySelector('input:checked');
       if (file_name_input) {
-        console.log("what's in textinput")
-        
 
         active_cache = CodeMirror.menu_dict.active_cache || "textitor";
         file_name = file_name_input.nextSibling.textContent.split(" | ")[1];
@@ -344,6 +341,7 @@
 
         // set modified if it's a file which was not saved before
         if (file_name.indexOf("*") > 0) {
+          console.log("WE SHOULD BLINK SAVE")
         //  CodeMirror.menu_dict.editor_setModified();
         }
 
@@ -686,15 +684,11 @@
         }
         CodeMirror.menu_dict.updateFileMenu = dialog_updateFileMenu;
 
+        // XXX: this can be any dialog. make it more specific (= single file)
         text_input = dialog.querySelector("input[type='text']");
         if (text_input) {
           text_input.focus();
-          console.log("option or active file?")
-          console.log(my_option_dict.value)
-          console.log(editor_getActiveFile()[0])
-          console.log("setting form input to whatever is active")
           text_input.value = my_option_dict.value || editor_getActiveFile()[0];
-          //text_input.value = my_option_dict.value;
           if (my_option_dict.selectValueOnOpen !== false) {
             text_input.select();
           }
@@ -954,6 +948,7 @@
   CodeMirror.commands.myEditor_closeDialog = editor_closeDialog;
 
   function editor_saveFromDialog() {
+    console.log("save from dialog")
     if (CodeMirror.menu_dict.position !== "left") {
       return CodeMirror.menu_dict.evaluateState({"target":{"name": "save"}});
     }
@@ -961,6 +956,7 @@
   CodeMirror.commands.myEditor_saveFromDialog = editor_saveFromDialog;
 
   function editor_openFromDialog() {
+    console.log("open from dialog")
     if (CodeMirror.menu_dict.position === "left") {
       return CodeMirror.menu_dict.evaluateState({"target":{"name": "open"}});
     }
