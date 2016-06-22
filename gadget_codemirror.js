@@ -959,12 +959,14 @@
     console.log("pech..., if we are not left, nothing happens")
     console.log(CodeMirror.menu_dict.position)
     if (CodeMirror.menu_dict.position !== "left") {
-      
+      console.log("IN, mais")
       // evaluateState is declared on first dialog open, if someone saves before
       // opening, it would raise an error so we default to opening the dialog
       if (CodeMirror.menu_dict.evaluateState) {
+        console.log("eval triggers")
         return CodeMirror.menu_dict.evaluateState({"target":{"name": "save"}});
       } else {
+        console.log("we should open")
         return my_codemirror.openDialog(
           editor_setNavigationMenu("right"),
           editor_closeCallback,
