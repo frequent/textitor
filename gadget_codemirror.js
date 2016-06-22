@@ -686,11 +686,12 @@
         }
         CodeMirror.menu_dict.updateFileMenu = dialog_updateFileMenu;
 
-        // XXX: this can be any dialog. make it more specific (= single file)
         text_input = dialog.querySelector("input[type='text']");
         if (text_input) {
           text_input.focus();
-          text_input.value = my_option_dict.value || editor_getActiveFile()[0];
+          if (CodeMirror.menu_dict.position === 'right') {
+            text_input.value = my_option_dict.value || editor_getActiveFile()[0];
+          }
           if (my_option_dict.selectValueOnOpen !== false) {
             text_input.select();
           }
@@ -865,7 +866,6 @@
 
     // ovrride chrome page start/end shortcut
     if (my_event.keyCode === 35) {
-      console.log("navigate up key?")
       CodeMirror.commands.myEditor_navigateVertical(undefined, "up");
     }
     if (my_event.keyCode === 36) {
@@ -1005,8 +1005,6 @@
   CodeMirror.commands.myEditor_navigateHorizontal = editor_navigateHorizontal;
 
   function editor_navigateVertical(my_codemirror, my_direction) {
-    console.log("VERTICAL")
-    console.log(my_direction)
     return CodeMirror.menu_dict.updateFileMenu(my_direction);
   }
   CodeMirror.commands.myEditor_navigateVertical = editor_navigateVertical;
@@ -1022,7 +1020,6 @@
   CodeMirror.commands.myEditor_navigateLeft = editor_navigateLeft;
   
   function editor_navigateUp(cm) {
-    console.log("navigate up?")
     return CodeMirror.commands.myEditor_navigateVertical(cm, "up");
   }
   CodeMirror.commands.myEditor_navigateUp = editor_navigateUp;
