@@ -332,18 +332,20 @@
 
     // open = get from memory or serviceworker, close previous file    
     if (action === "open") {
+      console.log("opening")
       file_name_input = my_dialog.querySelector('input:checked');
       if (file_name_input) {
+        console.log("what's in textinput")
+        
 
         active_cache = CodeMirror.menu_dict.active_cache || "textitor";
         file_name = file_name_input.nextSibling.textContent.split(" | ")[1];
+        console.log(file_name)
 
         // set modified if it's a file which was not saved before
-        if (file_name.indexOf("*") > 0) {
-          console.log("starred file, should also be in memory?")
-          console.log(file_name)
-          CodeMirror.menu_dict.editor_setModified();
-        }
+        //if (file_name.indexOf("*") > 0) {
+        //  CodeMirror.menu_dict.editor_setModified();
+        //}
 
         // drop the star
         file_name = file_name.split("*")[0];
