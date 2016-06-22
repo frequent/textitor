@@ -292,15 +292,20 @@
   function dialog_flagInput(my_input, my_message) {
     return new RSVP.Queue()
       .push(function () {
-        console.log("flagging")
         my_input.className += ' custom-invalid';
         my_input.value = my_message;
-        return promiseEventListener(my_input, 'focus', false);
-      })
-      .push(function () {
-        console.log("triggered focus")
-        my_input.className = '';
-        my_input.value = '';
+        
+        return new RSVP.Queue()
+          .push(function () {
+            console.log("binding to focus, but it may be already...")
+            console.log(document.activeElement)
+            return promiseEventListener(my_input, 'focus', false);
+          })
+          .push(function () {
+            console.log("triggered focus")
+            my_input.className = '';
+            my_input.value = '';
+          });
       });
   }
 
