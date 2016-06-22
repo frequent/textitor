@@ -478,6 +478,7 @@
         .push(function () {
           dialog_clearTextInput(my_dialog);
           CodeMirror.menu_dict.editor_resetModified();
+          editor_resetActiveFile();
           return true;
         })
         .push(null, function (err) {
