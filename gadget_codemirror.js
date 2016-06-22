@@ -292,11 +292,13 @@
   function dialog_flagInput(my_input, my_message) {
     return new RSVP.Queue()
       .push(function () {
+        console.log("flagging")
         my_input.className += ' custom-invalid';
         my_input.value = my_message;
         return promiseEventListener(my_input, 'focus', false);
       })
       .push(function () {
+        console.log("triggered focus")
         my_input.className = '';
         my_input.value = '';
       });
@@ -854,6 +856,8 @@
 
   function setNavigationCallback(my_event, my_value, my_callback) {
     
+    // handle direct shortcuts, without dialog (and listeners) active
+    
     // esc
     if (my_event.keyCode === 27) {
       CodeMirror.commands.myEditor_closeDialog(my_event);
@@ -874,7 +878,6 @@
 
     // ctrl + alt +
     if (my_event.ctrlKey && my_event.altKey) {
-      console.log("direct shortcut")
       switch(my_event.keyCode) {
         case 68: return CodeMirror.commands.myEditor_deleteFile();  // (d)elete file
         case 67: return CodeMirror.commands.myEditor_closeFile();   // (c)lose file
