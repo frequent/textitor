@@ -294,7 +294,7 @@
       .push(function () {
         my_input.className += ' custom-invalid';
         my_input.value = my_message;
-        my_input.blur();
+        //my_input.blur();
 
         return promiseEventListener(my_input, 'focus', false);
       })
