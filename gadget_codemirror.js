@@ -294,22 +294,13 @@
       .push(function () {
         my_input.className += ' custom-invalid';
         my_input.value = my_message;
-        
-        return new RSVP.Queue()
-          .push(function () {
-            
-            // if input already has focus, blur first
-            if (document.activeElement === my_input) {
-              console.log("Blurring")
-              my_input.blur();
-            }
-            return promiseEventListener(my_input, 'focus', false);
-          })
-          .push(function () {
-            console.log("triggered focus")
-            my_input.className = '';
-            my_input.value = '';
-          });
+        my_input.blur();
+
+        return promiseEventListener(my_input, 'focus', false);
+      })
+      .push(function () {
+        my_input.className = '';
+        my_input.value = '';
       });
   }
 
