@@ -326,12 +326,13 @@
       action,
       content,
       entry_dict;
-    
+    console.log("OK, da simma")
     // determine action
     if (my_parameter && my_parameter.target) {
       action = my_parameter.target.name;
     }
 
+    console.log(action)
     // open = get from memory or serviceworker, close previous file    
     if (action === "open") {
       file_name_input = my_dialog.querySelector('input:checked');
@@ -605,7 +606,8 @@
           });
       }
     }
-
+    console.log("nothing happened")
+    console.lov (my_parmeter)
     // XXX resolve promise chain! not just close
     if (my_parameter !== undefined) {
       return false;
@@ -956,8 +958,6 @@
   CodeMirror.commands.myEditor_closeDialog = editor_closeDialog;
 
   function editor_saveFromDialog(my_codemirror) {
-    console.log("pech..., if we are not left, nothing happens")
-    console.log(CodeMirror.menu_dict.position)
     if (CodeMirror.menu_dict.position !== "left") {
       console.log("IN, mais")
       // evaluateState is declared on first dialog open, if someone saves before
