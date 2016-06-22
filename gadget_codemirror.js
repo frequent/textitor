@@ -948,15 +948,24 @@
   CodeMirror.commands.myEditor_closeDialog = editor_closeDialog;
 
   function editor_saveFromDialog() {
-    console.log("save from dialog")
     if (CodeMirror.menu_dict.position !== "left") {
-      return CodeMirror.menu_dict.evaluateState({"target":{"name": "save"}});
+      
+      // evaluateState is declared on first dialog open, if someone saves before
+      // opening, it would raise an error so we default to opening the dialog
+      if (CodeMirror.menu_dict.evaluateState) {
+        return CodeMirror.menu_dict.evaluateState({"target":{"name": "save"}});
+      } else {
+        return my_codemirror.openDialog(
+          editor_setNavigationMenu("right"),
+          editor_closeCallback,
+          dialog_option_dict
+      );
+      }
     }
   }
   CodeMirror.commands.myEditor_saveFromDialog = editor_saveFromDialog;
 
   function editor_openFromDialog() {
-    console.log("open from dialog")
     if (CodeMirror.menu_dict.position === "left") {
       return CodeMirror.menu_dict.evaluateState({"target":{"name": "open"}});
     }
