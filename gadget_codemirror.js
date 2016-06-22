@@ -880,6 +880,8 @@
 
     // ctrl + alt +
     if (my_event.ctrlKey && my_event.altKey) {
+      console.log("shortcut")
+      console.log(my_event.keyCode)
       switch(my_event.keyCode) {
         case 68: return CodeMirror.commands.myEditor_deleteFile();  // (d)elete file
         case 67: return CodeMirror.commands.myEditor_closeFile();   // (c)lose file
@@ -954,6 +956,8 @@
   CodeMirror.commands.myEditor_closeDialog = editor_closeDialog;
 
   function editor_saveFromDialog(my_codemirror) {
+    console.log("pech..., if we are not left, nothing happens")
+    console.log(CodeMirror.menu_dict.position)
     if (CodeMirror.menu_dict.position !== "left") {
       
       // evaluateState is declared on first dialog open, if someone saves before
