@@ -874,11 +874,12 @@
 
     // ctrl + alt +
     if (my_event.ctrlKey && my_event.altKey) {
+      console.log("direct shortcut")
       switch(my_event.keyCode) {
         case 68: return CodeMirror.commands.myEditor_deleteFile();  // (d)elete file
         case 67: return CodeMirror.commands.myEditor_closeFile();   // (c)lose file
         case 79: return CodeMirror.commands.myEditor_openFromDialog(); // (o)pen
-        case 83: return CodeMirror.commands.myEditor_saveFromDialog(); // (s)ave
+        case 83: return CodeMirror.commands.myEditor_saveFromDialog(CodeMirror); // (s)ave
         case 88: return CodeMirror.commands.myEditor_closeDialog(); // (x)lose dialog
         case 37: return CodeMirror.commands.myEditor_navigateHorizontal(undefined, "left");
         case 38: return CodeMirror.commands.myEditor_navigateVertical(undefined, "up");
@@ -947,7 +948,7 @@
   }
   CodeMirror.commands.myEditor_closeDialog = editor_closeDialog;
 
-  function editor_saveFromDialog() {
+  function editor_saveFromDialog(my_codemirror) {
     if (CodeMirror.menu_dict.position !== "left") {
       
       // evaluateState is declared on first dialog open, if someone saves before
