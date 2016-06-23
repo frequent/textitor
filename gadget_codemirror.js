@@ -326,13 +326,12 @@
       action,
       content,
       entry_dict;
-    console.log("OK, da simma")
+    
     // determine action
     if (my_parameter && my_parameter.target) {
       action = my_parameter.target.name;
     }
 
-    console.log(action)
     // open = get from memory or serviceworker, close previous file    
     if (action === "open") {
       file_name_input = my_dialog.querySelector('input:checked');
@@ -606,8 +605,7 @@
           });
       }
     }
-    console.log("nothing happened")
-    console.lov (my_parmeter)
+
     // XXX resolve promise chain! not just close
     if (my_parameter !== undefined) {
       return false;
@@ -882,8 +880,6 @@
 
     // ctrl + alt +
     if (my_event.ctrlKey && my_event.altKey) {
-      console.log("shortcut")
-      console.log(my_event.keyCode)
       switch(my_event.keyCode) {
         case 68: return CodeMirror.commands.myEditor_deleteFile();  // (d)elete file
         case 67: return CodeMirror.commands.myEditor_closeFile();   // (c)lose file
@@ -959,14 +955,12 @@
 
   function editor_saveFromDialog(my_codemirror) {
     if (CodeMirror.menu_dict.position !== "left") {
-      console.log("IN, mais")
+      
       // evaluateState is declared on first dialog open, if someone saves before
       // opening, it would raise an error so we default to opening the dialog
       if (CodeMirror.menu_dict.evaluateState) {
-        console.log("eval triggers")
         return CodeMirror.menu_dict.evaluateState({"target":{"name": "save"}});
       } else {
-        console.log("we should open")
         return my_codemirror.openDialog(
           editor_setNavigationMenu("right"),
           editor_closeCallback,
