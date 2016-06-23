@@ -504,7 +504,7 @@
       
       if (!file_name && !!content) {
         console.log("THIS ONE, edited a file but no url declared, blank edit and save")
-        return CodeMirror.commands.myEditor_openDialog("right");
+        return CodeMirror.commands.myEditor_openDialog(CodeMirror, "right");
       }
 
       // validate
@@ -987,7 +987,7 @@
         return CodeMirror.menu_dict.evaluateState({"target":{"name": "save"}});
       } else {
         console.log("override")
-        return CodeMirror.commands.myEditor_openDialog("right");
+        return CodeMirror.commands.myEditor_openDialog(CodeMirror, "right");
       }
     }
   }
