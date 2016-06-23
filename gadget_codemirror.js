@@ -494,15 +494,20 @@
       is_cache_name = my_dialog.querySelector('input:checked');
       content = my_gadget.property_dict.editor.getValue();
       
+      console.log("saving we should")
+      console.log(file_name)
+      console.log(content)
       // empty
       if (!file_name && !content) {
         return true;
       }
 
       // validate
-      if (!file_name) {
+      if (!file_name || file_name === "Enter valid URL.") {
         return dialog_flagInput(file_name_input, 'Enter valid URL.');
       }
+
+      console.log("passed validation and empty file")
 
       // not a cache
       if (!is_cache_name) {
@@ -516,6 +521,7 @@
         return dialog_flagInput(file_name_input, 'Create Cache not supported');
       }
 
+      console.log("let's save")
       active_cache = CodeMirror.menu_dict.active_cache || "textitor";
 
       return new RSVP.Queue()
@@ -557,6 +563,7 @@
           return true;
         })
         .push(undefined, function (my_error) {
+          console.log("did not work");
           console.log(my_error);
           throw my_error;
         });
