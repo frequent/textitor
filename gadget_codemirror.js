@@ -501,6 +501,11 @@
       if (!file_name && !content) {
         return true;
       }
+      
+      if (!file_name && !!content) {
+        console.log("THIS ONE, edited a file but no url declared, blank edit and save")
+        return CodeMirror.commands.myEditor_openDialog("right");
+      }
 
       // validate
       if (!file_name || file_name === "Enter valid URL.") {
@@ -960,6 +965,15 @@
   }
   CodeMirror.commands.myEditor_closeDialog = editor_closeDialog;
 
+  function editor_openDialog(my_codemirror, my_direction) {
+    return my_codemirror.openDialog(
+      editor_setNavigationMenu(my_direction),
+      editor_closeCallback,
+      dialog_option_dict
+    );
+  }
+  CodeMirror.commands.myEditor_openDialog = editor_openDialog;
+
   function editor_saveFromDialog(my_codemirror) {
     console.log("Made it to save")
     console.log(CodeMirror.menu_dict.position)
@@ -973,11 +987,7 @@
         return CodeMirror.menu_dict.evaluateState({"target":{"name": "save"}});
       } else {
         console.log("override")
-        return my_codemirror.openDialog(
-          editor_setNavigationMenu("right"),
-          editor_closeCallback,
-          dialog_option_dict
-        );
+        return CodeMirror.commands.myEditor_openDialog("right");
       }
     }
   }
