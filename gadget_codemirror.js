@@ -954,13 +954,16 @@
   CodeMirror.commands.myEditor_closeDialog = editor_closeDialog;
 
   function editor_saveFromDialog(my_codemirror) {
+    console.log("position = " + CodeMirror.menu_dict.position)
     if (CodeMirror.menu_dict.position !== "left") {
-      
+      console.log("handling save")
       // evaluateState is declared on first dialog open, if someone saves before
       // opening, it would raise an error so we default to opening the dialog
       if (CodeMirror.menu_dict.evaluateState) {
+        console.log("default save")
         return CodeMirror.menu_dict.evaluateState({"target":{"name": "save"}});
       } else {
+        console.log("overriding dialog")
         return my_codemirror.openDialog(
           editor_setNavigationMenu("right"),
           editor_closeCallback,
