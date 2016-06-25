@@ -969,6 +969,7 @@
   function editor_openDialog(my_codemirror, my_direction) {
     console.log("opening... what am I passing")
     console.log(my_codemirror)
+    window.foo = my_codemirror;
     return new RSVP.Queue()
       .push(function () {
         return my_codemirror.openDialog(
@@ -1052,8 +1053,6 @@
   CodeMirror.commands.myEditor_navigateLeft = editor_navigateLeft;
   
   function editor_navigateUp(cm) {
-    console.log("WHO IS CM")
-    console.log(cm)
     return CodeMirror.commands.myEditor_navigateVertical(cm, "up");
   }
   CodeMirror.commands.myEditor_navigateUp = editor_navigateUp;
