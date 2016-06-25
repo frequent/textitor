@@ -967,7 +967,8 @@
   CodeMirror.commands.myEditor_closeDialog = editor_closeDialog;
 
   function editor_openDialog(my_codemirror, my_direction) {
-    console.log("opening...")
+    console.log("opening... what am I passing")
+    console.log(my_codemirror)
     return new RSVP.Queue()
       .push(function () {
         return my_codemirror.openDialog(
@@ -976,8 +977,8 @@
           dialog_option_dict
         );
       })
-      .push(null, function (crap) {
-        console.log(crap);
+      .push(null, function (my_error) {
+        console.log(my_error);
       })
   }
   CodeMirror.commands.myEditor_openDialog = editor_openDialog;
@@ -1051,6 +1052,8 @@
   CodeMirror.commands.myEditor_navigateLeft = editor_navigateLeft;
   
   function editor_navigateUp(cm) {
+    console.log("WHO IS CM")
+    console.log(cm)
     return CodeMirror.commands.myEditor_navigateVertical(cm, "up");
   }
   CodeMirror.commands.myEditor_navigateUp = editor_navigateUp;
