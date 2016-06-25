@@ -493,17 +493,16 @@
       file_name = file_name_input.value;
       is_cache_name = my_dialog.querySelector('input:checked');
       content = my_gadget.property_dict.editor.getValue();
-      
-      console.log("saving we should")
-      console.log(file_name)
-      console.log(content)
+
       // empty
       if (!file_name && !content) {
         return true;
       }
       
+      // blank save
       if (!file_name && !!content) {
         console.log("THIS ONE, edited a file but no url declared, blank edit and save")
+        console.log(CodeMirror.menu_dict.position)
         return CodeMirror.commands.myEditor_openDialog(CodeMirror, "idle");
       }
 
@@ -669,7 +668,7 @@
           dialog,
           text_input,
           my_context;
-
+        console.log("INSIDE OPENDIALOG")
         my_context = my_context || this;
         my_option_dict = my_option_dict || {};
         dialog = setDialog(my_context, my_template, my_option_dict.bottom);
@@ -700,6 +699,8 @@
         CodeMirror.menu_dict.updateFileMenu = dialog_updateFileMenu;
 
         text_input = dialog.querySelector("input[type='text']");
+        console.log("?")
+        console.log(text_input)
         if (text_input) {
           text_input.focus();
           if (CodeMirror.menu_dict.position === 'right') {
@@ -966,6 +967,7 @@
   CodeMirror.commands.myEditor_closeDialog = editor_closeDialog;
 
   function editor_openDialog(my_codemirror, my_direction) {
+    console.log("opening...")
     return my_codemirror.openDialog(
       editor_setNavigationMenu(my_direction),
       editor_closeCallback,
