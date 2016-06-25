@@ -968,11 +968,17 @@
 
   function editor_openDialog(my_codemirror, my_direction) {
     console.log("opening...")
-    return my_codemirror.openDialog(
-      editor_setNavigationMenu(my_direction),
-      editor_closeCallback,
-      dialog_option_dict
-    );
+    return new RSVP.Queue()
+      .push(function () {
+        return my_codemirror.openDialog(
+          editor_setNavigationMenu(my_direction),
+          editor_closeCallback,
+          dialog_option_dict
+        );
+      })
+      .push(null, function (crap) {
+        console.log(crap);
+      })
   }
   CodeMirror.commands.myEditor_openDialog = editor_openDialog;
 
