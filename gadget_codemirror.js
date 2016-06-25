@@ -504,7 +504,7 @@
       
       if (!file_name && !!content) {
         console.log("THIS ONE, edited a file but no url declared, blank edit and save")
-        return CodeMirror.commands.myEditor_openDialog(CodeMirror, "right");
+        return CodeMirror.commands.myEditor_openDialog(CodeMirror, "idle");
       }
 
       // validate
