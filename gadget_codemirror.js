@@ -232,8 +232,6 @@
 
   // modified flag
   function editor_setModified(my_gadget) {
-    console.log("setting modified");
-    console.log(my_gadget);
     if (CodeMirror.menu_dict.is_modified !== true) {
       CodeMirror.menu_dict.is_modified = true;
       my_gadget.property_dict.element.querySelector(".CodeMirror").className +=
@@ -687,7 +685,7 @@
 
     if (position === "idle") {
       return my_codemirror.openDialog(
-        CodeMirror.menu_dict.dialog_dialog_setNavigationCallback(my_direction),
+        CodeMirror.menu_dict.dialog_setNavigationCallback(my_direction),
         CodeMirror.menu_dict.dialog_closeCallback,
         CodeMirror.menu_dict.dialog_option_dict
       );
@@ -747,23 +745,13 @@
 
     // Init local properties with CodeMirror custom properties
     .ready(function (my_gadget) {
-      my_gadget.property_dict = CodeMirror.menu_dict;
-
-      console.log(my_gadget.property_dict);
+      var props = my_gadget.property_dict = CodeMirror.menu_dict;
       return my_gadget.getElement()
         .push(function (my_element) {
-          my_gadget.property_dict.element = my_element;
+          props.element = my_element;
+          props.textarea = document.createElement("textarea");
+          props.element.appendChild(props.textarea);
         });
-    })
-
-    // Init CodeMirror textarea and dialog
-    .ready(function (my_gadget) {
-      var props = my_gadget.property_dict;
-      console.log(props);
-      props.textarea = document.createElement("textarea");
-      props.element.appendChild(props.textarea);
-
-      console.log(props.element);
     })
 
     /////////////////////////////
@@ -784,6 +772,44 @@
     /////////////////////////////
     // declared methods
     /////////////////////////////
+    .declareMethod('render', function (my_option_dict) {
+      var gadget = this,
+        dict = gadget.property_dict;
+
+      return new RSVP.Queue()
+        .push(function () {
+          return gadget.dialog_setDialogExtension();
+        })
+        .push(function () {
+
+          // sets editor on CodeMirror.menu_dict
+          // http://codemirror.net/doc/manual.html#config
+          dict.editor = CodeMirror.fromTextArea(dict.textarea, {
+            readOnly: false,
+            matchBrackets: true,
+            autoCloseBrackets: false,
+            showTrailingSpace: true,
+            fullScreen: true,
+            placeholder: PLACEHOLDER,
+            keyMap: "my", // default "default"
+            showCursorWhenSelecting: true,
+            extraKeys: null,
+            lineNumbers: true, // default false
+            tabSize: 2, // default 4
+            smartIndent: true, // default true
+            indentWithTabs: false, // default false
+            lint: false,
+            gutters: ["CodeMirror-lint-markers"],
+            myAutoLint: true,
+            autofocus: true, // default false
+            theme: "rubyblue", // default "default"
+            mode: "text"
+          });
+
+          return gadget;
+        });
+    })
+
     .declareMethod('editor_removeFile', function () {
       var gadget = this, 
         props = CodeMirror.menu_dict,
@@ -1127,65 +1153,26 @@
       return CodeMirror.defineExtension("openDialog", dialogCallback);
     })
 
-    .declareMethod('render', function (my_option_dict) {
-      console.log("RENDER")
-      var gadget = this,
-        dict = gadget.property_dict;
-
-      return new RSVP.Queue()
-        .push(function () {
-          return gadget.dialog_setDialogExtension();
-        })
-        .push(function () {
-
-          // sets editor on CodeMirror.menu_dict
-          // http://codemirror.net/doc/manual.html#config
-          dict.editor = CodeMirror.fromTextArea(dict.textarea, {
-            readOnly: false,
-            matchBrackets: true,
-            autoCloseBrackets: false,
-            showTrailingSpace: true,
-            fullScreen: true,
-            placeholder: PLACEHOLDER,
-            keyMap: "my", // default "default"
-            showCursorWhenSelecting: true,
-            extraKeys: null,
-            lineNumbers: true, // default false
-            tabSize: 2, // default 4
-            smartIndent: true, // default true
-            indentWithTabs: false, // default false
-            lint: false,
-            gutters: ["CodeMirror-lint-markers"],
-            myAutoLint: true,
-            autofocus: true, // default false
-            theme: "rubyblue", // default "default"
-            mode: "text"
-          });
-
-          return gadget;
-        });
-    })
-
     /////////////////////////////
     // declared service
     /////////////////////////////
     .declareService(function () {
       var gadget = this,
-        editor = gadget.property_dict.editor,
-        editor_setModified = new RSVP.Queue()
-          .push(function () {
-            // XXX works?
-            console.log("do we have gadget?")
-            console.log(gadget)
-            return CodeMirror.menu_dict.editor_setModified(gadget);
-          });
+        props = gadget.property_dict,
+        editor = props.editor;
 
       editor.refresh();
       editor.focus();
+      
+      // warn if editor has been changed and window is closed
       return new RSVP.Queue()
         .push(function () {
           return RSVP.all([
-            codeMirrorLoopEventListener(editor, 'change', editor_setModified),
+            codeMirrorLoopEventListener(editor, 'change', function () {
+              console.log("CHANGE")
+              console.log(editor.modified)
+              return props.editor_setModified(gadget);
+            }),
             promiseEventListener(window, "onbeforeunload", true)
           ]);
         })
