@@ -758,16 +758,12 @@
 
     // Init CodeMirror textarea and dialog
     .ready(function (my_gadget) {
-      var editor_textarea = my_gadget.property_dict.element.querySelector("textarea");
-      console.log(editor_textarea)
-      console.log(my_gadget.property_dict)
-      if (editor_textarea === undefined) {
-        console.log("no textarea set")
-        editor_textarea = document.createElement("textarea");
-        my_gadget.property_dict.textarea = editor_textarea;
-        my_gadget.property_dict.element.appendChild(editor_textarea);
-      }
-      console.log(my_gadget.property_dict.element)
+      var props = my_gadget.property_dict;
+      console.log(props);
+      props.textarea = document.createElement("textarea");
+      props.element.appendChild(props.textarea);
+
+      console.log(props.element);
     })
 
     /////////////////////////////
@@ -1201,3 +1197,4 @@
     });
 
 }(window, document, rJS, CodeMirror, JSON, loopEventListener));
+
