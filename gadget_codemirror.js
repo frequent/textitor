@@ -1129,8 +1129,10 @@
         // form submits
         console.log(dialog)
         console.log(dialog.querySelectorAll('form'))
-        console.log(dialog.querySelectorAll('form').map)
-        dialog_form_submit_list = dialog.querySelectorAll('form').map(function(my_element) {
+        console.log(Array.prototype.slice.call(dialog.querySelectorAll('form')).map)
+        dialog_form_submit_list = Array.prototype.slice.call(
+          dialog.querySelectorAll('form')
+        ).map(function(my_element) {
           return wrapBind(my_element, "submit", "onSubmit");
         });
 
