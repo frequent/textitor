@@ -215,10 +215,7 @@
   }
 
   function editor_setDialog(my_editor, my_template, my_bottom) {
-    console.log("setting dialog, need a template")
-    console.log(my_template)
-
-    var wrap = CodeMirror.menu_dict.getWrapperElement(),
+    var wrap = my_editor.getWrapperElement(),
       dialog = wrap.appendChild(document.createElement("div"));
 
     if (my_bottom) {
@@ -694,9 +691,7 @@
     var position = CodeMirror.menu_dict.dialog_position,
       parameter;
 
-    console.log("horizontal navigation")
     if (position === "idle") {
-      console.log("WE ARE DIDLE")
       return my_codemirror.openDialog(
         CodeMirror.menu_dict.dialog_setNavigationMenu(my_direction),
         CodeMirror.menu_dict.dialog_closeCallback,
@@ -1095,10 +1090,6 @@
       var gadget = this;
 
       function dialogCallback(my_template, my_callback, my_option_dict) {
-        console.log("OPENING DIALOG")
-        console.log(my_template)
-        console.log(my_callback)
-        console.log(my_option_dict)
         var queue = new RSVP.Queue(),
           props = CodeMirror.menu_dict,
           editor = props.editor,
