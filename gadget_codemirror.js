@@ -696,9 +696,9 @@
 
     console.log("horizontal navigation")
     if (position === "idle") {
-      consolelog("WE ARE DIDLE")
+      console.log("WE ARE DIDLE")
       return my_codemirror.openDialog(
-        CodeMirror.menu_dict.dialog_setNavigationCallback(my_direction),
+        CodeMirror.menu_dict.dialog_setNavigationMenu(my_direction),
         CodeMirror.menu_dict.dialog_closeCallback,
         CodeMirror.menu_dict.dialog_option_dict
       );
