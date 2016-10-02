@@ -239,6 +239,13 @@
     }
   }
 
+  function editor_isModified(my_gadget) {
+    var element = my_gadget.property_dict.element.querySelector(".CodeMirror");
+    if (element.className.indexOf("custom-set-modified") > -1) {
+      return true;
+    }
+  }
+
   function editor_resetModified(my_gadget) {
     var element = my_gadget.property_dict.element.querySelector(".CodeMirror");
     CodeMirror.menu_dict.is_modified = null;
@@ -568,6 +575,7 @@
   CodeMirror.menu_dict.editor_createDoc = editor_createDoc;
   CodeMirror.menu_dict.editor_setDialog = editor_setDialog;
   CodeMirror.menu_dict.editor_setModified = editor_setModified;
+  CodeMirror.menu_dict.editor_isModified = editor_isModified;
   CodeMirror.menu_dict.editor_resetModified = editor_resetModified;
   CodeMirror.menu_dict.editor_resetActiveFile = editor_resetActiveFile;
   CodeMirror.menu_dict.editor_setActiveFile = editor_setActiveFile;
@@ -1169,16 +1177,16 @@
         .push(function () {
           return RSVP.all([
             codeMirrorLoopEventListener(editor, 'change', function () {
-              console.log("CHANGE")
-              console.log(editor.modified)
               return props.editor_setModified(gadget);
             }),
             promiseEventListener(window, "onbeforeunload", true)
           ]);
         })
         .push(function () {
-          if (editor.modified) {
-            return "Don't forget to save your work!";
+          console.log("CLOSING")
+          if (props.editor_isModified) {
+            console.log("modified...");
+            console.warn("Don't forget to save your work!");
           }
         });
     });
