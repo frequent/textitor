@@ -171,6 +171,7 @@
   CodeMirror.menu_dict.editor = null;
   CodeMirror.menu_dict.editor_active_file = null;
   CodeMirror.menu_dict.editor_active_cache = null;
+  CodeMirror.menu_dict.editor_is_modified = null;
   CodeMirror.menu_dict.dialog = null;
   CodeMirror.menu_dict.dialog_position = "idle";
   CodeMirror.menu_dict.dialog_option_dict = {
@@ -231,26 +232,20 @@
   }
 
   // modified flag
-  function editor_setModified(my_gadget) {
-    if (CodeMirror.menu_dict.is_modified !== true) {
-      CodeMirror.menu_dict.is_modified = true;
-      my_gadget.property_dict.element.querySelector(".CodeMirror").className +=
-        " custom-set-modified";
+  function editor_setModified() {
+    var props = CodeMirror.menu_dict;
+    if (props.editor_is_modified !== true) {
+      props.editor_is_modified = true;
+      props.element.querySelector(".CodeMirror").className += " custom-set-modified";
     }
   }
 
-  function editor_isModified(my_gadget) {
-    var element = my_gadget.property_dict.element.querySelector(".CodeMirror");
-    if (element.className.indexOf("custom-set-modified") > -1) {
-      return true;
-    }
-  }
+  function editor_resetModified() {
+    var props = CodeMirror.menu_dict,
+      element = props.element.querySelector(".CodeMirror");
 
-  function editor_resetModified(my_gadget) {
-    var element = my_gadget.property_dict.element.querySelector(".CodeMirror");
-    CodeMirror.menu_dict.is_modified = null;
-    element.className = element.className
-      .split("custom-set-modified").join("");
+    props.editor_is_modified = null;
+    element.className = element.className.split("custom-set-modified").join("");
   }
 
   // active flag
@@ -575,7 +570,6 @@
   CodeMirror.menu_dict.editor_createDoc = editor_createDoc;
   CodeMirror.menu_dict.editor_setDialog = editor_setDialog;
   CodeMirror.menu_dict.editor_setModified = editor_setModified;
-  CodeMirror.menu_dict.editor_isModified = editor_isModified;
   CodeMirror.menu_dict.editor_resetModified = editor_resetModified;
   CodeMirror.menu_dict.editor_resetActiveFile = editor_resetActiveFile;
   CodeMirror.menu_dict.editor_setActiveFile = editor_setActiveFile;
@@ -864,7 +858,7 @@
             // new_doc = CodeMirror.Doc(""), 
             old_doc = props.editor.swapDoc(new_doc);
           props.editor_resetActiveFile();
-          props.editor_resetModified(gadget);
+          props.editor_resetModified();
           return true;
         })
         .push(null, function (my_error) {
@@ -944,7 +938,7 @@
         .push(function () {
           gadget.property_dict.editor.setOption("mode", mime_type);
           CodeMirror.menu_dict.editor_setActiveFile(file_name, mime_type);
-          CodeMirror.menu_dict.editor_resetModified(gadget);
+          CodeMirror.menu_dict.editor_resetModified();
           return true;
         })
         .push(undefined, function (my_error) {
@@ -974,7 +968,7 @@
             save_mime_type;
 
           // set active file to active and save previous file (old_doc)
-          if (active_file && props.is_modified) {
+          if (active_file && props.editor_is_modified) {
             save_file_name = props.editor_active_file.name,
             save_mime_type = props.editor_active_file.mime_type;
 
@@ -996,7 +990,7 @@
         })
         .push(function () {
           props.dialog_clearTextInput(dialog);
-          props.editor_resetModified(gadget);
+          props.editor_resetModified();
           props.editor_resetActiveFile();
           return true;
         })
@@ -1026,7 +1020,7 @@
 
       if (file_name.indexOf("*") > 0) {
         console.log("already * the file on open?");
-        props.editor_setModified(gadget);
+        props.editor_setModified();
       }
 
       file_name = file_name.split("*")[0];
@@ -1077,7 +1071,7 @@
         .push(function () {
           props.editor.setOption("mode", mime_type);
           props.editor_setActiveFile(file_name, mime_type);
-          props.editor_resetModified(gadget);
+          props.editor_resetModified();
           return true;
         })
         .push(null, function (err) {
@@ -1171,24 +1165,24 @@
 
       editor.refresh();
       editor.focus();
-      
-      // warn if editor has been changed and window is closed
+
+      return codeMirrorLoopEventListener(editor, 'change', function () {
+        return props.editor_setModified();
+      });
+    })
+    
+    .declareService(function () {
+      var gadget;
       return new RSVP.Queue()
         .push(function () {
-          return RSVP.all([
-            codeMirrorLoopEventListener(editor, 'change', function () {
-              return props.editor_setModified(gadget);
-            }),
-            promiseEventListener(window, "onbeforeunload", true)
-          ]);
+          return promiseEventListener(window, "onbeforeunload", true);
         })
         .push(function () {
-          alert("DONE " + props.editor_isModified)
-          if (props.editor_isModified) {
+          alert("CLOSING")
+          if (props.editor_is_modified) {
             return "Don't forget to save your work!";
           }
         });
     });
 
 }(window, document, rJS, CodeMirror, JSON, loopEventListener));
-
