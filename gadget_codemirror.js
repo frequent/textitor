@@ -215,10 +215,9 @@
   }
 
   function editor_setDialog(my_editor, my_template, my_bottom) {
-    console.log(my_editor)
-    console.log(my_editor.getWrapperElement())
+    console.log("setting dialog, need a template")
     console.log(my_template)
-    console.log(my_bottom)
+
     var wrap = CodeMirror.menu_dict.getWrapperElement(),
       dialog = wrap.appendChild(document.createElement("div"));
 
@@ -509,8 +508,12 @@
   }
 
   function dialog_setNavigationMenu(my_direction) {
+    console.log("setting navigation menu")
+    console.log(my_direction)
+
     switch (CodeMirror.menu_dict.dialog_position) {
       case "idle":
+        console.log("position IDLE, direction = " + my_direction)
         CodeMirror.menu_dict.dialog_position = my_direction;
         if (my_direction === "right") {
           return CodeMirror.menu_dict.dialog_parseTemplate(
@@ -520,12 +523,14 @@
         }
         return OBJECT_LIST_TEMPLATE;
       case "left":
+        console.log("position left, direction = " + my_direction)
         if (my_direction === "left") {
           return OBJECT_LIST_TEMPLATE;
         }
         CodeMirror.menu_dict.dialog_position = "idle";
         return;
       case "right":
+        console.log("postion right, direction = " + my_direction);
         if (my_direction === "left") {
           CodeMirror.menu_dict.dialog_position = "idle";
           return;
@@ -689,7 +694,9 @@
     var position = CodeMirror.menu_dict.dialog_position,
       parameter;
 
+    console.log("horizontal navigation")
     if (position === "idle") {
+      consolelog("WE ARE DIDLE")
       return my_codemirror.openDialog(
         CodeMirror.menu_dict.dialog_setNavigationCallback(my_direction),
         CodeMirror.menu_dict.dialog_closeCallback,
@@ -1088,6 +1095,10 @@
       var gadget = this;
 
       function dialogCallback(my_template, my_callback, my_option_dict) {
+        console.log("OPENING DIALOG")
+        console.log(my_template)
+        console.log(my_callback)
+        console.log(my_option_dict)
         var queue = new RSVP.Queue(),
           props = CodeMirror.menu_dict,
           editor = props.editor,
