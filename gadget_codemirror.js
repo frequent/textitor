@@ -394,10 +394,10 @@
     // build a list of folders and file ids stored on memory and serviceworker
     new RSVP.Queue()
       .push(function () {
-        return gadget.setActiveStorage("memory");
+        return my_gadget.setActiveStorage("memory");
       })
       .push(function () {
-        return gadget.jio_allDocs();
+        return my_gadget.jio_allDocs();
       })
       .push(function (my_directory_list) {
         var response_dict = my_directory_list.data,
@@ -409,7 +409,7 @@
           cache_id = response_dict.rows[i].id;
           //entry_dict[i] = {"name": cache_id, "item_list": []};
           directory_content_list.push(
-            gadget.jio_allAttachments(cache_id)
+            my_gadget.jio_allAttachments(cache_id)
           );
         }
         return RSVP.all(directory_content_list);
@@ -426,10 +426,10 @@
             }
           }
         }
-        return gadget.setActiveStorage("serviceworker");
+        return my_gadget.setActiveStorage("serviceworker");
       })
       .push(function () {
-          return gadget.jio_allDocs();
+          return my_gadget.jio_allDocs();
       })
       .push(function (my_directory_list) {
         var response_dict = my_directory_list.data,
@@ -447,7 +447,7 @@
             cache_id = response_dict.rows[i].id;
             entry_dict[i] = {"name": cache_id, "item_list": []};
             directory_content_list.push(
-              gadget.jio_allAttachments(cache_id)
+              my_gadget.jio_allAttachments(cache_id)
             );
           }
         }
@@ -1127,9 +1127,6 @@
         }
 
         // form submits
-        console.log(dialog)
-        console.log(dialog.querySelectorAll('form'))
-        console.log(Array.prototype.slice.call(dialog.querySelectorAll('form')).map)
         dialog_form_submit_list = Array.prototype.slice.call(
           dialog.querySelectorAll('form')
         ).map(function(my_element) {
