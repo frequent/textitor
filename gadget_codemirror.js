@@ -1183,10 +1183,9 @@
           ]);
         })
         .push(function () {
-          console.log("CLOSING")
+          alert("DONE " + props.editor_isModified)
           if (props.editor_isModified) {
-            console.log("modified...");
-            console.warn("Don't forget to save your work!");
+            return "Don't forget to save your work!";
           }
         });
     });
