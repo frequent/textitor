@@ -215,7 +215,11 @@
   }
 
   function editor_setDialog(my_editor, my_template, my_bottom) {
-    var wrap = my_editor.getWrapperElement(),
+    console.log(my_editor)
+    console.log(my_editor.getWrapperElement())
+    console.log(my_template)
+    console.log(my_bottom)
+    var wrap = CodeMirror.menu_dict.getWrapperElement(),
       dialog = wrap.appendChild(document.createElement("div"));
 
     if (my_bottom) {
@@ -1178,7 +1182,6 @@
           return promiseEventListener(window, "onbeforeunload", true);
         })
         .push(function () {
-          alert("CLOSING")
           if (props.editor_is_modified) {
             return "Don't forget to save your work!";
           }
@@ -1186,3 +1189,4 @@
     });
 
 }(window, document, rJS, CodeMirror, JSON, loopEventListener));
+
