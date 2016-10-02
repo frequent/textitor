@@ -415,7 +415,8 @@
         return RSVP.all(directory_content_list);
       })
       .push(function (my_memory_content) {
-        var item,
+        var response,
+          item,
           i;
 
         for (i = 0; i < my_memory_content.length; i += 1) {
