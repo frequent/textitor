@@ -505,12 +505,8 @@
   }
 
   function dialog_setNavigationMenu(my_direction) {
-    console.log("setting navigation menu")
-    console.log(my_direction)
-
     switch (CodeMirror.menu_dict.dialog_position) {
       case "idle":
-        console.log("position IDLE, direction = " + my_direction)
         CodeMirror.menu_dict.dialog_position = my_direction;
         if (my_direction === "right") {
           return CodeMirror.menu_dict.dialog_parseTemplate(
@@ -520,14 +516,12 @@
         }
         return OBJECT_LIST_TEMPLATE;
       case "left":
-        console.log("position left, direction = " + my_direction)
         if (my_direction === "left") {
           return OBJECT_LIST_TEMPLATE;
         }
         CodeMirror.menu_dict.dialog_position = "idle";
         return;
       case "right":
-        console.log("postion right, direction = " + my_direction);
         if (my_direction === "left") {
           CodeMirror.menu_dict.dialog_position = "idle";
           return;
@@ -1133,6 +1127,9 @@
         }
 
         // form submits
+        console.log(dialog)
+        console.log(dialog.querySelectorAll('form'))
+        console.log(dialog.querySelectorAll('form').map)
         dialog_form_submit_list = dialog.querySelectorAll('form').map(function(my_element) {
           return wrapBind(my_element, "submit", "onSubmit");
         });
