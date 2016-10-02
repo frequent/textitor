@@ -747,6 +747,9 @@
 
     // Init local properties with CodeMirror custom properties
     .ready(function (my_gadget) {
+      console.log("READY")
+      console.log(my_gadget)
+      console.log(CodeMirror)
       my_gadget.property_dict = CodeMirror.menu_dict;
 
       return my_gadget.getElement()
@@ -1128,6 +1131,7 @@
     })
 
     .declareMethod('render', function (my_option_dict) {
+      console.log("RENDER")
       var gadget = this,
         dict = gadget.property_dict;
 
