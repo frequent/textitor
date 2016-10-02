@@ -747,11 +747,9 @@
 
     // Init local properties with CodeMirror custom properties
     .ready(function (my_gadget) {
-      console.log("READY")
-      console.log(my_gadget)
-      console.log(CodeMirror)
       my_gadget.property_dict = CodeMirror.menu_dict;
 
+      console.log(my_gadget.property_dict);
       return my_gadget.getElement()
         .push(function (my_element) {
           my_gadget.property_dict.element = my_element;
@@ -761,12 +759,15 @@
     // Init CodeMirror textarea and dialog
     .ready(function (my_gadget) {
       var editor_textarea = my_gadget.property_dict.element.querySelector("textarea");
-
+      console.log(editor_textarea)
+      console.log(my_gadget.property_dict)
       if (editor_textarea === undefined) {
+        console.log("no textarea set")
         editor_textarea = document.createElement("textarea");
         my_gadget.property_dict.textarea = editor_textarea;
         my_gadget.property_dict.element.appendChild(editor_textarea);
       }
+      console.log(my_gadget.property_dict.element)
     })
 
     /////////////////////////////
@@ -1200,4 +1201,3 @@
     });
 
 }(window, document, rJS, CodeMirror, JSON, loopEventListener));
-
