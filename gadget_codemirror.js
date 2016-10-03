@@ -181,6 +181,7 @@
     "value": null,
     "selectValueOnOpen": false,
     "onKeyUp": function (my_event, my_value, my_callback) {
+      console.log("keyup")
       return CodeMirror.menu_dict.dialog_setNavigationCallback(
         my_event,
         my_value,
@@ -188,6 +189,7 @@
       );
     },
     "onInput": function (my_event, my_value, my_callback) {
+      console.log("input")
       return CodeMirror.menu_dict.dialog_setNavigationCallback(
         my_event,
         my_value, 
@@ -487,6 +489,7 @@
   }
 
   function dialog_evaluateState(my_parameter) {
+    console.log("evaluating state")
     var dialog = CodeMirror.menu_dict.dialog;
     return new RSVP.Queue()
       .push(function () {
@@ -505,6 +508,7 @@
   }
 
   function dialog_setNavigationMenu(my_direction) {
+    console.log("dialog_setNavigationMenu")
     switch (CodeMirror.menu_dict.dialog_position) {
       case "idle":
         CodeMirror.menu_dict.dialog_position = my_direction;
@@ -532,7 +536,8 @@
 
   // handle direct shortcuts, without dialog (and listeners) active
   function dialog_setNavigationCallback(my_event, my_value, my_callback) {
-
+    console.log("setNavCallback = shortcut detected")
+    console.log(my_event.keyCode)
     // esc
     if (my_event.keyCode === 27) {
       CodeMirror.commands.myEditor_closeDialog(my_event);
@@ -1147,6 +1152,7 @@
             ]);
           })
           .push(function () {
+            console.log("DONE SETTING UP")
             return props.dialog_evaluateState();
           })
           .push(undefined, function (my_error) {
