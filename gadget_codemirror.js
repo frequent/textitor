@@ -181,7 +181,7 @@
     "value": null,
     "selectValueOnOpen": false,
     "onKeyUp": function (my_event, my_value, my_callback) {
-      console.log("keyup")
+      console.log("KEYUP")
       return CodeMirror.menu_dict.dialog_setNavigationCallback(
         my_event,
         my_value,
@@ -189,7 +189,7 @@
       );
     },
     "onInput": function (my_event, my_value, my_callback) {
-      console.log("input")
+      console.log("INPUT")
       return CodeMirror.menu_dict.dialog_setNavigationCallback(
         my_event,
         my_value, 
@@ -465,15 +465,14 @@
   }
 
   function dialog_evaluateState(my_parameter) {
-    console.log("evaluating state")
     var props = CodeMirror.menu_dict;
     return new RSVP.Queue()
       .push(function () {
-        console.log("updating storage")
+        console.log("Updating storage with parameter = " + my_parameter)
         return props.editor_updateStorage(my_parameter);
       })
       .push(function (my_close_dialog) {
-        console.log("DONE")
+        console.log("DONE updating with = " + my_close_dialog)
         console.log(my_close_dialog)
         if (my_close_dialog === true) {
           if (props.dialog_option_dict.onClose) {
@@ -490,7 +489,6 @@
   }
 
   function dialog_setNavigationMenu(my_direction) {
-    console.log("dialog_setNavigationMenu")
     switch (CodeMirror.menu_dict.dialog_position) {
       case "idle":
         CodeMirror.menu_dict.dialog_position = my_direction;
@@ -516,7 +514,6 @@
     }
   }
 
-  // handle direct shortcuts, without dialog (and listeners) active
   function dialog_setNavigationCallback(my_event, my_value, my_callback) {
     console.log("setNavCallback = shortcut detected")
     console.log(my_event.keyCode)
@@ -540,6 +537,7 @@
 
     // ctrl + alt +
     if (my_event.ctrlKey && my_event.altKey) {
+      console.log("SHORTCUT DETECTED")
       switch(my_event.keyCode) {
         case 68: return CodeMirror.commands.myEditor_deleteFile();  // (d)elete file
         case 67: return CodeMirror.commands.myEditor_closeFile();   // (c)lose file
