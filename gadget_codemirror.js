@@ -388,7 +388,8 @@
   }
 
   function dialog_setFileMenu(my_gadget) {
-    var memory_list = [],
+    var props = CodeMirror.menu_dict, 
+      memory_list = [],
       entry_dict = {};
 
     // build a list of folders and file ids stored on memory and serviceworker
@@ -442,14 +443,12 @@
 
           //entry_dict = {};
           if (response_dict.total_rows === 1) {
-            CodeMirror.menu_dict.editor_active_cache = response_dict.rows[0].id;
+            props.editor_active_cache = response_dict.rows[0].id;
           }
-          for (i = 0; i < len; i += 1) {
+          for (i = 0; i < response_dict.total_rows; i += 1) {
             cache_id = response_dict.rows[i].id;
             entry_dict[i] = {"name": cache_id, "item_list": []};
-            directory_content_list.push(
-              my_gadget.jio_allAttachments(cache_id)
-            );
+            directory_content_list.push(my_gadget.jio_allAttachments(cache_id));
           }
         }
         return RSVP.all(directory_content_list);
@@ -477,7 +476,7 @@
           }
         }
         dialog.insertBefore(
-          CodeMirror.menu_dict.dialog_createFileMenu(entry_dict),
+          props.dialog_createFileMenu(entry_dict),
           dialog.querySelector('span')
         );
       })
