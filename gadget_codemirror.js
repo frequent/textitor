@@ -470,7 +470,7 @@
     return new RSVP.Queue()
       .push(function () {
         console.log("updating storage")
-        return props.editor_updateStorage(gadget, my_parameter);
+        return props.editor_updateStorage(my_parameter);
       })
       .push(function (my_close_dialog) {
         console.log("DONE")
@@ -746,7 +746,7 @@
     // Init CodeMirror methods which require gadget to be passed as parameter
     .ready(function (my_gadget){
       
-      function editor_updateStorage(my_gadget, my_parameter) {
+      function editor_updateStorage(my_parameter) {
         var action;
 
         // returning true closes panel, false leaves it open
