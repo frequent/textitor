@@ -493,9 +493,12 @@
     var dialog = CodeMirror.menu_dict.dialog;
     return new RSVP.Queue()
       .push(function () {
+        console.log("updating storage")
         return CodeMirror.menu_dict.dialog_updateStorage(gadget, my_parameter);
       })
       .push(function (my_close_dialog) {
+        console.log("DONE")
+        console.log(my_close_dialog)
         if (my_close_dialog === true) {
           if (CodeMirror.menu_dict.dialog_option_dict.onClose) {
             CodeMirror.menu_dict.dialog_option_dict.onClose(dialog);
@@ -504,6 +507,9 @@
           CodeMirror.menu_dict.editor.focus();
           CodeMirror.menu_dict.dialog_position = "idle";
         }
+      }, function (e) {
+        console.log(e);
+        throw e;
       });
   }
 
