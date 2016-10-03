@@ -266,30 +266,6 @@
     return [active_file.name || "", active_file.mime_type || ""];
   }
 
-  function editor_updateStorage(my_gadget, my_parameter) {
-    var action;
-
-    // returning true closes panel, false leaves it open
-    if (my_parameter && my_parameter.target) {
-      action = my_parameter.target.name;
-
-      if (action === "open") {
-      return my_gadget.editor_openFile();
-      }
-      if (action === "close") {
-        return my_gadget.editor_swapFile();
-      }
-      if (action === "save") {
-        return my_gadget.editor_saveFile();
-      }
-      if (action === "remove") {
-        return my_gadget.editor_removeFile();
-      }
-      return true;
-    }
-    return false;
-  }
-
   function dialog_flagInput(my_input, my_message) {
     return new RSVP.Queue()
       .push(function () {
@@ -490,22 +466,22 @@
 
   function dialog_evaluateState(my_parameter) {
     console.log("evaluating state")
-    var dialog = CodeMirror.menu_dict.dialog;
+    var props = CodeMirror.menu_dict;
     return new RSVP.Queue()
       .push(function () {
         console.log("updating storage")
-        return CodeMirror.menu_dict.dialog_updateStorage(gadget, my_parameter);
+        return props.editor_updateStorage(gadget, my_parameter);
       })
       .push(function (my_close_dialog) {
         console.log("DONE")
         console.log(my_close_dialog)
         if (my_close_dialog === true) {
-          if (CodeMirror.menu_dict.dialog_option_dict.onClose) {
-            CodeMirror.menu_dict.dialog_option_dict.onClose(dialog);
+          if (props.dialog_option_dict.onClose) {
+            props.dialog_option_dict.onClose(dialog);
           }
-          dialog.parentNode.removeChild(dialog);
-          CodeMirror.menu_dict.editor.focus();
-          CodeMirror.menu_dict.dialog_position = "idle";
+          props.dialog.parentNode.removeChild(props.dialog);
+          props.editor.focus();
+          props.dialog_position = "idle";
         }
       }, function (e) {
         console.log(e);
@@ -585,7 +561,7 @@
   CodeMirror.menu_dict.editor_resetActiveFile = editor_resetActiveFile;
   CodeMirror.menu_dict.editor_setActiveFile = editor_setActiveFile;
   CodeMirror.menu_dict.editor_getActiveFile = editor_getActiveFile;
-  CodeMirror.menu_dict.editor_updateStorage = editor_updateStorage;
+  //CodeMirror.menu_dict.editor_updateStorage = editor_updateStorage;
   CodeMirror.menu_dict.dialog_flagInput = dialog_flagInput;
   CodeMirror.menu_dict.dialog_parseTemplate = dialog_parseTemplate;
   CodeMirror.menu_dict.dialog_createFileMenu = dialog_createFileMenu;
@@ -765,6 +741,35 @@
           props.textarea = document.createElement("textarea");
           props.element.appendChild(props.textarea);
         });
+    })
+    
+    // Init CodeMirror methods which require gadget to be passed as parameter
+    .ready(function (my_gadget){
+      
+      function editor_updateStorage(my_gadget, my_parameter) {
+        var action;
+
+        // returning true closes panel, false leaves it open
+        if (my_parameter && my_parameter.target) {
+          action = my_parameter.target.name;
+    
+          if (action === "open") {
+          return my_gadget.editor_openFile();
+          }
+          if (action === "close") {
+            return my_gadget.editor_swapFile();
+          }
+          if (action === "save") {
+            return my_gadget.editor_saveFile();
+          }
+          if (action === "remove") {
+            return my_gadget.editor_removeFile();
+          }
+          return true;
+        }
+        return false;
+      }
+      CodeMirror.menu_dict.editor_updateStorage = editor_updateStorage;
     })
 
     /////////////////////////////
@@ -1158,7 +1163,6 @@
             ]);
           })
           .push(function () {
-            console.log("DONE SETTING UP")
             return props.dialog_evaluateState();
           })
           .push(undefined, function (my_error) {
