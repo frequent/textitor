@@ -889,7 +889,9 @@
         file_name = file_name_input.value,
         is_cache_name = dialog.querySelector('input:checked'),
         content = props.editor.getValue(),
-        active_cache = props.editor_active_cache || "textitor";
+        active_cache = props.editor_active_cache || "textitor",
+        mime_type_input,
+        mime_type;
 
       // save = store on serviceworker, remove from memory
 
