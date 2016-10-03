@@ -475,9 +475,9 @@
             }
           }
         }
-        dialog.insertBefore(
+        props.dialog.insertBefore(
           props.dialog_createFileMenu(entry_dict),
-          dialog.querySelector('span')
+          props.dialog.querySelector('span')
         );
       })
       .push(null, function (err) {
