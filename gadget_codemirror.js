@@ -899,11 +899,16 @@
             return gadget.dialog_setDialogExtension();
           })
           .push(function () {
+            console.log("DONE")
+          })
+          /*
+          .push(function () {
             return CodeMirror.commands.myEditor_openDialog(CodeMirror, "right");
           })
           .push(function () {
             return gadget.editor_saveFile();
           });
+          */
       }
 
       file_name_input = dialog.querySelector("input[type='text']");
