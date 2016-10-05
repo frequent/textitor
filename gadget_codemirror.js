@@ -1022,6 +1022,7 @@
         dialog = props.dialog,
         file_name_input = dialog.querySelector('input:checked'),
         file_name,
+        load_name,
         active_cache,
         mime_type;
 
@@ -1032,13 +1033,7 @@
 
       active_cache = props.editor_active_cache || "textitor";
       file_name = file_name_input.nextSibling.textContent.split(" | ")[1];
-
-      if (file_name.indexOf("*") > 0) {
-        console.log("already * the file on open?");
-        props.editor_setModified();
-      }
-
-      file_name = file_name.split("*")[0];
+      load_name = file_name.split("*")[0];
 
       // try to fetch from memory
       return new RSVP.Queue()
@@ -1047,8 +1042,8 @@
         })
         .push(function () {
           return RSVP.all([
-            gadget.jio_getAttachment(active_cache, file_name),
-            gadget.jio_getAttachment(active_cache, file_name + "_history")
+            gadget.jio_getAttachment(active_cache, load_name),
+            gadget.jio_getAttachment(active_cache, load_name + "_history")
           ]);
         })
         .push(null, function (my_error) {
@@ -1062,7 +1057,7 @@
               })
               .push(function () {
                 return RSVP.all([
-                  gadget.jio_getAttachment(active_cache, file_name),
+                  gadget.jio_getAttachment(active_cache, load_name),
                   new Blob([])
                 ]);
               })
@@ -1085,8 +1080,13 @@
         })
         .push(function () {
           props.editor.setOption("mode", mime_type);
-          props.editor_setActiveFile(file_name, mime_type);
-          props.editor_resetModified();
+          props.editor_setActiveFile(load_name, mime_type);
+
+          if (file_name.indexOf("*") > 0) {
+            props.editor_setModified();
+          } else {
+            props.editor_resetModified();
+          }
           return true;
         })
         .push(null, function (err) {
