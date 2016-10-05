@@ -893,8 +893,7 @@
       // save = store on serviceworker, remove from memory
 
       // saving without open dialog, force open
-      if (dialog === undefined) {
-        console.log("Save without dialog");
+      if (dialog === null) {
         return new RSVP.Queue()
           .push(function () {
             return CodeMirror.commands.myEditor_openDialog(CodeMirror, "right");
