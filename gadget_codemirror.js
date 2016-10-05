@@ -882,15 +882,33 @@
       var gadget = this,
         props = CodeMirror.menu_dict,
         dialog = props.dialog,
-        file_name_input = dialog.querySelector("input[type='text']"),
-        file_name = file_name_input.value,
-        is_cache_name = dialog.querySelector('input:checked'),
-        content = props.editor.getValue(),
-        active_cache = props.editor_active_cache || "textitor",
+        file_name_input,
+        file_name,
+        is_cache_name,
+        content,
+        active_cache,
         mime_type_input,
         mime_type;
 
       // save = store on serviceworker, remove from memory
+
+      // saving without open dialog, force open
+      if (dialog === undefined) {
+        console.log("Save without dialog");
+        return new RSVP.Queue()
+          .push(function () {
+            return CodeMirror.commands.myEditor_openDialog(CodeMirror, "right");
+          })
+          .push(function () {
+            return gadget.editor_saveFile();
+          });
+      }
+
+      file_name_input = dialog.querySelector("input[type='text']");
+      file_name = file_name_input.value;
+      is_cache_name = dialog.querySelector('input:checked');
+      content = props.editor.getValue();
+      active_cache = props.editor_active_cache || "textitor";
 
       // empty
       if (!file_name && !content) {
