@@ -901,15 +901,16 @@
       // saving without open dialog, force open
       if (dialog === null) {
         console.log("dialog is null...")
-        console.log(CodeMirror)
-        console.log()
+        console.log(CodeMirror.commands)
         return new RSVP.Queue()
           .push(function () {
-            return CodeMirror.commands.myEditor_openDialog(CodeMirror, "right");
+            return CodeMirror.commands.myEditor_openDialog(CodeMirror.commands, "right");
           })
+          /*
           .push(function () {
             return gadget.editor_saveFile();
           });
+        */
       }
 
       file_name_input = dialog.querySelector("input[type='text']");
