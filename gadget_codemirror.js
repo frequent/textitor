@@ -533,6 +533,8 @@
   function editor_openDialog(my_codemirror, my_direction) {
     return new RSVP.Queue()
       .push(function () {
+        console.log("Opening CodeMirror Dialog")
+        console.log(my_direction)
         return my_codemirror.openDialog(
           CodeMirror.menu_dict.dialog_setNavigationMenu(my_direction),
           CodeMirror.menu_dict.dialog_closeCallback,
@@ -894,21 +896,14 @@
 
       // saving without open dialog, force open
       if (dialog === null) {
+        console.log("dialog is null...")
         return new RSVP.Queue()
-          .push(function () {
-            return gadget.dialog_setDialogExtension();
-          })
-          .push(function () {
-            console.log("DONE")
-          })
-          /*
           .push(function () {
             return CodeMirror.commands.myEditor_openDialog(CodeMirror, "right");
           })
           .push(function () {
             return gadget.editor_saveFile();
           });
-          */
       }
 
       file_name_input = dialog.querySelector("input[type='text']");
@@ -1137,7 +1132,7 @@
           dialog_form_submit_list = [],
           dialog_input,
           dialog;
-
+        console.log("IN")
         dialog = props.dialog = props.editor_setDialog(editor, my_template, opts.bottom);
         dialog_input = dialog.querySelector("input[type='text']");
         closeNotification(props.editor, null);
