@@ -727,7 +727,7 @@
             theme: "rubyblue", // default "default"
             mode: "text"
           });
-
+		  console.log(gadget.property_dict.editor)
           return gadget;
         });
     })
