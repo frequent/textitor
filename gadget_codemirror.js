@@ -1022,9 +1022,10 @@
         dialog = props.dialog,
         file_name_input = dialog.querySelector('input:checked'),
         file_name,
-        load_name,
+        open_name,
         active_cache,
-        mime_type;
+        mime_type,
+        xxx;
 
       // open = get from memory/serviceworker, close and store any open file!   
       if (file_name_input === null) {
@@ -1033,7 +1034,15 @@
 
       active_cache = props.editor_active_cache || "textitor";
       file_name = file_name_input.nextSibling.textContent.split(" | ")[1];
-      load_name = file_name.split("*")[0];
+
+      // show "save" hint when a file has not been saved
+      if (file_name.indexOf("*") > 0) {
+        console.log("already * the file on open?");
+        props.editor_setModified();
+        xxx = true;
+      }
+
+      open_name = file_name.split("*")[0];
 
       // try to fetch from memory
       return new RSVP.Queue()
@@ -1042,8 +1051,8 @@
         })
         .push(function () {
           return RSVP.all([
-            gadget.jio_getAttachment(active_cache, load_name),
-            gadget.jio_getAttachment(active_cache, load_name + "_history")
+            gadget.jio_getAttachment(active_cache, open_name),
+            gadget.jio_getAttachment(active_cache, open_name + "_history")
           ]);
         })
         .push(null, function (my_error) {
@@ -1057,7 +1066,7 @@
               })
               .push(function () {
                 return RSVP.all([
-                  gadget.jio_getAttachment(active_cache, load_name),
+                  gadget.jio_getAttachment(active_cache, open_name),
                   new Blob([])
                 ]);
               })
@@ -1080,11 +1089,8 @@
         })
         .push(function () {
           props.editor.setOption("mode", mime_type);
-          props.editor_setActiveFile(load_name, mime_type);
-
-          if (file_name.indexOf("*") > 0) {
-            props.editor_setModified();
-          } else {
+          props.editor_setActiveFile(open_name, mime_type);
+          if (xxx === undefined) {
             props.editor_resetModified();
           }
           return true;
