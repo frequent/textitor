@@ -1,21 +1,30 @@
 
 => progress
+- add tests...
+- only pass simple parameters around
+- can't save when coming from file menu! fails on "default" > no filename we should override and open dialog!
+- bad ui to blur
+- Throw on existing file with same name
+- I'm missing save when editing and leaving
+- fix opening/closing and going between files
 - saving a file without menu-open should also save to worker and remove star
 - select all, save all, delete all, use same keys as in single file menu
 - delete file(s) from files menu
 - warn of modified content before closing tab, deleting files
 - filter list of files
 - form layout stinks
-- rename all methods consistently
-- merge duplicate storage code in updateStorage
 - create new cache, consider cache or folders
 - new cache accessible through arrow left + left
 - show only files in cache, not cache itself?
+- focus field on invalid entry?
+- set position on force open dialog so shortcuts work
 
 => maintain self
 - create own cache, add all files there to allow editing texitor itself
 
 => test
+
+=> make it work on softinst? 
 
 => speak?
 
