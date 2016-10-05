@@ -535,6 +535,10 @@
       .push(function () {
         console.log("Opening CodeMirror Dialog")
         console.log(my_direction)
+        console.log(my_codemirror)
+        console.log(CodeMirror)
+        console.log(my_codemirror.openDialog)
+        console.log(CodeMirror.openDialog)
         return my_codemirror.openDialog(
           CodeMirror.menu_dict.dialog_setNavigationMenu(my_direction),
           CodeMirror.menu_dict.dialog_closeCallback,
@@ -897,6 +901,8 @@
       // saving without open dialog, force open
       if (dialog === null) {
         console.log("dialog is null...")
+        console.log(CodeMirror)
+        console.log()
         return new RSVP.Queue()
           .push(function () {
             return CodeMirror.commands.myEditor_openDialog(CodeMirror, "right");
