@@ -896,6 +896,9 @@
       if (dialog === null) {
         return new RSVP.Queue()
           .push(function () {
+            return gadget.dialog_setDialogExtension();
+          })
+          .push(function () {
             return CodeMirror.commands.myEditor_openDialog(CodeMirror, "right");
           })
           .push(function () {
