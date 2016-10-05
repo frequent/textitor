@@ -1026,9 +1026,7 @@
         mime_type;
 
       // open = get from memory/serviceworker, close and store any open file!   
-
-      if (file_name_input === undefined) {
-        console.log("HELLO, close?!?")
+      if (file_name_input === null) {
         return true;
       }
 
