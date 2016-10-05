@@ -602,6 +602,9 @@
   }
 
   function editor_navigateLeft(cm) {
+    console.log("LEFTY")
+    console.log(CodeMirror)
+    console.log(cm)
     return CodeMirror.commands.myEditor_navigateHorizontal(cm, "left");
   }
 
@@ -902,11 +905,11 @@
       if (dialog === null) {
         console.log("dialog is null...")
         console.log(CodeMirror.commands)
+        /*
         return new RSVP.Queue()
           .push(function () {
             return CodeMirror.commands.myEditor_openDialog(CodeMirror.commands, "right");
           })
-          /*
           .push(function () {
             return gadget.editor_saveFile();
           });
