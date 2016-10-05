@@ -1028,6 +1028,7 @@
       // open = get from memory/serviceworker, close and store any open file!   
 
       if (file_name_input === undefined) {
+        console.log("HELLO, close?!?")
         return true;
       }
 
