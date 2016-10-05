@@ -181,7 +181,7 @@
     "value": null,
     "selectValueOnOpen": false,
     "onKeyUp": function (my_event, my_value, my_callback) {
-      console.log("KEYUP")
+      //console.log("KEYUP")
       return CodeMirror.menu_dict.dialog_setNavigationCallback(
         my_event,
         my_value,
@@ -189,7 +189,7 @@
       );
     },
     "onInput": function (my_event, my_value, my_callback) {
-      console.log("INPUT")
+      //console.log("INPUT")
       return CodeMirror.menu_dict.dialog_setNavigationCallback(
         my_event,
         my_value, 
@@ -369,12 +369,9 @@
     var props = CodeMirror.menu_dict;
     return new RSVP.Queue()
       .push(function () {
-        console.log("Updating storage with parameter = " + my_parameter)
         return props.editor_updateStorage(my_parameter);
       })
       .push(function (my_close_dialog) {
-        console.log("DONE updating with = " + my_close_dialog)
-        console.log(my_close_dialog)
         if (my_close_dialog === true) {
           if (props.dialog_option_dict.onClose) {
             props.dialog_option_dict.onClose(dialog);
@@ -416,8 +413,8 @@
   }
 
   function dialog_setNavigationCallback(my_event, my_value, my_callback) {
-    console.log("setNavCallback = shortcut detected")
-    console.log(my_event.keyCode)
+    //console.log("setNavCallback = shortcut detected")
+    //console.log(my_event.keyCode)
     // esc
     if (my_event.keyCode === 27) {
       CodeMirror.commands.myEditor_closeDialog(my_event);
@@ -438,7 +435,7 @@
 
     // ctrl + alt +
     if (my_event.ctrlKey && my_event.altKey) {
-      console.log("SHORTCUT DETECTED")
+      //console.log("SHORTCUT DETECTED")
       switch(my_event.keyCode) {
         case 68: return CodeMirror.commands.myEditor_deleteFile();  // (d)elete file
         case 67: return CodeMirror.commands.myEditor_closeFile();   // (c)lose file
@@ -902,7 +899,7 @@
 
       // blank save
       if (!file_name && !!content) {
-        console.log("edited a file but no url declared, blank edit and save");
+        //console.log("edited a file but no url declared, blank edit and save");
       }
 
       // validate URL
@@ -1006,8 +1003,9 @@
         })
         .push(function () {
           props.dialog_clearTextInput(dialog);
-          props.editor_resetModified();
-          props.editor_resetActiveFile();
+          console.log("resetting from SWAP")
+          //props.editor_resetModified();
+          //props.editor_resetActiveFile();
           return true;
         })
         .push(null, function (err) {
@@ -1088,6 +1086,7 @@
           return gadget.editor_swapFile(my_content);
         })
         .push(function () {
+          console.log("resetting from OPEN")
           props.editor.setOption("mode", mime_type);
           props.editor_setActiveFile(open_name, mime_type);
           if (xxx === undefined) {
