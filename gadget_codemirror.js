@@ -896,7 +896,8 @@
       // dialog not initialized or closed
       if (!dialog || !props.element.querySelector(".CodeMirror-dialog")) {
         console.log("NOT OPEN")
-        CodeMirror.commands.myEditor_navigateHorizontal(props.editor, "right");
+        CodeMirror.commands.myEditor_openDialog(props.editor, "right");
+        //CodeMirror.commands.myEditor_navigateHorizontal(props.editor, "right");
         //return;
       }
 
