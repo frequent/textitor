@@ -181,6 +181,7 @@
     "value": null,
     "selectValueOnOpen": false,
     "onKeyUp": function (my_event, my_value, my_callback) {
+      console.log("KEYUP")
       return CodeMirror.menu_dict.dialog_setNavigationCallback(
         my_event,
         my_value,
@@ -188,6 +189,7 @@
       );
     },
     "onInput": function (my_event, my_value, my_callback) {
+      console.log("INPUT")
       return CodeMirror.menu_dict.dialog_setNavigationCallback(
         my_event,
         my_value, 
@@ -411,7 +413,9 @@
   }
 
   function dialog_setNavigationCallback(my_event, my_value, my_callback) {
-    
+    console.log("got something")
+    console.log(my_event)
+    console.log(my_value)
     // esc
     if (my_event.keyCode === 27) {
       CodeMirror.commands.myEditor_closeDialog(my_event);
@@ -427,6 +431,7 @@
 
     // input
     if (my_event.type === "input") {
+      console.log("IIINPUT!")
       my_callback(my_value);
     }
     console.log(my_event)
@@ -446,6 +451,7 @@
         case 40: return CodeMirror.commands.myEditor_navigateVertical(undefined, "down");
       }
     }
+    console.log("NOW?")
   }
 
   CodeMirror.menu_dict.editor_createDoc = editor_createDoc;
