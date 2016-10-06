@@ -574,13 +574,8 @@
     if (position === my_direction) {
       parameter = false;
     }
-    // no, why do we save?
-    //if (position === "right" && my_direction === "left"
-    //  && CodeMirror.menu_dict.editor_active_file) {
-    //  parameter = {"target": {"name": "save"}};
-    //}
     if (position === "right" && my_direction == "left") {
-      parameter = true;
+      parameter = false;
     }
     if (position === "left" && my_direction === "right") {
       parameter = {"target": {"name": "open"}};
