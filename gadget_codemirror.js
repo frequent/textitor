@@ -181,7 +181,7 @@
     "value": null,
     "selectValueOnOpen": false,
     "onKeyUp": function (my_event, my_value, my_callback) {
-      //console.log("KEYUP")
+      console.log("KEYUP")
       return CodeMirror.menu_dict.dialog_setNavigationCallback(
         my_event,
         my_value,
@@ -189,7 +189,7 @@
       );
     },
     "onInput": function (my_event, my_value, my_callback) {
-      //console.log("INPUT")
+      console.log("INPUT")
       return CodeMirror.menu_dict.dialog_setNavigationCallback(
         my_event,
         my_value, 
@@ -372,6 +372,8 @@
         return props.editor_updateStorage(my_parameter);
       })
       .push(function (my_close_dialog) {
+        console.log("done")
+        console.log(my_close_dialog)
         if (my_close_dialog === true) {
           if (props.dialog_option_dict.onClose) {
             props.dialog_option_dict.onClose(dialog);
@@ -379,6 +381,8 @@
           props.dialog.parentNode.removeChild(props.dialog);
           props.editor.focus();
           props.dialog_position = "idle";
+        } else {
+          console.log("STUCK")
         }
       }, function (e) {
         console.log(e);
@@ -387,6 +391,7 @@
   }
 
   function dialog_setNavigationMenu(my_direction) {
+    console.log("setting menu from " + my_direction + " and position " + CodeMirror.menu_dict.dialog_position)
     switch (CodeMirror.menu_dict.dialog_position) {
       case "idle":
         CodeMirror.menu_dict.dialog_position = my_direction;
@@ -398,9 +403,11 @@
         }
         return OBJECT_LIST_TEMPLATE;
       case "left":
+        console.log("position left")
         if (my_direction === "left") {
           return OBJECT_LIST_TEMPLATE;
         }
+        console.log("setting idle")
         CodeMirror.menu_dict.dialog_position = "idle";
         return;
       case "right":
@@ -413,8 +420,8 @@
   }
 
   function dialog_setNavigationCallback(my_event, my_value, my_callback) {
-    //console.log("setNavCallback = shortcut detected")
-    //console.log(my_event.keyCode)
+    console.log("setNavCallback = shortcut detected")
+    console.log(my_event.keyCode)
     // esc
     if (my_event.keyCode === 27) {
       CodeMirror.commands.myEditor_closeDialog(my_event);
@@ -435,7 +442,7 @@
 
     // ctrl + alt +
     if (my_event.ctrlKey && my_event.altKey) {
-      //console.log("SHORTCUT DETECTED")
+      console.log("SHORTCUT DETECTED")
       switch(my_event.keyCode) {
         case 68: return CodeMirror.commands.myEditor_deleteFile();  // (d)elete file
         case 67: return CodeMirror.commands.myEditor_closeFile();   // (c)lose file
@@ -533,12 +540,6 @@
   function editor_openDialog(my_codemirror, my_direction) {
     return new RSVP.Queue()
       .push(function () {
-        console.log("Opening CodeMirror Dialog")
-        console.log(my_direction)
-        console.log(my_codemirror)
-        console.log(CodeMirror)
-        console.log(my_codemirror.openDialog)
-        console.log(CodeMirror.openDialog)
         return my_codemirror.openDialog(
           CodeMirror.menu_dict.dialog_setNavigationMenu(my_direction),
           CodeMirror.menu_dict.dialog_closeCallback,
@@ -649,11 +650,12 @@
       
       function editor_updateStorage(my_parameter) {
         var action;
-
+        console.log("updating storage")
+        console.log(my_parameter)
         // returning true closes panel, false leaves it open
         if (my_parameter && my_parameter.target) {
           action = my_parameter.target.name;
-    
+          console.log(action)
           if (action === "open") {
           return my_gadget.editor_openFile();
           }
@@ -668,6 +670,7 @@
           }
           return true;
         }
+        console.log("returning false to close panel")
         return false;
       }
       CodeMirror.menu_dict.editor_updateStorage = editor_updateStorage;
@@ -900,9 +903,6 @@
 
       // saving without open dialog, force open
       if (dialog === null) {
-        console.log("dialog is null...")
-        console.log(CodeMirror)
-        console.log(props)
         CodeMirror.commands.myEditor_navigateHorizontal(props.editor, "right");
         return;
       }
@@ -920,7 +920,7 @@
 
       // blank save
       if (!file_name && !!content) {
-        //console.log("edited a file but no url declared, blank edit and save");
+        console.log("edited a file but no url declared, blank edit and save");
       }
 
       // validate URL
@@ -1143,7 +1143,9 @@
             return opts[my_property_name](my_event, dialog_input.value, props.dialog_evaluateState);
           });
         }
-
+        console.log("we should be closing, no?")
+        console.log(dialog_input)
+        console.log(dialog)
         // key bindings
         if (dialog_input) {
           dialog_input.focus();
@@ -1161,13 +1163,16 @@
           }
         }
         if (opts.onKeyUp) {
+          console.log("binding keys")
           dialog_event_list.push(wrapBind(dialog, "keyup", "onKeyUp"));
         }
         if (opts.onKeyDown) {
+          console.log("Binding keys")
           dialog_event_list.push(wrapBind(dialog, "keydown", "onKeyDown"));
         }
 
         // form submits
+        console.log("binding forms")
         dialog_form_submit_list = Array.prototype.slice.call(
           dialog.querySelectorAll('form')
         ).map(function(my_element) {
@@ -1175,10 +1180,12 @@
         });
 
         // file menu
+        console.log("positon left, set files " + props.dialog_position)
         if (props.dialog_position === 'left') {
           queue.push(gadget.dialog_setFileMenu());
         }
 
+        
         // XXX always close dialog via this chain, resolve all promises?
         return queue
           .push(function () {
@@ -1188,6 +1195,7 @@
             ]);
           })
           .push(function () {
+            console.log("finally evaluatiing state")
             return props.dialog_evaluateState();
           })
           .push(undefined, function (my_error) {
