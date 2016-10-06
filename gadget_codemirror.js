@@ -523,7 +523,7 @@
 
   function editor_closeDialog(my_event) {
     if (CodeMirror.menu_dict.dialog_evaluateState) {
-      return CodeMirror.menu_dict.dialog_evaluateState();
+      return CodeMirror.menu_dict.dialog_evaluateState(false);
     }
   }
 
@@ -574,8 +574,13 @@
     if (position === my_direction) {
       parameter = false;
     }
+    // no, why do we save?
+    //if (position === "right" && my_direction === "left"
+    //  && CodeMirror.menu_dict.editor_active_file) {
+    //  parameter = {"target": {"name": "save"}};
+    //}
     if (position === "right" && my_direction == "left") {
-      parameter = false;
+      parameter = true;
     }
     if (position === "left" && my_direction === "right") {
       parameter = {"target": {"name": "open"}};
@@ -639,7 +644,7 @@
       
       function editor_updateStorage(my_parameter) {
         var action;
-        console.log(my_parameter)
+
         // returning true closes panel, false leaves it open
 
         if (my_parameter) {
@@ -660,7 +665,7 @@
             }
           }
         }
-        return false;
+        return my_parameter;
       }
       CodeMirror.menu_dict.editor_updateStorage = editor_updateStorage;
     })
@@ -1178,7 +1183,7 @@
             ]);
           })
           .push(function () {
-            return props.dialog_evaluateState();
+            return props.dialog_evaluateState(false);
           })
           .push(undefined, function (my_error) {
             throw my_error;
