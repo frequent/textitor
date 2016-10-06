@@ -896,7 +896,10 @@
       // save = store on serviceworker, remove from memory
 
       // saving without open dialog, force open
-      if (dialog === null) {
+      console.log("dialog should open?")
+      console.log(dialog)
+      if (!dialog) {
+        console.log("entry")
         CodeMirror.commands.myEditor_navigateHorizontal(props.editor, "right");
         return;
       }
@@ -912,6 +915,8 @@
         return true;
       }
 
+      console.log(file_name)
+      console.log(content)
       // blank save
       if (!file_name && !!content) {
         console.log("BLANK SAVE");
