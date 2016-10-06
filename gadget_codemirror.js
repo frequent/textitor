@@ -181,7 +181,6 @@
     "value": null,
     "selectValueOnOpen": false,
     "onKeyUp": function (my_event, my_value, my_callback) {
-      console.log("KEYUP")
       return CodeMirror.menu_dict.dialog_setNavigationCallback(
         my_event,
         my_value,
@@ -189,7 +188,7 @@
       );
     },
     "onInput": function (my_event, my_value, my_callback) {
-      console.log("INPUT")
+
       return CodeMirror.menu_dict.dialog_setNavigationCallback(
         my_event,
         my_value, 
@@ -413,9 +412,7 @@
   }
 
   function dialog_setNavigationCallback(my_event, my_value, my_callback) {
-    console.log("got something")
-    console.log(my_event)
-    console.log(my_value)
+
     // esc
     if (my_event.keyCode === 27) {
       CodeMirror.commands.myEditor_closeDialog(my_event);
@@ -431,12 +428,9 @@
 
     // input
     if (my_event.type === "input") {
-      console.log("IIINPUT!")
-      my_callback(my_value);
+      return my_callback(my_value);
     }
-    console.log(my_event)
-    console.log(my_event.ctrlKey)
-    console.log(my_event.altKey)
+
     // ctrl + alt +
     if (my_event.ctrlKey && my_event.altKey) {
       switch(my_event.keyCode) {
@@ -451,7 +445,6 @@
         case 40: return CodeMirror.commands.myEditor_navigateVertical(undefined, "down");
       }
     }
-    console.log("NOW?")
   }
 
   CodeMirror.menu_dict.editor_createDoc = editor_createDoc;
@@ -529,7 +522,6 @@
   }
 
   function editor_closeDialog(my_event) {
-    console.loog("CLOSING")
     if (CodeMirror.menu_dict.dialog_evaluateState) {
       return CodeMirror.menu_dict.dialog_evaluateState();
     }
@@ -654,6 +646,7 @@
         var action;
 
         // returning true closes panel, false leaves it open
+
         if (my_parameter) {
           if (my_parameter.target) {
             action = my_parameter.target.name;
@@ -671,9 +664,10 @@
               return my_gadget.editor_removeFile();
             }
           }
-          return true;
+          return false;
         }
-        return false;
+        console.log("EVAL STATE no parameter => close");
+        return true;
       }
       CodeMirror.menu_dict.editor_updateStorage = editor_updateStorage;
     })
@@ -1159,7 +1153,6 @@
             dialog_event_list.push(wrapBind(dialog_input, "input", "onInput"));
           }
           if (opts.closeOnBlur !== false && opts.onBlur) {
-            console.log("BLUR BINDING")
             dialog_event_list.push(wrapBind(dialog, "blur", "onBlur"));
           }
         }
