@@ -429,7 +429,9 @@
     if (my_event.type === "input") {
       my_callback(my_value);
     }
-
+    console.log(my_event)
+    console.log(my_event.ctrlKey)
+    console.log(my_event.altKey)
     // ctrl + alt +
     if (my_event.ctrlKey && my_event.altKey) {
       switch(my_event.keyCode) {
@@ -521,6 +523,7 @@
   }
 
   function editor_closeDialog(my_event) {
+    console.loog("CLOSING")
     if (CodeMirror.menu_dict.dialog_evaluateState) {
       return CodeMirror.menu_dict.dialog_evaluateState();
     }
@@ -1150,6 +1153,7 @@
             dialog_event_list.push(wrapBind(dialog_input, "input", "onInput"));
           }
           if (opts.closeOnBlur !== false && opts.onBlur) {
+            console.log("BLUR BINDING")
             dialog_event_list.push(wrapBind(dialog, "blur", "onBlur"));
           }
         }
