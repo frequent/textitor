@@ -584,9 +584,14 @@
     if (position === my_direction) {
       parameter = false;
     }
-    if (position === "right" && my_direction === "left"
-      && CodeMirror.menu_dict.editor_active_file) {
-      parameter = {"target": {"name": "save"}};
+    // no, why do we save?
+    //if (position === "right" && my_direction === "left"
+    //  && CodeMirror.menu_dict.editor_active_file) {
+    //  parameter = {"target": {"name": "save"}};
+    //}
+    if (position === "right" && my_direction == "left") {
+      console.log("FORCE CLOSE")
+      parameter = true;
     }
     if (position === "left" && my_direction === "right") {
       parameter = {"target": {"name": "open"}};
@@ -653,21 +658,24 @@
         console.log("updating storage")
         console.log(my_parameter)
         // returning true closes panel, false leaves it open
-        if (my_parameter && my_parameter.target) {
-          action = my_parameter.target.name;
-          console.log(action)
-          if (action === "open") {
-          return my_gadget.editor_openFile();
+        if (my_parameter) {
+          if (my_parameter.target) {
+            action = my_parameter.target.name;
+            console.log(action)
+            if (action === "open") {
+            return my_gadget.editor_openFile();
+            }
+            if (action === "close") {
+              return my_gadget.editor_swapFile();
+            }
+            if (action === "save") {
+              return my_gadget.editor_saveFile();
+            }
+            if (action === "remove") {
+              return my_gadget.editor_removeFile();
+            }
           }
-          if (action === "close") {
-            return my_gadget.editor_swapFile();
-          }
-          if (action === "save") {
-            return my_gadget.editor_saveFile();
-          }
-          if (action === "remove") {
-            return my_gadget.editor_removeFile();
-          }
+          console.log("HAHA")
           return true;
         }
         console.log("returning false to close panel")
