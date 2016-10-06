@@ -644,7 +644,7 @@
       
       function editor_updateStorage(my_parameter) {
         var action;
-
+        console.log(parameter)
         // returning true closes panel, false leaves it open
 
         if (my_parameter) {
@@ -664,10 +664,8 @@
               return my_gadget.editor_removeFile();
             }
           }
-          return false;
         }
-        console.log("EVAL STATE no parameter => close");
-        return true;
+        return false;
       }
       CodeMirror.menu_dict.editor_updateStorage = editor_updateStorage;
     })
