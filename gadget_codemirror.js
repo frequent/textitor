@@ -644,7 +644,7 @@
       
       function editor_updateStorage(my_parameter) {
         var action;
-        console.log(parameter)
+        console.log(my_parameter)
         // returning true closes panel, false leaves it open
 
         if (my_parameter) {
