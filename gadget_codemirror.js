@@ -893,13 +893,9 @@
         mime_type_input,
         mime_type;
 
-      // save = store on serviceworker, remove from memory
-
-      // saving without open dialog, force open
-      console.log("dialog should open?")
-      console.log(dialog)
-      if (!dialog) {
-        console.log("entry")
+      // dialog not initialized or closed
+      if (!dialog || !props.element.querySelector(".CodeMirror-dialog")) {
+        console.log("NOT OPEN")
         CodeMirror.commands.myEditor_navigateHorizontal(props.editor, "right");
         return;
       }
