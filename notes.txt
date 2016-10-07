@@ -1,9 +1,10 @@
 
 => progress
+- closing dialog with unsaved content swaps with blank document and unsaved content is ?
+- unedited files should not be starred or save flagged - fix resetMOdified
 - add tests...
-- fix resetMOdified
+- delete broken
 - focus field on invalid entry?
-- only pass simple parameters around
 - can't save when coming from file menu! fails on "default" > no filename we should override and open dialog!
 - bad ui to blur
 - Throw on existing file with same name
