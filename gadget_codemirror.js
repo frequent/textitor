@@ -905,18 +905,6 @@
       content = props.editor.getValue();
       active_cache = props.editor_active_cache || "textitor";
 
-      // empty
-      if (!file_name && !content) {
-        return true;
-      }
-
-      console.log(file_name)
-      console.log(content)
-      // blank save
-      if (!file_name && !!content) {
-        console.log("BLANK SAVE");
-      }
-
       // validate URL
       if (!file_name || file_name === "Enter valid URL.") {
         return props.dialog_flagInput(file_name_input, 'Enter valid URL.');
