@@ -270,10 +270,12 @@
       .push(function () {
         my_input.className += ' custom-invalid';
         my_input.value = my_message;
-        my_input.blur();
-       return promiseEventListener(my_input, 'focus', false);
+        //my_input.blur();
+        //dialog_input.focus()
+        return promiseEventListener(my_input, 'focus', false);
       })
       .push(function () {
+        console.log("focussed")
         my_input.className = '';
         my_input.value = '';
       });
