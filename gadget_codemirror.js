@@ -987,9 +987,7 @@
       // close = store file on memory until it is saved
       console.log("Swapping?")
       console.log(props.editor_active_file)
-      console.log(dialog)
-      console.log(dialog.querySelector("input"))
-      console.log(dialog.querySelector("input").value)
+      console.log(is_closeable)
       // close on edit without save
       if (is_closeable && !props.editor_active_file) {
         console.log("CLOSING")
