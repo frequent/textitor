@@ -985,14 +985,10 @@
         is_idle = input_value === "" || input_value === 'Enter valid URL.';
 
       // close = store file on memory until it is saved
-      console.log("Swapping?")
-      console.log(props.editor_active_file)
-      console.log(input_value)
-      console.log(is_idle)
       // close on edit without save
       if (is_idle && !props.editor_active_file) {
-        console.log("CLOSING")
-        return false;
+        console.log("CLOSING, nothing to save")
+        return true;
       }
 
       return new RSVP.Queue()
