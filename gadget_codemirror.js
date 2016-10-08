@@ -920,6 +920,8 @@
         return props.dialog_flagInput(file_name_input, 'Cache not supported');
       }
 
+      console.log("SAVING")
+      console.log(props.editor.active_file)
       return new RSVP.Queue()
         .push(function () {
           return gadget.setActiveStorage("memory");
@@ -928,14 +930,19 @@
           return gadget.jio_getAttachment(active_cache, file_name);
         })
         .push(
-          function () {
+          function (my_file) {
+            console.log("got a file back, compare against active file before doing anything")
+            console.log(my_file)
             return RSVP.all([
               gadget.jio_removeAttachment(active_cache, file_name),
               gadget.jio_removeAttachment(active_cache, file_name + "_history")
             ]);
           },
           function (my_error) {
+            console.log("if we have a 404, the file does not exist")
+            console.log(my_error)
             if (is404(my_error)) {
+              console.log("new file, no problem")
               return;
             }
             throw my_error;
@@ -958,6 +965,7 @@
           return true;
         })
         .push(undefined, function (my_error) {
+          console.log("catch saving on existing file")
           console.log(my_error);
           throw my_error;
         });
