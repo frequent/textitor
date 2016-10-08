@@ -731,7 +731,7 @@
         props = CodeMirror.menu_dict, 
         memory_list = [],
         entry_dict = {};
-
+      console.log("DECLARE SETMENU")
       // build a list of folders and file ids stored on memory and serviceworker
       new RSVP.Queue()
         .push(function () {
@@ -827,6 +827,7 @@
     })  
     
     .declareMethod('editor_removeFile', function () {
+      console.log("DECLARE REMOVE")
       var gadget = this, 
         props = CodeMirror.menu_dict,
         dialog = props.dialog,
@@ -882,6 +883,7 @@
     })
 
     .declareMethod('editor_saveFile', function () {
+      console.log("Declare SAVE")
       var gadget = this,
         props = CodeMirror.menu_dict,
         dialog = props.dialog,
@@ -907,6 +909,7 @@
 
       // validate URL
       if (!file_name || file_name === "Enter valid URL.") {
+        console.log("FLAG")
         return props.dialog_flagInput(file_name_input, 'Enter valid URL.');
       }
 
@@ -972,6 +975,7 @@
     })
 
     .declareMethod('editor_swapFile', function (my_content) {
+      console.log("DeclareSwap")
       var gadget = this,
         props = CodeMirror.menu_dict,
         dialog = props.dialog,
@@ -1036,6 +1040,7 @@
     })
 
     .declareMethod('editor_openFile', function () {
+      console.log("DeclareOpen")
       var gadget = this,
         props = CodeMirror.menu_dict,
         dialog = props.dialog,
