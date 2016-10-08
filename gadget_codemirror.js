@@ -981,7 +981,8 @@
       var gadget = this,
         props = CodeMirror.menu_dict,
         dialog = props.dialog,
-        has_value = dialog.querySelector("input").value !== "";
+        input_value = dialog.querySelector("input").value,
+        is_closeable = input_value !== "" && input_value !== 'Enter valid URL.';
 
       // close = store file on memory until it is saved
       console.log("Swapping?")
@@ -990,7 +991,8 @@
       console.log(dialog.querySelector("input"))
       console.log(dialog.querySelector("input").value)
       // close on edit without save
-      if (has_value && !props.editor_active_file) {
+      if (is_closeable && !props.editor_active_file) {
+        console.log("CLOSING")
         return false;
       }
 
