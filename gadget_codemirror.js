@@ -565,7 +565,9 @@
   function editor_navigateHorizontal(my_codemirror, my_direction) {
     var position = CodeMirror.menu_dict.dialog_position,
       parameter;
-
+    console.log("my close")
+    console.log(my_direction)
+    console.log(position)
     if (position === "idle") {
       return my_codemirror.openDialog(
         CodeMirror.menu_dict.dialog_setNavigationMenu(my_direction),
@@ -576,12 +578,14 @@
     if (position === my_direction) {
       parameter = false;
     }
+
     // no, why do we save?
     //if (position === "right" && my_direction === "left"
     //  && CodeMirror.menu_dict.editor_active_file) {
     //  parameter = {"target": {"name": "save"}};
     //}
     if (position === "right" && my_direction == "left") {
+      console.log("used to save?!")
       parameter = true;
     }
     if (position === "left" && my_direction === "right") {
