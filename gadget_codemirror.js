@@ -370,6 +370,7 @@
   }
 
   function dialog_evaluateState(my_parameter) {
+    console.log("EVALUATE")
     var props = CodeMirror.menu_dict;
     return new RSVP.Queue()
       .push(function () {
@@ -535,6 +536,7 @@
   }
 
   function editor_openDialog(my_codemirror, my_direction) {
+    console.log("OPENDIALOG")
     return new RSVP.Queue()
       .push(function () {
         return my_codemirror.openDialog(
@@ -549,6 +551,7 @@
   }
 
   function editor_saveFromDialog(my_codemirror) {
+    console.log("SAVEDIALOG")
     if (CodeMirror.menu_dict.dialog_position !== "left") {
 
       // evaluateState is declared on first dialog open, if someone saves before
@@ -649,13 +652,14 @@
       
       function editor_updateStorage(my_parameter) {
         var action;
-
+        console.log("UPDATING STORING")
+        console.log(my_parameter)
         // returning true closes panel, false leaves it open
 
         if (my_parameter) {
           if (my_parameter.target) {
             action = my_parameter.target.name;
-            
+            console.log(action)
             if (action === "open") {
             return my_gadget.editor_openFile();
             }
