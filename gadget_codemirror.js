@@ -275,9 +275,12 @@
         return promiseEventListener(my_input, 'focus', false);
       })
       .push(function () {
-        console.log("focussed")
+        console.log("focus, keep menu open")
         my_input.className = '';
         my_input.value = '';
+        
+        // keep menu open
+        return false;
       });
   }
 
@@ -373,6 +376,8 @@
         return props.editor_updateStorage(my_parameter);
       })
       .push(function (my_close_dialog) {
+        console.log("WHAT COMES OUT?")
+        console.log(my_close_dialog)
         if (my_close_dialog === true) {
           if (props.dialog_option_dict.onClose) {
             props.dialog_option_dict.onClose(dialog);
@@ -565,7 +570,7 @@
   function editor_navigateHorizontal(my_codemirror, my_direction) {
     var position = CodeMirror.menu_dict.dialog_position,
       parameter;
-    console.log("my close")
+
     console.log(my_direction)
     console.log(position)
     if (position === "idle") {
@@ -578,14 +583,8 @@
     if (position === my_direction) {
       parameter = false;
     }
-
-    // no, why do we save?
-    //if (position === "right" && my_direction === "left"
-    //  && CodeMirror.menu_dict.editor_active_file) {
-    //  parameter = {"target": {"name": "save"}};
-    //}
     if (position === "right" && my_direction == "left") {
-      console.log("used to save?!")
+      console.log("closing, used to save")
       parameter = true;
     }
     if (position === "left" && my_direction === "right") {
