@@ -1,15 +1,17 @@
 
 => progress
+- save shortcut when dialog is open throws cancellation error
+- save shortcut on new file opens, fails validation (OK), focus on label?
+- error throws when saving 2nd time, because the file already exists! Fix this.
+- can't save when coming from file menu! fails on "default" > no filename we should override and open dialog!
+- don't save works on close and save, but not on left
+- Throw on existing file with same name
+- I'm missing save when editing and leaving
+- saving a file without menu-open should also save to worker and remove star
 - closing dialog with unsaved content swaps with blank document and unsaved content is ?
 - unedited files should not be starred or save flagged - fix resetMOdified
 - add tests...
 - delete broken
-- focus field on invalid entry?
-- can't save when coming from file menu! fails on "default" > no filename we should override and open dialog!
-- bad ui to blur
-- Throw on existing file with same name
-- I'm missing save when editing and leaving
-- saving a file without menu-open should also save to worker and remove star
 - select all, save all, delete all, use same keys as in single file menu
 - delete file(s) from files menu
 - warn of modified content before closing tab, deleting files
