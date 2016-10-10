@@ -438,7 +438,9 @@
     if (my_event.type === "input") {
       return my_callback(my_value);
     }
-
+    console.log("EVENT")
+    console.log(my_event.ctrlKey)
+    console.log(my_event.altKey)
     // ctrl + alt +
     if (my_event.ctrlKey && my_event.altKey) {
       switch(my_event.keyCode) {
