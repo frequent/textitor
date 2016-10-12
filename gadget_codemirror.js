@@ -266,7 +266,6 @@
   }
 
   function dialog_flagInput(my_input, my_message) {
-    console.log("flagging input")
     return new RSVP.Queue()
       .push(function () {
         my_input.className += ' custom-invalid';
@@ -276,8 +275,6 @@
         return promiseEventListener(my_input, 'focus', false);
       })
       .push(function () {
-        console.log("BOUND")
-        console.log("focus, keep menu open")
         my_input.className = '';
         my_input.value = '';
         
@@ -372,15 +369,12 @@
   }
 
   function dialog_evaluateState(my_parameter) {
-    console.log("EVALUATE")
     var props = CodeMirror.menu_dict;
     return new RSVP.Queue()
       .push(function () {
         return props.editor_updateStorage(my_parameter);
       })
       .push(function (my_close_dialog) {
-        console.log("WHAT COMES OUT?")
-        console.log(my_close_dialog)
         if (my_close_dialog === true) {
           if (props.dialog_option_dict.onClose) {
             props.dialog_option_dict.onClose(dialog);
@@ -425,24 +419,26 @@
 
     // esc
     if (my_event.keyCode === 27) {
-      CodeMirror.commands.myEditor_closeDialog(my_event);
+      return CodeMirror.commands.myEditor_closeDialog(my_event);
     }
 
     // ovrride chrome page start/end shortcut
     if (my_event.keyCode === 35) {
-      CodeMirror.commands.myEditor_navigateVertical(undefined, "up");
+      return CodeMirror.commands.myEditor_navigateVertical(undefined, "up");
     }
     if (my_event.keyCode === 36) {
-      CodeMirror.commands.myEditor_navigateVertical(undefined, "down");
+      return CodeMirror.commands.myEditor_navigateVertical(undefined, "down");
     }
-
+    console.log("VAlUE?")
+    console.log(my_value)
+    console.log(my_event)
+    console.log(my_event.target)
+    console.log(my_event.target === document.activeElement)
     // input
     if (my_event.type === "input") {
       return my_callback(my_value);
     }
-    console.log("EVENT")
-    console.log(my_event.ctrlKey)
-    console.log(my_event.altKey)
+
     // ctrl + alt +
     if (my_event.ctrlKey && my_event.altKey) {
       switch(my_event.keyCode) {
@@ -540,7 +536,6 @@
   }
 
   function editor_openDialog(my_codemirror, my_direction) {
-    console.log("OPENDIALOG")
     return new RSVP.Queue()
       .push(function () {
         return my_codemirror.openDialog(
@@ -579,8 +574,6 @@
     var position = CodeMirror.menu_dict.dialog_position,
       parameter;
 
-    console.log(my_direction)
-    console.log(position)
     if (position === "idle") {
       return my_codemirror.openDialog(
         CodeMirror.menu_dict.dialog_setNavigationMenu(my_direction),
@@ -592,7 +585,6 @@
       parameter = false;
     }
     if (position === "right" && my_direction == "left") {
-      console.log("closing, used to save")
       parameter = true;
     }
     if (position === "left" && my_direction === "right") {
@@ -657,8 +649,7 @@
       
       function editor_updateStorage(my_parameter) {
         var action;
-        console.log("UPDATING STORING")
-        console.log(my_parameter)
+
         // returning true closes panel, false leaves it open
 
         if (my_parameter) {
@@ -745,7 +736,7 @@
         props = CodeMirror.menu_dict, 
         memory_list = [],
         entry_dict = {};
-      console.log("DECLARE SETMENU")
+
       // build a list of folders and file ids stored on memory and serviceworker
       new RSVP.Queue()
         .push(function () {
@@ -841,7 +832,6 @@
     })  
     
     .declareMethod('editor_removeFile', function () {
-      console.log("DECLARE REMOVE")
       var gadget = this, 
         props = CodeMirror.menu_dict,
         dialog = props.dialog,
@@ -926,7 +916,7 @@
         console.log("FLAG")
         return props.dialog_flagInput(file_name_input, 'Enter valid URL.');
       }
-      console.log("NO REACH after flag input")
+
       // validate Cache (NOT SUPPORTED YET)
       if (!is_cache_name) {
         mime_type_input = file_name.split(".").pop().replace("/", "");
@@ -937,8 +927,6 @@
         return props.dialog_flagInput(file_name_input, 'Cache not supported');
       }
 
-      console.log("SAVING")
-      console.log(props.editor.active_file)
       return new RSVP.Queue()
         .push(function () {
           return gadget.setActiveStorage("memory");
@@ -948,18 +936,13 @@
         })
         .push(
           function (my_file) {
-            console.log("got a file back, compare against active file before doing anything")
-            console.log(my_file)
             return RSVP.all([
               gadget.jio_removeAttachment(active_cache, file_name),
               gadget.jio_removeAttachment(active_cache, file_name + "_history")
             ]);
           },
           function (my_error) {
-            console.log("if we have a 404, the file does not exist")
-            console.log(my_error)
             if (is404(my_error)) {
-              console.log("new file, no problem")
               return;
             }
             throw my_error;
@@ -982,14 +965,12 @@
           return true;
         })
         .push(undefined, function (my_error) {
-          console.log("catch saving on existing file")
           console.log(my_error);
           throw my_error;
         });
     })
 
     .declareMethod('editor_swapFile', function (my_content) {
-      console.log("DeclareSwap")
       var gadget = this,
         props = CodeMirror.menu_dict,
         dialog = props.dialog,
@@ -999,7 +980,6 @@
       // close = store file on memory until it is saved
       // close on edit without save
       if (is_idle && !props.editor_active_file) {
-        console.log("CLOSING, nothing to save")
         return true;
       }
 
@@ -1039,7 +1019,6 @@
         })
         .push(function () {
           props.dialog_clearTextInput(dialog);
-          console.log("resetting from SWAP")
           //props.editor_resetModified();
           //props.editor_resetActiveFile();
           return true;
@@ -1051,7 +1030,6 @@
     })
 
     .declareMethod('editor_openFile', function () {
-      console.log("DeclareOpen")
       var gadget = this,
         props = CodeMirror.menu_dict,
         dialog = props.dialog,
@@ -1123,7 +1101,6 @@
           return gadget.editor_swapFile(my_content);
         })
         .push(function () {
-          console.log("resetting from OPEN")
           props.editor.setOption("mode", mime_type);
           props.editor_setActiveFile(open_name, mime_type);
           if (xxx === undefined) {
