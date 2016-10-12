@@ -266,6 +266,7 @@
   }
 
   function dialog_flagInput(my_input, my_message) {
+    console.log("FLAGGING")
     return new RSVP.Queue()
       .push(function () {
         my_input.className += ' custom-invalid';
@@ -280,7 +281,11 @@
         
         // keep menu open
         return false;
-      });
+      }, function (err) {
+        consolelog(err)
+        throw err;
+      })
+      ;
   }
 
   // dialog
