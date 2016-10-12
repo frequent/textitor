@@ -449,10 +449,7 @@
         case 68: return CodeMirror.commands.myEditor_deleteFile();  // (d)elete file
         case 67: return CodeMirror.commands.myEditor_closeFile();   // (c)lose file
         case 79: return CodeMirror.commands.myEditor_openFromDialog(); // (o)pen
-        case 83: return function () {
-          console.log("detected save shortcut");
-          return CodeMirror.commands.myEditor_saveFromDialog(CodeMirror); // (s)ave
-        }
+        case 83: return CodeMirror.commands.myEditor_saveFromDialog(CodeMirror, "from_shortcut"); // (s)ave
         case 88: return CodeMirror.commands.myEditor_closeDialog(); // (x)lose dialog
         case 37: return CodeMirror.commands.myEditor_navigateHorizontal(undefined, "left");
         case 38: return CodeMirror.commands.myEditor_navigateVertical(undefined, "up");
@@ -557,7 +554,8 @@
       });
   }
 
-  function editor_saveFromDialog(my_codemirror) {
+  function editor_saveFromDialog(my_codemirror, from) {
+    console.log("FROM: " + from)
     console.log("SAVEDIALOG")
     if (CodeMirror.menu_dict.dialog_position !== "left") {
 
