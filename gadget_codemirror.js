@@ -266,7 +266,7 @@
   }
 
   function dialog_flagInput(my_input, my_message) {
-    console.og("flagging input")
+    console.log("flagging input")
     return new RSVP.Queue()
       .push(function () {
         my_input.className += ' custom-invalid';
