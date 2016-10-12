@@ -275,7 +275,8 @@
         //dialog_input.focus()
         return promiseEventListener(my_input, 'focus', false);
       })
-      .push(function () {
+      .push(function (x) {
+        console.log("triggered promise")
         my_input.className = '';
         my_input.value = '';
         
