@@ -266,6 +266,7 @@
   }
 
   function dialog_flagInput(my_input, my_message) {
+    console.og("flagging input")
     return new RSVP.Queue()
       .push(function () {
         my_input.className += ' custom-invalid';
@@ -275,6 +276,7 @@
         return promiseEventListener(my_input, 'focus', false);
       })
       .push(function () {
+        console.log("BOUND")
         console.log("focus, keep menu open")
         my_input.className = '';
         my_input.value = '';
@@ -447,7 +449,10 @@
         case 68: return CodeMirror.commands.myEditor_deleteFile();  // (d)elete file
         case 67: return CodeMirror.commands.myEditor_closeFile();   // (c)lose file
         case 79: return CodeMirror.commands.myEditor_openFromDialog(); // (o)pen
-        case 83: return CodeMirror.commands.myEditor_saveFromDialog(CodeMirror); // (s)ave
+        case 83: return function () {
+          console.log("detected save shortcut");
+          return CodeMirror.commands.myEditor_saveFromDialog(CodeMirror); // (s)ave
+        }
         case 88: return CodeMirror.commands.myEditor_closeDialog(); // (x)lose dialog
         case 37: return CodeMirror.commands.myEditor_navigateHorizontal(undefined, "left");
         case 38: return CodeMirror.commands.myEditor_navigateVertical(undefined, "up");
@@ -923,7 +928,7 @@
         console.log("FLAG")
         return props.dialog_flagInput(file_name_input, 'Enter valid URL.');
       }
-
+      console.log("NO REACH after flag input")
       // validate Cache (NOT SUPPORTED YET)
       if (!is_cache_name) {
         mime_type_input = file_name.split(".").pop().replace("/", "");
