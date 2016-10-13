@@ -267,12 +267,11 @@
   }
 
   function dialog_flagInput(my_input, my_message) {
-    console.log("FLAGGING")
     return new RSVP.Queue()
       .push(function () {
         my_input.className += ' custom-invalid';
         my_input.value = my_message;
-        
+        my_input.blur();
         return promiseEventListener(my_input, 'focus', false);
       })
       .push(function () {
@@ -282,10 +281,6 @@
         
         // keep menu open
         return false;
-      }, function (err) {
-        console.log("what is failing here?")
-        console.log(err)
-        throw err;
       });
   }
 
