@@ -369,7 +369,9 @@
       i;
     console.log(input_list)
     for (i = 0, len = input_list.length; i < len; i += 1) {
+      console.log(input_list[i].type)
       if (input_list[i].type === 'text') {
+        console.log("resetting")
         input_list[i].value = '';
       }
     }
@@ -1029,7 +1031,10 @@
           console.log(dialog)
           props.dialog_clearTextInput(dialog);
           //props.editor_resetModified();
-          console.log(document.querySelector("input"))
+          console.log(document.querySelector("input").value)
+          document.querySelector("input").value = "";
+          console.log(document.querySelector("input").value)
+          console.log(props.editor_active_file)
           //props.editor_resetActiveFile();
           return true;
         })
