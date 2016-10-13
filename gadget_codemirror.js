@@ -367,6 +367,7 @@
     var input_list = my_dialog.querySelectorAll("input"),
       len,
       i;
+    console.log(input_list)
     for (i = 0, len = input_list.length; i < len; i += 1) {
       if (input_list[i].type === 'text') {
         input_list[i].value = '';
