@@ -104,6 +104,7 @@
     function cancelResolver() {
       if ((callback_promise !== undefined) &&
         (typeof callback_promise.cancel === "function")) {
+          console.log("!!!!!!!!!!!!!!!!")
         callback_promise.cancel();
       }
     }
