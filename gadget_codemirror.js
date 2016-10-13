@@ -268,7 +268,6 @@
 
   function dialog_flagInput(my_input, my_message) {
     if (my_input.className.indexOf("custom-invalid") > 0) {
-      console.log("not invalid, no setter")
       return false;
     }
     return new RSVP.Queue()
@@ -276,7 +275,8 @@
         my_input.className += ' custom-invalid';
         my_input.value = my_message;
         my_input.blur();
-        console.log("invalid, setting")
+        CodeMirror.menu_dict.editor.focus();
+        
         return promiseEventListener(my_input, 'focus', false);
       })
       .push(function () {
