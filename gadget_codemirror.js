@@ -75,6 +75,7 @@
   // Event handling (gadget_global.js)
   /////////////////////////////
   function promiseEventListener(target, type, useCapture) {
+    //////////////////////////
     var handle_event_callback;
 
     function canceller() {
@@ -1157,7 +1158,7 @@
 
         // key bindings
         if (dialog_input) {
-          dialog_input.focus();
+          //dialog_input.focus();
           if (props.dialog_position === 'right') {
             dialog_input.value = opts.value || props.editor_getActiveFile()[0];
           }
