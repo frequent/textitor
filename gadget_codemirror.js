@@ -271,13 +271,10 @@
       .push(function () {
         my_input.className += ' custom-invalid';
         my_input.value = my_message;
+        
         return promiseEventListener(my_input, 'focus', false);
       })
-      .push(function (err) {
-        console.log("NOPE")
-        console.log(err);
-        throw err;
-      }, function () {
+      .push(function () {
         console.log("triggered focus promise")
         my_input.className = '';
         my_input.value = '';
@@ -376,6 +373,7 @@
     var props = CodeMirror.menu_dict;
     return new RSVP.Queue()
       .push(function () {
+        console.log("updating storage")
         return props.editor_updateStorage(my_parameter);
       })
       .push(function (my_close_dialog) {
@@ -388,6 +386,7 @@
           props.dialog_position = "idle";
         }
       }, function (e) {
+        console.log("BAM")
         console.log(e);
         throw e;
       });
@@ -449,7 +448,14 @@
         case 68: return CodeMirror.commands.myEditor_deleteFile();  // (d)elete file
         case 67: return CodeMirror.commands.myEditor_closeFile();   // (c)lose file
         case 79: return CodeMirror.commands.myEditor_openFromDialog(); // (o)pen
-        case 83: return CodeMirror.commands.myEditor_saveFromDialog(CodeMirror, "from_shortcut"); // (s)ave
+        case 83: return new RSVP.Queue()
+          .push(function () {
+            return CodeMirror.commands.myEditor_saveFromDialog(CodeMirror, "from_shortcut");
+          })
+          .push(
+            function (err) { console.log(err); throw err;},
+            function (suc) { console.log("oui"); console.log(suc);}
+          );// (s)ave
         case 88: return CodeMirror.commands.myEditor_closeDialog(); // (x)lose dialog
         case 37: return CodeMirror.commands.myEditor_navigateHorizontal(undefined, "left");
         case 38: return CodeMirror.commands.myEditor_navigateVertical(undefined, "up");
@@ -564,6 +570,7 @@
       if (CodeMirror.menu_dict.dialog_evaluateState) {
         return CodeMirror.menu_dict.dialog_evaluateState({"target":{"name": "save"}});
       } else {
+        console.log("OPENING DIALOG")
         return CodeMirror.commands.myEditor_openDialog(CodeMirror, "right");
       }
     }
@@ -668,6 +675,7 @@
               return my_gadget.editor_swapFile();
             }
             if (action === "save") {
+              console.log("ACTION SAVE")
               return my_gadget.editor_saveFile();
             }
             if (action === "remove") {
