@@ -170,6 +170,7 @@
   /////////////////////////////
   CodeMirror.menu_dict = {};
   CodeMirror.menu_dict.editor = null;
+  CodeMirror.menu_dict.editor_active_dialog = null;
   CodeMirror.menu_dict.editor_active_file = null;
   CodeMirror.menu_dict.editor_active_cache = null;
   CodeMirror.menu_dict.editor_is_modified = null;
@@ -380,11 +381,12 @@
         return props.editor_updateStorage(my_parameter);
       })
       .push(function (my_close_dialog) {
-        if (my_close_dialog === true) {
+        if (my_close_dialog === true && props.editor_active_file) {
           if (props.dialog_option_dict.onClose) {
             props.dialog_option_dict.onClose(dialog);
           }
           props.dialog.parentNode.removeChild(props.dialog);
+          props.editor_active_dialog = null;
           props.editor.focus();
           props.dialog_position = "idle";
         }
@@ -886,7 +888,8 @@
         mime_type;
 
       // dialog not initialized or closed
-      if (!dialog || !props.element.querySelector(".CodeMirror-dialog")) {
+      //if (!dialog || !props.element.querySelector(".CodeMirror-dialog")) {
+      if (!dialog || !props.editor_active_dialog) {
         CodeMirror.commands.myEditor_navigateHorizontal(props.editor, "right");
         return;
       }
@@ -955,8 +958,17 @@
       var gadget = this,
         props = CodeMirror.menu_dict,
         dialog = props.dialog,
-        input_value = dialog.querySelector("input").value,
-        is_idle = input_value === "" || input_value === 'Enter valid URL.';
+        input_value,
+        is_idle;
+      
+      // close = save on memory without opening dialog
+      if (!dialog || !props.editor_active_dialog) {
+        return; 
+      }
+
+      input_value = dialog.querySelector("input").value,
+      is_idle = input_value === "" || input_value === 'Enter valid URL.';
+      
       console.log("swapping")
       console.log(is_idle)
       console.log(props.editor_active_file)
@@ -1110,6 +1122,7 @@
 
         dialog = props.dialog = props.editor_setDialog(editor, my_template, opts.bottom);
         dialog_input = dialog.querySelector("input[type='text']");
+        props.editor_active_dialog = true;
         closeNotification(props.editor, null);
 
         function wrapBind(my_element, my_event_name, my_property_name) {
