@@ -274,6 +274,7 @@
       .push(function () {
         my_input.className += ' custom-invalid';
         my_input.value = my_message;
+        my_input.blur();
 
         return promiseEventListener(my_input, 'focus', false);
       })
@@ -1130,7 +1131,6 @@
 
         // key bindings
         if (dialog_input) {
-          //dialog_input.focus();
           if (props.dialog_position === 'right') {
             dialog_input.value = opts.value || props.editor_getActiveFile()[0];
           }
