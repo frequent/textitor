@@ -183,6 +183,7 @@
     "value": null,
     "selectValueOnOpen": false,
     "onKeyUp": function (my_event, my_value, my_callback) {
+      console.log("KEYUP")
       return CodeMirror.menu_dict.dialog_setNavigationCallback(
         my_event,
         my_value,
@@ -190,7 +191,7 @@
       );
     },
     "onInput": function (my_event, my_value, my_callback) {
-
+      console.log("INPUT")
       return CodeMirror.menu_dict.dialog_setNavigationCallback(
         my_event,
         my_value, 
@@ -1142,7 +1143,9 @@
             return opts[my_property_name](my_event, dialog_input.value, props.dialog_evaluateState);
           });
         }
-
+        console.log("dialog_input")
+        console.log(dialog_input)
+        
         // key bindings
         if (dialog_input) {
           if (props.dialog_position === 'right') {
@@ -1159,9 +1162,11 @@
           }
         }
         if (opts.onKeyUp) {
+          console.log("bind keyup")
           dialog_event_list.push(wrapBind(dialog, "keyup", "onKeyUp"));
         }
         if (opts.onKeyDown) {
+          console.log("bind keydown")
           dialog_event_list.push(wrapBind(dialog, "keydown", "onKeyDown"));
         }
 
