@@ -957,7 +957,11 @@
         dialog = props.dialog,
         input_value = dialog.querySelector("input").value,
         is_idle = input_value === "" || input_value === 'Enter valid URL.';
-
+      console.log("swapping")
+      console.log(is_idle)
+      console.log(props.editor_active_file)
+      console.log("content?")
+      console.log(my_content)
       // close = store file on memory until it is saved
       // close on edit without save
       if (is_idle && !props.editor_active_file) {
@@ -977,8 +981,13 @@
             save_file_name,
             save_mime_type;
 
+          console.log(old_doc)
+          console.log(active_file)
+          console.log(props.editor_is_modified)
+
           // set active file to active and save previous file (old_doc)
           if (active_file && props.editor_is_modified) {
+            console.log("set active file to active and save old doc")
             save_file_name = props.editor_active_file.name,
             save_mime_type = props.editor_active_file.mime_type;
 
@@ -999,6 +1008,10 @@
           }
         })
         .push(function () {
+          console.log("Done, clearing textinput")
+          // if new file is "", active file must be cleared along with textinput
+          // if new file is with content, active file must be set along with textinput
+          console.log(props.editor_active_file)
           props.dialog_clearTextInput(dialog);
           //props.editor_resetModified();
           //props.editor_resetActiveFile();
