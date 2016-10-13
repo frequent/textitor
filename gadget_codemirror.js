@@ -267,11 +267,15 @@
   }
 
   function dialog_flagInput(my_input, my_message) {
+    if (my_input.indexOf("custom-invalid") > 0) {
+      console.log("ALREADY BOUND INVALID")
+      return false;
+    }
     return new RSVP.Queue()
       .push(function () {
         my_input.className += ' custom-invalid';
         my_input.value = my_message;
-        my_input.blur();
+
         return promiseEventListener(my_input, 'focus', false);
       })
       .push(function () {
