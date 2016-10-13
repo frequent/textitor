@@ -1025,8 +1025,11 @@
           // if new file is "", active file must be cleared along with textinput
           // if new file is with content, active file must be set along with textinput
           console.log(props.editor_active_file)
+          console.log(props.dialog_clearTextInput)
+          console.log(dialog)
           props.dialog_clearTextInput(dialog);
           //props.editor_resetModified();
+          console.log(document.querySelector("input"))
           //props.editor_resetActiveFile();
           return true;
         })
