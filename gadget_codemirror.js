@@ -331,13 +331,15 @@
   }
 
   function dialog_updateFileMenu(my_direction) {
+    console.log("updating file menu")
     var file_menu = CodeMirror.menu_dict.dialog.querySelector(".custom-file-menu"),
       input_list,
       input_element,
       selected_index,
       len,
       i;
-
+    console.log(file_menu)
+    console.log(file_menu.querySelectorAll('input[type="checkbox"]'))
     if (file_menu) {
       input_list = Array.prototype.slice.call(
         file_menu.querySelectorAll('input[type="checkbox"]')
@@ -345,13 +347,16 @@
       input_element,
       len,
       i;
+
       for (i = 0, len = input_list.length; i < len; i += 1) {
         if (input_list[i].checked) {
+          console.log("CHECKED = " + i)
           selected_index = i;
           input_list[i].checked = false;
         }
       }
-
+      console.log(input_list)
+      console.log(my_direction)
       if (my_direction === "down") {
         selected_index = selected_index || len;
         input_element = input_list[selected_index - 1] || input_list[len - 1];
@@ -360,6 +365,7 @@
         input_element = input_list[selected_index + 1] || input_list[0];
       }
       input_element.checked = true;
+      console.log("done");
     }
   }
 
@@ -435,9 +441,11 @@
 
     // ovrride chrome page start/end shortcut
     if (my_event.keyCode === 35) {
+      console.log("UP")
       return CodeMirror.commands.myEditor_navigateVertical(undefined, "up");
     }
     if (my_event.keyCode === 36) {
+      console.log("DOWN")
       return CodeMirror.commands.myEditor_navigateVertical(undefined, "down");
     }
     // input
