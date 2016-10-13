@@ -331,15 +331,13 @@
   }
 
   function dialog_updateFileMenu(my_direction) {
-    console.log("updating file menu")
     var file_menu = CodeMirror.menu_dict.dialog.querySelector(".custom-file-menu"),
       input_list,
       input_element,
       selected_index,
       len,
       i;
-    console.log(file_menu)
-    console.log(file_menu.querySelectorAll('input[type="checkbox"]'))
+    
     if (file_menu) {
       input_list = Array.prototype.slice.call(
         file_menu.querySelectorAll('input[type="checkbox"]')
@@ -350,13 +348,10 @@
 
       for (i = 0, len = input_list.length; i < len; i += 1) {
         if (input_list[i].checked) {
-          console.log("CHECKED = " + i)
           selected_index = i;
           input_list[i].checked = false;
         }
       }
-      console.log(input_list)
-      console.log(my_direction)
       if (my_direction === "down") {
         selected_index = selected_index || len;
         input_element = input_list[selected_index - 1] || input_list[len - 1];
@@ -365,7 +360,6 @@
         input_element = input_list[selected_index + 1] || input_list[0];
       }
       input_element.checked = true;
-      console.log("done");
     }
   }
 
@@ -373,11 +367,8 @@
     var input_list = my_dialog.querySelectorAll("input"),
       len,
       i;
-    console.log(input_list)
     for (i = 0, len = input_list.length; i < len; i += 1) {
-      console.log(input_list[i].type)
       if (input_list[i].type === 'text') {
-        console.log("resetting")
         input_list[i].value = '';
       }
     }
@@ -433,7 +424,8 @@
   }
 
   function dialog_setNavigationCallback(my_event, my_value, my_callback) {
-
+    console.log("input!")
+    console.log(my_event.keyCode)
     // esc
     if (my_event.keyCode === 27) {
       return CodeMirror.commands.myEditor_closeDialog(my_event);
@@ -441,11 +433,11 @@
 
     // ovrride chrome page start/end shortcut
     if (my_event.keyCode === 35) {
-      console.log("UP")
+      console.log("keycode UP")
       return CodeMirror.commands.myEditor_navigateVertical(undefined, "up");
     }
     if (my_event.keyCode === 36) {
-      console.log("DOWN")
+      console.log("keycode DOWN")
       return CodeMirror.commands.myEditor_navigateVertical(undefined, "down");
     }
     // input
@@ -603,6 +595,7 @@
   }
 
   function editor_navigateVertical(my_codemirror, my_direction) {
+    console.log("vertical, " + my_direction)
     return CodeMirror.menu_dict.dialog_updateFileMenu(my_direction);
   }
 
@@ -615,10 +608,12 @@
   }
 
   function editor_navigateUp(cm) {
+    console.log("NAV UP")
     return CodeMirror.commands.myEditor_navigateVertical(cm, "up");
   }
 
   function editor_navigateDown(cm) {
+    console.log("NAV DOWN")
     return CodeMirror.commands.myEditor_navigateVertical(cm, "down");
   }
 
