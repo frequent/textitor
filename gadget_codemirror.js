@@ -841,7 +841,7 @@
           return gadget.setActiveStorage("memory");
         })
         .push(function () {
-          return my_gadget.jio_getAttachment(active_cache, file_name);
+          return gadget.jio_getAttachment(active_cache, file_name);
         })
         .push(
           function () {
