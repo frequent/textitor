@@ -381,7 +381,7 @@
         return props.editor_updateStorage(my_parameter);
       })
       .push(function (my_close_dialog) {
-        if (my_close_dialog === true && props.editor_active_file) {
+        if (my_close_dialog === true && props.editor_active_dialog) {
           if (props.dialog_option_dict.onClose) {
             props.dialog_option_dict.onClose(dialog);
           }
@@ -976,7 +976,7 @@
       console.log(my_content)
       // close = store file on memory until it is saved
       // close on edit without save
-      if (is_idle && !props.editor_active_file) {
+      if (is_idle || !props.editor_active_file) {
         return true;
       }
 
@@ -1028,6 +1028,10 @@
           //props.editor_resetModified();
           //props.editor_resetActiveFile();
           return true;
+        })
+        .push(null, function (err) {
+          console.log(err);
+          throw err;
         });
     })
 
