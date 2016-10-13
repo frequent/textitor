@@ -104,7 +104,6 @@
     function cancelResolver() {
       if ((callback_promise !== undefined) &&
         (typeof callback_promise.cancel === "function")) {
-          console.log("!!!!!!!!!!!!!!!!")
         callback_promise.cancel();
       }
     }
@@ -269,7 +268,6 @@
 
   function dialog_flagInput(my_input, my_message) {
     if (my_input.className.indexOf("custom-invalid") > 0) {
-      console.log("ALREADY BOUND INVALID")
       return false;
     }
     return new RSVP.Queue()
@@ -286,11 +284,6 @@
         
         // keep menu open
         return false;
-      })
-      .push(undefined, function (error) {
-        console.log("couscous")
-        console.log(error);
-        throw error;
       });
   }
 
@@ -383,7 +376,6 @@
     var props = CodeMirror.menu_dict;
     return new RSVP.Queue()
       .push(function () {
-        console.log("updating storage")
         return props.editor_updateStorage(my_parameter);
       })
       .push(function (my_close_dialog) {
@@ -395,10 +387,6 @@
           props.editor.focus();
           props.dialog_position = "idle";
         }
-      }, function (e) {
-        console.log("BAM")
-        console.log(e);
-        throw e;
       });
   }
 
@@ -442,11 +430,6 @@
     if (my_event.keyCode === 36) {
       return CodeMirror.commands.myEditor_navigateVertical(undefined, "down");
     }
-    console.log("VAlUE?")
-    console.log(my_value)
-    console.log(my_event)
-    console.log(my_event.target)
-    console.log(my_event.target === document.activeElement)
     // input
     if (my_event.type === "input") {
       return my_callback(my_value);
@@ -464,7 +447,7 @@
           })
           .push(
             function (err) { console.log(err); throw err;},
-            function (suc) { console.log("oui"); console.log(suc);}
+            function (suc) { console.log("done"); console.log(suc);}
           );// (s)ave
         case 88: return CodeMirror.commands.myEditor_closeDialog(); // (x)lose dialog
         case 37: return CodeMirror.commands.myEditor_navigateHorizontal(undefined, "left");
@@ -563,16 +546,10 @@
           CodeMirror.menu_dict.dialog_closeCallback,
           CodeMirror.menu_dict.dialog_option_dict
         );
-      })
-      .push(null, function (my_error) {
-        console.log("NOPE")
-        console.log(my_error);
       });
   }
 
   function editor_saveFromDialog(my_codemirror, from) {
-    console.log("FROM: " + from)
-    console.log("SAVEDIALOG")
     if (CodeMirror.menu_dict.dialog_position !== "left") {
 
       // evaluateState is declared on first dialog open, if someone saves before
@@ -580,7 +557,6 @@
       if (CodeMirror.menu_dict.dialog_evaluateState) {
         return CodeMirror.menu_dict.dialog_evaluateState({"target":{"name": "save"}});
       } else {
-        console.log("OPENING DIALOG")
         return CodeMirror.commands.myEditor_openDialog(CodeMirror, "right");
       }
     }
@@ -677,7 +653,6 @@
         if (my_parameter) {
           if (my_parameter.target) {
             action = my_parameter.target.name;
-            console.log(action)
             if (action === "open") {
             return my_gadget.editor_openFile();
             }
@@ -685,7 +660,6 @@
               return my_gadget.editor_swapFile();
             }
             if (action === "save") {
-              console.log("ACTION SAVE")
               return my_gadget.editor_saveFile();
             }
             if (action === "remove") {
@@ -847,10 +821,6 @@
             props.dialog_createFileMenu(entry_dict),
             props.dialog.querySelector('span')
           );
-        })
-        .push(null, function (err) {
-          console.log(err);
-          throw err;
         });
     })  
     
@@ -910,7 +880,6 @@
     })
 
     .declareMethod('editor_saveFile', function () {
-      console.log("Declare SAVE")
       var gadget = this,
         props = CodeMirror.menu_dict,
         dialog = props.dialog,
@@ -924,7 +893,6 @@
 
       // dialog not initialized or closed
       if (!dialog || !props.element.querySelector(".CodeMirror-dialog")) {
-        console.log("NO DIALOG, FORCE OPEN and finish");
         CodeMirror.commands.myEditor_navigateHorizontal(props.editor, "right");
         return;
       }
@@ -940,7 +908,7 @@
         console.log("FLAG")
         return props.dialog_flagInput(file_name_input, 'Enter valid URL.');
       }
-      console.log("WE DON'T GET HERE")
+
       // validate Cache (NOT SUPPORTED YET)
       if (!is_cache_name) {
         mime_type_input = file_name.split(".").pop().replace("/", "");
@@ -950,7 +918,7 @@
       } else {
         return props.dialog_flagInput(file_name_input, 'Cache not supported');
       }
-
+      console.log("VALID")
       return new RSVP.Queue()
         .push(function () {
           return gadget.setActiveStorage("memory");
@@ -1074,7 +1042,6 @@
 
       // show "save" hint when a file has not been saved
       if (file_name.indexOf("*") > 0) {
-        console.log("already * the file on open?");
         props.editor_setModified();
         xxx = true;
       }
