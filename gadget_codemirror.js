@@ -285,6 +285,11 @@
         
         // keep menu open
         return false;
+      })
+      .push(undefined, function (error) {
+        console.log("couscous")
+        console.log(error);
+        throw error;
       });
   }
 
