@@ -1,10 +1,6 @@
 
 => progress
-- save shortcut when dialog is open throws cancellation error
-- save shortcut on new file opens, fails validation (OK), focus on label?
-- error throws when saving 2nd time, because the file already exists! Fix this.
-- can't save when coming from file menu! fails on "default" > no filename we should override and open dialog!
-- don't save works on close and save, but not on left
+- close does not remove active file? or why is it still in input?
 - Throw on existing file with same name
 - I'm missing save when editing and leaving
 - saving a file without menu-open should also save to worker and remove star
