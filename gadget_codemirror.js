@@ -280,7 +280,6 @@
         return promiseEventListener(my_input, 'focus', false);
       })
       .push(function () {
-        console.log("triggered focus promise")
         my_input.className = '';
         my_input.value = '';
         
@@ -389,6 +388,10 @@
           props.editor.focus();
           props.dialog_position = "idle";
         }
+      })
+      .push(null, function (error) {
+        console.log(error);
+        throw error;
       });
   }
 
@@ -443,14 +446,7 @@
         case 68: return CodeMirror.commands.myEditor_deleteFile();  // (d)elete file
         case 67: return CodeMirror.commands.myEditor_closeFile();   // (c)lose file
         case 79: return CodeMirror.commands.myEditor_openFromDialog(); // (o)pen
-        case 83: return new RSVP.Queue()
-          .push(function () {
-            return CodeMirror.commands.myEditor_saveFromDialog(CodeMirror, "from_shortcut");
-          })
-          .push(
-            function (err) { console.log(err); throw err;},
-            function (suc) { console.log("done"); console.log(suc);}
-          );// (s)ave
+        case 83: return CodeMirror.commands.myEditor_saveFromDialog(CodeMirror);// (s)ave
         case 88: return CodeMirror.commands.myEditor_closeDialog(); // (x)lose dialog
         case 37: return CodeMirror.commands.myEditor_navigateHorizontal(undefined, "left");
         case 38: return CodeMirror.commands.myEditor_navigateVertical(undefined, "up");
@@ -874,10 +870,6 @@
           props.editor_resetActiveFile();
           props.editor_resetModified();
           return true;
-        })
-        .push(null, function (my_error) {
-          console.log(my_error);
-          throw my_error;
         });
     })
 
@@ -898,7 +890,7 @@
         CodeMirror.commands.myEditor_navigateHorizontal(props.editor, "right");
         return;
       }
-      console.log("DIALOG, so continue")
+
       file_name_input = dialog.querySelector("input[type='text']");
       file_name = file_name_input.value;
       is_cache_name = dialog.querySelector('input:checked');
@@ -907,7 +899,6 @@
 
       // validate URL
       if (!file_name || file_name === "Enter valid URL.") {
-        console.log("FLAG")
         return props.dialog_flagInput(file_name_input, 'Enter valid URL.');
       }
 
@@ -920,7 +911,7 @@
       } else {
         return props.dialog_flagInput(file_name_input, 'Cache not supported');
       }
-      console.log("VALID")
+
       return new RSVP.Queue()
         .push(function () {
           return gadget.setActiveStorage("memory");
@@ -957,10 +948,6 @@
           CodeMirror.menu_dict.editor_setActiveFile(file_name, mime_type);
           CodeMirror.menu_dict.editor_resetModified();
           return true;
-        })
-        .push(undefined, function (my_error) {
-          console.log(my_error);
-          throw my_error;
         });
     })
 
@@ -1016,10 +1003,6 @@
           //props.editor_resetModified();
           //props.editor_resetActiveFile();
           return true;
-        })
-        .push(null, function (err) {
-          console.log(err);
-          throw err;
         });
     })
 
@@ -1075,10 +1058,6 @@
                   gadget.jio_getAttachment(active_cache, open_name),
                   new Blob([])
                 ]);
-              })
-              .push(null, function (err) {
-                console.log(err);
-                throw err;
               });
           }
           throw my_error;
@@ -1100,10 +1079,6 @@
             props.editor_resetModified();
           }
           return true;
-        })
-        .push(null, function (err) {
-          console.log(err);
-          throw err;
         });
     })
 
