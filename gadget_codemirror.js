@@ -1023,19 +1023,15 @@
           }
         })
         .push(function () {
-          console.log("Done, clearing textinput")
+          console.log("Done swap, empty file should clear input and active file")
           // if new file is "", active file must be cleared along with textinput
           // if new file is with content, active file must be set along with textinput
-          console.log(props.editor_active_file)
-          console.log(props.dialog_clearTextInput)
-          console.log(dialog)
           props.dialog_clearTextInput(dialog);
-          //props.editor_resetModified();
-          console.log(document.querySelector("input").value)
-          document.querySelector("input").value = "";
-          console.log(document.querySelector("input").value)
-          console.log(props.editor_active_file)
-          //props.editor_resetActiveFile();
+          if (!my_content) {
+            props.editor_resetActiveFile();
+            props.editor_resetModified();
+          }
+          console.log(document.querySelector("input"))
           return true;
         })
         .push(null, function (err) {
