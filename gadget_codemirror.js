@@ -281,6 +281,10 @@
         
         // keep menu open
         return false;
+      }, function (err) {
+        console.log("what is failing here?")
+        console.log(err)
+        throw err;
       });
   }
 
@@ -914,10 +918,11 @@
 
       // dialog not initialized or closed
       if (!dialog || !props.element.querySelector(".CodeMirror-dialog")) {
+        console.log("NO DIALOG, FORCE OPEN and finish");
         CodeMirror.commands.myEditor_navigateHorizontal(props.editor, "right");
         return;
       }
-
+      console.log("DIALOG, so continue")
       file_name_input = dialog.querySelector("input[type='text']");
       file_name = file_name_input.value;
       is_cache_name = dialog.querySelector('input:checked');
@@ -929,7 +934,7 @@
         console.log("FLAG")
         return props.dialog_flagInput(file_name_input, 'Enter valid URL.');
       }
-
+      console.log("WE DON'T GET HERE")
       // validate Cache (NOT SUPPORTED YET)
       if (!is_cache_name) {
         mime_type_input = file_name.split(".").pop().replace("/", "");
