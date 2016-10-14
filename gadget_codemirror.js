@@ -886,8 +886,6 @@
         mime_type_input,
         mime_type;
 
-      // dialog not initialized or closed
-      //if (!dialog || !props.element.querySelector(".CodeMirror-dialog")) {
       if (!dialog || !props.editor_active_dialog) {
         CodeMirror.commands.myEditor_navigateHorizontal(props.editor, "right");
         return;
@@ -954,17 +952,24 @@
     })
 
     .declareMethod('editor_swapFile', function (my_content) {
-      console.log("CLOSING")
       var gadget = this,
         props = CodeMirror.menu_dict,
         dialog = props.dialog,
         input_value,
         is_idle;
-      console.log(dialog)
-      console.log(props.editor_active_dialog)
-      console.log(props.editor_active_file)
 
+      // SWAP => put existing file on memory storage, replace with new content!
+
+      // if I have no active file and no content, nothing to do
+      // if the dialog is not initialized, nothing was done, nothing to do
+      // if is_modified and no activeFile => open panel
+      // if no dialog?
+
+      console.log(my_content)
       if (!dialog || (!props.editor_active_file && !my_content)) {
+        //if (props.editor_is_modified) {
+        //  CodeMirror.commands.myEditor_navigateHorizontal(props.editor, "right");
+        //}
         return; 
       }
 
