@@ -965,16 +965,19 @@
       console.log("is modified", props.editor_is_modified)
 
       if (is_no_new_or_active_file) {
-        if (props.editor_is_modified) {
-          if (!dialog) {
+        if (!dialog) {
+          if (props.editor_is_modified) {
             CodeMirror.commands.myEditor_navigateHorizontal(props.editor, "right");
-          } else {
-            file_name = dialog.querySelector("input").value;
-            is_no_file_name = file_name === "" || file_name === 'Enter valid URL.';
-            console.log("no file name", is_no_file_name)
-            if (is_no_file_name) {
-              CodeMirror.commands.myEditor_navigateHorizontal(props.editor, "right");
-            }  
+          }
+          return;
+        }
+        if (props.editor_is_modified) {
+          // can there be a file name?
+          file_name = dialog.querySelector("input").value;
+          is_no_file_name = file_name === "" || file_name === 'Enter valid URL.';
+          console.log("no file name", is_no_file_name)
+          if (is_no_file_name) {
+            CodeMirror.commands.myEditor_navigateHorizontal(props.editor, "right");
           }
         }
         return;
