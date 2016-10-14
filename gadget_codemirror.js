@@ -62,7 +62,7 @@
         "<b>D</b>elete</button></form>";
 
   var OBJECT_LIST_TEMPLATE = "<span>Search:</span>" +
-    "<input type='text' tabindex='1' />" +
+    "<input type='text' tabindex='1' placeholder='search...' />" +
     "<span class='custom-menu-typewriter'>CTRL+ALT+</span>" +
     "<form name='search'>" +
       "<button type='submit' tabindex='2' class='custom-menu-button'>" +
@@ -432,14 +432,44 @@
       return CodeMirror.commands.myEditor_closeDialog(my_event);
     }
 
-    // ovrride chrome page start/end shortcut
+    // overide chrome page start/end shortcut
     if (my_event.keyCode === 35) {
       console.log("keycode UP")
-      return CodeMirror.commands.myEditor_navigateVertical(undefined, "up");
+      console.log(my_event.keyCode)
+      return new RSVP.Queue()
+          .push(function () {
+            return CodeMirror.commands.myEditor_navigateVertical(undefined, "up");
+          })
+          .push(
+            function (s) {
+              console.log("yeah");
+              console.log(s)
+              return "xxx";
+            },
+            function (e) {
+              console.log("nah");
+              console.log(e);
+              throw e;
+            });
     }
     if (my_event.keyCode === 36) {
       console.log("keycode DOWN")
-      return CodeMirror.commands.myEditor_navigateVertical(undefined, "down");
+      console.log(my_event.keyCode)
+      return new RSVP.Queue()
+          .push(function () {
+            return CodeMirror.commands.myEditor_navigateVertical(undefined, "down");
+          })
+          .push(
+            function (s) {
+              console.log("yeah");
+              console.log(s)
+              return "yyy"
+            },
+            function (e) {
+              console.log("nah");
+              console.log(e);
+              throw e;
+            });
     }
     // input
     if (my_event.type === "input") {
@@ -455,9 +485,37 @@
         case 83: return CodeMirror.commands.myEditor_saveFromDialog(CodeMirror);// (s)ave
         case 88: return CodeMirror.commands.myEditor_closeDialog(); // (x)lose dialog
         case 37: return CodeMirror.commands.myEditor_navigateHorizontal(undefined, "left");
-        case 38: return CodeMirror.commands.myEditor_navigateVertical(undefined, "up");
         case 39: return CodeMirror.commands.myEditor_navigateHorizontal(undefined, "right");
-        case 40: return CodeMirror.commands.myEditor_navigateVertical(undefined, "down");
+        case 38: return new RSVP.Queue()
+          .push(function () {
+            return CodeMirror.commands.myEditor_navigateVertical(undefined, "up");
+          })
+          .push(
+            function (s) {
+              console.log("yeah");
+              console.log(s)
+              return "xxx";
+            },
+            function (e) {
+              console.log("nah");
+              console.log(e);
+              throw e;
+            });
+        case 40: return new RSVP.Queue()
+          .push(function () {
+            return CodeMirror.commands.myEditor_navigateVertical(undefined, "down");
+          })
+          .push(
+            function (s) {
+              console.log("yeah");
+              console.log(s)
+              return "yyy"
+            },
+            function (e) {
+              console.log("nah");
+              console.log(e);
+              throw e;
+            });
       }
     }
   }
@@ -512,6 +570,7 @@
   // CodeMirror.keyMap.my["Ctrl-Alt-Y"] = undefined;
   // CodeMirror.keyMap.my["Ctrl-Alt-Z"] = undefined;
   // CodeMirror.keyMap.my["Ctrl-Alt--"] = undefined;
+  console.log("setting keymap shortcuts")
   CodeMirror.keyMap.my["Ctrl-Alt-Home"] = "myEditor_navigateUp";
   CodeMirror.keyMap.my["Ctrl-Alt-End"] = "myEditor_navigateDown";
   CodeMirror.keyMap.my["Ctrl-Alt-Right"] = "myEditor_navigateRight";
@@ -601,21 +660,36 @@
   }
 
   function editor_navigateRight(cm) {
+    console.log("NAV RIGHT")
     return CodeMirror.commands.myEditor_navigateHorizontal(cm, "right");
   }
 
   function editor_navigateLeft(cm) {
+    console.log("NAV LEFT")
     return CodeMirror.commands.myEditor_navigateHorizontal(cm, "left");
   }
 
   function editor_navigateUp(cm) {
     console.log("NAV UP")
-    return CodeMirror.commands.myEditor_navigateVertical(cm, "up");
+    return new RSVP.Queue()
+      .push(function () {
+        return CodeMirror.commands.myEditor_navigateVertical(cm, "up");
+      }, function (err) {
+        console.log(err)
+        throw err;
+      });
+    
   }
 
   function editor_navigateDown(cm) {
     console.log("NAV DOWN")
-    return CodeMirror.commands.myEditor_navigateVertical(cm, "down");
+    return new RSVP.Queue()
+      .push(function () {
+        return CodeMirror.commands.myEditor_navigateVertical(cm, "down");
+      }, function (err) {
+        console.log(err)
+        throw err;
+      });
   }
 
   CodeMirror.commands.myEditor_closeFile = editor_closeFile;
