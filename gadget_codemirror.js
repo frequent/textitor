@@ -203,8 +203,10 @@
 
   function editor_createDoc(my_content) {
     var new_doc,content, history;
-
-    if (my_content) {
+    console.log("creating a doc")
+    console.log(my_content)
+    if (my_content && my_content.length) {
+      console.log("adding content to document before opening")
       content = my_content[0].target.result;
       history = my_content[1].target.result;
       new_doc = CodeMirror.Doc(content);
@@ -213,6 +215,7 @@
       }
      return new_doc;
     }
+    console.log("blank document")
     return CodeMirror.Doc("");
   }
 
@@ -865,7 +868,7 @@
           return gadget.jio_removeAttachment(active_cache, file_name);
         })
         .push(function () {
-          var new_doc = props.editor_createDoc(""),
+          var new_doc = props.editor_createDoc(),
             // new_doc = CodeMirror.Doc(""), 
             old_doc = props.editor.swapDoc(new_doc);
           props.editor_resetActiveFile();
@@ -971,7 +974,7 @@
       console.log("swapping => is_idle, actice_file")
       console.log(is_idle)
       console.log(props.editor_active_file)
-
+      console.log(my_content)
       // close = store file on memory until it is saved
       // close on edit without save
       if (is_idle || !props.editor_active_file) {
@@ -983,14 +986,14 @@
           return gadget.setActiveStorage("memory");
         })
         .push(function () {
-          var new_doc = props.editor_createDoc(my_content || ""),
+          var new_doc = props.editor_createDoc(my_content),
             // new_doc = CodeMirror.Doc(""),
             old_doc = props.editor.swapDoc(new_doc),
             active_storage = props.editor_active_cache || "textitor",
             active_file = props.editor_active_file,
             save_file_name,
             save_mime_type;
-
+          console.log("done swapping")
           console.log(old_doc)
           console.log(active_file)
           console.log(props.editor_is_modified)
@@ -1099,6 +1102,8 @@
           ]);
         })
         .push(function (my_content) {
+          console.log("OpenFile, this is passed to swap")
+          console.log(my_content)
           return gadget.editor_swapFile(my_content);
         })
         .push(function () {
