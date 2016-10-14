@@ -954,14 +954,17 @@
     })
 
     .declareMethod('editor_swapFile', function (my_content) {
+      console.log("CLOSING")
       var gadget = this,
         props = CodeMirror.menu_dict,
         dialog = props.dialog,
         input_value,
         is_idle;
-      
-      // close = save on memory without opening dialog
-      if (!dialog || !props.editor_active_dialog) {
+      console.log(dialog)
+      console.log(props.editor_active_dialog)
+      console.log(props.editor_active_file)
+
+      if (!dialog || (!props.editor_active_file && !my_content)) {
         return; 
       }
 
