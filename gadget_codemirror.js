@@ -964,20 +964,22 @@
       console.log("dialog", dialog)
       console.log("is modified", props.editor_is_modified)
       console.log("no file name", is_no_file_name)
+
       if (is_no_new_or_active_file) {
-        
-        // open dialog
-        if (!dialog || props.editor_is_modified) {
-          CodeMirror.commands.myEditor_navigateHorizontal(props.editor, "right");
+        if (!dialog) {
+          if (props.editor_is_modified) {
+            CodeMirror.commands.myEditor_navigateHorizontal(props.editor, "right");
+          }
           return;
         }
-        
-        // close dialog
-        file_name = dialog.querySelector("input").value;
-        is_no_file_name = file_name === "" || file_name === 'Enter valid URL.';
-        if (is_no_file_name) {
-          return true;
+        if (props.editor_is_modified) {
+          file_name = dialog.querySelector("input").value;
+          is_no_file_name = file_name === "" || file_name === 'Enter valid URL.';
+          if (is_no_file_name) {
+            return true;
+          }
         }
+        return;
       }
 
       console.log("Swapping")
