@@ -973,14 +973,14 @@
       
       console.log("swapping => is_idle, actice_file")
       console.log(is_idle)
-      console.log(props.editor_active_file)
+      console.log(!props.editor_active_file && !my_content)
       console.log(my_content)
-      // close = store file on memory until it is saved
-      // close on edit without save
-      if (is_idle || !props.editor_active_file) {
+      //XXX close on edits without save? no, store on memory!
+      if (is_idle || (!props.editor_active_file && !my_content)) {
+        console.log("closing")
         return true;
       }
-
+      console.log("opening")
       return new RSVP.Queue()
         .push(function () {
           return gadget.setActiveStorage("memory");
