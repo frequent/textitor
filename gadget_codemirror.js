@@ -968,11 +968,10 @@
       input_value = dialog.querySelector("input").value,
       is_idle = input_value === "" || input_value === 'Enter valid URL.';
       
-      console.log("swapping")
+      console.log("swapping => is_idle, actice_file")
       console.log(is_idle)
       console.log(props.editor_active_file)
-      console.log("content?")
-      console.log(my_content)
+
       // close = store file on memory until it is saved
       // close on edit without save
       if (is_idle || !props.editor_active_file) {
@@ -1137,9 +1136,13 @@
         }
         console.log("dialog_input")
         console.log(dialog_input)
-        
-        // key bindings
+
         if (dialog_input) {
+          
+          // focus to enable up/down shortcuts
+          if (props.dialog_position === 'left') {
+            dialog_input.focus();
+          }
           if (props.dialog_position === 'right') {
             dialog_input.value = opts.value || props.editor_getActiveFile()[0];
           }
@@ -1152,9 +1155,6 @@
           if (opts.closeOnBlur !== false && opts.onBlur) {
             dialog_event_list.push(wrapBind(dialog, "blur", "onBlur"));
           }
-
-          // focus to enable up/down shortcuts on file-menu
-          dialog_input.focus();
         }
         if (opts.onKeyUp) {
           dialog_event_list.push(wrapBind(dialog, "keyup", "onKeyUp"));
