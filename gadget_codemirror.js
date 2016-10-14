@@ -955,24 +955,33 @@
       var gadget = this,
         props = CodeMirror.menu_dict,
         dialog = props.dialog,
-        file_name = dialog.querySelector("input").value,
         is_no_new_or_active_file = !props.editor_active_file && !my_content,
-        is_no_file_name;
+        is_no_file_name,
+        file_name;
 
       // SWAP => put existing file on memory storage, replace with new content!
-      console.log("why have dialog")
-      console.log(dialog)
+      console.log("no new or active", is_no_new_or_active_file)
+      console.log("dialog", dialog)
+      console.log("is modified", props.editor_is_modified)
+      console.log("no file name", is_no_file_name)
       if (is_no_new_or_active_file) {
+        
+        // open dialog
+        if (!dialog || props.editor_is_modified) {
+          CodeMirror.commands.myEditor_navigateHorizontal(props.editor, "right");
+          return;
+        }
+        
+        // close dialog
+        file_name = dialog.querySelector("input").value;
         is_no_file_name = file_name === "" || file_name === 'Enter valid URL.';
         if (is_no_file_name) {
           return true;
         }
-        if (props.editor_is_modified) {
-          CodeMirror.commands.myEditor_navigateHorizontal(props.editor, "right");
-        }
-        return;
       }
 
+      console.log("Swapping")
+      console.log(my_content)
       return new RSVP.Queue()
         .push(function () {
           return gadget.setActiveStorage("memory");
