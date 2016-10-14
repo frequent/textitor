@@ -203,10 +203,8 @@
 
   function editor_createDoc(my_content) {
     var new_doc,content, history;
-    console.log("creating a doc")
-    console.log(my_content)
+
     if (my_content && my_content.length) {
-      console.log("adding content to document before opening")
       content = my_content[0].target.result;
       history = my_content[1].target.result;
       new_doc = CodeMirror.Doc(content);
@@ -215,7 +213,6 @@
       }
      return new_doc;
     }
-    console.log("blank document")
     return CodeMirror.Doc("");
   }
 
@@ -970,17 +967,12 @@
 
       input_value = dialog.querySelector("input").value,
       is_idle = input_value === "" || input_value === 'Enter valid URL.';
-      
-      console.log("swapping => is_idle, actice_file")
-      console.log(is_idle)
-      console.log(!props.editor_active_file && !my_content)
-      console.log(my_content)
+
       //XXX close on edits without save? no, store on memory!
       if (is_idle || (!props.editor_active_file && !my_content)) {
-        console.log("closing")
         return true;
       }
-      console.log("opening")
+
       return new RSVP.Queue()
         .push(function () {
           return gadget.setActiveStorage("memory");
@@ -993,14 +985,9 @@
             active_file = props.editor_active_file,
             save_file_name,
             save_mime_type;
-          console.log("done swapping")
-          console.log(old_doc)
-          console.log(active_file)
-          console.log(props.editor_is_modified)
 
           // set active file to active and save previous file (old_doc)
           if (active_file && props.editor_is_modified) {
-            console.log("set active file to active and save old doc")
             save_file_name = props.editor_active_file.name,
             save_mime_type = props.editor_active_file.mime_type;
 
@@ -1021,7 +1008,7 @@
           }
         })
         .push(function () {
-          console.log("Done swap, empty file should clear input and active file")
+
           // if new file is "", active file must be cleared along with textinput
           // if new file is with content, active file must be set along with textinput
           props.dialog_clearTextInput(dialog);
@@ -1029,12 +1016,7 @@
             props.editor_resetActiveFile();
             props.editor_resetModified();
           }
-          console.log(document.querySelector("input"))
           return true;
-        })
-        .push(null, function (err) {
-          console.log(err);
-          throw err;
         });
     })
 
@@ -1102,8 +1084,6 @@
           ]);
         })
         .push(function (my_content) {
-          console.log("OpenFile, this is passed to swap")
-          console.log(my_content)
           return gadget.editor_swapFile(my_content);
         })
         .push(function () {
@@ -1139,8 +1119,6 @@
             return opts[my_property_name](my_event, dialog_input.value, props.dialog_evaluateState);
           });
         }
-        console.log("dialog_input")
-        console.log(dialog_input)
 
         if (dialog_input) {
           
