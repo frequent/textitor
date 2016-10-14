@@ -488,6 +488,7 @@
         case 39: return CodeMirror.commands.myEditor_navigateHorizontal(undefined, "right");
         case 38: return new RSVP.Queue()
           .push(function () {
+            console.log("REGISTER KEY 38")
             return CodeMirror.commands.myEditor_navigateVertical(undefined, "up");
           })
           .push(
@@ -503,6 +504,7 @@
             });
         case 40: return new RSVP.Queue()
           .push(function () {
+            console.log("REGISTER KEY 40")
             return CodeMirror.commands.myEditor_navigateVertical(undefined, "down");
           })
           .push(
@@ -570,12 +572,13 @@
   // CodeMirror.keyMap.my["Ctrl-Alt-Y"] = undefined;
   // CodeMirror.keyMap.my["Ctrl-Alt-Z"] = undefined;
   // CodeMirror.keyMap.my["Ctrl-Alt--"] = undefined;
-  console.log("setting keymap shortcuts")
   CodeMirror.keyMap.my["Ctrl-Alt-Home"] = "myEditor_navigateUp";
   CodeMirror.keyMap.my["Ctrl-Alt-End"] = "myEditor_navigateDown";
   CodeMirror.keyMap.my["Ctrl-Alt-Right"] = "myEditor_navigateRight";
   CodeMirror.keyMap.my["Ctrl-Alt-Left"] = "myEditor_navigateLeft";
+  CodeMirror.keyMap.my["Ctrl-Alt-ArrowUp"] = "myEditor_navigateUp";
   CodeMirror.keyMap.my["Ctrl-Alt-Up"] = "myEditor_navigateUp";
+  CodeMirror.keyMap.my["Ctrl-Alt-ArrowDown"] = "myEditor_navigateUp";
   CodeMirror.keyMap.my["Ctrl-Alt-Down"] = "myEditor_navigateDown";
   // CodeMirror.keyMap.my["Ctrl-Alt-Return"] = undefined;
 
