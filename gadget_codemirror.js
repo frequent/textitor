@@ -183,7 +183,6 @@
     "value": null,
     "selectValueOnOpen": false,
     "onKeyUp": function (my_event, my_value, my_callback) {
-      console.log("KEYUP")
       return CodeMirror.menu_dict.dialog_setNavigationCallback(
         my_event,
         my_value,
@@ -191,7 +190,6 @@
       );
     },
     "onInput": function (my_event, my_value, my_callback) {
-      console.log("INPUT")
       return CodeMirror.menu_dict.dialog_setNavigationCallback(
         my_event,
         my_value, 
@@ -425,8 +423,7 @@
   }
 
   function dialog_setNavigationCallback(my_event, my_value, my_callback) {
-    console.log("input!")
-    console.log(my_event.keyCode)
+
     // esc
     if (my_event.keyCode === 27) {
       return CodeMirror.commands.myEditor_closeDialog(my_event);
@@ -434,42 +431,10 @@
 
     // overide chrome page start/end shortcut
     if (my_event.keyCode === 35) {
-      console.log("keycode UP")
-      console.log(my_event.keyCode)
-      return new RSVP.Queue()
-          .push(function () {
-            return CodeMirror.commands.myEditor_navigateVertical(undefined, "up");
-          })
-          .push(
-            function (s) {
-              console.log("yeah");
-              console.log(s)
-              return "xxx";
-            },
-            function (e) {
-              console.log("nah");
-              console.log(e);
-              throw e;
-            });
+      return CodeMirror.commands.myEditor_navigateVertical(undefined, "up");
     }
     if (my_event.keyCode === 36) {
-      console.log("keycode DOWN")
-      console.log(my_event.keyCode)
-      return new RSVP.Queue()
-          .push(function () {
-            return CodeMirror.commands.myEditor_navigateVertical(undefined, "down");
-          })
-          .push(
-            function (s) {
-              console.log("yeah");
-              console.log(s)
-              return "yyy"
-            },
-            function (e) {
-              console.log("nah");
-              console.log(e);
-              throw e;
-            });
+      return CodeMirror.commands.myEditor_navigateVertical(undefined, "down");
     }
     // input
     if (my_event.type === "input") {
@@ -486,38 +451,8 @@
         case 88: return CodeMirror.commands.myEditor_closeDialog(); // (x)lose dialog
         case 37: return CodeMirror.commands.myEditor_navigateHorizontal(undefined, "left");
         case 39: return CodeMirror.commands.myEditor_navigateHorizontal(undefined, "right");
-        case 38: return new RSVP.Queue()
-          .push(function () {
-            console.log("REGISTER KEY 38")
-            return CodeMirror.commands.myEditor_navigateVertical(undefined, "up");
-          })
-          .push(
-            function (s) {
-              console.log("yeah");
-              console.log(s)
-              return "xxx";
-            },
-            function (e) {
-              console.log("nah");
-              console.log(e);
-              throw e;
-            });
-        case 40: return new RSVP.Queue()
-          .push(function () {
-            console.log("REGISTER KEY 40")
-            return CodeMirror.commands.myEditor_navigateVertical(undefined, "down");
-          })
-          .push(
-            function (s) {
-              console.log("yeah");
-              console.log(s)
-              return "yyy"
-            },
-            function (e) {
-              console.log("nah");
-              console.log(e);
-              throw e;
-            });
+        case 38: return CodeMirror.commands.myEditor_navigateVertical(undefined, "up");
+        case 40: return CodeMirror.commands.myEditor_navigateVertical(undefined, "down");
       }
     }
   }
@@ -576,9 +511,7 @@
   CodeMirror.keyMap.my["Ctrl-Alt-End"] = "myEditor_navigateDown";
   CodeMirror.keyMap.my["Ctrl-Alt-Right"] = "myEditor_navigateRight";
   CodeMirror.keyMap.my["Ctrl-Alt-Left"] = "myEditor_navigateLeft";
-  CodeMirror.keyMap.my["Ctrl-Alt-ArrowUp"] = "myEditor_navigateUp";
   CodeMirror.keyMap.my["Ctrl-Alt-Up"] = "myEditor_navigateUp";
-  CodeMirror.keyMap.my["Ctrl-Alt-ArrowDown"] = "myEditor_navigateUp";
   CodeMirror.keyMap.my["Ctrl-Alt-Down"] = "myEditor_navigateDown";
   // CodeMirror.keyMap.my["Ctrl-Alt-Return"] = undefined;
 
@@ -658,41 +591,23 @@
   }
 
   function editor_navigateVertical(my_codemirror, my_direction) {
-    console.log("vertical, " + my_direction)
     return CodeMirror.menu_dict.dialog_updateFileMenu(my_direction);
   }
 
   function editor_navigateRight(cm) {
-    console.log("NAV RIGHT")
     return CodeMirror.commands.myEditor_navigateHorizontal(cm, "right");
   }
 
   function editor_navigateLeft(cm) {
-    console.log("NAV LEFT")
     return CodeMirror.commands.myEditor_navigateHorizontal(cm, "left");
   }
 
   function editor_navigateUp(cm) {
-    console.log("NAV UP")
-    return new RSVP.Queue()
-      .push(function () {
-        return CodeMirror.commands.myEditor_navigateVertical(cm, "up");
-      }, function (err) {
-        console.log(err)
-        throw err;
-      });
-    
+    return CodeMirror.commands.myEditor_navigateVertical(cm, "up");
   }
 
   function editor_navigateDown(cm) {
-    console.log("NAV DOWN")
-    return new RSVP.Queue()
-      .push(function () {
-        return CodeMirror.commands.myEditor_navigateVertical(cm, "down");
-      }, function (err) {
-        console.log(err)
-        throw err;
-      });
+    return CodeMirror.commands.myEditor_navigateVertical(cm, "down");
   }
 
   CodeMirror.commands.myEditor_closeFile = editor_closeFile;
@@ -1237,13 +1152,14 @@
           if (opts.closeOnBlur !== false && opts.onBlur) {
             dialog_event_list.push(wrapBind(dialog, "blur", "onBlur"));
           }
+
+          // focus to enable up/down shortcuts on file-menu
+          dialog_input.focus();
         }
         if (opts.onKeyUp) {
-          console.log("bind keyup")
           dialog_event_list.push(wrapBind(dialog, "keyup", "onKeyUp"));
         }
         if (opts.onKeyDown) {
-          console.log("bind keydown")
           dialog_event_list.push(wrapBind(dialog, "keydown", "onKeyDown"));
         }
 
