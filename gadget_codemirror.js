@@ -955,30 +955,22 @@
       var gadget = this,
         props = CodeMirror.menu_dict,
         dialog = props.dialog,
-        input_value,
-        is_idle;
+        file_name = dialog.querySelector("input").value,
+        is_no_new_or_active_file = !props.editor_active_file && !my_content,
+        is_no_file_name;
 
       // SWAP => put existing file on memory storage, replace with new content!
-
-      // if I have no active file and no content, nothing to do
-      // if the dialog is not initialized, nothing was done, nothing to do
-      // if is_modified and no activeFile => open panel
-      // if no dialog?
-
-      console.log(my_content)
-      if (!dialog || (!props.editor_active_file && !my_content)) {
-        //if (props.editor_is_modified) {
-        //  CodeMirror.commands.myEditor_navigateHorizontal(props.editor, "right");
-        //}
-        return; 
-      }
-
-      input_value = dialog.querySelector("input").value,
-      is_idle = input_value === "" || input_value === 'Enter valid URL.';
-
-      //XXX close on edits without save? no, store on memory!
-      if (is_idle || (!props.editor_active_file && !my_content)) {
-        return true;
+      console.log("why have dialog")
+      console.log(dialog)
+      if (is_no_new_or_active_file) {
+        is_no_file_name = file_name === "" || file_name === 'Enter valid URL.';
+        if (is_no_file_name) {
+          return true;
+        }
+        if (props.editor_is_modified) {
+          CodeMirror.commands.myEditor_navigateHorizontal(props.editor, "right");
+        }
+        return;
       }
 
       return new RSVP.Queue()
