@@ -963,7 +963,6 @@
       console.log("no new or active", is_no_new_or_active_file)
       console.log("dialog", dialog)
       console.log("is modified", props.editor_is_modified)
-      console.log("no file name", is_no_file_name)
 
       if (is_no_new_or_active_file) {
         if (!dialog) {
@@ -972,9 +971,13 @@
           }
           return;
         }
+        console.log("dialog set")
+        console.log("is modified", props.editor_is_modified)
+
         if (props.editor_is_modified) {
           file_name = dialog.querySelector("input").value;
           is_no_file_name = file_name === "" || file_name === 'Enter valid URL.';
+          console.log("no file name", is_no_file_name)
           if (is_no_file_name) {
             return true;
           }
