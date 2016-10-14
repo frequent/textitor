@@ -886,6 +886,8 @@
         mime_type_input,
         mime_type;
 
+      // SAVE => store on serviceworker, remove from memory
+
       if (!dialog || !props.editor_active_dialog) {
         CodeMirror.commands.myEditor_navigateHorizontal(props.editor, "right");
         return;
@@ -960,9 +962,6 @@
         file_name;
 
       // SWAP => put existing file on memory storage, replace with new content!
-      console.log("no new or active", is_no_new_or_active_file)
-      console.log("dialog", dialog)
-      console.log("is modified", props.editor_is_modified)
 
       if (is_no_new_or_active_file) {
         if (!dialog) {
@@ -972,19 +971,22 @@
           return;
         }
         if (props.editor_is_modified) {
-          // can there be a file name?
+          console.log("is modified")
           file_name = dialog.querySelector("input").value;
           is_no_file_name = file_name === "" || file_name === 'Enter valid URL.';
-          console.log("no file name", is_no_file_name)
+          console.log("is_no_file_name", is_no_file_name)
           if (is_no_file_name) {
+            if (props.editor_active_dialog) {
+              return true;
+            }
             CodeMirror.commands.myEditor_navigateHorizontal(props.editor, "right");
+            return;
           }
+          return;
         }
-        return;
       }
 
-      console.log("Swapping")
-      console.log(my_content)
+      // what if file name is set but not saved => where do I get content?
       return new RSVP.Queue()
         .push(function () {
           return gadget.setActiveStorage("memory");
