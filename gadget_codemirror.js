@@ -276,10 +276,11 @@
         my_input.value = my_message;
         my_input.blur();
         CodeMirror.menu_dict.editor.focus();
-        
+        console.log("focus bind")
         return promiseEventListener(my_input, 'focus', false);
       })
       .push(function () {
+        console.log("focus trigger")
         my_input.className = '';
         my_input.value = '';
         
@@ -380,6 +381,7 @@
         return props.editor_updateStorage(my_parameter);
       })
       .push(function (my_close_dialog) {
+        console.log("done, dialog?", props.editor_active_dialog, my_close_dialog);
         if (my_close_dialog === true && props.editor_active_dialog) {
           if (props.dialog_option_dict.onClose) {
             props.dialog_option_dict.onClose(dialog);
@@ -949,6 +951,7 @@
           gadget.property_dict.editor.setOption("mode", mime_type);
           CodeMirror.menu_dict.editor_setActiveFile(file_name, mime_type);
           CodeMirror.menu_dict.editor_resetModified();
+          console.log("all set, closing")
           return true;
         });
     })
@@ -1137,9 +1140,9 @@
         if (dialog_input) {
           
           // focus to enable up/down shortcuts
-          if (props.dialog_position === 'left') {
+          //if (props.dialog_position === 'left') {
             dialog_input.focus();
-          }
+          //}
           if (props.dialog_position === 'right') {
             dialog_input.value = opts.value || props.editor_getActiveFile()[0];
           }
