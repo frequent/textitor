@@ -888,7 +888,7 @@
 
       // SAVE => store on serviceworker, remove from memory
 
-      if (!dialog || !props.editor_active_dialog) {
+      if (!dialog || (!props.editor_active_dialog && !props.editor_active_file)) {
         CodeMirror.commands.myEditor_navigateHorizontal(props.editor, "right");
         return;
       }
