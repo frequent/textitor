@@ -269,6 +269,30 @@
     var active_file = CodeMirror.menu_dict.editor_active_file || {};
     return [active_file.name || "", active_file.mime_type || ""];
   }
+  
+  function editor_getActiveFileList(my_gadget) {
+    return new RSVP.Queue()
+      .push(function () {
+        return my_gadget.setActiveStorage("memory");
+      })
+      .push(function () {
+        return my_gadget.jio_allDocs();
+      })
+      .push(function (my_directory_list) {
+        var response_dict = my_directory_list.data,
+          directory_content_list = [],
+          cache_id,
+          i;
+  
+        for (i = 0; i < response_dict.total_rows; i += 1) {
+          cache_id = response_dict.rows[i].id;
+          directory_content_list.push(
+            my_gadget.jio_allAttachments(cache_id)
+          );
+        }
+        return RSVP.all(directory_content_list);
+      });
+  }
 
   function dialog_flagInput(my_input, my_message) {
     if (my_input.className.indexOf("custom-invalid") > 0) {
@@ -472,6 +496,7 @@
   CodeMirror.menu_dict.editor_resetActiveFile = editor_resetActiveFile;
   CodeMirror.menu_dict.editor_setActiveFile = editor_setActiveFile;
   CodeMirror.menu_dict.editor_getActiveFile = editor_getActiveFile;
+  CodeMirror.menu_dict.editor_getActiveFileList = editor_getActiveFileList;
   //CodeMirror.menu_dict.editor_updateStorage = editor_updateStorage;
   CodeMirror.menu_dict.dialog_flagInput = dialog_flagInput;
   CodeMirror.menu_dict.dialog_parseTemplate = dialog_parseTemplate;
@@ -744,25 +769,7 @@
       // build a list of folders and file ids stored on memory and serviceworker
       new RSVP.Queue()
         .push(function () {
-          return gadget.setActiveStorage("memory");
-        })
-        .push(function () {
-          return gadget.jio_allDocs();
-        })
-        .push(function (my_directory_list) {
-          var response_dict = my_directory_list.data,
-            directory_content_list = [],
-            cache_id,
-            i;
-  
-          for (i = 0; i < response_dict.total_rows; i += 1) {
-            cache_id = response_dict.rows[i].id;
-            //entry_dict[i] = {"name": cache_id, "item_list": []};
-            directory_content_list.push(
-              gadget.jio_allAttachments(cache_id)
-            );
-          }
-          return RSVP.all(directory_content_list);
+          return CodeMirror.menu_dict.editor_getActiveFileList(gadget);
         })
         .push(function (my_memory_content) {
           var response,
@@ -1223,9 +1230,32 @@
     .declareService(function () {
       var gadget = this,
         props = gadget.property_dict,
-        message = "Don't forget to save your work!";
-
-      // XXX wrap into promise
+        message = "Don't forget to save your work!",
+        result;
+        
+      // warn of unsaved files or content
+      return new RSVP.Queue()
+        .push(function () {
+          return promiseEventListener(window, "beforeunload", true);
+        })
+        .push(function (my_event) {
+          my_event = my_event || window.event;
+          
+          return new RSVP.Queue()
+            .push(function () {
+              return CodeMirror.menu_dict.editor_getActiveFileList(gadget);  
+            })
+            .push(function (my_memory_content) {
+              if (my_memory_content.data.length > 0 || props.editor_is_modified) {
+                if (my_event) {
+                  my_event.returnValue = message;
+                }
+                return message;
+              }
+            });        
+        });
+    
+      /*
       window.onbeforeunload = function (my_event) {
         my_event = my_event || window.event;
         if (props.editor_is_modified) {
@@ -1235,8 +1265,8 @@
           return message;
         }
       };
+      */
     });
-      
 
 }(window, document, rJS, CodeMirror, JSON, loopEventListener));
 
