@@ -234,7 +234,6 @@
 
   // modified flag
   function editor_setModified(source) {
-    console.log("SETTING form ", source)
     var props = CodeMirror.menu_dict;
     if (props.editor_is_modified !== true) {
       props.editor_is_modified = true;
@@ -243,7 +242,6 @@
   }
 
   function editor_resetModified() {
-    console.log("resetting")
     var props = CodeMirror.menu_dict,
       element = props.element.querySelector(".CodeMirror");
 
@@ -957,7 +955,6 @@
           );
         })
         .push(function () {
-          console.log("DONE SAVING")
           props.editor.setOption("mode", mime_type);
           props.editor_setActiveFile(file_name, mime_type);
           props.editor_resetModified();
@@ -995,7 +992,6 @@
           return;
         }
       }
-      console.log("swap, past the current file before opening has beend modified", props.editor_is_modified)
       // what if file name is set but not saved => where do I get content?
       return new RSVP.Queue()
         .push(function () {
@@ -1010,7 +1006,6 @@
             save_mime_type;
 
           // set active file to active and save previous file (old_doc)
-          console.log("saving on memory if is Modified", props.editor_is_modified)
           if (active_file && props.editor_is_modified) {
             save_file_name = props.editor_active_file.name,
             save_mime_type = props.editor_active_file.mime_type;
@@ -1032,9 +1027,7 @@
           }
         })
         .push(function () {
-          console.log("Done swap, content =", my_content)
           if (!my_content) {
-            console.log("done swap, no new content = CLOSE, reset modified here")
             props.dialog_clearTextInput(dialog);
             props.editor_resetActiveFile();
             props.editor_resetModified();
@@ -1054,7 +1047,6 @@
         mime_type,
         file_name_to_open_save_flag;
 
-      console.log("opening", props.editor_is_modified)
       // open = get from memory/serviceworker, close and store any open file!   
       if (file_name_input === null) {
         return true;
@@ -1063,16 +1055,9 @@
       active_cache = props.editor_active_cache || "textitor";
       file_name_to_open = file_name_input.nextSibling.textContent.split(" | ")[1];
 
-      console.log("showing save?, should have no *", file_name_to_open)
-      console.log(file_name_to_open.indexOf("*"))
-      console.log(file_name_to_open.indexOf(":"))
-
       // flag save if new file comes from memory 
       if (file_name_to_open.indexOf("*") > -1) {
-        console.log("FOUND STAR, show Save after swap!")
         file_name_to_open_save_flag = true;
-      } else {
-        console.log("NO FLAG")
       }
 
       open_name = file_name_to_open.split("*")[0];
@@ -1116,15 +1101,12 @@
           return gadget.editor_swapFile(my_content);
         })
         .push(function () {
-          console.log("finished swap, what the flag", file_name_to_open_save_flag)
           props.editor.setOption("mode", mime_type);
           props.editor_setActiveFile(open_name, mime_type);
           
           if (file_name_to_open_save_flag) {
-            console.log("FLAGGED, set save")
             props.editor_setModified();
           } else {
-            console.log("NO FLAG, reset")
             props.editor_resetModified();
           }
           return true;
@@ -1224,8 +1206,7 @@
       editor.refresh();
       editor.focus();
 
-      return codeMirrorLoopEventListener(editor, 'change', function (e) {
-        console.log(e)
+      return codeMirrorLoopEventListener(editor, 'change', function () {
         return props.editor_setModified("change listener");
       });
     })
