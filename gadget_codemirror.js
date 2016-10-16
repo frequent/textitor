@@ -1222,7 +1222,27 @@
     
     .declareService(function () {
       var gadget = this,
-        props = gadget.property_dict;
+        props = gadget.property_dict,
+        result,
+        event;
+        
+      function callback(my_event) {
+        var message = "Don't forget to save your work!";
+        my_event = my_event || window.event;
+        if (props.editor_is_modified) {
+          if (my_event) {
+            my_event.returnvalue = message;
+          }
+          return message;
+        }
+      }
+
+      result = loopEventListener(window, 'beforeunload', false, callback);
+      event = document.createEvent("Event");
+      event.initEvent('beforeunload');
+      window.dispatchEvent(event);
+      return result;
+         
       /*
       window.onbeforeunload = function (my_event) {
         my_event = my_event || window.event;
@@ -1233,14 +1253,13 @@
           return message;
         }
       };
-      */
+      
       return new RSVP.Queue()
         .push(function () {
           return promiseEventListener(window, "beforeunload", false);
         })
         .push(function (my_event) {
           var message = "Don't forget to save your work!";
-          
           my_event = my_event || window.event;
           if (props.editor_is_modified) {
             if (my_event) {
@@ -1248,11 +1267,8 @@
             }
           }
           return message; 
-        }, function (err) {
-          alert("err")
-          console.log(err);
-          throw err;
         });
+      */
     });
       
 
