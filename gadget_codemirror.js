@@ -916,7 +916,7 @@
       is_cache_name = dialog.querySelector('input:checked');
       content = props.editor.getValue();
       active_cache = props.editor_active_cache || "textitor";
-
+      console.log(file_name)
       // validate URL
       if (!file_name || file_name === "Enter valid URL.") {
         return props.dialog_flagInput(file_name_input, 'Enter valid URL.');
