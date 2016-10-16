@@ -255,9 +255,11 @@
   }
 
   function editor_setActiveFile(my_name, my_mime_type) {
+    console.log("setting!")
     CodeMirror.menu_dict.editor_active_file = CodeMirror.menu_dict.editor_active_file || {};
     CodeMirror.menu_dict.editor_active_file.name = my_name;
     CodeMirror.menu_dict.editor_active_file.mime_type = my_mime_type;
+    console.log(CodeMirror.menu_dict.editor_active_file)
   }
 
   function editor_getActiveFile() {
@@ -1013,7 +1015,6 @@
           
           console.log("NOW")
           console.log(new_doc.getMode())
-          console.log(new_doc.getOption("Mode"))
           old_doc = props.editor.swapDoc(new_doc);
 
           // set active file to active and save previous file (old_doc)
