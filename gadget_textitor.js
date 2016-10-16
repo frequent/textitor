@@ -3,6 +3,7 @@
 (function (window, rJS) {
   "use strict";
 
+  /*
   function initializeStorage(my_gadget, my_name) {
     var config;
     if (my_name === "serviceworker") {
@@ -32,8 +33,8 @@
           })
         ]);
       });
-
   }
+  */
 
   rJS(window)
 
@@ -84,6 +85,10 @@
           ]);
         })
         .push(function (my_rendered_gadget_list) {
+          return my_rendered_gadget_list[0];
+        })
+        /*
+        .push(function (my_rendered_gadget_list) {
           return_gadget = my_rendered_gadget_list[0];
           return initializeStorage(gadget, "memory");
         })
@@ -92,7 +97,9 @@
         })
         .push(function () {
           return return_gadget;
-        });
+        })*/
+        ;
+        
     })
     
     .declareMethod('setActiveStorage', function (my_type) {
