@@ -242,6 +242,7 @@
   }
 
   function editor_resetModified() {
+    console.log("resetting")
     var props = CodeMirror.menu_dict,
       element = props.element.querySelector(".CodeMirror");
 
@@ -955,6 +956,7 @@
           );
         })
         .push(function () {
+          console.log("DONE SAVING")
           props.editor.setOption("mode", mime_type);
           props.editor_setActiveFile(file_name, mime_type);
           props.editor_resetModified();
@@ -1029,6 +1031,8 @@
           }
         })
         .push(function () {
+          console.log("Done swap, content =", my_content)
+          console.log("should we set modified?")
           if (!my_content) {
             props.dialog_clearTextInput(dialog);
             props.editor_resetActiveFile();
