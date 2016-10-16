@@ -19,11 +19,11 @@
       .push(function () {
         my_gadget.routeStorageRequest("createJIO", config);
       })
-      /*
-      // dummy data
       .push(function () {
         return my_gadget.routeStorageRequest("put", "textitor");
       })
+      /*
+      // dummy data
       .push(function (my_id) {
         return my_gadget.routeStorageRequest("putAttachment", [
           my_id,
