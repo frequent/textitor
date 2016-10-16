@@ -903,34 +903,31 @@
       console.log("no need to force open dialog, but it might still not be set...")
       console.log(props.dialog)
 
-      if (dialog) {
+      if (!props.editor_active_file) {
         file_name_input = dialog.querySelector("input[type='text']");
-        file_name = file_name_input.value;
+        file_name = file_name_input.value || props.editor_active_file.name;
         is_cache_name = dialog.querySelector('input:checked');
-      
-        // validate URL
-        if (!file_name || file_name === "Enter valid URL.") {
-          return props.dialog_flagInput(file_name_input, 'Enter valid URL.');
-        }
-  
-        // validate Cache (NOT SUPPORTED YET)
-        if (!is_cache_name) {
-          mime_type_input = file_name.split(".").pop().replace("/", "");
-          mime_type = MODEMIMES[mime_type_input] ||
-              MODEMIMES[SHIMMODEMIMES[mime_type_input]] ||
-                  "text/plain";
-        } else {
-          return props.dialog_flagInput(file_name_input, 'Cache not supported');
-        }
+        mime_type_input = file_name.split(".").pop().replace("/", "");
+        mime_type = MODEMIMES[mime_type_input] ||
+            MODEMIMES[SHIMMODEMIMES[mime_type_input]] ||
+                "text/plain";
       } else {
-        console.log("Alas, HERE WE ARE!")
         file_name = props.editor_active_file.name;
         mime_type = props.editor_active_file.mime_type;
+      }
+      
+      console.log(file_name)
+      console.log(mime_type)
+      // validate form
+      if (dialog && (!file_name || file_name === "Enter valid URL.")) {
+        return props.dialog_flagInput(file_name_input, 'Enter valid URL.');
+      }
+      if (dialog && is_cache_name) {
+        return props.dialog_flagInput(file_name_input, 'Cache not supported');
       }
 
       content = props.editor.getValue();
       active_cache = props.editor_active_cache || "textitor";
-
 
       return new RSVP.Queue()
         .push(function () {
