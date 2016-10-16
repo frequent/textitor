@@ -1219,19 +1219,34 @@
     .declareService(function () {
       var gadget = this,
         props = gadget.property_dict;
-
-      return loopEventListener(window, "beforeunload", false, function (my_event) {
-        var message = "Don't forget to save your work!";
-        
+      /*
+      window.onbeforeunload = function (my_event) {
         my_event = my_event || window.event;
         if (props.editor_is_modified) {
           if (my_event) {
             my_event.returnvalue = message;
           }
+          return message;
         }
-        return message;
-      });
+      };
+      */
+      return new RSVP.Queue()
+        .push(function () {
+          return promiseEventListener(window, "beforeunload", false);
+        })
+        .push(function (my_event) {
+          var message = "Don't forget to save your work!";
+          
+          my_event = my_event || window.event;
+          if (props.editor_is_modified) {
+            if (my_event) {
+              my_event.returnvalue = message;
+            }
+          }
+          return message; 
+        });
     });
+      
 
 }(window, document, rJS, CodeMirror, JSON, loopEventListener));
 
