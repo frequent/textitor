@@ -995,7 +995,7 @@
           return;
         }
       }
-      console.log("swap, past the if tree", props.editor_is_modified)
+      console.log("swap, past the current file before opening has beend modified", props.editor_is_modified)
       // what if file name is set but not saved => where do I get content?
       return new RSVP.Queue()
         .push(function () {
@@ -1051,7 +1051,8 @@
         file_name_to_open,
         open_name,
         active_cache,
-        mime_type;
+        mime_type,
+        file_name_to_open_save_flag;
 
       console.log("opening", props.editor_is_modified)
       // open = get from memory/serviceworker, close and store any open file!   
@@ -1062,13 +1063,12 @@
       active_cache = props.editor_active_cache || "textitor";
       file_name_to_open = file_name_input.nextSibling.textContent.split(" | ")[1];
 
-      // show "save" hint when a file has not been saved
       console.log("showing save?, should have no *", file_name_to_open)
-      console.log("woud have set?, file_name.indexOf("*") > 0 ", file_name_to_open.indexOf("*") > 0)
-      // the file was found on memory = unsaved = * = flag
-      if (file_name_to_open.indexOf("*") > 0) {
-        console.log("setting flag")
-        props.editor_setModified("openFile");
+      console.log(file_name_to_open.indexOf("*"))
+
+      // flag save if new file comes from memory 
+      if (file_name_to_open.indexOf("*") > -1) {
+        file_name_to_open_save_flag = true;
       }
 
       open_name = file_name_to_open.split("*")[0];
@@ -1114,6 +1114,10 @@
         .push(function () {
           props.editor.setOption("mode", mime_type);
           props.editor_setActiveFile(open_name, mime_type);
+          
+          if (file_name_to_open_save_flag) {
+            props.editor_setModified();
+          }
           return true;
         });
     })
