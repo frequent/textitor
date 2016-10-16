@@ -1004,7 +1004,7 @@
           return gadget.setActiveStorage("memory");
         })
         .push(function () {
-          var new_doc = props.editor_createDoc(my_content)
+          var new_doc = props.editor_createDoc(my_content),
             active_storage = props.editor_active_cache || "textitor",
             active_file = props.editor_active_file,
             save_file_name,
