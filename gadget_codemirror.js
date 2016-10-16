@@ -1223,52 +1223,18 @@
     .declareService(function () {
       var gadget = this,
         props = gadget.property_dict,
-        result,
-        event;
-        
-      function callback(my_event) {
-        var message = "Don't forget to save your work!";
-        my_event = my_event || window.event;
-        if (props.editor_is_modified) {
-          if (my_event) {
-            my_event.returnvalue = message;
-          }
-          return message;
-        }
-      }
+        message = "Don't forget to save your work!";
 
-      result = loopEventListener(window, 'beforeunload', false, callback);
-      event = document.createEvent("Event");
-      event.initEvent('beforeunload');
-      window.dispatchEvent(event);
-      return result;
-         
-      /*
+      // XXX wrap into promise
       window.onbeforeunload = function (my_event) {
         my_event = my_event || window.event;
         if (props.editor_is_modified) {
           if (my_event) {
-            my_event.returnvalue = message;
+            my_event.returnValue = message;
           }
           return message;
         }
       };
-      
-      return new RSVP.Queue()
-        .push(function () {
-          return promiseEventListener(window, "beforeunload", false);
-        })
-        .push(function (my_event) {
-          var message = "Don't forget to save your work!";
-          my_event = my_event || window.event;
-          if (props.editor_is_modified) {
-            if (my_event) {
-              my_event.returnvalue = message;
-            }
-          }
-          return message; 
-        });
-      */
     });
       
 
