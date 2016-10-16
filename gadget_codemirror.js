@@ -1217,15 +1217,24 @@
     })
     
     .declareService(function () {
-      var gadget;
+      var gadget,
+        props = gadget.property_dict;
+
       return new RSVP.Queue()
         .push(function () {
           return promiseEventListener(window, "onbeforeunload", true);
         })
-        .push(function () {
+        .push(function (my_event) {
+          var message = "Don't forget to save your work!";
+          alert("CLOSING");
+          // doesn't save any files on memory?!?
+          my_event = my_event || window.event;
           if (props.editor_is_modified) {
-            return "Don't forget to save your work!";
+            if (my_event) {
+              my_event.returnvalue = message;
+            }
           }
+          return message;
         });
     });
 
