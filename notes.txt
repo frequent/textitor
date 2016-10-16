@@ -1,6 +1,5 @@
 
 => progress
-- star & save -> only show if file has actually been changed
 - only show filename not path in input
 - filter list of files
 - fix serviceworker throw on existing file with same name
