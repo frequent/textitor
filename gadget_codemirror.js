@@ -1009,8 +1009,7 @@
 
           console.log(old_doc)
           console.log("what are file name and mime type, old or already new?")
-          console.log("active_file, ", props.editor_active_file.name)
-          console.log("active_mime_type", props.editor_active_file.mime_type)
+          console.log("active_file? ", props.editor_active_file)
           // set active file to active and save previous file (old_doc)
           if (active_file && props.editor_is_modified) {
             save_file_name = props.editor_active_file.name,
