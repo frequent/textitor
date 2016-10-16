@@ -971,7 +971,7 @@
         is_no_new_or_active_file = !props.editor_active_file && !my_content,
         is_no_file_name,
         file_name;
-       console.log("swapping", props.editor_is_modified)
+
       // SWAP => put existing file on memory storage, replace with new content!
 
       if (is_no_new_or_active_file) {
@@ -994,7 +994,7 @@
           return;
         }
       }
-       console.log("past the if tree", props.editor_is_modified)
+      console.log("swap, past the if tree", props.editor_is_modified)
       // what if file name is set but not saved => where do I get content?
       return new RSVP.Queue()
         .push(function () {
@@ -1007,10 +1007,9 @@
             active_file = props.editor_active_file,
             save_file_name,
             save_mime_type;
-          
-           console.log("set storage to memory", props.editor_is_modified)
+
           // set active file to active and save previous file (old_doc)
-          console.log("has file been modified?", props.editor_is_modified)
+          console.log("saving on memory if is Modified", props.editor_is_modified)
           if (active_file && props.editor_is_modified) {
             save_file_name = props.editor_active_file.name,
             save_mime_type = props.editor_active_file.mime_type;
@@ -1033,8 +1032,8 @@
         })
         .push(function () {
           console.log("Done swap, content =", my_content)
-          console.log("should we set modified?")
           if (!my_content) {
+            console.log("done swap, no new content = CLOSE, reset modified here")
             props.dialog_clearTextInput(dialog);
             props.editor_resetActiveFile();
             props.editor_resetModified();
@@ -1048,11 +1047,11 @@
         props = CodeMirror.menu_dict,
         dialog = props.dialog,
         file_name_input = dialog.querySelector('input:checked'),
-        file_name,
+        file_name_to_open,
         open_name,
         active_cache,
-        mime_type,
-        xxx;
+        mime_type;
+
       console.log("opening", props.editor_is_modified)
       // open = get from memory/serviceworker, close and store any open file!   
       if (file_name_input === null) {
@@ -1060,18 +1059,18 @@
       }
 
       active_cache = props.editor_active_cache || "textitor";
-      file_name = file_name_input.nextSibling.textContent.split(" | ")[1];
+      file_name_to_open = file_name_input.nextSibling.textContent.split(" | ")[1];
 
       // show "save" hint when a file has not been saved
-      // but this is the current file, why setModified for the one being opened?
-      console.log("showing save?, should have no *", file_name)
-      console.log("woud have set?, file_name.indexOf("*") > 0 ", file_name.indexOf("*") > 0)
-      //if (file_name.indexOf("*") > 0) {
-      //  props.editor_setModified();
-      //  xxx = true;
-      //}
+      console.log("showing save?, should have no *", file_name_to_open)
+      console.log("woud have set?, file_name.indexOf("*") > 0 ", file_name_to_open.indexOf("*") > 0)
+      // the file was found on memory = unsaved = * = flag
+      if (file_name_to_open.indexOf("*") > 0) {
+        console.log("setting flag")
+        props.editor_setModified();
+      }
 
-      open_name = file_name.split("*")[0];
+      open_name = file_name_to_open.split("*")[0];
 
       // try to fetch from memory
       return new RSVP.Queue()
@@ -1109,20 +1108,11 @@
           ]);
         })
         .push(function (my_content) {
-          console.log("got content, now swap")
           return gadget.editor_swapFile(my_content);
         })
         .push(function () {
           props.editor.setOption("mode", mime_type);
           props.editor_setActiveFile(open_name, mime_type);
-          
-           console.log("done opening", props.editor_is_modified)
-          // show right away this file still needs to be saved
-          // XXX remove
-          //if (xxx === undefined) {
-          //  console.log("now resetting modified?")
-          //  props.editor_resetModified();
-          //}
           return true;
         });
     })
