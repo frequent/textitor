@@ -1097,18 +1097,16 @@
         })
         .push(function (my_response_list) {
           console.log("done opening")
+          console.log(my_response_list)
           mime_type = my_response_list[0].type;
           return RSVP.all([
             jIO.util.readBlobAsText(my_response_list[0]),
             jIO.util.readBlobAsText(my_response_list[1])
           ]);
-        }, function (err) {
-          console.log("serviceworker, 404")
-          console.log(err)
-          throw err;
         })
         .push(function (my_content) {
           console.log("calling swap")
+          console.log(my_content)
           return gadget.editor_swapFile(my_content);
         })
         .push(function () {
