@@ -1217,7 +1217,7 @@
     })
     
     .declareService(function () {
-      var gadget,
+      var gadget = this,
         props = gadget.property_dict;
 
       return new RSVP.Queue()
