@@ -255,11 +255,10 @@
   }
 
   function editor_setActiveFile(my_name, my_mime_type) {
-    console.log("setting!")
     CodeMirror.menu_dict.editor_active_file = CodeMirror.menu_dict.editor_active_file || {};
     CodeMirror.menu_dict.editor_active_file.name = my_name;
     CodeMirror.menu_dict.editor_active_file.mime_type = my_mime_type;
-    console.log(CodeMirror.menu_dict.editor_active_file)
+    console.log("set", CodeMirror.menu_dict.editor_active_file)
   }
 
   function editor_getActiveFile() {
@@ -301,15 +300,11 @@
         my_input.value = my_message;
         my_input.blur();
         CodeMirror.menu_dict.editor.focus();
-        console.log("focus bind")
         return promiseEventListener(my_input, 'focus', false);
       })
       .push(function () {
-        console.log("focus trigger")
         my_input.className = '';
         my_input.value = '';
-        
-        // keep menu open
         return false;
       });
   }
@@ -392,10 +387,8 @@
     var input_list = my_dialog.querySelectorAll("input"),
       len,
       i;
-    console.log(input_list)
     for (i = 0, len = input_list.length; i < len; i += 1) {
       if (input_list[i].type === 'text') {
-        console.log("clearing", input_list[i].value)
         input_list[i].value = '';
       }
     }
@@ -408,7 +401,6 @@
         return props.editor_updateStorage(my_parameter);
       })
       .push(function (my_close_dialog) {
-        console.log("done, dialog?", props.editor_active_dialog, my_close_dialog);
         if (my_close_dialog === true && props.editor_active_dialog) {
           if (props.dialog_option_dict.onClose) {
             props.dialog_option_dict.onClose(dialog);
@@ -913,8 +905,7 @@
       is_cache_name = dialog.querySelector('input:checked');
       content = props.editor.getValue();
       active_cache = props.editor_active_cache || "textitor";
-      console.log("file_name", file_name)
-      console.log("active file", props.editor_active_file)
+      
       // validate URL
       if (!file_name || file_name === "Enter valid URL.") {
         return props.dialog_flagInput(file_name_input, 'Enter valid URL.');
@@ -999,7 +990,7 @@
           return;
         }
       }
-      console.log("starting swap")
+
       // what if file name is set but not saved => where do I get content?
       return new RSVP.Queue()
         .push(function () {
@@ -1007,15 +998,11 @@
         })
         .push(function () {
           var new_doc = props.editor_createDoc(my_content),
+            old_doc = props.editor.swapDoc(new_doc),
             active_storage = props.editor_active_cache || "textitor",
             active_file = props.editor_active_file,
             save_file_name,
-            save_mime_type,
-            old_doc;
-          
-          console.log("NOW")
-          console.log(new_doc.getMode())
-          old_doc = props.editor.swapDoc(new_doc);
+            save_mime_type;
 
           // set active file to active and save previous file (old_doc)
           if (active_file && props.editor_is_modified) {
@@ -1045,8 +1032,8 @@
             props.editor_resetActiveFile();
             props.editor_resetModified();
           } else {
-            console.log("we opened a file, content was ", my_content)
-              
+            console.log("file swapped, content was ", my_content)
+            console.log("active set?", props.active_file)
           }
           return true;
         });
@@ -1110,8 +1097,6 @@
         })
         .push(function (my_response_list) {
           mime_type = my_response_list[0].type;
-          console.log("alors")
-          console.log(mime_type)
           return RSVP.all([
             jIO.util.readBlobAsText(my_response_list[0]),
             jIO.util.readBlobAsText(my_response_list[1])
@@ -1121,12 +1106,13 @@
           return gadget.editor_swapFile(my_content);
         })
         .push(function () {
-          console.log("done opening, why can't we set active file")
+          console.log("done opening, setters")
           console.log(mime_type)
           console.log(open_name)
           props.editor.setOption("mode", mime_type);
           props.editor_setActiveFile(open_name, mime_type);
           if (xxx === undefined) {
+            console.log("resetting")
             props.editor_resetModified();
           }
           return true;
@@ -1164,7 +1150,6 @@
             dialog_input.focus();
           //}
           if (props.dialog_position === 'right') {
-            console.log("setting input", opts.value, props.editor_getActiveFile()[0])
             dialog_input.value = opts.value || props.editor_getActiveFile()[0];
           }
           if (opts.selectValueOnOpen !== false) {
