@@ -842,16 +842,19 @@
       var gadget = this, 
         props = CodeMirror.menu_dict,
         dialog = props.dialog,
-        active_cache = props.editor_active_cache || "textitor",
-        file_name = props.editor_active_file.name;
+        active_cache,
+        file_name;
 
-      // delete file from memory and serviceworker
+      // REMOVE => clear file from memory and serviceworker
 
       // no file selected
-      if (file_name === undefined) {
+      if (!props.editor_active_file) {
         return true;
       }
 
+      active_cache = props.editor_active_cache || "textitor";
+      file_name = props.editor_active_file.name;
+      
       return new RSVP.Queue()
         .push(function () {
           return gadget.setActiveStorage("memory");
