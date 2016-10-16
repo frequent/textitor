@@ -1121,8 +1121,11 @@
           props.editor_setActiveFile(open_name, mime_type);
           
           if (file_name_to_open_save_flag) {
-            console.log("FLAGGED")
+            console.log("FLAGGED, set save")
             props.editor_setModified();
+          } else {
+            console.log("NO FLAG, reset")
+            props.editor_resetModified();
           }
           return true;
         });
