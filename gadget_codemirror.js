@@ -90,11 +90,6 @@
         resolve(evt);
         return false;
       };
-      console.log("adding")
-      console.log(target)
-      console.log(type)
-      console.log(handle_event_callback)
-      console.log(useCapture)
       target.addEventListener(type, handle_event_callback, useCapture);
     }
     return new RSVP.Promise(resolver, canceller);
@@ -1249,6 +1244,8 @@
               return CodeMirror.menu_dict.editor_getActiveFileList(gadget);  
             })
             .push(function (my_memory_content) {
+              console.log(my_memory_content)
+              console.log(props.editor_is_modified)
               if (my_memory_content.length > 0 || props.editor_is_modified) {
                 if (my_event) {
                   my_event.returnValue = message;
@@ -1257,18 +1254,6 @@
               }
             });        
         });
-    
-      /*
-      window.onbeforeunload = function (my_event) {
-        my_event = my_event || window.event;
-        if (props.editor_is_modified) {
-          if (my_event) {
-            my_event.returnValue = message;
-          }
-          return message;
-        }
-      };
-      */
     });
 
 }(window, document, rJS, CodeMirror, JSON, loopEventListener));
