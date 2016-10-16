@@ -258,7 +258,6 @@
     CodeMirror.menu_dict.editor_active_file = CodeMirror.menu_dict.editor_active_file || {};
     CodeMirror.menu_dict.editor_active_file.name = my_name;
     CodeMirror.menu_dict.editor_active_file.mime_type = my_mime_type;
-    console.log("set", CodeMirror.menu_dict.editor_active_file)
   }
 
   function editor_getActiveFile() {
@@ -896,12 +895,9 @@
       // SAVE => store on serviceworker, remove from memory
 
       if (!dialog || (!props.editor_active_dialog && !props.editor_active_file)) {
-        console.log("save force dialog open")
         CodeMirror.commands.myEditor_navigateHorizontal(props.editor, "right");
         return;
       }
-      console.log("no need to force open dialog, but it might still not be set...")
-      console.log(props.dialog)
 
       if (!props.editor_active_file) {
         file_name_input = dialog.querySelector("input[type='text']");
@@ -915,9 +911,7 @@
         file_name = props.editor_active_file.name;
         mime_type = props.editor_active_file.mime_type;
       }
-      
-      console.log(file_name)
-      console.log(mime_type)
+
       // validate form
       if (dialog && (!file_name || file_name === "Enter valid URL.")) {
         return props.dialog_flagInput(file_name_input, 'Enter valid URL.');
@@ -1034,14 +1028,10 @@
           }
         })
         .push(function () {
-          
           if (!my_content) {
             props.dialog_clearTextInput(dialog);
             props.editor_resetActiveFile();
             props.editor_resetModified();
-          } else {
-            console.log("file swapped, content was ", my_content)
-            console.log("active set?", props.active_file)
           }
           return true;
         });
@@ -1057,7 +1047,7 @@
         active_cache,
         mime_type,
         xxx;
-
+      console.log("opening")
       // open = get from memory/serviceworker, close and store any open file!   
       if (file_name_input === null) {
         return true;
@@ -1074,6 +1064,8 @@
 
       open_name = file_name.split("*")[0];
 
+      console.log(open_name)
+
       // try to fetch from memory
       return new RSVP.Queue()
         .push(function () {
@@ -1086,9 +1078,10 @@
           ]);
         })
         .push(null, function (my_error) {
-
+          console.log("not found on memory")
           // fetch from serviceworker with blank history
           if (is404(my_error)) {
+            console.log("look for ", active_cache, open_name)
             return new RSVP.Queue()
               .push(function () {
                 return gadget.setActiveStorage("serviceworker");
@@ -1103,19 +1096,25 @@
           throw my_error;
         })
         .push(function (my_response_list) {
+          console.log("done opening")
           mime_type = my_response_list[0].type;
           return RSVP.all([
             jIO.util.readBlobAsText(my_response_list[0]),
             jIO.util.readBlobAsText(my_response_list[1])
           ]);
+        }, function (err) {
+          console.log("serviceworker, 404")
+          console.log(err)
+          throw err;
         })
         .push(function (my_content) {
+          consol.e.log("calling swap")
           return gadget.editor_swapFile(my_content);
         })
         .push(function () {
           props.editor.setOption("mode", mime_type);
           props.editor_setActiveFile(open_name, mime_type);
-          console.log("set active", props.editor_active_file)
+          
           // show right away this file still needs to be saved
           // XXX remove
           if (xxx === undefined) {
@@ -1150,15 +1149,12 @@
         }
 
         if (dialog_input) {
-          console.log("we have a dialog")
+          
           // focus to enable up/down shortcuts
           //if (props.dialog_position === 'left') {
             dialog_input.focus();
           //}
           if (props.dialog_position === 'right') {
-            console.log("single file dialog, value", opts.value)
-            console.log("single file dialog, fallback", props.editor_getActiveFile()[0])
-            console.log("value used", opts.value || props.editor_getActiveFile()[0])
             dialog_input.value = opts.value || props.editor_getActiveFile()[0];
           }
           if (opts.selectValueOnOpen !== false) {
