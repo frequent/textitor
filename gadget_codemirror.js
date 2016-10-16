@@ -367,8 +367,10 @@
     var input_list = my_dialog.querySelectorAll("input"),
       len,
       i;
+    console.log(input_list)
     for (i = 0, len = input_list.length; i < len; i += 1) {
       if (input_list[i].type === 'text') {
+        console.log("clearing", input_list[i].value)
         input_list[i].value = '';
       }
     }
@@ -425,7 +427,9 @@
   }
 
   function dialog_setNavigationCallback(my_event, my_value, my_callback) {
-
+    console.log("navigation callback")
+    console.log(my_event)
+    console.log(my_event.keyCode)
     // esc
     if (my_event.keyCode === 27) {
       return CodeMirror.commands.myEditor_closeDialog(my_event);
@@ -948,10 +952,9 @@
           );
         })
         .push(function () {
-          gadget.property_dict.editor.setOption("mode", mime_type);
-          CodeMirror.menu_dict.editor_setActiveFile(file_name, mime_type);
-          CodeMirror.menu_dict.editor_resetModified();
-          console.log("all set, closing")
+          props.editor.setOption("mode", mime_type);
+          props.editor_setActiveFile(file_name, mime_type);
+          props.editor_resetModified();
           return true;
         });
     })
@@ -974,10 +977,8 @@
           return;
         }
         if (props.editor_is_modified) {
-          console.log("is modified")
           file_name = dialog.querySelector("input").value;
           is_no_file_name = file_name === "" || file_name === 'Enter valid URL.';
-          console.log("is_no_file_name", is_no_file_name)
           if (is_no_file_name) {
             if (props.editor_active_dialog) {
               return true;
@@ -988,7 +989,7 @@
           return;
         }
       }
-
+      console.log("starting swap")
       // what if file name is set but not saved => where do I get content?
       return new RSVP.Queue()
         .push(function () {
@@ -996,7 +997,6 @@
         })
         .push(function () {
           var new_doc = props.editor_createDoc(my_content),
-            // new_doc = CodeMirror.Doc(""),
             old_doc = props.editor.swapDoc(new_doc),
             active_storage = props.editor_active_cache || "textitor",
             active_file = props.editor_active_file,
@@ -1025,14 +1025,19 @@
           }
         })
         .push(function () {
+          console.log("why does this not work on swapping in an empty file")
 
           // if new file is "", active file must be cleared along with textinput
           // if new file is with content, active file must be set along with textinput
+          console.log("clearing input?")
           props.dialog_clearTextInput(dialog);
           if (!my_content) {
             props.editor_resetActiveFile();
             props.editor_resetModified();
           }
+          console.log("my_content should be undefined", my_content)
+          console.log("text input should be cleared")
+          console.log("active file should be null", props.editor_active_file)
           return true;
         });
     })
@@ -1053,6 +1058,7 @@
         return true;
       }
 
+      console.log("textcontent > file_name_input", file_name_input.nextSibling.textContent)
       active_cache = props.editor_active_cache || "textitor";
       file_name = file_name_input.nextSibling.textContent.split(" | ")[1];
 
@@ -1144,6 +1150,7 @@
             dialog_input.focus();
           //}
           if (props.dialog_position === 'right') {
+            console.log("setting input", opts.value, props.editor_getActiveFile()[0])
             dialog_input.value = opts.value || props.editor_getActiveFile()[0];
           }
           if (opts.selectValueOnOpen !== false) {
