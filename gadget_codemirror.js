@@ -1065,10 +1065,14 @@
 
       console.log("showing save?, should have no *", file_name_to_open)
       console.log(file_name_to_open.indexOf("*"))
+      console.log(file_name_to_open.indexOf(":"))
 
       // flag save if new file comes from memory 
       if (file_name_to_open.indexOf("*") > -1) {
+        console.log("FOUND STAR, show Save after swap!")
         file_name_to_open_save_flag = true;
+      } else {
+        console.log("NO FLAG")
       }
 
       open_name = file_name_to_open.split("*")[0];
@@ -1112,10 +1116,12 @@
           return gadget.editor_swapFile(my_content);
         })
         .push(function () {
+          console.log("finished swap, what the flag", file_name_to_open_save_flag)
           props.editor.setOption("mode", mime_type);
           props.editor_setActiveFile(open_name, mime_type);
           
           if (file_name_to_open_save_flag) {
+            console.log("FLAGGED")
             props.editor_setModified();
           }
           return true;
