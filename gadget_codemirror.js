@@ -90,7 +90,11 @@
         resolve(evt);
         return false;
       };
-
+      console.log("adding")
+      console.log(target)
+      console.log(type)
+      console.log(handle_event_callback)
+      console.log(useCapture)
       target.addEventListener(type, handle_event_callback, useCapture);
     }
     return new RSVP.Promise(resolver, canceller);
@@ -1244,6 +1248,10 @@
             }
           }
           return message; 
+        }, function (err) {
+          alert("err")
+          console.log(err);
+          throw err;
         });
     });
       
