@@ -972,6 +972,7 @@
 
       // SWAP => put existing file on memory storage, replace with new content!
 
+      console.log("not new or active", is_no_new_or_active_file)
       if (is_no_new_or_active_file) {
         if (!dialog) {
           if (props.editor_is_modified) {
@@ -992,7 +993,7 @@
           return;
         }
       }
-
+      console.log("swapping")
       // what if file name is set but not saved => where do I get content?
       return new RSVP.Queue()
         .push(function () {
@@ -1006,6 +1007,10 @@
             save_file_name,
             save_mime_type;
 
+          console.log(old_doc)
+          console.log("what are file name and mime type, old or already new?")
+          console.log("active_file, ", props.editor_active_file.name)
+          console.log("active_mime_type", props.editor_active_file.mime_type)
           // set active file to active and save previous file (old_doc)
           if (active_file && props.editor_is_modified) {
             save_file_name = props.editor_active_file.name,
