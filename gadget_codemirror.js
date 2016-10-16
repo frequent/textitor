@@ -911,7 +911,8 @@
       is_cache_name = dialog.querySelector('input:checked');
       content = props.editor.getValue();
       active_cache = props.editor_active_cache || "textitor";
-      console.log(file_name)
+      console.log("file_name", file_name)
+      console.log("active file", props.editor_active_file)
       // validate URL
       if (!file_name || file_name === "Enter valid URL.") {
         return props.dialog_flagInput(file_name_input, 'Enter valid URL.');
@@ -1009,7 +1010,8 @@
             active_file = props.editor_active_file,
             save_file_name,
             save_mime_type;
-
+          console.log("already swapped doc, now setting active file to active...")
+          console.log("current_active_file", active_file)
           // set active file to active and save previous file (old_doc)
           if (active_file && props.editor_is_modified) {
             save_file_name = props.editor_active_file.name,
@@ -1042,6 +1044,9 @@
             props.dialog_clearTextInput(dialog);
             props.editor_resetActiveFile();
             props.editor_resetModified();
+          } else {
+            console.log("we opened a file, content was ", my_content)
+            
           }
           console.log("text input should be cleared")
           console.log("active file should be null", props.editor_active_file)
@@ -1065,7 +1070,6 @@
         return true;
       }
 
-      console.log("textcontent > file_name_input", file_name_input.nextSibling.textContent)
       active_cache = props.editor_active_cache || "textitor";
       file_name = file_name_input.nextSibling.textContent.split(" | ")[1];
 
@@ -1117,6 +1121,7 @@
           return gadget.editor_swapFile(my_content);
         })
         .push(function () {
+          console.log("done opening")
           props.editor.setOption("mode", mime_type);
           props.editor_setActiveFile(open_name, mime_type);
           if (xxx === undefined) {
