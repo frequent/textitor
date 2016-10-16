@@ -427,12 +427,10 @@
   }
 
   function dialog_setNavigationCallback(my_event, my_value, my_callback) {
-    console.log("navigation callback")
-    console.log(my_event)
-    console.log(my_event.keyCode)
+
     // esc
     if (my_event.keyCode === 27) {
-      return CodeMirror.commands.myEditor_closeDialog(my_event);
+      return CodeMirror.commands.myEditor_closeDialog();
     }
 
     // overide chrome page start/end shortcut
@@ -537,9 +535,9 @@
     }
   }
 
-  function editor_closeDialog(my_event) {
+  function editor_closeDialog() {
     if (CodeMirror.menu_dict.dialog_evaluateState) {
-      return CodeMirror.menu_dict.dialog_evaluateState(false);
+      return CodeMirror.menu_dict.dialog_evaluateState(true);
     }
   }
 
