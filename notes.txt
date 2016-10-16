@@ -1,9 +1,7 @@
 
 => progress
+- star & save -> only show if file has actually been changed
 - only show filename not path in input
-- I'm missing save when editing and leaving
-- saving a file without menu-open should also save to worker and remove star
-- memory file save does not save or resetmodified?
 - filter list of files
 - fix serviceworker throw on existing file with same name
 - select all, save all, delete all, use same keys as in single file menu
