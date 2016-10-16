@@ -1041,13 +1041,13 @@
 
           // if new file is "", active file must be cleared along with textinput
           // if new file is with content, active file must be set along with textinput
-          console.log("clearing input?")
-          props.dialog_clearTextInput(dialog);
+          console.log("my_content should be undefined", my_content)
           if (!my_content) {
+            console.log("NO CONTENT, clearing active and resetting modified")
+            props.dialog_clearTextInput(dialog);
             props.editor_resetActiveFile();
             props.editor_resetModified();
           }
-          console.log("my_content should be undefined", my_content)
           console.log("text input should be cleared")
           console.log("active file should be null", props.editor_active_file)
           return true;
