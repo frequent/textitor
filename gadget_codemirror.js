@@ -1108,7 +1108,7 @@
           throw err;
         })
         .push(function (my_content) {
-          consol.e.log("calling swap")
+          console.log("calling swap")
           return gadget.editor_swapFile(my_content);
         })
         .push(function () {
