@@ -1013,6 +1013,7 @@
           
           console.log("NOW")
           console.log(new_doc.getMode())
+          console.log(new_doc.getOption("Mode"))
           old_doc = props.editor.swapDoc(new_doc);
 
           // set active file to active and save previous file (old_doc)
@@ -1108,6 +1109,8 @@
         })
         .push(function (my_response_list) {
           mime_type = my_response_list[0].type;
+          console.log("alors")
+          console.log(mime_type)
           return RSVP.all([
             jIO.util.readBlobAsText(my_response_list[0]),
             jIO.util.readBlobAsText(my_response_list[1])
@@ -1117,7 +1120,9 @@
           return gadget.editor_swapFile(my_content);
         })
         .push(function () {
-          console.log("done opening")
+          console.log("done opening, why can't we set active file")
+          console.log(mime_type)
+          console.log(open_name)
           props.editor.setOption("mode", mime_type);
           props.editor_setActiveFile(open_name, mime_type);
           if (xxx === undefined) {
