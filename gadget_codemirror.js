@@ -971,7 +971,7 @@
         is_no_new_or_active_file = !props.editor_active_file && !my_content,
         is_no_file_name,
         file_name;
-
+       console.log("swapping", props.editor_is_modified)
       // SWAP => put existing file on memory storage, replace with new content!
 
       if (is_no_new_or_active_file) {
@@ -994,7 +994,7 @@
           return;
         }
       }
-
+       console.log("past the if tree", props.editor_is_modified)
       // what if file name is set but not saved => where do I get content?
       return new RSVP.Queue()
         .push(function () {
@@ -1007,7 +1007,8 @@
             active_file = props.editor_active_file,
             save_file_name,
             save_mime_type;
-
+          
+           console.log("set storage to memory", props.editor_is_modified)
           // set active file to active and save previous file (old_doc)
           console.log("has file been modified?", props.editor_is_modified)
           if (active_file && props.editor_is_modified) {
@@ -1052,7 +1053,7 @@
         active_cache,
         mime_type,
         xxx;
-
+      console.log("opening", props.editor_is_modified)
       // open = get from memory/serviceworker, close and store any open file!   
       if (file_name_input === null) {
         return true;
@@ -1062,6 +1063,7 @@
       file_name = file_name_input.nextSibling.textContent.split(" | ")[1];
 
       // show "save" hint when a file has not been saved
+      console.log("showing save?, should have no *", file_name)
       if (file_name.indexOf("*") > 0) {
         props.editor_setModified();
         xxx = true;
@@ -1105,15 +1107,18 @@
           ]);
         })
         .push(function (my_content) {
+          console.log("got content, now swap")
           return gadget.editor_swapFile(my_content);
         })
         .push(function () {
           props.editor.setOption("mode", mime_type);
           props.editor_setActiveFile(open_name, mime_type);
           
+           console.log("done opening", props.editor_is_modified)
           // show right away this file still needs to be saved
           // XXX remove
           if (xxx === undefined) {
+            console.log("now resetting modified?")
             props.editor_resetModified();
           }
           return true;
