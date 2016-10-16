@@ -972,7 +972,6 @@
 
       // SWAP => put existing file on memory storage, replace with new content!
 
-      console.log("not new or active", is_no_new_or_active_file)
       if (is_no_new_or_active_file) {
         if (!dialog) {
           if (props.editor_is_modified) {
@@ -993,7 +992,7 @@
           return;
         }
       }
-      console.log("swapping")
+
       // what if file name is set but not saved => where do I get content?
       return new RSVP.Queue()
         .push(function () {
@@ -1007,9 +1006,6 @@
             save_file_name,
             save_mime_type;
 
-          console.log(old_doc)
-          console.log("what are file name and mime type, old or already new?")
-          console.log("active_file? ", props.editor_active_file)
           // set active file to active and save previous file (old_doc)
           if (active_file && props.editor_is_modified) {
             save_file_name = props.editor_active_file.name,
@@ -1051,7 +1047,7 @@
         active_cache,
         mime_type,
         xxx;
-      console.log("opening")
+
       // open = get from memory/serviceworker, close and store any open file!   
       if (file_name_input === null) {
         return true;
@@ -1068,8 +1064,6 @@
 
       open_name = file_name.split("*")[0];
 
-      console.log(open_name)
-
       // try to fetch from memory
       return new RSVP.Queue()
         .push(function () {
@@ -1082,10 +1076,9 @@
           ]);
         })
         .push(null, function (my_error) {
-          console.log("not found on memory")
+
           // fetch from serviceworker with blank history
           if (is404(my_error)) {
-            console.log("look for ", active_cache, open_name)
             return new RSVP.Queue()
               .push(function () {
                 return gadget.setActiveStorage("serviceworker");
@@ -1100,8 +1093,6 @@
           throw my_error;
         })
         .push(function (my_response_list) {
-          console.log("done opening")
-          console.log(my_response_list)
           mime_type = my_response_list[0].type;
           return RSVP.all([
             jIO.util.readBlobAsText(my_response_list[0]),
@@ -1109,8 +1100,6 @@
           ]);
         })
         .push(function (my_content) {
-          console.log("calling swap")
-          console.log(my_content)
           return gadget.editor_swapFile(my_content);
         })
         .push(function () {
