@@ -233,7 +233,8 @@
   }
 
   // modified flag
-  function editor_setModified() {
+  function editor_setModified(source) {
+    console.log("SETTING form ", source)
     var props = CodeMirror.menu_dict;
     if (props.editor_is_modified !== true) {
       props.editor_is_modified = true;
@@ -876,7 +877,7 @@
             // new_doc = CodeMirror.Doc(""), 
             old_doc = props.editor.swapDoc(new_doc);
           props.editor_resetActiveFile();
-          props.editor_resetModified();
+          props.editor_resetModified("removeFile");
           return true;
         });
     })
@@ -1067,7 +1068,7 @@
       // the file was found on memory = unsaved = * = flag
       if (file_name_to_open.indexOf("*") > 0) {
         console.log("setting flag")
-        props.editor_setModified();
+        props.editor_setModified("openFile");
       }
 
       open_name = file_name_to_open.split("*")[0];
@@ -1210,8 +1211,9 @@
       editor.refresh();
       editor.focus();
 
-      return codeMirrorLoopEventListener(editor, 'change', function () {
-        return props.editor_setModified();
+      return codeMirrorLoopEventListener(editor, 'change', function (e) {
+        console.log(e)
+        return props.editor_setModified("change listener");
       });
     })
     
