@@ -1063,11 +1063,13 @@
       file_name = file_name_input.nextSibling.textContent.split(" | ")[1];
 
       // show "save" hint when a file has not been saved
+      // but this is the current file, why setModified for the one being opened?
       console.log("showing save?, should have no *", file_name)
-      if (file_name.indexOf("*") > 0) {
-        props.editor_setModified();
-        xxx = true;
-      }
+      console.log("woud have set?, file_name.indexOf("*") > 0 ", file_name.indexOf("*") > 0)
+      //if (file_name.indexOf("*") > 0) {
+      //  props.editor_setModified();
+      //  xxx = true;
+      //}
 
       open_name = file_name.split("*")[0];
 
@@ -1117,10 +1119,10 @@
            console.log("done opening", props.editor_is_modified)
           // show right away this file still needs to be saved
           // XXX remove
-          if (xxx === undefined) {
-            console.log("now resetting modified?")
-            props.editor_resetModified();
-          }
+          //if (xxx === undefined) {
+          //  console.log("now resetting modified?")
+          //  props.editor_resetModified();
+          //}
           return true;
         });
     })
