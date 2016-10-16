@@ -896,30 +896,41 @@
       // SAVE => store on serviceworker, remove from memory
 
       if (!dialog || (!props.editor_active_dialog && !props.editor_active_file)) {
+        console.log("save force dialog open")
         CodeMirror.commands.myEditor_navigateHorizontal(props.editor, "right");
         return;
       }
+      console.log("no need to force open dialog, but it might still not be set...")
+      console.log(props.dialog)
 
-      file_name_input = dialog.querySelector("input[type='text']");
-      file_name = file_name_input.value;
-      is_cache_name = dialog.querySelector('input:checked');
+      if (dialog) {
+        file_name_input = dialog.querySelector("input[type='text']");
+        file_name = file_name_input.value;
+        is_cache_name = dialog.querySelector('input:checked');
+      
+        // validate URL
+        if (!file_name || file_name === "Enter valid URL.") {
+          return props.dialog_flagInput(file_name_input, 'Enter valid URL.');
+        }
+  
+        // validate Cache (NOT SUPPORTED YET)
+        if (!is_cache_name) {
+          mime_type_input = file_name.split(".").pop().replace("/", "");
+          mime_type = MODEMIMES[mime_type_input] ||
+              MODEMIMES[SHIMMODEMIMES[mime_type_input]] ||
+                  "text/plain";
+        } else {
+          return props.dialog_flagInput(file_name_input, 'Cache not supported');
+        }
+      } else {
+        console.log("Alas, HERE WE ARE!")
+        file_name = props.editor_active_file.name;
+        mime_type = props.editor_active_file.mime_type;
+      }
+
       content = props.editor.getValue();
       active_cache = props.editor_active_cache || "textitor";
-      
-      // validate URL
-      if (!file_name || file_name === "Enter valid URL.") {
-        return props.dialog_flagInput(file_name_input, 'Enter valid URL.');
-      }
 
-      // validate Cache (NOT SUPPORTED YET)
-      if (!is_cache_name) {
-        mime_type_input = file_name.split(".").pop().replace("/", "");
-        mime_type = MODEMIMES[mime_type_input] ||
-            MODEMIMES[SHIMMODEMIMES[mime_type_input]] ||
-                "text/plain";
-      } else {
-        return props.dialog_flagInput(file_name_input, 'Cache not supported');
-      }
 
       return new RSVP.Queue()
         .push(function () {
@@ -1079,8 +1090,7 @@
         })
         .push(null, function (my_error) {
 
-          // fetch from serviceworker with blank history - serviceworker saved
-          // files have no history.
+          // fetch from serviceworker with blank history
           if (is404(my_error)) {
             return new RSVP.Queue()
               .push(function () {
@@ -1106,13 +1116,12 @@
           return gadget.editor_swapFile(my_content);
         })
         .push(function () {
-          console.log("done opening, setters")
-          console.log(mime_type)
-          console.log(open_name)
           props.editor.setOption("mode", mime_type);
           props.editor_setActiveFile(open_name, mime_type);
+          console.log("set active", props.editor_active_file)
+          // show right away this file still needs to be saved
+          // XXX remove
           if (xxx === undefined) {
-            console.log("resetting")
             props.editor_resetModified();
           }
           return true;
@@ -1144,12 +1153,15 @@
         }
 
         if (dialog_input) {
-          
+          console.log("we have a dialog")
           // focus to enable up/down shortcuts
           //if (props.dialog_position === 'left') {
             dialog_input.focus();
           //}
           if (props.dialog_position === 'right') {
+            console.log("single file dialog, value", opts.value)
+            console.log("single file dialog, fallback", props.editor_getActiveFile()[0])
+            console.log("value used", opts.value || props.editor_getActiveFile()[0])
             dialog_input.value = opts.value || props.editor_getActiveFile()[0];
           }
           if (opts.selectValueOnOpen !== false) {
