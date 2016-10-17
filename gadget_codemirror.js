@@ -196,8 +196,6 @@
       );
     },
     "onSubmit": function (my_event, my_value, my_callback) {
-      console.log("submit handler")
-      console.log(my_callback)
       return my_callback(my_event);
     }
   };
@@ -267,13 +265,13 @@
     return [active_file.name || "", active_file.mime_type || ""];
   }
   
-  function editor_getActiveFileList(my_gadget) {
+  function editor_getActiveFileList(my_gadget, my_option_dict) {
     return new RSVP.Queue()
       .push(function () {
         return my_gadget.setActiveStorage("memory");
       })
       .push(function () {
-        return my_gadget.jio_allDocs();
+        return my_gadget.jio_allDocs(my_option_dict || {});
       })
       .push(function (my_directory_list) {
         var response_dict = my_directory_list.data,
@@ -346,7 +344,6 @@
     }
     // XXX: WTFix
     str = CodeMirror.menu_dict.dialog_parseTemplate(FILE_MENU_TEMPLATE, [str]);
-    console.log(str)
     div = document.createElement("div");
     div.innerHTML = str;
     return div.firstChild;
@@ -397,8 +394,6 @@
   }
 
   function dialog_evaluateState(my_parameter) {
-    console.log("identify form submit")
-    console.log("evaluateState ", my_parameter)
     var props = CodeMirror.menu_dict;
     return new RSVP.Queue()
       .push(function () {
@@ -669,22 +664,16 @@
     
     // Init CodeMirror methods which require gadget to be passed as parameter
     .ready(function (my_gadget){
-      
-      function editor_updateStorage(my_parameter) {
+      function editor_updateStorage(my_pointer) {
         var action;
-        console.log("updatestorage", my_parameter)
-        // returning true closes panel, false leaves it open
-
-        if (my_parameter) {
-          if (my_parameter.target) {
-            action = my_parameter.target.name;
+        if (my_pointer) {
+          if (my_pointer.target) {
+            action = my_pointer.target.name;
             if (action === "search") {
-              console.log("searching we are")
-              console.log(my_parameter.target.find.value)
-              return my_gadget.dialog_setFileMenu(my_parameter.target.find.value);
+              return my_gadget.dialog_setFileMenu(my_pointer.target.find.value);
             }
             if (action === "open") {
-            return my_gadget.editor_openFile();
+              return my_gadget.editor_openFile();
             }
             if (action === "close") {
               return my_gadget.editor_swapFile();
@@ -697,7 +686,7 @@
             }
           }
         }
-        return my_parameter;
+        return my_pointer;
       }
       CodeMirror.menu_dict.editor_updateStorage = editor_updateStorage;
     })
@@ -760,85 +749,101 @@
     
     .declareMethod('dialog_setFileMenu', function (my_search_value) {
       var gadget = this,
-        props = CodeMirror.menu_dict;
+        props = CodeMirror.menu_dict,
+        memory_list = [],
+        entry_dict = {},
+        option_dict;
+
       console.log("setting file menu, search for ", my_search_value)
 
       // build a list of folders and file ids stored on memory and serviceworker
-      function buildFileMenu() {
-        var memory_list = [],
-          entry_dict = {};
-        
-        return new RSVP.Queue()
-          .push(function () {
-            return CodeMirror.menu_dict.editor_getActiveFileList(gadget);
-          })
-          .push(function (my_memory_content) {
-            var response,
-              item,
-              i;
-    
-            for (i = 0; i < my_memory_content.length; i += 1) {
-              response = my_memory_content[i];
+
+      if (my_search_value) {
+        option_dict = {query: my_search_value};
+      }
+
+      return new RSVP.Queue()
+        .push(function () {
+          return CodeMirror.menu_dict.editor_getActiveFileList(
+            gadget,
+            option_dict
+          );
+        })
+        .push(function (my_memory_content) {
+          var response,
+            item,
+            i;
+  
+          for (i = 0; i < my_memory_content.length; i += 1) {
+            response = my_memory_content[i];
+            for (item in response) {
+              if (response.hasOwnProperty(item)) {
+                memory_list.push(item);
+              }
+            }
+          }
+          return gadget.setActiveStorage("serviceworker");
+        })
+        .push(function () {
+          return gadget.jio_allDocs(option_dict);
+        })
+        .push(function (my_directory_list) {
+          var response_dict = my_directory_list.data,
+            directory_content_list = [],
+            cache_id,
+            i;
+  
+          if (my_directory_list !== undefined) {
+  
+            //entry_dict = {};
+            if (response_dict.total_rows === 1) {
+              props.editor_active_cache = response_dict.rows[0].id;
+            }
+            for (i = 0; i < response_dict.total_rows; i += 1) {
+              cache_id = response_dict.rows[i].id;
+              entry_dict[i] = {"name": cache_id, "item_list": []};
+              directory_content_list.push(gadget.jio_allAttachments(cache_id));
+            }
+          }
+          return RSVP.all(directory_content_list);
+        })
+        .push(function (my_directory_content) {
+          var file_menu = props.dialog.querySelector(".custom-file-menu"),
+            len = my_directory_content.length,
+            response,
+            item,
+            i;
+
+          // loop folder contents, exclude history and check if file is on memory
+          if (len > 0) {
+            for (i = 0; i < len; i += 1) {
+              response = my_directory_content[i];
               for (item in response) {
                 if (response.hasOwnProperty(item)) {
-                  memory_list.push(item);
-                }
-              }
-            }
-            return gadget.setActiveStorage("serviceworker");
-          })
-          .push(function () {
-              return gadget.jio_allDocs();
-          })
-          .push(function (my_directory_list) {
-            var response_dict = my_directory_list.data,
-              directory_content_list = [],
-              cache_id,
-              i;
-    
-            if (my_directory_list !== undefined) {
-    
-              //entry_dict = {};
-              if (response_dict.total_rows === 1) {
-                props.editor_active_cache = response_dict.rows[0].id;
-              }
-              for (i = 0; i < response_dict.total_rows; i += 1) {
-                cache_id = response_dict.rows[i].id;
-                entry_dict[i] = {"name": cache_id, "item_list": []};
-                directory_content_list.push(gadget.jio_allAttachments(cache_id));
-              }
-            }
-            return RSVP.all(directory_content_list);
-          })
-          .push(function (my_directory_content) {
-            var len = my_directory_content.length,
-              response,
-              item,
-              i;
-  
-            // loop folder contents, exclude history and check if file is on memory
-            if (len > 0) {
-              for (i = 0; i < len; i += 1) {
-                response = my_directory_content[i];
-                for (item in response) {
-                  if (response.hasOwnProperty(item)) {
-                    if (item.indexOf("_history") === -1) {
-                      if (memory_list.indexOf(item) > -1) {
-                        item = item + "*";
-                      }
-                      entry_dict[i].item_list.push(item);
+                  if (item.indexOf("_history") === -1) {
+                    if (memory_list.indexOf(item) > -1) {
+                      item = item + "*";
                     }
+                    entry_dict[i].item_list.push(item);
                   }
                 }
               }
             }
+          }
+          if (file_menu) {
+            console.log("UPDATE")
+            file_menu.parentNode.replaceChild(
+              props.dialog_createFileMenu(entry_dict),
+              file_menu
+            );
+          } else {
+            console.log("SET")
             props.dialog.insertBefore(
               props.dialog_createFileMenu(entry_dict),
               props.dialog.querySelector('span')
             );
-          });
-      }
-      return buildFileMenu();
+          }
+        });
     })  
     
     .declareMethod('editor_removeFile', function () {
@@ -1153,7 +1158,7 @@
         }
 
         if (dialog_input) {
-          console.log(dialog_input)
+
           // focus to enable up/down shortcuts
           //if (props.dialog_position === 'left') {
             dialog_input.focus();
@@ -1180,7 +1185,6 @@
 
         // file menu
         if (props.dialog_position === 'left') {
-          console.log("calling file menu from opendialog")
           queue.push(gadget.dialog_setFileMenu(dialog_input.value));
         }
 
@@ -1188,7 +1192,6 @@
         dialog_form_submit_list = Array.prototype.slice.call(
           dialog.querySelectorAll('form')
         ).map(function(my_element) {
-          console.log("binding form submit", my_element)
           return wrapBind(my_element, "submit", "onSubmit");
         });
 
