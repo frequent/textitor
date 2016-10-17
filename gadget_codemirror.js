@@ -506,7 +506,7 @@
   CodeMirror.keyMap.my["Ctrl-Alt-C"] = "myEditor_closeFile";
   CodeMirror.keyMap.my["Ctrl-Alt-D"] = "myEditor_deleteFile";
   // CodeMirror.keyMap.my["Ctrl-Alt-E"] = undefined;
-  // CodeMirror.keyMap.my["Ctrl-Alt-F"] = undefined;
+  CodeMirror.keyMap.my["Ctrl-Alt-F"] = "myEditor_searchFileMenu";
   // CodeMirror.keyMap.my["Ctrl-Alt-G"] = undefined;
   // CodeMirror.keyMap.my["Ctrl-Alt-H"] = undefined;
   // CodeMirror.keyMap.my["Ctrl-Alt-I"] = undefined;
@@ -548,8 +548,25 @@
 
   function editor_deleteFile() {
     if (CodeMirror.menu_dict.dialog_evaluateState) {
-      return CodeMirror.menu_dict.dialog_evaluateState({"target": {"name": "remove"}});
+      return CodeMirror.menu_dict.dialog_evaluateState({"target": {"name": "search"}});
     }
+  }
+
+  function editor_searchFileMenu() {
+    var props = CodeMirror.menu_dict,
+      input;
+    if (props.dialog_evaluateState && props.dialog) {
+      input = props.dialog.querySelector("input[type='text']");
+      if (input) {
+        return props.dialog_evaluateState({
+          "target": {
+            'name': "search", 
+            'find': {'value': input.value}
+          }
+        });
+      }
+    }
+    return;
   }
 
   function editor_closeDialog() {
@@ -633,6 +650,7 @@
 
   CodeMirror.commands.myEditor_closeFile = editor_closeFile;
   CodeMirror.commands.myEditor_deleteFile = editor_deleteFile;
+  CodeMirror.commands.myEditor_searchFileMenu = editor_searchFileMenu;
   CodeMirror.commands.myEditor_closeDialog = editor_closeDialog;
   CodeMirror.commands.myEditor_openDialog = editor_openDialog;
   CodeMirror.commands.myEditor_saveFromDialog = editor_saveFromDialog;
