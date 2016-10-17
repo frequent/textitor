@@ -678,7 +678,7 @@
         if (my_parameter) {
           if (my_parameter.target) {
             action = my_parameter.target.name;
-            if (action === "Search") {
+            if (action === "search") {
               console.log("searching we are")
               console.log(my_parameter.target.find.value)
               return my_gadget.dialog_setFileMenu(my_parameter.target.find.value);
