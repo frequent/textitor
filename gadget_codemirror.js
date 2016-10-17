@@ -196,6 +196,8 @@
       );
     },
     "onSubmit": function (my_event, my_value, my_callback) {
+      console.log("submit handler")
+      console.log(my_callback)
       return my_callback(my_event);
     }
   };
@@ -748,82 +750,87 @@
         });
     })
     
-    .declareMethod('dialog_setFileMenu', function () {
+    .declareMethod('dialog_setFileMenu', function (my_search_value) {
       var gadget = this,
-        props = CodeMirror.menu_dict, 
-        memory_list = [],
-        entry_dict = {};
+        props = CodeMirror.menu_dict;
+      console.log("setting file menu, search for ", my_search_value)
 
       // build a list of folders and file ids stored on memory and serviceworker
-      new RSVP.Queue()
-        .push(function () {
-          return CodeMirror.menu_dict.editor_getActiveFileList(gadget);
-        })
-        .push(function (my_memory_content) {
-          var response,
-            item,
-            i;
-  
-          for (i = 0; i < my_memory_content.length; i += 1) {
-            response = my_memory_content[i];
-            for (item in response) {
-              if (response.hasOwnProperty(item)) {
-                memory_list.push(item);
-              }
-            }
-          }
-          return gadget.setActiveStorage("serviceworker");
-        })
-        .push(function () {
-            return gadget.jio_allDocs();
-        })
-        .push(function (my_directory_list) {
-          var response_dict = my_directory_list.data,
-            directory_content_list = [],
-            cache_id,
-            i;
-  
-          if (my_directory_list !== undefined) {
-  
-            //entry_dict = {};
-            if (response_dict.total_rows === 1) {
-              props.editor_active_cache = response_dict.rows[0].id;
-            }
-            for (i = 0; i < response_dict.total_rows; i += 1) {
-              cache_id = response_dict.rows[i].id;
-              entry_dict[i] = {"name": cache_id, "item_list": []};
-              directory_content_list.push(gadget.jio_allAttachments(cache_id));
-            }
-          }
-          return RSVP.all(directory_content_list);
-        })
-        .push(function (my_directory_content) {
-          var len = my_directory_content.length,
-            response,
-            item,
-            i;
-  
-          // loop folder contents, exclude history and check if file is on memory
-          if (len > 0) {
-            for (i = 0; i < len; i += 1) {
-              response = my_directory_content[i];
+      function buildFileMenu() {
+        var memory_list = [],
+          entry_dict = {};
+        
+        return new RSVP.Queue()
+          .push(function () {
+            return CodeMirror.menu_dict.editor_getActiveFileList(gadget);
+          })
+          .push(function (my_memory_content) {
+            var response,
+              item,
+              i;
+    
+            for (i = 0; i < my_memory_content.length; i += 1) {
+              response = my_memory_content[i];
               for (item in response) {
                 if (response.hasOwnProperty(item)) {
-                  if (item.indexOf("_history") === -1) {
-                    if (memory_list.indexOf(item) > -1) {
-                      item = item + "*";
+                  memory_list.push(item);
+                }
+              }
+            }
+            return gadget.setActiveStorage("serviceworker");
+          })
+          .push(function () {
+              return gadget.jio_allDocs();
+          })
+          .push(function (my_directory_list) {
+            var response_dict = my_directory_list.data,
+              directory_content_list = [],
+              cache_id,
+              i;
+    
+            if (my_directory_list !== undefined) {
+    
+              //entry_dict = {};
+              if (response_dict.total_rows === 1) {
+                props.editor_active_cache = response_dict.rows[0].id;
+              }
+              for (i = 0; i < response_dict.total_rows; i += 1) {
+                cache_id = response_dict.rows[i].id;
+                entry_dict[i] = {"name": cache_id, "item_list": []};
+                directory_content_list.push(gadget.jio_allAttachments(cache_id));
+              }
+            }
+            return RSVP.all(directory_content_list);
+          })
+          .push(function (my_directory_content) {
+            var len = my_directory_content.length,
+              response,
+              item,
+              i;
+  
+            // loop folder contents, exclude history and check if file is on memory
+            if (len > 0) {
+              for (i = 0; i < len; i += 1) {
+                response = my_directory_content[i];
+                for (item in response) {
+                  if (response.hasOwnProperty(item)) {
+                    if (item.indexOf("_history") === -1) {
+                      if (memory_list.indexOf(item) > -1) {
+                        item = item + "*";
+                      }
+                      entry_dict[i].item_list.push(item);
                     }
-                    entry_dict[i].item_list.push(item);
                   }
                 }
               }
             }
-          }
-          props.dialog.insertBefore(
-            props.dialog_createFileMenu(entry_dict),
-            props.dialog.querySelector('span')
-          );
-        });
+            props.dialog.insertBefore(
+              props.dialog_createFileMenu(entry_dict),
+              props.dialog.querySelector('span')
+            );
+          });
+      }
+      return buildFileMenu();
     })  
     
     .declareMethod('editor_removeFile', function () {
@@ -1138,7 +1145,7 @@
         }
 
         if (dialog_input) {
-          
+          console.log(dialog_input)
           // focus to enable up/down shortcuts
           //if (props.dialog_position === 'left') {
             dialog_input.focus();
@@ -1163,19 +1170,20 @@
           dialog_event_list.push(wrapBind(dialog, "keydown", "onKeyDown"));
         }
 
+        // file menu
+        if (props.dialog_position === 'left') {
+          console.log("calling file menu from opendialog")
+          queue.push(gadget.dialog_setFileMenu(dialog_input.value));
+        }
+
         // form submits
         dialog_form_submit_list = Array.prototype.slice.call(
           dialog.querySelectorAll('form')
         ).map(function(my_element) {
+          console.log("binding form submit", my_element)
           return wrapBind(my_element, "submit", "onSubmit");
         });
 
-        // file menu
-        if (props.dialog_position === 'left') {
-          queue.push(gadget.dialog_setFileMenu());
-        }
-
-        
         // XXX always close dialog via this chain, resolve all promises?
         return queue
           .push(function () {
