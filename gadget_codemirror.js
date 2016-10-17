@@ -265,13 +265,13 @@
     return [active_file.name || "", active_file.mime_type || ""];
   }
   
-  function editor_getActiveFileList(my_gadget, my_option_dict) {
+  function editor_getActiveFileList(my_gadget) {
     return new RSVP.Queue()
       .push(function () {
         return my_gadget.setActiveStorage("memory");
       })
       .push(function () {
-        return my_gadget.jio_allDocs(my_option_dict || {});
+        return my_gadget.jio_allDocs();
       })
       .push(function (my_directory_list) {
         var response_dict = my_directory_list.data,
@@ -758,16 +758,9 @@
 
       // build a list of folders and file ids stored on memory and serviceworker
 
-      if (my_search_value) {
-        option_dict = {query: my_search_value};
-      }
-
       return new RSVP.Queue()
         .push(function () {
-          return CodeMirror.menu_dict.editor_getActiveFileList(
-            gadget,
-            option_dict
-          );
+          return CodeMirror.menu_dict.editor_getActiveFileList(gadget);
         })
         .push(function (my_memory_content) {
           var response,
@@ -785,7 +778,7 @@
           return gadget.setActiveStorage("serviceworker");
         })
         .push(function () {
-          return gadget.jio_allDocs(option_dict);
+          return gadget.jio_allDocs();
         })
         .push(function (my_directory_list) {
           var response_dict = my_directory_list.data,
@@ -794,8 +787,6 @@
             i;
   
           if (my_directory_list !== undefined) {
-  
-            //entry_dict = {};
             if (response_dict.total_rows === 1) {
               props.editor_active_cache = response_dict.rows[0].id;
             }
@@ -814,7 +805,9 @@
             item,
             i;
 
-          // loop folder contents, exclude history and check if file is on memory
+          // loop folder contents, exclude history, check if file is on memory
+          // and match against search (can't user query on allAttachments)
+          // if no search is run, indexOf("") = 0
           if (len > 0) {
             for (i = 0; i < len; i += 1) {
               response = my_directory_content[i];
@@ -824,7 +817,9 @@
                     if (memory_list.indexOf(item) > -1) {
                       item = item + "*";
                     }
-                    entry_dict[i].item_list.push(item);
+                    if (item.indexOf(my_search_value || "") > -1) {
+                      entry_dict[i].item_list.push(item);
+                    }
                   }
                 }
               }
