@@ -63,7 +63,7 @@
 
   var OBJECT_LIST_TEMPLATE = "<span>Search:</span>" +
     "<form name='search'>" +
-      "<input type='text' tabindex='1' placeholder='search...' />" +
+      "<input type='text' tabindex='1' name='find' placeholder='search...' />" +
       "<span class='custom-menu-typewriter'>CTRL+ALT+</span>" +
       "<button type='submit' tabindex='2' class='custom-menu-button'>" +
         "<b>F</b>ind</button></form>" +
@@ -678,6 +678,11 @@
         if (my_parameter) {
           if (my_parameter.target) {
             action = my_parameter.target.name;
+            if (action === "Search") {
+              console.log("searching we are")
+              console.log(my_parameter.target.find.value)
+              return my_gadget.dialog_setFileMenu(my_parameter.target.find.value);
+            }
             if (action === "open") {
             return my_gadget.editor_openFile();
             }
