@@ -466,6 +466,7 @@
       switch(my_event.keyCode) {
         case 68: return CodeMirror.commands.myEditor_deleteFile();  // (d)elete file
         case 67: return CodeMirror.commands.myEditor_closeFile();   // (c)lose file
+        case 70: return CodeMirror.commands.myEditor_searchFileMenu(); // (f)ind filename
         case 79: return CodeMirror.commands.myEditor_openFromDialog(); // (o)pen
         case 83: return CodeMirror.commands.myEditor_saveFromDialog(CodeMirror);// (s)ave
         case 88: return CodeMirror.commands.myEditor_closeDialog(); // (x)lose dialog
@@ -772,10 +773,6 @@
         entry_dict = {},
         option_dict;
 
-      console.log("setting file menu, search for ", my_search_value)
-
-      // build a list of folders and file ids stored on memory and serviceworker
-
       return new RSVP.Queue()
         .push(function () {
           return CodeMirror.menu_dict.editor_getActiveFileList(gadget);
@@ -844,13 +841,11 @@
             }
           }
           if (file_menu) {
-            console.log("UPDATE")
             file_menu.parentNode.replaceChild(
               props.dialog_createFileMenu(entry_dict),
               file_menu
             );
           } else {
-            console.log("SET")
             props.dialog.insertBefore(
               props.dialog_createFileMenu(entry_dict),
               props.dialog.querySelector('span')
