@@ -62,9 +62,9 @@
         "<b>D</b>elete</button></form>";
 
   var OBJECT_LIST_TEMPLATE = "<span>Search:</span>" +
-    "<input type='text' tabindex='1' placeholder='search...' />" +
-    "<span class='custom-menu-typewriter'>CTRL+ALT+</span>" +
     "<form name='search'>" +
+      "<input type='text' tabindex='1' placeholder='search...' />" +
+      "<span class='custom-menu-typewriter'>CTRL+ALT+</span>" +
       "<button type='submit' tabindex='2' class='custom-menu-button'>" +
         "<b>F</b>ind</button></form>" +
     "<form name='saveall'>" +
@@ -346,6 +346,7 @@
     }
     // XXX: WTFix
     str = CodeMirror.menu_dict.dialog_parseTemplate(FILE_MENU_TEMPLATE, [str]);
+    console.log(str)
     div = document.createElement("div");
     div.innerHTML = str;
     return div.firstChild;
@@ -396,6 +397,8 @@
   }
 
   function dialog_evaluateState(my_parameter) {
+    console.log("identify form submit")
+    console.log("evaluateState ", my_parameter)
     var props = CodeMirror.menu_dict;
     return new RSVP.Queue()
       .push(function () {
@@ -669,7 +672,7 @@
       
       function editor_updateStorage(my_parameter) {
         var action;
-
+        console.log("updatestorage", my_parameter)
         // returning true closes panel, false leaves it open
 
         if (my_parameter) {
