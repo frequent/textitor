@@ -549,7 +549,7 @@
 
   function editor_deleteFile() {
     if (CodeMirror.menu_dict.dialog_evaluateState) {
-      return CodeMirror.menu_dict.dialog_evaluateState({"target": {"name": "search"}});
+      return CodeMirror.menu_dict.dialog_evaluateState({"target": {"name": "remove"}});
     }
   }
 
@@ -689,9 +689,6 @@
           if (my_pointer.target) {
             action = my_pointer.target.name;
             if (action === "search") {
-              console.log(my_pointer)
-              console.log(my_pointer.target)
-              console.log(my_pointer.target.find)
               return my_gadget.dialog_setFileMenu(my_pointer.target.find.value);
             }
             if (action === "open") {
