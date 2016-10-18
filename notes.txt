@@ -1,10 +1,8 @@
 
 => progress
 - only show filename not path in input
-- filter list of files
 - fix serviceworker throw on existing file with same name
 - select all, save all, delete all, use same keys as in single file menu
-- delete file(s) from files menu
 - implement folders
 - create new cache, consider cache and/or folders
 - new cache accessible through arrow left + left
@@ -67,4 +65,3 @@ serverless.getTree("master", function (err, tree) {if (err) {console.log("error"
   - if document per branch, files are attachments, editing and saving updates attachments
   - of a diff is a new attachment?
   
-
