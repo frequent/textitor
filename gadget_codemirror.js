@@ -930,8 +930,8 @@
         console.log(dialog.querySelector("input[type='text']"))
         console.log(file_name_input)
         console.log(file_name_input.value)
-        file_name_input = dialog.querySelector("input[type='text']");
-        file_name = file_name_input.value;
+        file_name_input = dialog.querySelector("input[type='text']") || {};
+        file_name = file_name_input.value || "";
         is_cache_name = dialog.querySelector('input:checked');
         mime_type_input = file_name.split(".").pop().replace("/", "");
         mime_type = MODEMIMES[mime_type_input] ||
