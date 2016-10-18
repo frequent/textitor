@@ -921,15 +921,17 @@
         mime_type;
 
       // SAVE => store on serviceworker, remove from memory
-
+      console.log("IN SAVE")
       if (!dialog || (!props.editor_active_dialog && !props.editor_active_file)) {
         CodeMirror.commands.myEditor_navigateHorizontal(props.editor, "right");
         return;
       }
-
+      console.log("passed dialog",props.editor_active_file )
       if (!props.editor_active_file) {
+        console.log(file_name_input)
+        console.log(file_name_input.value)
         file_name_input = dialog.querySelector("input[type='text']");
-        file_name = file_name_input.value || props.editor_active_file.name;
+        file_name = file_name_input.value;
         is_cache_name = dialog.querySelector('input:checked');
         mime_type_input = file_name.split(".").pop().replace("/", "");
         mime_type = MODEMIMES[mime_type_input] ||
