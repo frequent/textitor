@@ -67,9 +67,12 @@
       "<span class='custom-menu-typewriter'>CTRL+ALT+</span>" +
       "<button type='submit' tabindex='2' class='custom-menu-button'>" +
         "<b>F</b>ind</button></form>" +
-    "<form name='saveall'>" +
+    "<form name='bulksave'>" +
       "<button type='submit' tabindex='3' class='custom-menu-button'>" +
-        "<b>S</b>ave All</button></form>";
+        "<b>S</b>ave All</button></form>" +
+    "<form name='bulkremove'>" +
+      "<button type='submit' tabindex='4' class='custom-menu-button'>" +
+        "<b>D</b>elete All</button></form>";
 
   /////////////////////////////
   // Event handling (gadget_global.js)
@@ -606,6 +609,20 @@
     }
   }
 
+  function editor_bulkSaveFromDialog() {
+    if (CodeMirror.menu_dict.dialog_position === "left") {
+      return CodeMirror.menu_dict.dialog_evaluateState({"target":{"name": "bulksave"}});
+    }
+    // get all selected loop, keep active file, loop over selected and build RSVP
+    // all, switch active file ? possible ? and once done reset active file
+  }
+  
+  function editor_bulkDeleteFromDialog() {
+    if (CodeMirror.menu_dict.dialog_position === "left") {
+      return CodeMirror.menu_dict.dialog_evaluateState({"target":{"name": "bulkremove"}});
+    }
+  }
+
   function editor_navigateHorizontal(my_codemirror, my_direction) {
     var position = CodeMirror.menu_dict.dialog_position,
       parameter;
@@ -655,6 +672,8 @@
   CodeMirror.commands.myEditor_closeDialog = editor_closeDialog;
   CodeMirror.commands.myEditor_openDialog = editor_openDialog;
   CodeMirror.commands.myEditor_saveFromDialog = editor_saveFromDialog;
+  CodeMirror.commands.myEditor_bulkDeleteFromDialog = editor_bulkDeleteFromDialog;
+  CodeMirror.commands.myEditor_bulkSaveFromDialog = editor_bulkSaveFromDialog;
   CodeMirror.commands.myEditor_openFromDialog = editor_openFromDialog;
   CodeMirror.commands.myEditor_navigateHorizontal = editor_navigateHorizontal;
   CodeMirror.commands.myEditor_navigateVertical = editor_navigateVertical;
@@ -688,6 +707,12 @@
         if (my_pointer) {
           if (my_pointer.target) {
             action = my_pointer.target.name;
+            if (action === "bulksave") {
+              console.log("bulksave")
+            }
+            if (action === "bulkremove") {
+              console.log("bulkremove")
+            }
             if (action === "search") {
               return my_gadget.dialog_setFileMenu(my_pointer.target.find.value);
             }
