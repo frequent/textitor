@@ -928,6 +928,7 @@
       }
       console.log("passed dialog",props.editor_active_file )
       if (!props.editor_active_file) {
+        console.log(dialog)
         console.log(file_name_input)
         console.log(file_name_input.value)
         file_name_input = dialog.querySelector("input[type='text']");
