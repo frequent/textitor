@@ -921,14 +921,13 @@
         mime_type;
 
       // SAVE => store on serviceworker, remove from memory
-      console.log("IN SAVE")
       if (!dialog || (!props.editor_active_dialog && !props.editor_active_file)) {
         CodeMirror.commands.myEditor_navigateHorizontal(props.editor, "right");
         return;
       }
-      console.log("passed dialog",props.editor_active_file )
       if (!props.editor_active_file) {
         console.log(dialog)
+        console.log(dialog.querySelector("input[type='text']"))
         console.log(file_name_input)
         console.log(file_name_input.value)
         file_name_input = dialog.querySelector("input[type='text']");
