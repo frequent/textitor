@@ -689,6 +689,9 @@
           if (my_pointer.target) {
             action = my_pointer.target.name;
             if (action === "search") {
+              console.log(my_pointer)
+              console.log(my_pointer.target)
+              console.log(my_pointer.target.find)
               return my_gadget.dialog_setFileMenu(my_pointer.target.find.value);
             }
             if (action === "open") {
@@ -927,8 +930,6 @@
       }
       if (!props.editor_active_file) {
         file_name_input = dialog.querySelector("input");
-        console.log(file_name_input)
-        
         file_name = file_name_input.value;
         is_cache_name = dialog.querySelector('input:checked');
         mime_type_input = file_name.split(".").pop().replace("/", "");
