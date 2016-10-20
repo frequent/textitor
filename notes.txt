@@ -1,6 +1,9 @@
 
 => progress
-- only show filename not path in input
+- only show filename not path in input, strip path by <base> tag?
+- switch to RSVP.all(... to handle bulk methods
+- bulkRemove really necessary?
+- allow to keyboard select multiple files
 - fix serviceworker throw on existing file with same name
 - select all, save all, delete all, use same keys as in single file menu
 - implement folders
