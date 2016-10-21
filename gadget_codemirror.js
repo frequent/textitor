@@ -67,12 +67,9 @@
       "<span class='custom-menu-typewriter'>CTRL+ALT+</span>" +
       "<button type='submit' tabindex='2' class='custom-menu-button'>" +
         "<b>F</b>ind</button></form>" +
-    "<form name='bulksave'>" +
+    "<form name='bulk'>" +
       "<button type='submit' tabindex='3' class='custom-menu-button'>" +
-        "<b>S</b>ave All</button></form>" +
-    "<form name='bulkremove'>" +
-      "<button type='submit' tabindex='4' class='custom-menu-button'>" +
-        "<b>D</b>elete All</button></form>";
+        "<b>S</b>ave All</button></form>";
 
   /////////////////////////////
   // Event handling (gadget_global.js)
@@ -281,7 +278,7 @@
           directory_content_list = [],
           cache_id,
           i;
-  
+
         for (i = 0; i < response_dict.total_rows; i += 1) {
           cache_id = response_dict.rows[i].id;
           directory_content_list.push(
@@ -489,7 +486,6 @@
   CodeMirror.menu_dict.editor_setActiveFile = editor_setActiveFile;
   CodeMirror.menu_dict.editor_getActiveFile = editor_getActiveFile;
   CodeMirror.menu_dict.editor_getActiveFileList = editor_getActiveFileList;
-  //CodeMirror.menu_dict.editor_updateStorage = editor_updateStorage;
   CodeMirror.menu_dict.dialog_flagInput = dialog_flagInput;
   CodeMirror.menu_dict.dialog_parseTemplate = dialog_parseTemplate;
   CodeMirror.menu_dict.dialog_createFileMenu = dialog_createFileMenu;
@@ -611,15 +607,7 @@
 
   function editor_bulkSaveFromDialog() {
     if (CodeMirror.menu_dict.dialog_position === "left") {
-      return CodeMirror.menu_dict.dialog_evaluateState({"target":{"name": "bulksave"}});
-    }
-    // get all selected loop, keep active file, loop over selected and build RSVP
-    // all, switch active file ? possible ? and once done reset active file
-  }
-  
-  function editor_bulkDeleteFromDialog() {
-    if (CodeMirror.menu_dict.dialog_position === "left") {
-      return CodeMirror.menu_dict.dialog_evaluateState({"target":{"name": "bulkremove"}});
+      return CodeMirror.menu_dict.dialog_evaluateState({"target":{"name": "bulk"}});
     }
   }
 
@@ -672,7 +660,6 @@
   CodeMirror.commands.myEditor_closeDialog = editor_closeDialog;
   CodeMirror.commands.myEditor_openDialog = editor_openDialog;
   CodeMirror.commands.myEditor_saveFromDialog = editor_saveFromDialog;
-  CodeMirror.commands.myEditor_bulkDeleteFromDialog = editor_bulkDeleteFromDialog;
   CodeMirror.commands.myEditor_bulkSaveFromDialog = editor_bulkSaveFromDialog;
   CodeMirror.commands.myEditor_openFromDialog = editor_openFromDialog;
   CodeMirror.commands.myEditor_navigateHorizontal = editor_navigateHorizontal;
@@ -707,11 +694,8 @@
         if (my_pointer) {
           if (my_pointer.target) {
             action = my_pointer.target.name;
-            if (action === "bulksave") {
-              console.log("bulksave")
-            }
-            if (action === "bulkremove") {
-              console.log("bulkremove")
+            if (action === "bulk") {
+              return my_gadget.editor_bulkSave();
             }
             if (action === "search") {
               return my_gadget.dialog_setFileMenu(my_pointer.target.find.value);
@@ -933,6 +917,21 @@
         });
     })
 
+    .declareMethod('editor_bulkSave', function () {
+      var gadget = this,
+        props = CodeMirror.menu_dict;
+        
+      return new RSVP.Queue()
+        .push(function () {
+          return CodeMirror.menu_dict.editor_getActiveFileList(gadget);  
+        })
+        .push(function (my_memory_content) {
+          
+          // save all these files to serviceworker
+          
+        })
+    })
+    
     .declareMethod('editor_saveFile', function () {
       var gadget = this,
         props = CodeMirror.menu_dict,
@@ -946,6 +945,7 @@
         mime_type;
 
       // SAVE => store on serviceworker, remove from memory
+
       if (!dialog || (!props.editor_active_dialog && !props.editor_active_file)) {
         CodeMirror.commands.myEditor_navigateHorizontal(props.editor, "right");
         return;
@@ -1277,7 +1277,7 @@
           
           return new RSVP.Queue()
             .push(function () {
-              return CodeMirror.menu_dict.editor_getActiveFileList(gadget);  
+              return CodeMirror.menu_dict.editor_getActiveFileList(gadget);
             })
             .push(function (my_memory_content) {
               if (my_memory_content.length > 0 || props.editor_is_modified) {
