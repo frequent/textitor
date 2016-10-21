@@ -588,14 +588,14 @@
 
   function editor_saveFromDialog(my_codemirror, from) {
     if (CodeMirror.menu_dict.dialog_position !== "left") {
-
-      // evaluateState is declared on first dialog open, if someone saves before
-      // opening, it would raise an error so we default to opening the dialog
       if (CodeMirror.menu_dict.dialog_evaluateState) {
         return CodeMirror.menu_dict.dialog_evaluateState({"target":{"name": "save"}});
       } else {
         return CodeMirror.commands.myEditor_openDialog(CodeMirror, "right");
       }
+    } else {
+      console.log("WE ARE LEFT AND SHOULD HAVE A DIALOG, BULK SAVE")
+      CodeMirror.commands.myEditor_bulkSaveFromDialog();
     }
   }
 
@@ -926,9 +926,9 @@
           return CodeMirror.menu_dict.editor_getActiveFileList(gadget);  
         })
         .push(function (my_memory_content) {
-          
-          // save all these files to serviceworker
-          
+          console.log("GOT MEMORY, SAVE")
+          console.log(my_memory_content);
+          return;
         })
     })
     
