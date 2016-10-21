@@ -443,7 +443,9 @@
   }
 
   function dialog_setNavigationCallback(my_event, my_value, my_callback) {
-
+    console.log("navigation callback")
+    console.log(my_event)
+    
     // esc
     if (my_event.keyCode === 27) {
       return CodeMirror.commands.myEditor_closeDialog();
@@ -463,6 +465,7 @@
 
     // ctrl + alt +
     if (my_event.ctrlKey && my_event.altKey) {
+      console.log("ctrl + alt +", my_event.keyCode)
       switch(my_event.keyCode) {
         case 68: return CodeMirror.commands.myEditor_deleteFile();  // (d)elete file
         case 67: return CodeMirror.commands.myEditor_closeFile();   // (c)lose file
@@ -587,6 +590,8 @@
   }
 
   function editor_saveFromDialog(my_codemirror, from) {
+    console.log("SAVE FROM DIALOG, ", from)
+    console.log("Position =", CodeMirror.menu_dict.dialog_position)
     if (CodeMirror.menu_dict.dialog_position !== "left") {
       if (CodeMirror.menu_dict.dialog_evaluateState) {
         return CodeMirror.menu_dict.dialog_evaluateState({"target":{"name": "save"}});
