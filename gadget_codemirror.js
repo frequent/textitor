@@ -831,7 +831,7 @@
             response,
             item,
             i;
-
+          console.log("what's on memory list", memory_list)
           // loop folder contents, exclude history, check if file is on memory
           // and match against search (can't user query on allAttachments)
           // if no search is run, indexOf("") = 0
@@ -839,6 +839,7 @@
             for (i = 0; i < len; i += 1) {
               response = my_directory_content[i];
               for (item in response) {
+                console.log("checking item =", item)
                 if (response.hasOwnProperty(item)) {
                   if (item.indexOf("_history") === -1) {
                     if (memory_list.indexOf(item) > -1) {
