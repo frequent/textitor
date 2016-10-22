@@ -947,7 +947,7 @@
             len;
           console.log(my_cache_list)
           console.log(my_cache_list.length)
-          for (i = 0, len = my_cache_list.length; i < i; i += 1) {
+          for (i = 0, len = my_cache_list.length; i < len; i += 1) {
             console.log("got one folder ", my_cache_list[i])
             folder_list.push(bulkHandle(my_cache_list[i]));
           }
