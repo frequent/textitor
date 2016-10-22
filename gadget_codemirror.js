@@ -330,7 +330,9 @@
       len,
       folder,
       counter;
-
+    console.log("creating file menu")
+    console.log(window.location)
+    console.log(my_file_dict)
     for (counter in my_file_dict) {
       if (my_file_dict.hasOwnProperty(counter)) {
         folder = my_file_dict[counter];
@@ -786,6 +788,7 @@
           return CodeMirror.menu_dict.editor_getActiveFileList(gadget);
         })
         .push(function (my_memory_content) {
+          console.log("stored on memory", my_memory_content)
           var response,
             item,
             i;
