@@ -844,6 +844,7 @@
                 if (response.hasOwnProperty(item)) {
                   if (item.indexOf("_history") === -1) {
                     path = window.location.href + "/" + item;
+                    console.log(path)
                     if (memory_list.indexOf(path) > -1) {
                       console.log("got one")
                       item = item + "*";
