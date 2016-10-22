@@ -843,11 +843,12 @@
                 console.log("checking item =", item)
                 if (response.hasOwnProperty(item)) {
                   if (item.indexOf("_history") === -1) {
-                    //path = window.location.href + "/" + item;
                     console.log(item)
                     console.log(memory_list)
-                    if (memory_list.indexOf(item) > -1) {
+                    
+                    if (memory_list.indexOf(item.split("/").pop()) > -1) {
                       console.log("got one")
+                      console.log(item)
                       item = item + "*";
                     }
                     if (item.indexOf(my_search_value || "") > -1) {
