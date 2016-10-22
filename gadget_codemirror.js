@@ -828,6 +828,7 @@
         .push(function (my_directory_content) {
           var file_menu = props.dialog.querySelector(".custom-file-menu"),
             len = my_directory_content.length,
+            path,
             response,
             item,
             i;
@@ -842,7 +843,9 @@
                 console.log("checking item =", item)
                 if (response.hasOwnProperty(item)) {
                   if (item.indexOf("_history") === -1) {
-                    if (memory_list.indexOf(item) > -1) {
+                    path = window.location.href + "/" + item;
+                    if (memory_list.indexOf(path) > -1) {
+                      console.log("got one")
                       item = item + "*";
                     }
                     if (item.indexOf(my_search_value || "") > -1) {
