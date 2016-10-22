@@ -1041,7 +1041,7 @@
         })
         .push(function () {
           console.log("DONE SAVING:", file_name)
-          if (!bulk) {
+          if (!my_file_id) {
             props.editor.setOption("mode", mime_type);
             props.editor_setActiveFile(file_name, mime_type);
             props.editor_resetModified();
