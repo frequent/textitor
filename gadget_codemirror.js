@@ -62,7 +62,7 @@
         "<b>D</b>elete</button></form>";
 
   var OBJECT_LIST_TEMPLATE = "<span>Search:</span>" +
-    "<form name='search'>" +
+    "<form name='search' autocomplete='off'>" +
       "<input type='text' tabindex='1' name='find' placeholder='search...' />" +
       "<span class='custom-menu-typewriter'>CTRL+ALT+</span>" +
       "<button type='submit' tabindex='2' class='custom-menu-button'>" +
@@ -1034,7 +1034,8 @@
           }
         )
         .push(function(my_content) {
-          content = content || my_content.target.result;
+          console.log(my_content)
+          content = content || my_content[0].target.result;
           return gadget.setActiveStorage("serviceworker");
         })
         .push(function() {
