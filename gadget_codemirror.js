@@ -922,36 +922,37 @@
     .declareMethod('editor_bulkSave', function () {
       var gadget = this,
         props = CodeMirror.menu_dict,
-        save_list = [];
+        folder_list = [];
 
       function bulkHandle(my_folder_content) {
-        var l,
-          len,
-          file_name;
-        console.log("Reached")
-        console.log(my_folder_content)
-        console.log(my_folder_content.length)
-        for (l = 0, len = my_folder_content.length; l < len; l += 1) {
-          file_name = my_folder_content[l];
-          if (file_name.indexOf('history') === -1) {
-            save_list.push(gadget.editor_saveFile(file_name));  
+        var file_list = [],
+          file_url;
+        for (file_url in my_folder_content) {
+          if (my_folder_content.hasOwnProperty(file_url)) {
+            if (file_url.indexOf('_history') === -1) {
+              file_list.push(gadget.editor_saveFile(file_url));
+            }
           }
         }
+        console.log("file list to save", file_list);
+        return RSVP.all(file_list);
       }
+        
       return new RSVP.Queue()
         .push(function () {
           return CodeMirror.menu_dict.editor_getActiveFileList(gadget);  
         })
-        .push(function (my_memory_content) {
+        .push(function (my_cache_list) {
           var i,
             len;
-          console.log(my_memory_content)
-          console.log(my_memory_content.length)
-          for (i = 0, i = my_memory_content.length; i < i; i += 1) {
-            console.log("got one folder ", my_memory_content[i])
-            save_list.push(bulkHandle(my_memory_content[i]));
+          console.log(my_cache_list)
+          console.log(my_cache_list.length)
+          for (i = 0, len = my_cache_list.length; i < i; i += 1) {
+            console.log("got one folder ", my_cache_list[i])
+            folder_list.push(bulkHandle(my_cache_list[i]));
           }
-          return RSVP.all(save_list);
+          console.log(folder_list)
+          return RSVP.all(folder_list);
         })
         .push(function () {
           console.log("Yupi all set");
