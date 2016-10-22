@@ -443,9 +443,7 @@
   }
 
   function dialog_setNavigationCallback(my_event, my_value, my_callback) {
-    console.log("navigation callback")
-    console.log(my_event)
-    
+
     // esc
     if (my_event.keyCode === 27) {
       return CodeMirror.commands.myEditor_closeDialog();
@@ -465,7 +463,6 @@
 
     // ctrl + alt +
     if (my_event.ctrlKey && my_event.altKey) {
-      console.log("ctrl + alt +", my_event.keyCode)
       switch(my_event.keyCode) {
         case 68: return CodeMirror.commands.myEditor_deleteFile();  // (d)elete file
         case 67: return CodeMirror.commands.myEditor_closeFile();   // (c)lose file
@@ -558,7 +555,7 @@
   function editor_searchFileMenu() {
     var props = CodeMirror.menu_dict,
       input;
-    if (props.dialog_evaluateState && props.dialog) {
+    if (props.dialog_evaluateState && props.dialog && props.dialog_position === "left") {
       input = props.dialog.querySelector("input[type='text']");
       if (input) {
         return props.dialog_evaluateState({
@@ -934,7 +931,6 @@
             }
           }
         }
-        console.log("file list to save", file_list);
         return RSVP.all(file_list);
       }
         
@@ -945,18 +941,13 @@
         .push(function (my_cache_list) {
           var i,
             len;
-          console.log(my_cache_list)
-          console.log(my_cache_list.length)
           for (i = 0, len = my_cache_list.length; i < len; i += 1) {
-            console.log("got one folder ", my_cache_list[i])
             folder_list.push(bulkHandle(my_cache_list[i]));
           }
-          console.log(folder_list)
           return RSVP.all(folder_list);
         })
         .push(function () {
-          console.log("Yupi all set");
-          console.log("refresh panel?");
+          return CodeMirror.commands.myEditor_searchFileMenu();
         });
     })
     
@@ -1034,7 +1025,6 @@
           }
         )
         .push(function(my_content) {
-          console.log(my_content)
           content = content || my_content[0].target.result;
           return gadget.setActiveStorage("serviceworker");
         })
@@ -1046,7 +1036,6 @@
           );
         })
         .push(function () {
-          console.log("DONE SAVING:", file_name)
           if (!my_file_id) {
             props.editor.setOption("mode", mime_type);
             props.editor_setActiveFile(file_name, mime_type);
