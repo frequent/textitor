@@ -340,7 +340,7 @@
         for (i = 0, len = folder.item_list.length; i < len; i += 1) {
           str += CodeMirror.menu_dict.dialog_parseTemplate(
             FILE_ENTRY_TEMPLATE,
-            [folder.name + " | " + folder.item_list[i].replace("href", "")]
+            [folder.name + " | " + folder.item_list[i].replace(href, "")]
           );
         }
       }
