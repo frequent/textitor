@@ -331,9 +331,7 @@
       len,
       folder,
       counter;
-    console.log("creating file menu")
-    console.log(window.location)
-    console.log(my_file_dict)
+
     for (counter in my_file_dict) {
       if (my_file_dict.hasOwnProperty(counter)) {
         folder = my_file_dict[counter];
@@ -789,7 +787,6 @@
           return CodeMirror.menu_dict.editor_getActiveFileList(gadget);
         })
         .push(function (my_memory_content) {
-          console.log("stored on memory", my_memory_content)
           var response,
             item,
             i;
@@ -832,7 +829,7 @@
             response,
             item,
             i;
-          console.log("what's on memory list", memory_list)
+          
           // loop folder contents, exclude history, check if file is on memory
           // and match against search (can't user query on allAttachments)
           // if no search is run, indexOf("") = 0
@@ -840,15 +837,9 @@
             for (i = 0; i < len; i += 1) {
               response = my_directory_content[i];
               for (item in response) {
-                console.log("checking item =", item)
                 if (response.hasOwnProperty(item)) {
                   if (item.indexOf("_history") === -1) {
-                    console.log(item)
-                    console.log(memory_list)
-                    
                     if (memory_list.indexOf(item.split("/").pop()) > -1) {
-                      console.log("got one")
-                      console.log(item)
                       item = item + "*";
                     }
                     if (item.indexOf(my_search_value || "") > -1) {
