@@ -13,7 +13,7 @@
   /////////////////////////////
   // Supported Languages
   /////////////////////////////
-  var MODEMIMES = {
+  var MIMES = {
     "undefined": "text/plain",
     "null": "text/plain",
     "css": "text/css",
@@ -28,7 +28,7 @@
     "sql": "text/x-sql",
   };
 
-  var SHIMMODEMIMES = {
+  var SHIMMIMES = {
     "html": "htmlmixed",
     "js": "javascript",
     "py": "python",
@@ -146,9 +146,9 @@
   // validate mime type
   function is_validMimeType(my_mime_type) {
     var mime;
-    for (mime in MODEMIMES) {
-      if (MODEMIMES.hasOwnProperty(mime)) {
-        if (my_mime_type == MODEMIMES[mime]) {
+    for (mime in MIMES) {
+      if (MIMES.hasOwnProperty(mime)) {
+        if (my_mime_type == MIMES[mime]) {
           return true;
         }
       }
@@ -589,9 +589,7 @@
       });
   }
 
-  function editor_saveFromDialog(my_codemirror, from) {
-    console.log("SAVE FROM DIALOG, ", from)
-    console.log("Position =", CodeMirror.menu_dict.dialog_position)
+  function editor_saveFromDialog(my_codemirror) {
     if (CodeMirror.menu_dict.dialog_position !== "left") {
       if (CodeMirror.menu_dict.dialog_evaluateState) {
         return CodeMirror.menu_dict.dialog_evaluateState({"target":{"name": "save"}});
@@ -599,7 +597,6 @@
         return CodeMirror.commands.myEditor_openDialog(CodeMirror, "right");
       }
     } else {
-      console.log("WE ARE LEFT AND SHOULD HAVE A DIALOG, BULK SAVE")
       CodeMirror.commands.myEditor_bulkSaveFromDialog();
     }
   }
@@ -924,60 +921,88 @@
 
     .declareMethod('editor_bulkSave', function () {
       var gadget = this,
-        props = CodeMirror.menu_dict;
-        
+        props = CodeMirror.menu_dict,
+        save_list = [];
+
+      function bulkHandle(my_folder_content) {
+        var l,
+          len,
+          file_name;
+
+        for (l = 0, len = my_folder_content.length; l < len; l += 1) {
+          file_name = my_folder_content[l];
+          if (file_name.indexOf('history') === -1) {
+            save_list.push(gadget.editor_saveFile(file_name));  
+          }
+        }
+      }
       return new RSVP.Queue()
         .push(function () {
           return CodeMirror.menu_dict.editor_getActiveFileList(gadget);  
         })
         .push(function (my_memory_content) {
-          console.log("GOT MEMORY, SAVE")
-          console.log(my_memory_content);
-          return;
+          var i,
+            len;
+
+          for (i = 0, i = my_memory_content.length; i < i; i += 1) {
+            save_list.push(bulkHandle(my_memory_content[i]));
+          }
+          return RSVP.all(save_list);
         })
+        .push(function () {
+          console.log("Yupi all set");
+          console.log("refresh panel?");
+        });
     })
     
-    .declareMethod('editor_saveFile', function () {
+    .declareMethod('editor_saveFile', function (my_file_id) {
       var gadget = this,
         props = CodeMirror.menu_dict,
         dialog = props.dialog,
+        active_cache = props.editor_active_cache || "textitor",
         file_name_input,
         file_name,
         is_cache_name,
         content,
-        active_cache,
         mime_type_input,
         mime_type;
 
       // SAVE => store on serviceworker, remove from memory
 
-      if (!dialog || (!props.editor_active_dialog && !props.editor_active_file)) {
-        CodeMirror.commands.myEditor_navigateHorizontal(props.editor, "right");
-        return;
+      function setMimeType(my_mime) {
+        return MIMES[my_mime] || MIMES[SHIMMIMES[my_mime]] || "text/plain";
       }
-      if (!props.editor_active_file) {
-        file_name_input = dialog.querySelector("input");
-        file_name = file_name_input.value;
-        is_cache_name = dialog.querySelector('input:checked');
-        mime_type_input = file_name.split(".").pop().replace("/", "");
-        mime_type = MODEMIMES[mime_type_input] ||
-            MODEMIMES[SHIMMODEMIMES[mime_type_input]] ||
-                "text/plain";
+
+      if (!my_file_id) {
+        
+        if (!dialog || (!props.editor_active_dialog && !props.editor_active_file)) {
+          CodeMirror.commands.myEditor_navigateHorizontal(props.editor, "right");
+          return;
+        }
+        if (!props.editor_active_file) {
+          file_name_input = dialog.querySelector("input");
+          file_name = file_name_input.value;
+          is_cache_name = dialog.querySelector('input:checked');
+          mime_type_input = file_name.split(".").pop().replace("/", "");
+          mime_type = setMimeType(mime_type_input);
+        } else {
+          file_name = props.editor_active_file.name;
+          mime_type = props.editor_active_file.mime_type;
+        }
+
+        // validate form
+        if (dialog && (!file_name || file_name === "Enter valid URL.")) {
+          return props.dialog_flagInput(file_name_input, 'Enter valid URL.');
+        }
+        if (dialog && is_cache_name) {
+          return props.dialog_flagInput(file_name_input, 'Cache not supported');
+        }
+  
+        content = props.editor.getValue();
       } else {
-        file_name = props.editor_active_file.name;
-        mime_type = props.editor_active_file.mime_type;
+        file_name = my_file_id;
+        mime_type = setMimeType(file_name.split(".").pop().replace("/", ""));
       }
-
-      // validate form
-      if (dialog && (!file_name || file_name === "Enter valid URL.")) {
-        return props.dialog_flagInput(file_name_input, 'Enter valid URL.');
-      }
-      if (dialog && is_cache_name) {
-        return props.dialog_flagInput(file_name_input, 'Cache not supported');
-      }
-
-      content = props.editor.getValue();
-      active_cache = props.editor_active_cache || "textitor";
 
       return new RSVP.Queue()
         .push(function () {
@@ -988,10 +1013,13 @@
         })
         .push(
           function (my_file) {
-            return RSVP.all([
-              gadget.jio_removeAttachment(active_cache, file_name),
-              gadget.jio_removeAttachment(active_cache, file_name + "_history")
-            ]);
+            var task_list = [];
+            if (!content) {
+              task_list.push(jIO.util.readBlobAsText(my_file));
+            }
+            task_list.push(gadget.jio_removeAttachment(active_cache, file_name));
+            task_list.push(gadget.jio_removeAttachment(active_cache, file_name + "_history"));
+            return RSVP.all(task_list);
           },
           function (my_error) {
             if (is404(my_error)) {
@@ -1000,7 +1028,8 @@
             throw my_error;
           }
         )
-        .push(function() {
+        .push(function(my_content) {
+          content = content || my_content.target.result;
           return gadget.setActiveStorage("serviceworker");
         })
         .push(function() {
@@ -1011,10 +1040,14 @@
           );
         })
         .push(function () {
-          props.editor.setOption("mode", mime_type);
-          props.editor_setActiveFile(file_name, mime_type);
-          props.editor_resetModified();
-          return true;
+          console.log("DONE SAVING:", file_name)
+          if (!bulk) {
+            props.editor.setOption("mode", mime_type);
+            props.editor_setActiveFile(file_name, mime_type);
+            props.editor_resetModified();
+            return true;
+          }
+          return false;
         });
     })
 
