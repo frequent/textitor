@@ -1,13 +1,13 @@
 
 => progress
-- only show filename not path in input, strip path by <base> tag?
-- switch to RSVP.all(... to handle bulk methods
-- bulkRemove really necessary?
-- allow to keyboard select multiple files
+- strip filepaths by <base> tag? show cache/folders and name
+- show file currently being open somewhere
+- on 2nd invalid save, focus input to prevent using mouse
+- set cache correctly everywhere, because there can be more than one!
+- cancellation error on first save still...
 - fix serviceworker throw on existing file with same name
-- select all, save all, delete all, use same keys as in single file menu
 - implement folders
-- create new cache, consider cache and/or folders
+- implement multiple caches as top level folders
 - new cache accessible through arrow left + left
 - show only files in cache, not cache itself?
 
