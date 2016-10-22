@@ -928,7 +928,9 @@
         var l,
           len,
           file_name;
-
+        console.log("Reached")
+        console.log(my_folder_content)
+        console.log(my_folder_content.length)
         for (l = 0, len = my_folder_content.length; l < len; l += 1) {
           file_name = my_folder_content[l];
           if (file_name.indexOf('history') === -1) {
@@ -943,8 +945,10 @@
         .push(function (my_memory_content) {
           var i,
             len;
-
+          console.log(my_memory_content)
+          console.log(my_memory_content.length)
           for (i = 0, i = my_memory_content.length; i < i; i += 1) {
+            console.log("got one folder ", my_memory_content[i])
             save_list.push(bulkHandle(my_memory_content[i]));
           }
           return RSVP.all(save_list);
