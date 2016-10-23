@@ -1032,7 +1032,7 @@
       if (file_name_input.value === "Enter valid URL.") {
         file_name_input.focus();
         console.log("returning false from SAVE")
-        return false;
+        return;
       }
 
       return new RSVP.Queue()
