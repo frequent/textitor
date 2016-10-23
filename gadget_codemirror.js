@@ -218,19 +218,24 @@
 
   function editor_setDialog(my_editor, my_template, my_bottom) {
     var wrap = my_editor.getWrapperElement(),
-      dialog = wrap.appendChild(document.createElement("div"));
+      container = wrap.appendChild(document.createElement("div"));
 
     if (my_bottom) {
-      dialog.className = "CodeMirror-dialog CodeMirror-dialog-bottom";
+      container.className = "CodeMirror-dialog CodeMirror-dialog-bottom";
     } else {
-      dialog.className = "CodeMirror-dialog CodeMirror-dialog-top";
+      container.className = "CodeMirror-dialog CodeMirror-dialog-top";
     }
+    console.log("alors")
+    console.log(my_template)
+    console.log(typeof my_template)
     if (typeof my_template == "string") {
-      dialog.innerHTML = my_template;
+      console.log("setting dialog inner html")
+      container.innerHTML = my_template;
     } else {
-      dialog.appendChild(my_template);
+      console.log("appending child")
+      container.appendChild(my_template);
     }
-    return dialog;
+    return container;
   }
 
   // modified flag
@@ -240,6 +245,42 @@
       props.editor_is_modified = true;
       props.element.querySelector(".CodeMirror").className += " custom-set-modified";
     }
+  }
+
+  function editor_setDisplay(my_file_name) {
+    var props = CodeMirror.menu_dict,
+      display;
+    
+    /*
+    file_menu = CodeMirror.menu_dict.dialog.querySelector(".custom-file-menu"),
+    if (file_menu) {
+      file_menu.parentNode.replaceChild(
+        props.dialog_createFileMenu(entry_dict),
+        file_menu
+      );
+    } else {
+      props.dialog.insertBefore(
+        props.dialog_createFileMenu(entry_dict),
+        props.dialog.querySelector('span')
+      );
+    }
+    */
+    
+    console.log("setting display")
+    console.log(my_file_name)
+
+    if (props.display) {
+      props.display.parentNode.removeChild(props.display);
+      props.display = null;
+    }
+    if (!my_file_name) {
+      return;
+    }
+    display = props.dialog_parseTemplate(FILE_NAME_TEMPLATE, [my_file_name]);
+    console.log(display)
+    props.display = props.editor_setDialog(props.editor, display, true);
+    console.log(props.display);
+    return;
   }
 
   function editor_resetModified() {
@@ -483,6 +524,7 @@
   CodeMirror.menu_dict.editor_createDoc = editor_createDoc;
   CodeMirror.menu_dict.editor_setDialog = editor_setDialog;
   CodeMirror.menu_dict.editor_setModified = editor_setModified;
+  CodeMirror.menu_dict.editor_setDisplay = editor_setDisplay;
   CodeMirror.menu_dict.editor_resetModified = editor_resetModified;
   CodeMirror.menu_dict.editor_resetActiveFile = editor_resetActiveFile;
   CodeMirror.menu_dict.editor_setActiveFile = editor_setActiveFile;
@@ -576,14 +618,6 @@
       return CodeMirror.menu_dict.dialog_evaluateState(true);
     }
   }
-  
-  function editor_setDisplay(my_codemirror, my_file_name) {
-    console.log("setting display")
-    return new RSVP.Queue()
-      .push(function () {
-        return my_codemirror.setDisplay(my_file_name);
-      });
-  }
 
   function editor_openDialog(my_codemirror, my_direction) {
     return new RSVP.Queue()
@@ -668,7 +702,6 @@
   CodeMirror.commands.myEditor_searchFileMenu = editor_searchFileMenu;
   CodeMirror.commands.myEditor_closeDialog = editor_closeDialog;
   CodeMirror.commands.myEditor_openDialog = editor_openDialog;
-  CodeMirror.commands.myEditor_setDisplay = editor_setDisplay;
   CodeMirror.commands.myEditor_saveFromDialog = editor_saveFromDialog;
   CodeMirror.commands.myEditor_bulkSaveFromDialog = editor_bulkSaveFromDialog;
   CodeMirror.commands.myEditor_openFromDialog = editor_openFromDialog;
@@ -753,10 +786,7 @@
 
       return new RSVP.Queue()
         .push(function () {
-          return RSVP.all([
-            gadget.dialog_setDialogExtension(),
-            gadget.editor_setDisplayExtension()
-          ]);
+          return gadget.dialog_setDialogExtension();
         })
         .push(function () {
 
@@ -1131,7 +1161,7 @@
             props.editor_resetActiveFile();
             props.editor_resetModified();
             console.log("CALL FROM SWAP")
-            CodeMirror.commands.myEditor_setDisplay(CodeMirror);
+            props.editor_setDisplay();
           }
           return true;
         });
@@ -1205,7 +1235,8 @@
           props.editor.setOption("mode", mime_type);
           props.editor_setActiveFile(open_name, mime_type);
           console.log("call from Open")
-          CodeMirror.commands.myEditor_setDisplay(CodeMirror, open_name);
+          props.editor.setDisplay(open_name);
+          
 
           if (file_name_to_open_save_flag) {
             props.editor_setModified();
@@ -1214,26 +1245,6 @@
           }
           return true;
         });
-    })
-
-    .declareMethod('editor_setDisplayExtension', function () {
-      var gadget = this,
-        props = gadget.property_dict,
-        display;
-      
-      function displayCallback(my_file_name) {
-        if (props.display) {
-          props.display.parentNode.removeChild(props.display);
-          props.display = null;
-        }
-        if (!my_file_name) {
-          return;   
-        }
-        display = props.dialog_parseTemplate(FILE_NAME_TEMPLATE, [my_file_name]);
-        props.display = props.editor_setDialog(props.editor, display, true);
-      }
-
-      return CodeMirror.defineExtension("setDisplay", displayCallback);
     })
 
     .declareMethod('dialog_setDialogExtension', function () {
