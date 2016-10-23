@@ -225,14 +225,9 @@
     } else {
       container.className = "CodeMirror-dialog CodeMirror-dialog-top";
     }
-    console.log("alors")
-    console.log(my_template)
-    console.log(typeof my_template)
     if (typeof my_template == "string") {
-      console.log("setting dialog inner html")
       container.innerHTML = my_template;
     } else {
-      console.log("appending child")
       container.appendChild(my_template);
     }
     return container;
@@ -250,24 +245,6 @@
   function editor_setDisplay(my_file_name) {
     var props = CodeMirror.menu_dict,
       display;
-    
-    /*
-    file_menu = CodeMirror.menu_dict.dialog.querySelector(".custom-file-menu"),
-    if (file_menu) {
-      file_menu.parentNode.replaceChild(
-        props.dialog_createFileMenu(entry_dict),
-        file_menu
-      );
-    } else {
-      props.dialog.insertBefore(
-        props.dialog_createFileMenu(entry_dict),
-        props.dialog.querySelector('span')
-      );
-    }
-    */
-    
-    console.log("setting display")
-    console.log(my_file_name)
 
     if (props.display) {
       props.display.parentNode.removeChild(props.display);
@@ -277,9 +254,7 @@
       return;
     }
     display = props.dialog_parseTemplate(FILE_NAME_TEMPLATE, [my_file_name]);
-    console.log(display)
     props.display = props.editor_setDialog(props.editor, display, true);
-    console.log(props.display);
     return;
   }
 
@@ -1160,7 +1135,6 @@
             props.dialog_clearTextInput(dialog);
             props.editor_resetActiveFile();
             props.editor_resetModified();
-            console.log("CALL FROM SWAP")
             props.editor_setDisplay();
           }
           return true;
@@ -1234,7 +1208,6 @@
         .push(function () {
           props.editor.setOption("mode", mime_type);
           props.editor_setActiveFile(open_name, mime_type);
-          console.log("call from Open")
           props.editor_setDisplay(open_name);
 
           if (file_name_to_open_save_flag) {

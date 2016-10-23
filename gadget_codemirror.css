@@ -12,10 +12,14 @@ body {
   width: 100%;
   height: 100%;
 }
+
+/* trailing space */
 .cm-trailingspace {
   background-color: #ee0000;
   background-color: rgba(255, 0, 0, 0.8);
 }
+
+/* line numbers */
 .CodeMirror-gutters .CodeMirror-gutter.CodeMirror-linenumbers {
   width: 29px !important;
 }
@@ -60,3 +64,13 @@ body {
 .CodeMirror.custom-set-modified .CodeMirror-gutters:before {
   display: block;
 }
+
+/* current file name */
+.CodeMirror .CodeMirror-dialog-bottom {
+  background: none;
+  border: 0 none;
+  text-align: center;
+  font-style: italic;
+  color: #3E7087;
+}  
+  
