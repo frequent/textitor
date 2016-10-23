@@ -1026,6 +1026,8 @@
       }
       console.log("in")
       file_name_input = dialog.querySelector("input");
+      console.log(file_name_input)
+      console.log(file_name_input.value)
       if (file_name_input.value === "Enter valid URL") {
         console.log("out")
         file_name_input.focus();
