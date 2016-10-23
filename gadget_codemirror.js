@@ -993,6 +993,7 @@
         return MIMES[my_mime] || MIMES[SHIMMIMES[my_mime]] || "text/plain";
       }
 
+      console.log(my_file_id)
       // XXX simplify
       if (!my_file_id) {
         if (!dialog || (!props.editor_active_dialog && !props.editor_active_file)) {
@@ -1022,13 +1023,18 @@
         }
 
         if (file_name === "Enter valid URL") {
-          console.log("gotcha")
+          console.log("gotcha A")
           file_name_input.focus();
           return true;
         }
 
         content = props.editor.getValue();
       } else {
+        if (file_name === "Enter valid URL") {
+          console.log("gotcha B")
+          file_name_input.focus();
+          return true;
+        }
         file_name = my_file_id;
         mime_type = setMimeType(file_name.split(".").pop().replace("/", ""));
       }
