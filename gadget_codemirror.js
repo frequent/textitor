@@ -1010,11 +1010,18 @@
         }
 
         // validate form
-        if (dialog && (!file_name || file_name === "Enter valid URL.")) {
-          return props.dialog_flagInput(file_name_input, 'Enter valid URL.');
-        }
-        if (dialog && is_cache_name) {
-          return props.dialog_flagInput(file_name_input, 'Cache not supported');
+        if (dialog) {
+          if (!file_name && file_name !== "Enter valid URL.") {
+            console.log("one")
+            return props.dialog_flagInput(file_name_input, 'Enter valid URL.');
+          }
+          if (file_name === "Enter valid URL") {
+            console.log("gotcha")
+            file_name_input.focus();
+          }
+          if (is_cache_name) {
+            return props.dialog_flagInput(file_name_input, 'Cache not supported');
+          }
         }
 
         content = props.editor.getValue();
