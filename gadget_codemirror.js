@@ -325,7 +325,6 @@
         return promiseEventListener(my_input, 'focus', false);
       })
       .push(function () {
-        console.log("returning false from focus callback")
         my_input.className = '';
         my_input.value = '';
         return false;
@@ -425,8 +424,6 @@
         return props.editor_updateStorage(my_parameter);
       })
       .push(function (my_close_dialog) {
-        console.log(my_close_dialog)
-        console.log(props.editor_active_dialog)
         if (my_close_dialog === true && props.editor_active_dialog) {
           if (props.dialog_option_dict.onClose) {
             props.dialog_option_dict.onClose(dialog);
@@ -1015,7 +1012,7 @@
 
         // validate form
         if (dialog) {
-          if (!file_name && file_name !== "Enter valid URL.") {
+          if (!file_name) {
             return props.dialog_flagInput(file_name_input, 'Enter valid URL.');
           }
           if (is_cache_name) {
@@ -1031,7 +1028,6 @@
       file_name_input = dialog.querySelector("input");
       if (file_name_input.value === "Enter valid URL.") {
         file_name_input.focus();
-        console.log("returning false from SAVE")
         return;
       }
 
