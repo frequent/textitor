@@ -1012,7 +1012,8 @@
 
         // validate form
         if (dialog) {
-          if (!file_name) {
+          //if (!file_name) {
+          if (!file_name || file_name_input.value === "Enter valid URL.") {
             return props.dialog_flagInput(file_name_input, 'Enter valid URL.');
           }
           if (is_cache_name) {
@@ -1025,11 +1026,12 @@
         mime_type = setMimeType(file_name.split(".").pop().replace("/", ""));
       }
 
-      file_name_input = dialog.querySelector("input");
-      if (file_name_input.value === "Enter valid URL.") {
-        file_name_input.focus();
-        return;
-      }
+      // XXX fix double trigger
+      //file_name_input = dialog.querySelector("input");
+      //if (file_name_input.value === "Enter valid URL.") {
+      //  file_name_input.focus();
+      //  return;
+      //}
 
       return new RSVP.Queue()
         .push(function () {
