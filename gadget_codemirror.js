@@ -38,6 +38,7 @@
   /////////////////////////////
   // Templates
   /////////////////////////////
+  var FILE_NAME_TEMPLATE = "<div class='custom-file-name'>%s</div>";
   var FILE_MENU_TEMPLATE = "<div class='custom-file-menu'>%s</div>";
 
   var FILE_ENTRY_TEMPLATE = "<div class='custom-file-menu-row'>" +
@@ -575,6 +576,12 @@
       return CodeMirror.menu_dict.dialog_evaluateState(true);
     }
   }
+  function editor_setDisplay(my_codemirror, my_file_name) {
+    return new RSVP.Queue()
+      .push(function () {
+        return my_codemirror.setDisplay(my_file_name);
+      });
+  }
 
   function editor_openDialog(my_codemirror, my_direction) {
     return new RSVP.Queue()
@@ -659,6 +666,7 @@
   CodeMirror.commands.myEditor_searchFileMenu = editor_searchFileMenu;
   CodeMirror.commands.myEditor_closeDialog = editor_closeDialog;
   CodeMirror.commands.myEditor_openDialog = editor_openDialog;
+  CodeMirror.commands.myEditor_setDisplay = editor_setDisplay;
   CodeMirror.commands.myEditor_saveFromDialog = editor_saveFromDialog;
   CodeMirror.commands.myEditor_bulkSaveFromDialog = editor_bulkSaveFromDialog;
   CodeMirror.commands.myEditor_openFromDialog = editor_openFromDialog;
@@ -743,7 +751,10 @@
 
       return new RSVP.Queue()
         .push(function () {
-          return gadget.dialog_setDialogExtension();
+          return RSVP.all([
+            gadget.dialog_setDialogExtension(),
+            gadget.editor_setDisplayExtension()
+          ]);
         })
         .push(function () {
 
@@ -1078,7 +1089,7 @@
           return;
         }
       }
-      // what if file name is set but not saved => where do I get content?
+
       return new RSVP.Queue()
         .push(function () {
           return gadget.setActiveStorage("memory");
@@ -1117,6 +1128,7 @@
             props.dialog_clearTextInput(dialog);
             props.editor_resetActiveFile();
             props.editor_resetModified();
+            CodeMirror.commands.myEditor_setDisplay(CodeMirror);
           }
           return true;
         });
@@ -1189,7 +1201,8 @@
         .push(function () {
           props.editor.setOption("mode", mime_type);
           props.editor_setActiveFile(open_name, mime_type);
-          
+          CodeMirror.commands.myEditor_setDisplay(CodeMirror, open_name);
+
           if (file_name_to_open_save_flag) {
             props.editor_setModified();
           } else {
@@ -1197,6 +1210,26 @@
           }
           return true;
         });
+    })
+
+    .declareMethod('editor_setDisplayExtension', function () {
+      var gadget = this,
+        props = gadget.property_dict,
+        display;
+      
+      function displayCallback(my_file_name) {
+        if (props.display) {
+          props.display.parentNode.removeChild(props.display);
+          props.display = null;
+        }
+        if (!my_file_name) {
+          return;   
+        }
+        display = props.dialog_parseTemplate(FILE_NAME_TEMPLATE, [my_file_name]);
+        props.display = props.editor_setDialog(props.editor, display, true);
+      }
+
+      return CodeMirror.defineExtension("setDisplay", displayCallback);
     })
 
     .declareMethod('dialog_setDialogExtension', function () {
