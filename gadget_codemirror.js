@@ -1028,7 +1028,7 @@
       file_name_input = dialog.querySelector("input");
       if (file_name_input.value === "Enter valid URL.") {
         file_name_input.focus();
-        return true;
+        return false;
       }
 
       return new RSVP.Queue()
