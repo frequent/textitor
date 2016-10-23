@@ -993,6 +993,7 @@
         return MIMES[my_mime] || MIMES[SHIMMIMES[my_mime]] || "text/plain";
       }
 
+      // XXX simplify
       if (!my_file_id) {
         if (!dialog || (!props.editor_active_dialog && !props.editor_active_file)) {
           CodeMirror.commands.myEditor_navigateHorizontal(props.editor, "right");
@@ -1015,13 +1016,15 @@
             console.log("one")
             return props.dialog_flagInput(file_name_input, 'Enter valid URL.');
           }
-          if (file_name === "Enter valid URL") {
-            console.log("gotcha")
-            file_name_input.focus();
-          }
           if (is_cache_name) {
             return props.dialog_flagInput(file_name_input, 'Cache not supported');
           }
+        }
+
+        if (file_name === "Enter valid URL") {
+          console.log("gotcha")
+          file_name_input.focus();
+          return true;
         }
 
         content = props.editor.getValue();
