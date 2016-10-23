@@ -1235,8 +1235,7 @@
           props.editor.setOption("mode", mime_type);
           props.editor_setActiveFile(open_name, mime_type);
           console.log("call from Open")
-          props.editor.setDisplay(open_name);
-          
+          props.editor_setDisplay(open_name);
 
           if (file_name_to_open_save_flag) {
             props.editor_setModified();
