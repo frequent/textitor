@@ -1024,8 +1024,10 @@
         file_name = my_file_id;
         mime_type = setMimeType(file_name.split(".").pop().replace("/", ""));
       }
-
-      if (file_name === "Enter valid URL") {
+      console.log("in")
+      file_name_input = dialog.querySelector("input");
+      if (file_name_input.value === "Enter valid URL") {
+        console.log("out")
         file_name_input.focus();
         return true;
       }
