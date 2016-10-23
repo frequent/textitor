@@ -576,7 +576,9 @@
       return CodeMirror.menu_dict.dialog_evaluateState(true);
     }
   }
+  
   function editor_setDisplay(my_codemirror, my_file_name) {
+    console.log("setting display")
     return new RSVP.Queue()
       .push(function () {
         return my_codemirror.setDisplay(my_file_name);
@@ -1128,6 +1130,7 @@
             props.dialog_clearTextInput(dialog);
             props.editor_resetActiveFile();
             props.editor_resetModified();
+            console.log("CALL FROM SWAP")
             CodeMirror.commands.myEditor_setDisplay(CodeMirror);
           }
           return true;
@@ -1201,6 +1204,7 @@
         .push(function () {
           props.editor.setOption("mode", mime_type);
           props.editor_setActiveFile(open_name, mime_type);
+          console.log("call from Open")
           CodeMirror.commands.myEditor_setDisplay(CodeMirror, open_name);
 
           if (file_name_to_open_save_flag) {
