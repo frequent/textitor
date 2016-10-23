@@ -8,7 +8,17 @@
   // Placeholder Instructions
   /////////////////////////////
   var PLACEHOLDER = "Textitor Shortcuts:\n" +
-    "[CTRL+ALT+x] Close Dialog";
+    "[CTRL+ALT+o]     Open Selected File\n" +
+    "[CTRL+ALT+s]     Save Current/All Selected File(s)\n" +
+    "[CTRL+ALT+f]     Filter Filenames\n" +
+    "[CTRL+ALT+up]    Filemenu Up\n" +
+    "[CTRL+ALT+down]  Filemenu Down\n" +
+    "[CTRL+ALT+left]  Folder Up\n" + 
+    "[CTRL+ALT+right] Folder Down/File\n" +
+    "[CTRL+ALT+x]     Close Dialog\n" +
+    "[CTRL+ALT+c]     Close File\n" +
+    "[CTRL+ALT+d]     Delete File\n" +
+    "[Esc]            Close Dialog\n";
 
   /////////////////////////////
   // Supported Languages
