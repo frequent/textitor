@@ -13,7 +13,7 @@
     "[CTRL+ALT+f]     Filter Filenames\n" +
     "[CTRL+ALT+up]    Filemenu Up\n" +
     "[CTRL+ALT+down]  Filemenu Down\n" +
-    "[CTRL+ALT+left]  Folder Up\n" + 
+    "[CTRL+ALT+left]  Folder Up\n" +
     "[CTRL+ALT+right] Folder Down/File\n" +
     "[CTRL+ALT+x]     Close Dialog\n" +
     "[CTRL+ALT+c]     Close File\n" +
@@ -49,13 +49,14 @@
   // Templates
   /////////////////////////////
   var FILE_NAME_TEMPLATE = "<div class='custom-file-name'>%s</div>";
+
   var FILE_MENU_TEMPLATE = "<div class='custom-file-menu'>%s</div>";
 
   var FILE_ENTRY_TEMPLATE = "<div class='custom-file-menu-row'>" +
       "<input type='checkbox' autocomplete='off' />" +
       "<span class='custom-file-menu-checkbox-overlay'>%s</span>" +
       "</div>";
-  
+
   var OBJECT_MENU_TEMPLATE = "<span class='custom-menu-label'>Name:</span>" +
     "<input type='text' tabindex='1' placeholder='file name' value='%s' />" +
     "<input type='hidden' value='%s' />" +
@@ -69,7 +70,7 @@
       "<button type='submit' tabindex='4' class='custom-menu-button'>" +
         "<b>C</b>lose</button></form>" +
     "<form name='remove'>" +
-      "<button type='submit' tabindex='5' class='custom-menu-button'>" + 
+      "<button type='submit' tabindex='5' class='custom-menu-button'>" +
         "<b>D</b>elete</button></form>";
 
   var OBJECT_LIST_TEMPLATE = "<span>Search:</span>" +
@@ -86,7 +87,6 @@
   // Event handling (gadget_global.js)
   /////////////////////////////
   function promiseEventListener(target, type, useCapture) {
-    //////////////////////////
     var handle_event_callback;
 
     function canceller() {
@@ -106,7 +106,7 @@
     return new RSVP.Promise(resolver, canceller);
   }
 
-  // CUSTOM loopEventListener for CodeMirror events (non DOM)
+  // CUSTOM loopEventListener for CodeMirror events (not using DOM)
   function codeMirrorLoopEventListener(target, type, callback) {
     var handle_event_callback,
       callback_promise;
@@ -154,7 +154,6 @@
     my_editor.state.currentNotificationClose = my_newVal;
   }
 
-  // validate mime type
   function is_validMimeType(my_mime_type) {
     var mime;
     for (mime in MIMES) {
@@ -166,7 +165,6 @@
     }
   }
 
-  // test 404
   function is404(my_error) {
     if ((my_error instanceof jIO.util.jIOError) &&
       (my_error.status_code === 404)) {
@@ -202,7 +200,7 @@
     "onInput": function (my_event, my_value, my_callback) {
       return CodeMirror.menu_dict.dialog_setNavigationCallback(
         my_event,
-        my_value, 
+        my_value,
         my_callback
       );
     },
@@ -243,7 +241,6 @@
     return container;
   }
 
-  // modified flag
   function editor_setModified(source) {
     var props = CodeMirror.menu_dict;
     if (props.editor_is_modified !== true) {
@@ -276,7 +273,6 @@
     element.className = element.className.split("custom-set-modified").join("");
   }
 
-  // active flag
   function editor_resetActiveFile() {
     CodeMirror.menu_dict.editor_active_file = null;
   }
@@ -291,7 +287,7 @@
     var active_file = CodeMirror.menu_dict.editor_active_file || {};
     return [active_file.name || "", active_file.mime_type || ""];
   }
-  
+
   function editor_getActiveFileList(my_gadget) {
     return new RSVP.Queue()
       .push(function () {
@@ -335,7 +331,6 @@
       });
   }
 
-  // dialog
   function dialog_parseTemplate(my_template, my_value_list) {
     var html_content = [],
       counter = 0,
@@ -370,6 +365,7 @@
         }
       }
     }
+
     // XXX: WTFix
     str = CodeMirror.menu_dict.dialog_parseTemplate(FILE_MENU_TEMPLATE, [str]);
     div = document.createElement("div");
@@ -384,7 +380,7 @@
       selected_index,
       len,
       i;
-    
+
     if (file_menu) {
       input_list = Array.prototype.slice.call(
         file_menu.querySelectorAll('input[type="checkbox"]')
@@ -484,7 +480,7 @@
     if (my_event.keyCode === 36) {
       return CodeMirror.commands.myEditor_navigateVertical(undefined, "down");
     }
-    // input
+
     if (my_event.type === "input") {
       return my_callback(my_value);
     }
@@ -492,12 +488,12 @@
     // ctrl + alt +
     if (my_event.ctrlKey && my_event.altKey) {
       switch(my_event.keyCode) {
-        case 68: return CodeMirror.commands.myEditor_deleteFile();  // (d)elete file
-        case 67: return CodeMirror.commands.myEditor_closeFile();   // (c)lose file
-        case 70: return CodeMirror.commands.myEditor_searchFileMenu(); // (f)ind filename
-        case 79: return CodeMirror.commands.myEditor_openFromDialog(); // (o)pen
-        case 83: return CodeMirror.commands.myEditor_saveFromDialog(CodeMirror);// (s)ave
-        case 88: return CodeMirror.commands.myEditor_closeDialog(); // (x)lose dialog
+        case 68: return CodeMirror.commands.myEditor_deleteFile();
+        case 67: return CodeMirror.commands.myEditor_closeFile();
+        case 70: return CodeMirror.commands.myEditor_searchFileMenu();
+        case 79: return CodeMirror.commands.myEditor_openFromDialog();
+        case 83: return CodeMirror.commands.myEditor_saveFromDialog(CodeMirror);
+        case 88: return CodeMirror.commands.myEditor_closeDialog();
         case 37: return CodeMirror.commands.myEditor_navigateHorizontal(undefined, "left");
         case 39: return CodeMirror.commands.myEditor_navigateHorizontal(undefined, "right");
         case 38: return CodeMirror.commands.myEditor_navigateVertical(undefined, "up");
@@ -697,7 +693,6 @@
   CodeMirror.commands.myEditor_navigateUp = editor_navigateUp;
   CodeMirror.commands.myEditor_navigateDown = editor_navigateDown;
 
-
   rJS(window)
 
     /////////////////////////////
@@ -714,7 +709,7 @@
           props.element.appendChild(props.textarea);
         });
     })
-    
+
     // Init CodeMirror methods which require gadget to be passed as parameter
     .ready(function (my_gadget){
       function editor_updateStorage(my_pointer) {
@@ -802,7 +797,7 @@
           return gadget;
         });
     })
-    
+
     .declareMethod('dialog_setFileMenu', function (my_search_value) {
       var gadget = this,
         props = CodeMirror.menu_dict,
@@ -818,7 +813,7 @@
           var response,
             item,
             i;
-  
+
           for (i = 0; i < my_memory_content.length; i += 1) {
             response = my_memory_content[i];
             for (item in response) {
@@ -837,7 +832,7 @@
             directory_content_list = [],
             cache_id,
             i;
-  
+
           if (my_directory_list !== undefined) {
             if (response_dict.total_rows === 1) {
               props.editor_active_cache = response_dict.rows[0].id;
@@ -857,7 +852,7 @@
             response,
             item,
             i;
-          
+
           // loop folder contents, exclude history, check if file is on memory
           // and match against search (can't user query on allAttachments)
           // if no search is run, indexOf("") = 0
@@ -891,7 +886,7 @@
           }
         });
     })  
-    
+
     .declareMethod('editor_removeFile', function () {
       var gadget = this, 
         props = CodeMirror.menu_dict,
@@ -908,7 +903,7 @@
 
       active_cache = props.editor_active_cache || "textitor";
       file_name = props.editor_active_file.name;
-      
+
       return new RSVP.Queue()
         .push(function () {
           return gadget.setActiveStorage("memory");
@@ -922,7 +917,7 @@
               gadget.jio_removeAttachment(active_cache, file_name),
               gadget.jio_removeAttachment(active_cache, file_name + "_history")
             ]);
-          }, 
+          },
           function (my_error) {
             if (is404(my_error)) {
               return;
@@ -938,7 +933,6 @@
         })
         .push(function () {
           var new_doc = props.editor_createDoc(),
-            // new_doc = CodeMirror.Doc(""), 
             old_doc = props.editor.swapDoc(new_doc);
           props.editor_resetActiveFile();
           props.editor_resetModified("removeFile");
@@ -963,7 +957,7 @@
         }
         return RSVP.all(file_list);
       }
-        
+
       return new RSVP.Queue()
         .push(function () {
           return CodeMirror.menu_dict.editor_getActiveFileList(gadget);  
@@ -980,7 +974,7 @@
           return CodeMirror.commands.myEditor_searchFileMenu();
         });
     })
-    
+
     .declareMethod('editor_saveFile', function (my_file_id) {
       var gadget = this,
         props = CodeMirror.menu_dict,
@@ -1000,7 +994,6 @@
       }
 
       if (!my_file_id) {
-        
         if (!dialog || (!props.editor_active_dialog && !props.editor_active_file)) {
           CodeMirror.commands.myEditor_navigateHorizontal(props.editor, "right");
           return;
@@ -1023,7 +1016,7 @@
         if (dialog && is_cache_name) {
           return props.dialog_flagInput(file_name_input, 'Cache not supported');
         }
-  
+
         content = props.editor.getValue();
       } else {
         file_name = my_file_id;
@@ -1162,7 +1155,8 @@
         mime_type,
         file_name_to_open_save_flag;
 
-      // open = get from memory/serviceworker, close and store any open file!   
+      // open = get from memory/serviceworker, close and store any open file!
+
       if (file_name_input === null) {
         return true;
       }
@@ -1170,14 +1164,13 @@
       active_cache = props.editor_active_cache || "textitor";
       file_name_to_open = file_name_input.nextSibling.textContent.split(" | ")[1];
 
-      // flag save if new file comes from memory 
+      // flag save if new file comes from memory
       if (file_name_to_open.indexOf("*") > -1) {
         file_name_to_open_save_flag = true;
       }
 
       open_name = file_name_to_open.split("*")[0];
 
-      // try to fetch from memory
       return new RSVP.Queue()
         .push(function () {
           return gadget.setActiveStorage("memory");
@@ -1189,8 +1182,6 @@
           ]);
         })
         .push(null, function (my_error) {
-
-          // fetch from serviceworker with blank history
           if (is404(my_error)) {
             return new RSVP.Queue()
               .push(function () {
@@ -1291,7 +1282,6 @@
           return wrapBind(my_element, "submit", "onSubmit");
         });
 
-        // XXX always close dialog via this chain, resolve all promises?
         return queue
           .push(function () {
             return RSVP.all([
@@ -1325,13 +1315,13 @@
         return props.editor_setModified("change listener");
       });
     })
-    
+
     .declareService(function () {
       var gadget = this,
         props = gadget.property_dict,
         message = "Don't forget to save your work!",
         result;
-        
+
       // warn of unsaved files or content
       return new RSVP.Queue()
         .push(function () {
@@ -1339,7 +1329,7 @@
         })
         .push(function (my_event) {
           my_event = my_event || window.event;
-          
+
           return new RSVP.Queue()
             .push(function () {
               return CodeMirror.menu_dict.editor_getActiveFileList(gadget);
@@ -1351,7 +1341,7 @@
                 }
                 return message;
               }
-            });        
+            });
         });
     });
 
