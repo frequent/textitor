@@ -1011,7 +1011,17 @@
           }
         }
         content = props.editor.getValue();
-      } else {
+        
+        if (is_container) {
+          console.log(is_container)
+          console.log(is_container.value)
+          if (is_container.value === 'cache') {
+            return props.dialog_flagInput(file_name_input, 'Cache not supported');
+          }
+          mime_type = "application/json";
+          folder_file_list = [];
+        }
+        } else {
         file_name = my_file_id;
         mime_type = setMimeType(file_name.split(".").pop().replace("/", ""));
       }
@@ -1023,14 +1033,7 @@
       //  return;
       //}
 
-      if (is_container) {
-        if (is_container.value === 'cache') {
-          return props.dialog_flagInput(file_name_input, 'Cache not supported');
-        }
-        file_name = file_name_input.value;
-        mime_type = "application/json";
-        folder_file_list = [];
-      }
+
 
       return new RSVP.Queue()
         .push(function () {
