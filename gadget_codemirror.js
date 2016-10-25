@@ -61,9 +61,9 @@
     "<input type='text' tabindex='1' placeholder='file name' value='%s' />" +
     "<input type='hidden' value='%s' />" +
     "<span class='custom-menu-label'>Cache</span>" +
-    "<input type='checkbox' tabindex='2' autocomplete='off' />" +
+    "<input type='radio' tabindex='2' name='is_container' value='folder' />" +
     "<span class='custom-menu-label'>Folder</span>" +
-    "<input type='checkbox' tabindex='3' autocomplete='off' />" +
+    "<input type='radio' tabindex='3' name='is_container' value='cache' />" +
     "<span class='custom-menu-typewriter'>CTRL+ALT+</span>" +
     "<form name='save'>" +
       "<button type='submit' tabindex='4' class='custom-menu-button'>" +
@@ -984,7 +984,7 @@
         active_cache = props.editor_active_cache || "textitor",
         file_name_input,
         file_name,
-        is_cache_name,
+        is_container,
         content,
         mime_type_input,
         mime_type;
@@ -1004,7 +1004,7 @@
         if (!props.editor_active_file) {
           file_name_input = dialog.querySelector("input");
           file_name = file_name_input.value;
-          is_cache_name = dialog.querySelector('input:checked');
+          is_container = dialog.querySelector('input[name="is_container"]:checked');
           mime_type_input = file_name.split(".").pop().replace("/", "");
           mime_type = setMimeType(mime_type_input);
         } else {
@@ -1018,8 +1018,10 @@
           if (!file_name || file_name_input.value === "Enter valid URL.") {
             return props.dialog_flagInput(file_name_input, 'Enter valid URL.');
           }
-          if (is_cache_name) {
-            return props.dialog_flagInput(file_name_input, 'Cache not supported');
+          if (is_container) {
+            if (is_container.value === 'cache') {
+              return props.dialog_flagInput(file_name_input, 'Cache not supported');
+            }
           }
         }
         content = props.editor.getValue();
