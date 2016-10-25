@@ -60,17 +60,19 @@
   var OBJECT_MENU_TEMPLATE = "<span class='custom-menu-label'>Name:</span>" +
     "<input type='text' tabindex='1' placeholder='file name' value='%s' />" +
     "<input type='hidden' value='%s' />" +
-    "<span class='custom-menu-label'>Create as Cache</span>" +
+    "<span class='custom-menu-label'>Cache</span>" +
     "<input type='checkbox' tabindex='2' autocomplete='off' />" +
+    "<span class='custom-menu-label'>Folder</span>" +
+    "<input type='checkbox' tabindex='3' autocomplete='off' />" +
     "<span class='custom-menu-typewriter'>CTRL+ALT+</span>" +
     "<form name='save'>" +
-      "<button type='submit' tabindex='3' class='custom-menu-button'>" +
+      "<button type='submit' tabindex='4' class='custom-menu-button'>" +
         "<b>S</b>ave</button></form>" +
     "<form name='close'>" +
-      "<button type='submit' tabindex='4' class='custom-menu-button'>" +
+      "<button type='submit' tabindex='5' class='custom-menu-button'>" +
         "<b>C</b>lose</button></form>" +
     "<form name='remove'>" +
-      "<button type='submit' tabindex='5' class='custom-menu-button'>" +
+      "<button type='submit' tabindex='6' class='custom-menu-button'>" +
         "<b>D</b>elete</button></form>";
 
   var OBJECT_LIST_TEMPLATE = "<span>Search:</span>" +
