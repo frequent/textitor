@@ -170,6 +170,7 @@
   CodeMirror.menu_dict = {};
   CodeMirror.menu_dict.editor = null;
   CodeMirror.menu_dict.editor_active_dialog = null;
+  CodeMirror.menu_dict.editor_active_path = null;
   CodeMirror.menu_dict.editor_active_file = null;
   CodeMirror.menu_dict.editor_active_cache = null;
   CodeMirror.menu_dict.editor_is_modified = null;
@@ -215,6 +216,12 @@
     return CodeMirror.Doc("");
   }
 
+  function editorSetActivePath(my_folder_path) {
+    var props = CodeMirror.menu_dict;
+    console.log("setting to", my_folder_path);
+    props.editor_active_path = my_folder_path;
+  }
+  
   function editor_setDialog(my_editor, my_template, my_bottom) {
     var wrap = my_editor.getWrapperElement(),
       container = wrap.appendChild(document.createElement("div"));
@@ -501,6 +508,7 @@
   CodeMirror.menu_dict.editor_setDialog = editor_setDialog;
   CodeMirror.menu_dict.editor_setModified = editor_setModified;
   CodeMirror.menu_dict.editor_setDisplay = editor_setDisplay;
+  CodeMirror.menu_dict.editorSetActivePath = editorSetActivePath;
   CodeMirror.menu_dict.editor_resetModified = editor_resetModified;
   CodeMirror.menu_dict.editor_resetActiveFile = editor_resetActiveFile;
   CodeMirror.menu_dict.editor_setActiveFile = editor_setActiveFile;
@@ -800,7 +808,7 @@
         memory_list = [],
         entry_dict = {},
         option_dict;
-
+      console.log("setting file menu!")
       return new RSVP.Queue()
         .push(function () {
           return CodeMirror.menu_dict.editor_getActiveFileList(gadget);
@@ -1187,6 +1195,11 @@
       console.log("if this is a folder, we don't do anything")
       if (file_name_to_open.split(".").length === 1) {
         console.log("should be a folder, going left should open the folder menu")
+        props.dialog_position === 'idle';
+        props.editor_active_path = props.editorSetActivePath(file_name_to_open);
+        console.log("we need to adjust position");
+        CodeMirror.commands.myEditor_navigateHorizontal(props.editor, "left");
+        return;
       }
       // flag save if new file comes from memory
       if (file_name_to_open.indexOf("*") > -1) {
