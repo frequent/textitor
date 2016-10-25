@@ -156,17 +156,6 @@
     my_editor.state.currentNotificationClose = my_newVal;
   }
 
-  function is_validMimeType(my_mime_type) {
-    var mime;
-    for (mime in MIMES) {
-      if (MIMES.hasOwnProperty(mime)) {
-        if (my_mime_type == MIMES[mime]) {
-          return true;
-        }
-      }
-    }
-  }
-
   function is404(my_error) {
     if ((my_error instanceof jIO.util.jIOError) &&
       (my_error.status_code === 404)) {
@@ -986,6 +975,7 @@
         file_name,
         is_container,
         content,
+        folder_file_list,
         mime_type_input,
         mime_type;
 
@@ -995,6 +985,7 @@
         return MIMES[my_mime] || MIMES[SHIMMIMES[my_mime]] || "text/plain";
       }
 
+      // bulkSave will pass file_id, file won't be open, need to get content
       // XXX simplify
       if (!my_file_id) {
         if (!dialog || (!props.editor_active_dialog && !props.editor_active_file)) {
@@ -1018,11 +1009,6 @@
           if (!file_name || file_name_input.value === "Enter valid URL.") {
             return props.dialog_flagInput(file_name_input, 'Enter valid URL.');
           }
-          if (is_container) {
-            if (is_container.value === 'cache') {
-              return props.dialog_flagInput(file_name_input, 'Cache not supported');
-            }
-          }
         }
         content = props.editor.getValue();
       } else {
@@ -1036,6 +1022,15 @@
       //  file_name_input.focus();
       //  return;
       //}
+
+      if (is_container) {
+        if (is_container.value === 'cache') {
+          return props.dialog_flagInput(file_name_input, 'Cache not supported');
+        }
+        file_name = file_name_input.value;
+        mime_type = "application/json";
+        folder_file_list = [];
+      }
 
       return new RSVP.Queue()
         .push(function () {
@@ -1062,7 +1057,7 @@
           }
         )
         .push(function(my_content) {
-          content = content || my_content[0].target.result;
+          content = content || folder_file_list || my_content[0].target.result;
           return gadget.setActiveStorage("serviceworker");
         })
         .push(function() {
@@ -1073,6 +1068,9 @@
           );
         })
         .push(function () {
+          if (!is_container) {
+            return true;
+          }
           if (!my_file_id) {
             props.editor.setOption("mode", mime_type);
             props.editor_setActiveFile(file_name, mime_type);
