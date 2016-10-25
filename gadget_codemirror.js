@@ -459,7 +459,7 @@
 
   function dialog_setNavigationCallback(my_event, my_value, my_callback) {
     console.log("navigation callback, how to find out what we do?")
-    console.log(my_events)
+    console.log(my_event)
     console.log(my_value)
     
     console.log(my_event.keyCode)
@@ -1185,6 +1185,9 @@
       file_name_to_open = file_name_input.nextSibling.textContent.split(" | ")[1];
       console.log(file_name_to_open)
       console.log("if this is a folder, we don't do anything")
+      if (file_name_to_open.split(".").length === 1) {
+        console.log("should be a folder, going left should open the folder menu")
+      }
       // flag save if new file comes from memory
       if (file_name_to_open.indexOf("*") > -1) {
         file_name_to_open_save_flag = true;
