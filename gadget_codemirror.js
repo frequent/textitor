@@ -61,9 +61,9 @@
     "<input type='text' tabindex='1' placeholder='file name' value='%s' />" +
     "<input type='hidden' value='%s' />" +
     "<span class='custom-menu-label'>Cache</span>" +
-    "<input type='radio' tabindex='2' name='is_container' value='folder' />" +
+    "<input type='radio' tabindex='2' name='is_container' value='cache' />" +
     "<span class='custom-menu-label'>Folder</span>" +
-    "<input type='radio' tabindex='3' name='is_container' value='cache' />" +
+    "<input type='radio' tabindex='3' name='is_container' value='folder' />" +
     "<span class='custom-menu-typewriter'>CTRL+ALT+</span>" +
     "<form name='save'>" +
       "<button type='submit' tabindex='4' class='custom-menu-button'>" +
