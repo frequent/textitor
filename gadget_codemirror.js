@@ -419,6 +419,7 @@
     var props = CodeMirror.menu_dict;
     return new RSVP.Queue()
       .push(function () {
+        console.log("updating storage")
         return props.editor_updateStorage(my_parameter);
       })
       .push(function (my_close_dialog) {
@@ -465,11 +466,7 @@
   }
 
   function dialog_setNavigationCallback(my_event, my_value, my_callback) {
-    console.log("navigation callback, how to find out what we do?")
-    console.log(my_event)
-    console.log(my_value)
-    
-    console.log(my_event.keyCode)
+
     // esc
     if (my_event.keyCode === 27) {
       return CodeMirror.commands.myEditor_closeDialog();
@@ -641,8 +638,11 @@
   function editor_navigateHorizontal(my_codemirror, my_direction) {
     var position = CodeMirror.menu_dict.dialog_position,
       parameter;
-
+    console.log("here we are")
+    console.log(my_direction)
+    console.log(position)
     if (position === "idle") {
+      console.log("idle, going ", my_direction)
       return my_codemirror.openDialog(
         CodeMirror.menu_dict.dialog_setNavigationMenu(my_direction),
         CodeMirror.menu_dict.dialog_closeCallback,
@@ -717,9 +717,12 @@
     .ready(function (my_gadget){
       function editor_updateStorage(my_pointer) {
         var action;
+        console.log(my_pointer)
+        
         if (my_pointer) {
           if (my_pointer.target) {
             action = my_pointer.target.name;
+            console.log(action)
             if (action === "bulk") {
               return my_gadget.editor_bulkSave();
             }
@@ -727,7 +730,6 @@
               return my_gadget.dialog_setFileMenu(my_pointer.target.find.value);
             }
             if (action === "open") {
-              console.log("OPEN SOMETHING")
               return my_gadget.editor_openFile();
             }
             if (action === "close") {
@@ -1269,7 +1271,7 @@
           dialog_form_submit_list = [],
           dialog_input,
           dialog;
-
+        console.log("opening dialog")
         dialog = props.dialog = props.editor_setDialog(editor, my_template, opts.bottom);
         dialog_input = dialog.querySelector("input[type='text']");
         props.editor_active_dialog = true;
@@ -1327,6 +1329,7 @@
             ]);
           })
           .push(function () {
+            console.log("dialog_evalustate")
             return props.dialog_evaluateState(false);
           })
           .push(undefined, function (my_error) {
