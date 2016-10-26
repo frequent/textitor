@@ -1198,7 +1198,7 @@
       console.log("if this is a folder, we don't do anything")
       if (file_name_to_open.split(".").length === 1) {
         console.log("should be a folder, going left should open the folder menu")
-        props.dialog_position === 'idle';
+        props.dialog_position = 'idle';
         props.editor_active_path = props.editorSetActivePath(file_name_to_open);
         console.log("we need to adjust position");
         CodeMirror.commands.myEditor_navigateHorizontal(props.editor, "left");
