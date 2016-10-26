@@ -638,7 +638,7 @@
   function editor_navigateHorizontal(my_codemirror, my_direction) {
     var position = CodeMirror.menu_dict.dialog_position,
       parameter;
-    console.log("here we are")
+    console.log("here we are in navhorizontal")
     console.log(my_direction)
     console.log(position)
     if (position === "idle") {
@@ -649,6 +649,7 @@
         CodeMirror.menu_dict.dialog_option_dict
       );
     }
+    console.log("shouldn't be here")
     if (position === my_direction) {
       parameter = false;
     }
