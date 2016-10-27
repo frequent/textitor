@@ -216,7 +216,9 @@
     return CodeMirror.Doc("");
   }
 
-  function editorSetActivePath(my_folder_path) {
+  function editor_setActivePath(my_folder_path) {
+    console.log("setting active path!!!")
+    console.log(my_folder_path)
     var props = CodeMirror.menu_dict;
     props.editor_active_path = my_folder_path;
   }
@@ -503,7 +505,7 @@
   CodeMirror.menu_dict.editor_setDialog = editor_setDialog;
   CodeMirror.menu_dict.editor_setModified = editor_setModified;
   CodeMirror.menu_dict.editor_setDisplay = editor_setDisplay;
-  CodeMirror.menu_dict.editorSetActivePath = editorSetActivePath;
+  CodeMirror.menu_dict.editor_setActivePath = editor_setActivePath;
   CodeMirror.menu_dict.editor_resetModified = editor_resetModified;
   CodeMirror.menu_dict.editor_resetActiveFile = editor_resetActiveFile;
   CodeMirror.menu_dict.editor_setActiveFile = editor_setActiveFile;
@@ -1192,10 +1194,12 @@
 
       active_cache = props.editor_active_cache || "textitor";
       file_name_to_open = file_name_input.nextSibling.textContent.split(" | ")[1];
-
+      console.log("opening")
       if (file_name_to_open.split(".").length === 1) {
+        console.log("a folder")
+        console.log(file_name_to_open)
         props.dialog_position = 'idle';
-        props.editor_active_path = props.editorSetActivePath(file_name_to_open);
+        props.editor_active_path = props.editor_setActivePath(file_name_to_open);
         CodeMirror.commands.myEditor_navigateHorizontal(props.editor, "left");
         return;
       }
