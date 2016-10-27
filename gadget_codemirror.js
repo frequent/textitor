@@ -639,6 +639,8 @@
     var position = CodeMirror.menu_dict.dialog_position,
       parameter;
     if (position === "idle") {
+      console.log("OPENING DIALOG")
+      console.log(CodeMirror.menu_dict)
       return my_codemirror.openDialog(
         CodeMirror.menu_dict.dialog_setNavigationMenu(my_direction),
         CodeMirror.menu_dict.dialog_closeCallback,
@@ -1197,11 +1199,13 @@
       file_name_to_open = file_name_input.nextSibling.textContent.split(" | ")[1];
       console.log("opening")
       if (file_name_to_open.split(".").length === 1) {
-        console.log("SETTING folder")
-        console.log(file_name_to_open)
+        console.log("SETTING folder, setting active path to: ", file_name_to_open)
         props.dialog_position = 'idle';
         props.editor_active_path = props.editor_setActivePath(file_name_to_open);
         CodeMirror.commands.myEditor_navigateHorizontal(props.editor, "left");
+        
+        console.log("DONE")
+        console.log(CodeMirror.menu_dict)
         return;
       }
       // flag save if new file comes from memory
@@ -1312,6 +1316,7 @@
 
         // file menu
         if (props.dialog_position === 'left') {
+          console.log("need to set file menu")
           queue.push(gadget.dialog_setFileMenu(dialog_input.value));
         }
 
