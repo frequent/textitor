@@ -846,7 +846,7 @@
         .push(function (my_directory_content) {
           var file_menu = props.dialog.querySelector(".custom-file-menu"),
             len = my_directory_content.length,
-            path = props.active_path || "",
+            path = props.editor_active_path || "",
             response,
             item,
             i;
@@ -856,7 +856,7 @@
           // if no search is run, indexOf("") = 0 & account for folders/cache
           // by filtering ids for them until keeping a file index in the folder
           console.log(my_directory_content)
-          console.log(props.active_path)
+          console.log(props.editor_active_path)
           if (len > 0) {
             for (i = 0; i < len; i += 1) {
               response = my_directory_content[i];
