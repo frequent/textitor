@@ -804,6 +804,7 @@
         entry_dict = {},
         option_dict;
       console.log("setting file menu!")
+      console.log(CodeMirror)
 
       return new RSVP.Queue()
         .push(function () {
