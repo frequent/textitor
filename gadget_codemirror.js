@@ -218,7 +218,6 @@
 
   function editorSetActivePath(my_folder_path) {
     var props = CodeMirror.menu_dict;
-    console.log("setting to", my_folder_path);
     props.editor_active_path = my_folder_path;
   }
   
@@ -419,7 +418,6 @@
     var props = CodeMirror.menu_dict;
     return new RSVP.Queue()
       .push(function () {
-        console.log("updating storage")
         return props.editor_updateStorage(my_parameter);
       })
       .push(function (my_close_dialog) {
@@ -638,18 +636,13 @@
   function editor_navigateHorizontal(my_codemirror, my_direction) {
     var position = CodeMirror.menu_dict.dialog_position,
       parameter;
-    console.log("here we are in navhorizontal")
-    console.log(my_direction)
-    console.log(position)
     if (position === "idle") {
-      console.log("idle, going ", my_direction)
       return my_codemirror.openDialog(
         CodeMirror.menu_dict.dialog_setNavigationMenu(my_direction),
         CodeMirror.menu_dict.dialog_closeCallback,
         CodeMirror.menu_dict.dialog_option_dict
       );
     }
-    console.log("shouldn't be here")
     if (position === my_direction) {
       parameter = false;
     }
@@ -718,12 +711,9 @@
     .ready(function (my_gadget){
       function editor_updateStorage(my_pointer) {
         var action;
-        console.log(my_pointer)
-        
         if (my_pointer) {
           if (my_pointer.target) {
             action = my_pointer.target.name;
-            console.log(action)
             if (action === "bulk") {
               return my_gadget.editor_bulkSave();
             }
@@ -812,6 +802,7 @@
         entry_dict = {},
         option_dict;
       console.log("setting file menu!")
+
       return new RSVP.Queue()
         .push(function () {
           return CodeMirror.menu_dict.editor_getActiveFileList(gadget);
@@ -855,25 +846,35 @@
         .push(function (my_directory_content) {
           var file_menu = props.dialog.querySelector(".custom-file-menu"),
             len = my_directory_content.length,
-            path,
+            path = props.active_path || "",
             response,
             item,
             i;
 
           // loop folder contents, exclude history, check if file is on memory
           // and match against search (can't user query on allAttachments)
-          // if no search is run, indexOf("") = 0
+          // if no search is run, indexOf("") = 0 & account for folders/cache
+          // by filtering ids for them until keeping a file index in the folder
+          console.log(my_directory_content)
+          console.log(props.active_path)
           if (len > 0) {
             for (i = 0; i < len; i += 1) {
               response = my_directory_content[i];
               for (item in response) {
                 if (response.hasOwnProperty(item)) {
-                  if (item.indexOf("_history") === -1) {
-                    if (memory_list.indexOf(item.split("/").pop()) > -1) {
-                      item = item + "*";
-                    }
-                    if (item.indexOf(my_search_value || "") > -1) {
-                      entry_dict[i].item_list.push(item);
+                  console.log(item)
+                  console.log(path)
+                  if (item.indexOf(path > -1)) {
+                    
+                    console.log("file is inside folder or we are at root = empty string")
+                  
+                    if (item.indexOf("_history") === -1) {
+                      if (memory_list.indexOf(item.split("/").pop()) > -1) {
+                        item = item + "*";
+                      }
+                      if (item.indexOf(my_search_value || "") > -1) {
+                        entry_dict[i].item_list.push(item);
+                      }
                     }
                   }
                 }
@@ -1029,8 +1030,6 @@
         content = props.editor.getValue();
         
         if (is_container) {
-          console.log(is_container)
-          console.log(is_container.value)
           if (is_container.value === 'cache') {
             return props.dialog_flagInput(file_name_input, 'Cache not supported');
           }
@@ -1187,20 +1186,16 @@
         file_name_to_open_save_flag;
 
       // open = get from memory/serviceworker, close and store any open file!
-      console.log("in open")
       if (file_name_input === null) {
         return true;
       }
 
       active_cache = props.editor_active_cache || "textitor";
       file_name_to_open = file_name_input.nextSibling.textContent.split(" | ")[1];
-      console.log(file_name_to_open)
-      console.log("if this is a folder, we don't do anything")
+
       if (file_name_to_open.split(".").length === 1) {
-        console.log("should be a folder, going left should open the folder menu")
         props.dialog_position = 'idle';
         props.editor_active_path = props.editorSetActivePath(file_name_to_open);
-        console.log("we need to adjust position");
         CodeMirror.commands.myEditor_navigateHorizontal(props.editor, "left");
         return;
       }
@@ -1272,7 +1267,7 @@
           dialog_form_submit_list = [],
           dialog_input,
           dialog;
-        console.log("opening dialog")
+        
         dialog = props.dialog = props.editor_setDialog(editor, my_template, opts.bottom);
         dialog_input = dialog.querySelector("input[type='text']");
         props.editor_active_dialog = true;
@@ -1330,7 +1325,6 @@
             ]);
           })
           .push(function () {
-            console.log("dialog_evalustate")
             return props.dialog_evaluateState(false);
           })
           .push(undefined, function (my_error) {
