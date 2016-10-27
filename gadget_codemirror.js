@@ -219,8 +219,8 @@
   function editor_setActivePath(my_folder_path) {
     console.log("setting active path!!!")
     console.log(my_folder_path)
-    var props = CodeMirror.menu_dict;
-    props.editor_active_path = my_folder_path;
+    CodeMirror.menu_dict.editor_active_path = my_folder_path;
+    console.log(CodeMirror.menu_dict)
   }
   
   function editor_setDialog(my_editor, my_template, my_bottom) {
@@ -1196,7 +1196,7 @@
       file_name_to_open = file_name_input.nextSibling.textContent.split(" | ")[1];
       console.log("opening")
       if (file_name_to_open.split(".").length === 1) {
-        console.log("a folder")
+        console.log("SETTING folder")
         console.log(file_name_to_open)
         props.dialog_position = 'idle';
         props.editor_active_path = props.editor_setActivePath(file_name_to_open);
