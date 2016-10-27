@@ -217,10 +217,7 @@
   }
 
   function editor_setActivePath(my_folder_path) {
-    console.log("setting active path!!!")
-    console.log(my_folder_path)
     CodeMirror.menu_dict.editor_active_path = my_folder_path;
-    console.log(CodeMirror.menu_dict)
   }
   
   function editor_setDialog(my_editor, my_template, my_bottom) {
@@ -639,8 +636,6 @@
     var position = CodeMirror.menu_dict.dialog_position,
       parameter;
     if (position === "idle") {
-      console.log("OPENING DIALOG")
-      console.log(CodeMirror.menu_dict)
       return my_codemirror.openDialog(
         CodeMirror.menu_dict.dialog_setNavigationMenu(my_direction),
         CodeMirror.menu_dict.dialog_closeCallback,
@@ -861,7 +856,6 @@
           // if no search is run, indexOf("") = 0 & account for folders/cache
           // by filtering ids for them until keeping a file index in the folder
           console.log(my_directory_content)
-          console.log(props.editor_active_path)
           if (len > 0) {
             for (i = 0; i < len; i += 1) {
               response = my_directory_content[i];
@@ -1197,17 +1191,13 @@
 
       active_cache = props.editor_active_cache || "textitor";
       file_name_to_open = file_name_input.nextSibling.textContent.split(" | ")[1];
-      console.log("opening")
       if (file_name_to_open.split(".").length === 1) {
-        console.log("SETTING folder, setting active path to: ", file_name_to_open)
         props.dialog_position = 'idle';
-        props.editor_active_path = props.editor_setActivePath(file_name_to_open);
+        props.editor_setActivePath(file_name_to_open);
         CodeMirror.commands.myEditor_navigateHorizontal(props.editor, "left");
-        
-        console.log("DONE")
-        console.log(CodeMirror.menu_dict)
         return;
       }
+      
       // flag save if new file comes from memory
       if (file_name_to_open.indexOf("*") > -1) {
         file_name_to_open_save_flag = true;
@@ -1316,7 +1306,6 @@
 
         // file menu
         if (props.dialog_position === 'left') {
-          console.log("need to set file menu")
           queue.push(gadget.dialog_setFileMenu(dialog_input.value));
         }
 
