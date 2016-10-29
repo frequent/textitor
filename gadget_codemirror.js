@@ -861,11 +861,11 @@
               response = my_directory_content[i];
               for (item in response) {
                 if (response.hasOwnProperty(item)) {
-                  console.log(item)
-                  console.log(path)
+                  console.log("item:", item)
+                  console.log("path:", path)
                   if (item.indexOf(path > -1)) {
                     
-                    console.log("file is inside folder or we are at root = empty string")
+                    console.log("put on list")
                   
                     if (item.indexOf("_history") === -1) {
                       if (memory_list.indexOf(item.split("/").pop()) > -1) {
