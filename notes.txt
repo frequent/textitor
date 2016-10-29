@@ -1,16 +1,21 @@
 
 => progress
 - implement folders =
-> add folder checkbox
 > make an attachment representing a folder, nothing inside
 > show folders in filemenu
+> folders include list of containing items?
+> folders cannot be opened like files we force navigateLeft on open!
+> folders containing items used navigating versus always fetching all files
 > allow navigation to a folder right/left
 > allow file creation inside a folder adding the folder to the file id/url
 > delete/rename/move/copy folder?
 > delete/rename/move/copy file?
+> how to handle save all across multiple folders?
+> how to handle close across multiple folders with unsaved filed?
 > make cache checkbox work, cache is top-level folder
 > fix cache handling throughout to allow handling multiple caches = projects
 - fix serviceworker throw on existing file with same name
+- fix why checkbox via space does not work
 - stop passing CodeMirror around, it's a global anyway
 - on 2nd invalid save, focus input to prevent using mouse
 
