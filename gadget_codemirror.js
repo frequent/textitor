@@ -863,7 +863,7 @@
                 if (response.hasOwnProperty(item)) {
                   console.log("item:", item)
                   console.log("path:", path)
-                  if (item.indexOf(path > -1)) {
+                  if (item.indexOf(path) > -1) {
                     
                     console.log("put on list")
                   
