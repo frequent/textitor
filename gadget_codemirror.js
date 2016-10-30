@@ -222,10 +222,9 @@
   
   function editor_setDialog(my_editor, my_template, my_bottom) {
     var wrap = my_editor.getWrapperElement(),
-      container = wrap.appendChild(document.createElement("div"));
-    console.log("setting a new dialog")
-    console.log(wrap)
-    console.log(CodeMirror.menu_dict)
+      container = wrap.querySelector(".CodeMirror-dialog") || 
+        wrap.appendChild(document.createElement("div"));
+
     if (my_bottom) {
       container.className = "CodeMirror-dialog CodeMirror-dialog-bottom";
     } else {
