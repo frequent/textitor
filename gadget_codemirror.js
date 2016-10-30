@@ -845,6 +845,7 @@
           var file_menu = props.dialog.querySelector(".custom-file-menu"),
             len = my_directory_content.length,
             path = props.editor_active_path || "",
+            last,
             response,
             item,
             i;
@@ -860,14 +861,15 @@
               response = my_directory_content[i];
               for (item in response) {
                 if (response.hasOwnProperty(item)) {
+                  last = item.split("/").pop();
                   console.log("item:", item)
                   console.log("path:", path)
-                  if (item.indexOf(path) > -1 && item !== path) {
+                  if (item.indexOf(path) > -1 && last !== path) {
                     
                     console.log("put on list")
                   
                     if (item.indexOf("_history") === -1) {
-                      if (memory_list.indexOf(item.split("/").pop()) > -1) {
+                      if (memory_list.indexOf(last) > -1) {
                         item = item + "*";
                       }
                       if (item.indexOf(my_search_value || "") > -1) {
@@ -881,6 +883,10 @@
           }
           console.log("where is the file menu")
           console.log(file_menu)
+          console.log(props.dialog)
+          console.log(props.dialog.querySelector(".custom-file-menu"))
+          console.log(props.editor)
+          console.log(props.editor.querySelector(".custom-file-menu"))
           if (file_menu) {
             file_menu.parentNode.replaceChild(
               props.dialog_createFileMenu(entry_dict),
