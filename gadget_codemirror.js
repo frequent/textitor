@@ -842,7 +842,8 @@
           return RSVP.all(directory_content_list);
         })
         .push(function (my_directory_content) {
-          var file_menu = props.dialog.querySelector(".custom-file-menu"),
+          var editor = props.dialog.parentNode,
+            file_menu = editor.querySelector(".custom-file-menu"),
             len = my_directory_content.length,
             path = props.editor_active_path || "",
             last,
@@ -886,7 +887,7 @@
           console.log(props.dialog)
           console.log(props.dialog.querySelector(".custom-file-menu"))
           console.log(props.editor)
-          console.log(props.editor.querySelector(".custom-file-menu"))
+          //console.log(props.editor.querySelector(".custom-file-menu"))
           if (file_menu) {
             file_menu.parentNode.replaceChild(
               props.dialog_createFileMenu(entry_dict),
