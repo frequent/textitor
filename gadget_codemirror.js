@@ -800,8 +800,6 @@
         memory_list = [],
         entry_dict = {},
         option_dict;
-      console.log("setting file menu!")
-      console.log(CodeMirror)
 
       return new RSVP.Queue()
         .push(function () {
@@ -855,6 +853,7 @@
           // and match against search (can't user query on allAttachments)
           // if no search is run, indexOf("") = 0 & account for folders/cache
           // by filtering ids for them until keeping a file index in the folder
+          console.log("there should be no file menu on first open and one file menu on second")
           console.log(my_directory_content)
           if (len > 0) {
             for (i = 0; i < len; i += 1) {
@@ -863,7 +862,7 @@
                 if (response.hasOwnProperty(item)) {
                   console.log("item:", item)
                   console.log("path:", path)
-                  if (item.indexOf(path) > -1) {
+                  if (item.indexOf(path) > -1 && item !== path) {
                     
                     console.log("put on list")
                   
@@ -880,6 +879,8 @@
               }
             }
           }
+          console.log("where is the file menu")
+          console.log(file_menu)
           if (file_menu) {
             file_menu.parentNode.replaceChild(
               props.dialog_createFileMenu(entry_dict),
