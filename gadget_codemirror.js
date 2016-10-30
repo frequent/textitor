@@ -884,16 +884,16 @@
           }
           console.log("where is the file menu")
           console.log(file_menu)
-          console.log(props.dialog)
-          console.log(props.dialog.querySelector(".custom-file-menu"))
-          console.log(props.editor)
-          //console.log(props.editor.querySelector(".custom-file-menu"))
+          console.log(editor)
+          console.log(props)
           if (file_menu) {
+            console.log("replacing")
             file_menu.parentNode.replaceChild(
               props.dialog_createFileMenu(entry_dict),
               file_menu
             );
           } else {
+            console.log("inserting")
             props.dialog.insertBefore(
               props.dialog_createFileMenu(entry_dict),
               props.dialog.querySelector('span')
