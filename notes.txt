@@ -1,12 +1,10 @@
 
 => progress
 - implement folders =
-> make an attachment representing a folder, nothing inside
-> show folders in filemenu
-> folders include list of containing items?
+> folders include list of containing items? YES
 > folders cannot be opened like files we force navigateLeft on open!
 > folders containing items used navigating versus always fetching all files
-> allow navigation to a folder right/left
+> allow navigation to a folder and back out
 > allow file creation inside a folder adding the folder to the file id/url
 > delete/rename/move/copy folder?
 > delete/rename/move/copy file?
