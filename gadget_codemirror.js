@@ -217,6 +217,7 @@
   }
 
   function editor_setActivePath(my_folder_path) {
+    console.log("setting active path to", my_folder_path)
     CodeMirror.menu_dict.editor_active_path = my_folder_path;
   }
   
@@ -873,6 +874,10 @@
               for (item in response) {
                 if (response.hasOwnProperty(item)) {
                   last = item.split("/").pop();
+                  console.log("building menu, last = ", last)
+                  console.log("path, ", path)
+                  console.log("last,", last)
+                  console.log(item.indexOf(path) > -1 && last !== path)
                   if (item.indexOf(path) > -1 && last !== path) {
                     if (item.indexOf("_history") === -1) {
                       if (memory_list.indexOf(last) > -1) {
@@ -1203,6 +1208,7 @@
       // folder
       if (file_name_to_open.split(".").length === 1) {
         props.dialog_position = 'idle';
+        console.log("position forced to idle, active_path set to, file_name_to_open")
         props.editor_setActivePath(file_name_to_open);
         CodeMirror.commands.myEditor_navigateHorizontal(props.editor, "left");
         return;
