@@ -492,6 +492,8 @@
         case 79: return CodeMirror.commands.myEditor_openFromDialog();
         case 83: return CodeMirror.commands.myEditor_saveFromDialog(CodeMirror);
         case 88: return CodeMirror.commands.myEditor_closeDialog();
+
+        // NOTE: we could pass CodeMirror.menu_dict.editor;
         case 37: return CodeMirror.commands.myEditor_navigateHorizontal(undefined, "left");
         case 39: return CodeMirror.commands.myEditor_navigateHorizontal(undefined, "right");
         case 38: return CodeMirror.commands.myEditor_navigateVertical(undefined, "up");
@@ -640,21 +642,18 @@
       parameter,
       path_list;
     
-    if (position === "idle" || (my_direction === "left" && props.editor_active_path)) {
-      console.log("eya")
-      if (props.editor_active_path) {
+    if (position === "idle") {
+      if (my_direction === "left" && props.editor_active_path) {
         path_list = props.editor_active_path.split("/");
         props.editor_active_path = path_list.splice(path_list.length, -1, 1).join("/") || null;
-        console.log("shrunk path", props.editor_active_path);
-        console.log(my_codemirror)
-        my_codemirror = my_codemirror || props.editor;
-        console.log(my_codemirror)
+        parameter = {"target": {'name': "search", 'find': {'value': ""}}};
+      } else {
+        return my_codemirror.openDialog(
+          props.dialog_setNavigationMenu(my_direction),
+          props.dialog_closeCallback,
+          props.dialog_option_dict
+        );
       }
-      return my_codemirror.openDialog(
-        props.dialog_setNavigationMenu(my_direction),
-        props.dialog_closeCallback,
-        props.dialog_option_dict
-      );
     }
     if (position === my_direction) {
       parameter = false;
