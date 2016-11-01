@@ -485,7 +485,6 @@
 
     // ctrl + alt +
     if (my_event.ctrlKey && my_event.altKey) {
-      console.log("keycode, I don't have codemirror here....")
       switch(my_event.keyCode) {
         case 68: return CodeMirror.commands.myEditor_deleteFile();
         case 67: return CodeMirror.commands.myEditor_closeFile();
@@ -636,26 +635,27 @@
   }
 
   function editor_navigateHorizontal(my_codemirror, my_direction) {
-    var props = CodeMirror.menu_dict, 
+    var props = CodeMirror.menu_dict,
       position = props.dialog_position,
       parameter,
       path_list;
     
-    if (my_direction === "left" && props.editor_active_path) {
-      path_list = props.editor_active_path.split("/");
-      props.editor_active_path = path_list.splice(path_list.length, -1, 1).join("/") || null;
-      console.log("shrunk path", props.editor_active_path);
-      console.log(my_codemirror);
-      console.log("dann halt so")
-      parameter = {"target": {'name': "search", 'find': {'value': ''}}};
-    } else if (position === "idle") {
+    if (position === "idle" || (my_direction === "left" && props.editor_active_path)) {
+      console.log("eya")
+      if (props.editor_active_path) {
+        path_list = props.editor_active_path.split("/");
+        props.editor_active_path = path_list.splice(path_list.length, -1, 1).join("/") || null;
+        console.log("shrunk path", props.editor_active_path);
+        console.log(my_codemirror)
+        my_codemirror = my_codemirror || props.editor;
+        console.log(my_codemirror)
+      }
       return my_codemirror.openDialog(
         props.dialog_setNavigationMenu(my_direction),
         props.dialog_closeCallback,
         props.dialog_option_dict
       );
     }
-
     if (position === my_direction) {
       parameter = false;
     }
@@ -677,7 +677,6 @@
   }
 
   function editor_navigateLeft(cm) {
-    console.log("nav-left, what is cm:", cm)
     return CodeMirror.commands.myEditor_navigateHorizontal(cm, "left");
   }
 
