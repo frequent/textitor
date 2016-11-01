@@ -225,7 +225,7 @@
     var wrap = my_editor.getWrapperElement(),
       container = wrap.querySelector(".CodeMirror-dialog") || 
         wrap.appendChild(document.createElement("div"));
-
+    console.log(container)
     if (my_bottom) {
       container.className = "CodeMirror-dialog CodeMirror-dialog-bottom";
     } else {
@@ -648,7 +648,9 @@
         path_list = props.editor_active_path.split("/");
         props.editor_active_path = path_list.splice(path_list.length, -1, 1).join("/") || null;
         console.log("shrunk path", props.editor_active_path);
-      } 
+      }
+      console.log("Opening?")
+      console.log(props.dialog_setNavigationMenu(my_direction))
       return my_codemirror.openDialog(
         props.dialog_setNavigationMenu(my_direction),
         props.dialog_closeCallback,
@@ -1282,12 +1284,12 @@
           dialog_form_submit_list = [],
           dialog_input,
           dialog;
-        
+        console.log("INSIDE OPENDIALOG")
         dialog = props.dialog = props.editor_setDialog(editor, my_template, opts.bottom);
         dialog_input = dialog.querySelector("input[type='text']");
         props.editor_active_dialog = true;
         closeNotification(props.editor, null);
-
+        console.log("puff")
         function wrapBind(my_element, my_event_name, my_property_name) {
           return loopEventListener(my_element, my_event_name, false, function (my_event) {
             return opts[my_property_name](my_event, dialog_input.value, props.dialog_evaluateState);
