@@ -464,7 +464,9 @@
   }
 
   function dialog_setNavigationCallback(my_event, my_value, my_callback) {
-
+    console.log("Nav Callback")
+    console.log(my_event.keyCode)
+    console.log(my_value)
     // esc
     if (my_event.keyCode === 27) {
       return CodeMirror.commands.myEditor_closeDialog();
@@ -484,6 +486,7 @@
 
     // ctrl + alt +
     if (my_event.ctrlKey && my_event.altKey) {
+      console.log("shortcut")
       switch(my_event.keyCode) {
         case 68: return CodeMirror.commands.myEditor_deleteFile();
         case 67: return CodeMirror.commands.myEditor_closeFile();
@@ -634,13 +637,25 @@
   }
 
   function editor_navigateHorizontal(my_codemirror, my_direction) {
-    var position = CodeMirror.menu_dict.dialog_position,
-      parameter;
-    if (position === "idle") {
+    var props = CodeMirror.menu_dict, 
+      position = props.dialog_position,
+      parameter,
+      path_list;
+    
+    console.log("navigate horizontal")
+    console.log("active path", props.active_path)
+    console.log("direction", my_direction)
+    if (position === "idle" || (position === "left" && props.active_path)) {
+      console.log("eya")
+      if (props.active_path) {
+        path_list = props.active_path.split("/");
+        props.active_path = path_list.splice(path_list.length, -1, 1).join("/") || null;
+        console.log("shrunk path", props.active_path);
+      } 
       return my_codemirror.openDialog(
-        CodeMirror.menu_dict.dialog_setNavigationMenu(my_direction),
-        CodeMirror.menu_dict.dialog_closeCallback,
-        CodeMirror.menu_dict.dialog_option_dict
+        props.dialog_setNavigationMenu(my_direction),
+        props.dialog_closeCallback,
+        props.dialog_option_dict
       );
     }
     if (position === my_direction) {
@@ -652,7 +667,7 @@
     if (position === "left" && my_direction === "right") {
       parameter = {"target": {"name": "open"}};
     }
-    return CodeMirror.menu_dict.dialog_evaluateState(parameter);
+    return props.dialog_evaluateState(parameter);
   }
 
   function editor_navigateVertical(my_codemirror, my_direction) {
@@ -1188,6 +1203,8 @@
 
       active_cache = props.editor_active_cache || "textitor";
       file_name_to_open = file_name_input.nextSibling.textContent.split(" | ")[1];
+      
+      // folder
       if (file_name_to_open.split(".").length === 1) {
         props.dialog_position = 'idle';
         props.editor_setActivePath(file_name_to_open);
