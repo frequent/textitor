@@ -649,16 +649,16 @@
         props.editor_active_path = path_list.splice(path_list.length, -1, 1).join("/") || null;
         console.log("shrunk path", props.editor_active_path);
       }
-      console.log("Opening?")
-      console.log(props.dialog_setNavigationMenu(my_direction))
-      console.log(props.dialog_closeCallback)
-      console.log(props.dialog_option_dict)
-      console.log(my_codemirror.openDialog)
-      return my_codemirror.openDialog(
-        props.dialog_setNavigationMenu(my_direction),
-        props.dialog_closeCallback,
-        props.dialog_option_dict
-      );
+      try {
+        return my_codemirror.openDialog(
+          props.dialog_setNavigationMenu(my_direction),
+          props.dialog_closeCallback,
+          props.dialog_option_dict
+        );
+      } catch (err) {
+        console.log(err);
+        throw err;
+      }
     }
     if (position === my_direction) {
       parameter = false;
