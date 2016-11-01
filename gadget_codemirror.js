@@ -643,14 +643,14 @@
       path_list;
     
     console.log("navigate horizontal")
-    console.log("active path", props.active_path)
+    console.log("active path", props.editor_active_path)
     console.log("direction", my_direction)
-    if (position === "idle" || (position === "left" && props.active_path)) {
+    if (position === "idle" || (position === "left" && props.editor_active_path)) {
       console.log("eya")
-      if (props.active_path) {
-        path_list = props.active_path.split("/");
-        props.active_path = path_list.splice(path_list.length, -1, 1).join("/") || null;
-        console.log("shrunk path", props.active_path);
+      if (props.editor_active_path) {
+        path_list = props.editor_active_path.split("/");
+        props.editor_active_path = path_list.splice(path_list.length, -1, 1).join("/") || null;
+        console.log("shrunk path", props.editor_active_path);
       } 
       return my_codemirror.openDialog(
         props.dialog_setNavigationMenu(my_direction),
