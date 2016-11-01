@@ -653,7 +653,7 @@
     console.log(my_direction)
     console.log(position)
     if (my_direction === "left") {
-      if (position === "idle") {
+      if (position === "idle" && props.editor_active_path === null) {
         console.log("opening...")
         return my_codemirror.openDialog(
           props.dialog_setNavigationMenu(my_direction),
