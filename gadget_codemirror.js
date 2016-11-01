@@ -644,6 +644,8 @@
     
     if (position === "idle") {
       console.log("IDLE")
+      console.log(my_direction)
+      console.log(props.editor_active_path)
       if (my_direction === "left" && props.editor_active_path) {
         console.log("ACTIVE PATH")
         path_list = props.editor_active_path.split("/");
@@ -668,7 +670,7 @@
     if (position === "left" && my_direction === "right") {
       parameter = {"target": {"name": "open"}};
     }
-    console.log("evaluating")
+    console.log("evaluating", parameter)
     return props.dialog_evaluateState(parameter);
   }
 
