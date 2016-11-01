@@ -464,9 +464,7 @@
   }
 
   function dialog_setNavigationCallback(my_event, my_value, my_callback) {
-    console.log("Nav Callback")
-    console.log(my_event.keyCode)
-    console.log(my_value)
+
     // esc
     if (my_event.keyCode === 27) {
       return CodeMirror.commands.myEditor_closeDialog();
@@ -486,7 +484,6 @@
 
     // ctrl + alt +
     if (my_event.ctrlKey && my_event.altKey) {
-      console.log("shortcut")
       switch(my_event.keyCode) {
         case 68: return CodeMirror.commands.myEditor_deleteFile();
         case 67: return CodeMirror.commands.myEditor_closeFile();
@@ -642,10 +639,9 @@
       parameter,
       path_list;
     
-    console.log("navigate horizontal")
     console.log("active path", props.editor_active_path)
     console.log("direction", my_direction)
-    if (position === "idle" || (position === "left" && props.editor_active_path)) {
+    if (position === "idle" || (my_direction === "left" && props.editor_active_path)) {
       console.log("eya")
       if (props.editor_active_path) {
         path_list = props.editor_active_path.split("/");
