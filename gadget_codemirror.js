@@ -485,6 +485,7 @@
 
     // ctrl + alt +
     if (my_event.ctrlKey && my_event.altKey) {
+      console.log("keycode, I don't have codemirror here....")
       switch(my_event.keyCode) {
         case 68: return CodeMirror.commands.myEditor_deleteFile();
         case 67: return CodeMirror.commands.myEditor_closeFile();
@@ -647,14 +648,14 @@
       console.log(my_codemirror);
       console.log("dann halt so")
       parameter = {"target": {'name': "search", 'find': {'value': ''}}};
-    }
-    if (position === "idle") {
+    } else if (position === "idle") {
       return my_codemirror.openDialog(
         props.dialog_setNavigationMenu(my_direction),
         props.dialog_closeCallback,
         props.dialog_option_dict
       );
     }
+
     if (position === my_direction) {
       parameter = false;
     }
@@ -676,6 +677,7 @@
   }
 
   function editor_navigateLeft(cm) {
+    console.log("nav-left, what is cm:", cm)
     return CodeMirror.commands.myEditor_navigateHorizontal(cm, "left");
   }
 
