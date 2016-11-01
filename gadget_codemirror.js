@@ -1208,9 +1208,9 @@
       // folder
       if (file_name_to_open.split(".").length === 1) {
         props.dialog_position = 'idle';
-        console.log("position forced to idle, active_path set to, file_name_to_open")
-        props.editor_setActivePath(file_name_to_open);
+        console.log("position forced to idle, active_path set to", file_name_to_open)
         CodeMirror.commands.myEditor_navigateHorizontal(props.editor, "left");
+        props.editor_setActivePath(file_name_to_open);
         return;
       }
       
