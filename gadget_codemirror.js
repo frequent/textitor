@@ -651,6 +651,9 @@
       }
       console.log("Opening?")
       console.log(props.dialog_setNavigationMenu(my_direction))
+      console.log(props.dialog_closeCallback)
+      console.log(props.dialog_option_dict)
+      console.log(my_codemirror.openDialog)
       return my_codemirror.openDialog(
         props.dialog_setNavigationMenu(my_direction),
         props.dialog_closeCallback,
@@ -1276,6 +1279,7 @@
       var gadget = this;
 
       function dialogCallback(my_template, my_callback, my_option_dict) {
+        console.log("IN")
         var queue = new RSVP.Queue(),
           props = CodeMirror.menu_dict,
           editor = props.editor,
