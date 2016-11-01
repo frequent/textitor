@@ -649,15 +649,21 @@
     if (position === my_direction) {
       parameter = false;
     }
+    console.log("horiztonal")
+    console.log(my_direction)
+    console.log(position)
     if (my_direction === "left") {
       if (position === "idle") {
+        console.log("opening...")
         return my_codemirror.openDialog(
           props.dialog_setNavigationMenu(my_direction),
           props.dialog_closeCallback,
           props.dialog_option_dict
         );
       }
+      console.log("or")
       if (props.editor_active_path) {
+        console.log("activepath, pass parameter")
         path_list = props.editor_active_path.split("/");
         props.editor_active_path = path_list.splice(path_list.length, -1, 1).join("/") || null;
         parameter = {"target": {'name': "search", 'find': {'value': ""}}};
@@ -669,6 +675,7 @@
     if (position === "left" && my_direction === "right") {
       parameter = {"target": {"name": "open"}};
     }
+    console.log("evaluatestate with ", parameter)
     return props.dialog_evaluateState(parameter);
   }
 
@@ -735,6 +742,7 @@
               return my_gadget.editor_bulkSave();
             }
             if (action === "search") {
+              console.log("we should be in search, please...")
               return my_gadget.dialog_setFileMenu(my_pointer.target.find.value);
             }
             if (action === "open") {
