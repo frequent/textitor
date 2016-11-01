@@ -249,7 +249,9 @@
   function editor_setDisplay(my_file_name) {
     var props = CodeMirror.menu_dict,
       display;
-
+    console.log("debug DISPLAY")
+    console.log(props.display)
+    console.log(props.display.parentNode)
     if (props.display) {
       props.display.parentNode.removeChild(props.display);
       props.display = null;
@@ -1309,14 +1311,11 @@
           }
         }
 
-        if (props.editor_active_path === null) {
-          console.log("binding keys")
-          if (opts.onKeyUp) {
-            dialog_event_list.push(wrapBind(dialog, "keyup", "onKeyUp"));
-          }
-          if (opts.onKeyDown) {
-            dialog_event_list.push(wrapBind(dialog, "keydown", "onKeyDown"));
-          }
+        if (opts.onKeyUp) {
+          dialog_event_list.push(wrapBind(dialog, "keyup", "onKeyUp"));
+        }
+        if (opts.onKeyDown) {
+          dialog_event_list.push(wrapBind(dialog, "keydown", "onKeyDown"));
         }
 
         // file menu
@@ -1325,13 +1324,15 @@
         }
 
         // form submits
-        if (props.editor_active_path === null) {
-          console.log("submit bindings")
-          dialog_form_submit_list = Array.prototype.slice.call(
-            dialog.querySelectorAll('form')
-          ).map(function(my_element) {
-            return wrapBind(my_element, "submit", "onSubmit");
-          });
+        dialog_form_submit_list = Array.prototype.slice.call(
+          dialog.querySelectorAll('form')
+        ).map(function(my_element) {
+          return wrapBind(my_element, "submit", "onSubmit");
+        });
+
+        if (props.editor_active_path) {
+          console.log("we have an active path")
+          return queue;
         }
 
         return queue
@@ -1343,9 +1344,6 @@
           })
           .push(function () {
             return props.dialog_evaluateState(false);
-          })
-          .push(undefined, function (my_error) {
-            throw my_error;
           });
       }
 
