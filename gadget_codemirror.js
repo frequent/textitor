@@ -643,11 +643,15 @@
       path_list;
     
     if (position === "idle") {
+      console.log("IDLE")
       if (my_direction === "left" && props.editor_active_path) {
+        console.log("ACTIVE PATH")
         path_list = props.editor_active_path.split("/");
         props.editor_active_path = path_list.splice(path_list.length, -1, 1).join("/") || null;
         parameter = {"target": {'name': "search", 'find': {'value': ""}}};
+        console.log("parameter set,", parameter)
       } else {
+        console.log("opening")
         return my_codemirror.openDialog(
           props.dialog_setNavigationMenu(my_direction),
           props.dialog_closeCallback,
@@ -664,6 +668,7 @@
     if (position === "left" && my_direction === "right") {
       parameter = {"target": {"name": "open"}};
     }
+    console.log("evaluating")
     return props.dialog_evaluateState(parameter);
   }
 
@@ -730,6 +735,7 @@
               return my_gadget.editor_bulkSave();
             }
             if (action === "search") {
+              console.log("setting file menu")
               return my_gadget.dialog_setFileMenu(my_pointer.target.find.value);
             }
             if (action === "open") {
@@ -813,7 +819,7 @@
         memory_list = [],
         entry_dict = {},
         option_dict;
-
+      console.log("ehop")
       return new RSVP.Queue()
         .push(function () {
           return CodeMirror.menu_dict.editor_getActiveFileList(gadget);
