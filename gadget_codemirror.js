@@ -640,25 +640,20 @@
       parameter,
       path_list;
     
-    console.log("active path", props.editor_active_path)
-    console.log("direction", my_direction)
-    if (position === "idle" || (my_direction === "left" && props.editor_active_path)) {
-      console.log("eya")
-      if (props.editor_active_path) {
-        path_list = props.editor_active_path.split("/");
-        props.editor_active_path = path_list.splice(path_list.length, -1, 1).join("/") || null;
-        console.log("shrunk path", props.editor_active_path);
-      }
-      try {
-        return my_codemirror.openDialog(
-          props.dialog_setNavigationMenu(my_direction),
-          props.dialog_closeCallback,
-          props.dialog_option_dict
-        );
-      } catch (err) {
-        console.log(err);
-        throw err;
-      }
+    if (my_direction === "left" && props.editor_active_path) {
+      path_list = props.editor_active_path.split("/");
+      props.editor_active_path = path_list.splice(path_list.length, -1, 1).join("/") || null;
+      console.log("shrunk path", props.editor_active_path);
+      console.log(my_codemirror);
+      console.log("dann halt so")
+      parameter = {"target": {'name': "search", 'find': {'value': ''}}};
+    }
+    if (position === "idle") {
+      return my_codemirror.openDialog(
+        props.dialog_setNavigationMenu(my_direction),
+        props.dialog_closeCallback,
+        props.dialog_option_dict
+      );
     }
     if (position === my_direction) {
       parameter = false;
