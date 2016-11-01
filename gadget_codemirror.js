@@ -466,7 +466,7 @@
   }
 
   function dialog_setNavigationCallback(my_event, my_value, my_callback) {
-
+    console.log("set navigation callback")
     // esc
     if (my_event.keyCode === 27) {
       return CodeMirror.commands.myEditor_closeDialog();
@@ -474,9 +474,11 @@
 
     // overide chrome page start/end shortcut
     if (my_event.keyCode === 35) {
+      console.log("up")
       return CodeMirror.commands.myEditor_navigateVertical(undefined, "up");
     }
     if (my_event.keyCode === 36) {
+      console.log("down")
       return CodeMirror.commands.myEditor_navigateVertical(undefined, "down");
     }
 
@@ -486,6 +488,7 @@
 
     // ctrl + alt +
     if (my_event.ctrlKey && my_event.altKey) {
+      console.log("shortcut, my_event.keyCode")
       switch(my_event.keyCode) {
         case 68: return CodeMirror.commands.myEditor_deleteFile();
         case 67: return CodeMirror.commands.myEditor_closeFile();
@@ -1304,6 +1307,7 @@
             dialog_input.select();
           }
           if (opts.onInput) {
+            console.log("BINDING INPUT")
             dialog_event_list.push(wrapBind(dialog_input, "input", "onInput"));
           }
           if (opts.closeOnBlur !== false && opts.onBlur) {
@@ -1312,9 +1316,11 @@
         }
 
         if (opts.onKeyUp) {
+          console.log("BINDING KEYUP")
           dialog_event_list.push(wrapBind(dialog, "keyup", "onKeyUp"));
         }
         if (opts.onKeyDown) {
+          console.log("BINDING KEYDOWN")
           dialog_event_list.push(wrapBind(dialog, "keydown", "onKeyDown"));
         }
 
@@ -1330,11 +1336,10 @@
           return wrapBind(my_element, "submit", "onSubmit");
         });
 
-        if (props.editor_active_path) {
-          console.log("we have an active path")
-          return queue;
-        }
-
+        console.log("openDialog done with")
+        console.log(dialog_event_list)
+        console.log(dialog_form_submit_list)
+        console.log("Allbound, maybe unbind before?")
         return queue
           .push(function () {
             return RSVP.all([
@@ -1346,7 +1351,7 @@
             return props.dialog_evaluateState(false);
           });
       }
-
+      console.log("done with defining extension")
       return CodeMirror.defineExtension("openDialog", dialogCallback);
     })
 
