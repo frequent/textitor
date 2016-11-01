@@ -863,7 +863,7 @@
             response,
             item,
             i;
-
+          console.log("in menu, what's active path, should be null", path)
           // loop folder contents, exclude history, check if file is on memory
           // and match against search (can't user query on allAttachments)
           // if no search is run, indexOf("") = 0 & account for folders/cache
@@ -1321,7 +1321,10 @@
         }
 
         // file menu
+        console.log("heya in openDialog")
+        console.log("dialog position should be left", props.dialog_position)
         if (props.dialog_position === 'left') {
+          console.log("setting file menu")
           queue.push(gadget.dialog_setFileMenu(dialog_input.value));
         }
 
