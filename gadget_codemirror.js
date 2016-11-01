@@ -217,7 +217,6 @@
   }
 
   function editor_setActivePath(my_folder_path) {
-    console.log("setting active path to", my_folder_path)
     CodeMirror.menu_dict.editor_active_path = my_folder_path;
   }
   
@@ -225,7 +224,7 @@
     var wrap = my_editor.getWrapperElement(),
       container = wrap.querySelector(".CodeMirror-dialog") || 
         wrap.appendChild(document.createElement("div"));
-    console.log(container)
+    
     if (my_bottom) {
       container.className = "CodeMirror-dialog CodeMirror-dialog-bottom";
     } else {
@@ -641,17 +640,12 @@
       position = props.dialog_position,
       parameter,
       path_list;
-    console.log(position)
-    console.log(my_direction)
-    
+
     if (position === my_direction) {
       parameter = false;
     }
     if (my_direction === "left") {
-      console.log("LEFT")
-      console.log(props.editor_active_path)
       if (position === "idle") {
-        console.log("idle, open dialog")
         return my_codemirror.openDialog(
           props.dialog_setNavigationMenu(my_direction),
           props.dialog_closeCallback,
@@ -659,11 +653,9 @@
         );
       }
       if (props.editor_active_path) {
-        console.log("ACTIVE PATH")
         path_list = props.editor_active_path.split("/");
         props.editor_active_path = path_list.splice(path_list.length, -1, 1).join("/") || null;
         parameter = {"target": {'name': "search", 'find': {'value': ""}}};
-        console.log("parameter set,", parameter)
       }
     }
     if (position === "right" && my_direction == "left") {
@@ -672,7 +664,6 @@
     if (position === "left" && my_direction === "right") {
       parameter = {"target": {"name": "open"}};
     }
-    console.log("evaluating", parameter)
     return props.dialog_evaluateState(parameter);
   }
 
@@ -739,7 +730,6 @@
               return my_gadget.editor_bulkSave();
             }
             if (action === "search") {
-              console.log("setting file menu")
               return my_gadget.dialog_setFileMenu(my_pointer.target.find.value);
             }
             if (action === "open") {
@@ -823,7 +813,7 @@
         memory_list = [],
         entry_dict = {},
         option_dict;
-      console.log("ehop")
+
       return new RSVP.Queue()
         .push(function () {
           return CodeMirror.menu_dict.editor_getActiveFileList(gadget);
@@ -873,7 +863,7 @@
             response,
             item,
             i;
-          console.log("in menu, what's active path, should be null", path)
+
           // loop folder contents, exclude history, check if file is on memory
           // and match against search (can't user query on allAttachments)
           // if no search is run, indexOf("") = 0 & account for folders/cache
@@ -884,10 +874,6 @@
               for (item in response) {
                 if (response.hasOwnProperty(item)) {
                   last = item.split("/").pop();
-                  console.log("building menu, last = ", last)
-                  console.log("path, ", path)
-                  console.log("last,", last)
-                  console.log(item.indexOf(path) > -1 && last !== path)
                   if (item.indexOf(path) > -1 && last !== path) {
                     if (item.indexOf("_history") === -1) {
                       if (memory_list.indexOf(last) > -1) {
@@ -1218,7 +1204,6 @@
       // folder
       if (file_name_to_open.split(".").length === 1) {
         props.dialog_position = 'idle';
-        console.log("position forced to idle, active_path set to", file_name_to_open)
         CodeMirror.commands.myEditor_navigateHorizontal(props.editor, "left");
         props.editor_setActivePath(file_name_to_open);
         return;
@@ -1284,7 +1269,6 @@
       var gadget = this;
 
       function dialogCallback(my_template, my_callback, my_option_dict) {
-        console.log("IN")
         var queue = new RSVP.Queue(),
           props = CodeMirror.menu_dict,
           editor = props.editor,
@@ -1293,12 +1277,11 @@
           dialog_form_submit_list = [],
           dialog_input,
           dialog;
-        console.log("INSIDE OPENDIALOG")
+
         dialog = props.dialog = props.editor_setDialog(editor, my_template, opts.bottom);
         dialog_input = dialog.querySelector("input[type='text']");
         props.editor_active_dialog = true;
         closeNotification(props.editor, null);
-        console.log("puff")
         function wrapBind(my_element, my_event_name, my_property_name) {
           return loopEventListener(my_element, my_event_name, false, function (my_event) {
             return opts[my_property_name](my_event, dialog_input.value, props.dialog_evaluateState);
@@ -1332,10 +1315,7 @@
         }
 
         // file menu
-        console.log("heya in openDialog")
-        console.log("dialog position should be left", props.dialog_position)
         if (props.dialog_position === 'left') {
-          console.log("setting file menu")
           queue.push(gadget.dialog_setFileMenu(dialog_input.value));
         }
 
