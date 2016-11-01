@@ -1282,6 +1282,7 @@
         dialog_input = dialog.querySelector("input[type='text']");
         props.editor_active_dialog = true;
         closeNotification(props.editor, null);
+
         function wrapBind(my_element, my_event_name, my_property_name) {
           return loopEventListener(my_element, my_event_name, false, function (my_event) {
             return opts[my_property_name](my_event, dialog_input.value, props.dialog_evaluateState);
@@ -1307,11 +1308,15 @@
             dialog_event_list.push(wrapBind(dialog, "blur", "onBlur"));
           }
         }
-        if (opts.onKeyUp) {
-          dialog_event_list.push(wrapBind(dialog, "keyup", "onKeyUp"));
-        }
-        if (opts.onKeyDown) {
-          dialog_event_list.push(wrapBind(dialog, "keydown", "onKeyDown"));
+
+        if (props.editor_active_path === null) {
+          console.log("binding keys")
+          if (opts.onKeyUp) {
+            dialog_event_list.push(wrapBind(dialog, "keyup", "onKeyUp"));
+          }
+          if (opts.onKeyDown) {
+            dialog_event_list.push(wrapBind(dialog, "keydown", "onKeyDown"));
+          }
         }
 
         // file menu
@@ -1320,11 +1325,14 @@
         }
 
         // form submits
-        dialog_form_submit_list = Array.prototype.slice.call(
-          dialog.querySelectorAll('form')
-        ).map(function(my_element) {
-          return wrapBind(my_element, "submit", "onSubmit");
-        });
+        if (props.editor_active_path === null) {
+          console.log("submit bindings")
+          dialog_form_submit_list = Array.prototype.slice.call(
+            dialog.querySelectorAll('form')
+          ).map(function(my_element) {
+            return wrapBind(my_element, "submit", "onSubmit");
+          });
+        }
 
         return queue
           .push(function () {
