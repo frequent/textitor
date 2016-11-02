@@ -255,10 +255,6 @@
     container =  element || wrap.appendChild(document.createElement("div"));
     container.className = selector.split(".").join(" ");  
 
-    console.log(wrap)
-    console.log(selector)
-    console.log(wrap.querySelector(selector))
-    console.log(container)
     if (typeof my_template == "string") {
       container.innerHTML = my_template;
     } else {
@@ -266,12 +262,9 @@
     }
     
     if (!element) {
-      console.log("needs inserting")
       if (my_bottom) {
-        console.log("insert at bottom")
         wrap.appendChild(container);
       } else {
-        console.log("insert at top")
         wrap.insertBefore(container, wrap.firstElementChild);
       }
     }
@@ -289,9 +282,7 @@
   function editor_setDisplay(my_file_name) {
     var props = CodeMirror.menu_dict,
       display;
-    console.log("debug DISPLAY")
-    console.log(props.display)
-    console.log(my_file_name)
+
     if (!my_file_name) {
       return;
     }
@@ -301,8 +292,6 @@
     }
     display = props.dialog_parseTemplate(FILE_NAME_TEMPLATE, [my_file_name]);
     props.display = props.editor_setDialog(props.editor, display, true);
-    console.log("done")
-    console.log(props.display)
     return;
   }
 
@@ -685,16 +674,11 @@
       parameter,
       path_list;
 
-    console.log("my_direction", my_direction)
-    console.log("position", position)
-    console.log("active_path", props.editor_active_path)
-
     if (position === "idle") {
       return CodeMirror.commands.myEditor_openDialog(my_codemirror, my_direction);
     }
     if (position === my_direction) {
       if (position === "left" && props.editor_active_path) {
-        console.log("left+left+activepath => chop")
         path_list = props.editor_active_path.split("/");
         props.editor_active_path = path_list.splice(path_list.length, -1, 1).join("/") || null;
         props.editor_setDisplay(props.editor.active_path)
@@ -709,7 +693,6 @@
     if (position === "left" && my_direction === "right") {
       parameter = {"target": {"name": "open"}};
     }
-    console.log("done with parameter", parameter)
     return props.dialog_evaluateState(parameter);
   }
 
