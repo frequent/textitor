@@ -655,7 +655,7 @@
     console.log("position", position)
     console.log("active_path", props.editor_active_path)
 
-    if (my_position === "idle") {
+    if (position === "idle") {
       console.log("idle")
       if (my_direction === "left" && props.editor_active_path) {
         console.log("going left, chop path")
