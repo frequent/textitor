@@ -649,26 +649,20 @@
     if (position === my_direction) {
       parameter = false;
     }
+
     console.log("horiztonal")
-    console.log(my_direction)
-    console.log(position)
-    console.log(props.editor_active_path)
-    if (my_direction === "left") {
-      if (position === "idle" && props.editor_active_path === null) {
-        console.log("opening...")
-        return my_codemirror.openDialog(
-          props.dialog_setNavigationMenu(my_direction),
-          props.dialog_closeCallback,
-          props.dialog_option_dict
-        );
-      }
-      console.log("or")
-      if (props.editor_active_path) {
-        console.log("activepath, pass parameter")
+    console.log("my_direction", my_direction)
+    console.log("position", position)
+    console.log("active_path", props.editor_active_path)
+
+    if (my_position === "idle") {
+      console.log("idle")
+      if (my_direction === "left" && props.editor_active_path) {
+        console.log("going left, chop path")
         path_list = props.editor_active_path.split("/");
         props.editor_active_path = path_list.splice(path_list.length, -1, 1).join("/") || null;
-        parameter = {"target": {'name': "search", 'find': {'value': ""}}};
       }
+      parameter = {"target": {'name': "search", 'find': {'value': ""}}};
     }
     if (position === "right" && my_direction == "left") {
       parameter = true;
