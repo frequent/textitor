@@ -466,7 +466,7 @@
   }
 
   function dialog_setNavigationCallback(my_event, my_value, my_callback) {
-    console.log("set navigation callback")
+    
     // esc
     if (my_event.keyCode === 27) {
       return CodeMirror.commands.myEditor_closeDialog();
@@ -474,11 +474,9 @@
 
     // overide chrome page start/end shortcut
     if (my_event.keyCode === 35) {
-      console.log("up")
       return CodeMirror.commands.myEditor_navigateVertical(undefined, "up");
     }
     if (my_event.keyCode === 36) {
-      console.log("down")
       return CodeMirror.commands.myEditor_navigateVertical(undefined, "down");
     }
 
@@ -488,7 +486,6 @@
 
     // ctrl + alt +
     if (my_event.ctrlKey && my_event.altKey) {
-      console.log("shortcut, my_event.keyCode")
       switch(my_event.keyCode) {
         case 68: return CodeMirror.commands.myEditor_deleteFile();
         case 67: return CodeMirror.commands.myEditor_closeFile();
@@ -646,29 +643,27 @@
       parameter,
       path_list;
 
-    if (position === my_direction) {
-      parameter = false;
-    }
-
-    console.log("horiztonal")
     console.log("my_direction", my_direction)
     console.log("position", position)
     console.log("active_path", props.editor_active_path)
 
     if (position === "idle") {
-      console.log("idle")
+      console.log("IDLE")
       if (my_direction === "left" && props.editor_active_path) {
-        console.log("going left, chop path")
+        console.log("chop path")
         path_list = props.editor_active_path.split("/");
         props.editor_active_path = path_list.splice(path_list.length, -1, 1).join("/") || null;
+        if (props.dialog) {
+          console.log("emtpy search with chopped path = UP")
+          parameter = {"target": {'name': "search", 'find': {'value': ""}}};
+        } else {
+          console.log("init")
+          return CodeMirror.commands.myEditor_openDialog(my_codemirror, my_direction);
+        }
       }
-      if (props.dialog) {
-        console.log("have a dialog, pass parameter")
-        parameter = {"target": {'name': "search", 'find': {'value': ""}}};
-      } else {
-        console.log("initial call, create dialog")
-        return CodeMirror.commands.myEditor_openDialog(my_codemirror, my_direction);
-      }
+    }
+    if (position === my_direction) {
+      parameter = false;
     }
     if (position === "right" && my_direction == "left") {
       parameter = true;
@@ -676,6 +671,7 @@
     if (position === "left" && my_direction === "right") {
       parameter = {"target": {"name": "open"}};
     }
+    console.log("done with parameter", parameter)
     return props.dialog_evaluateState(parameter);
   }
 
@@ -742,7 +738,6 @@
               return my_gadget.editor_bulkSave();
             }
             if (action === "search") {
-              console.log("we should be in search, please...")
               return my_gadget.dialog_setFileMenu(my_pointer.target.find.value);
             }
             if (action === "open") {
@@ -1315,7 +1310,6 @@
             dialog_input.select();
           }
           if (opts.onInput) {
-            console.log("BINDING INPUT")
             dialog_event_list.push(wrapBind(dialog_input, "input", "onInput"));
           }
           if (opts.closeOnBlur !== false && opts.onBlur) {
@@ -1324,11 +1318,9 @@
         }
 
         if (opts.onKeyUp) {
-          console.log("BINDING KEYUP")
           dialog_event_list.push(wrapBind(dialog, "keyup", "onKeyUp"));
         }
         if (opts.onKeyDown) {
-          console.log("BINDING KEYDOWN")
           dialog_event_list.push(wrapBind(dialog, "keydown", "onKeyDown"));
         }
 
@@ -1344,10 +1336,6 @@
           return wrapBind(my_element, "submit", "onSubmit");
         });
 
-        console.log("openDialog done with")
-        console.log(dialog_event_list)
-        console.log(dialog_form_submit_list)
-        console.log("Allbound, maybe unbind before?")
         return queue
           .push(function () {
             return RSVP.all([
@@ -1359,7 +1347,6 @@
             return props.dialog_evaluateState(false);
           });
       }
-      console.log("done with defining extension")
       return CodeMirror.defineExtension("openDialog", dialogCallback);
     })
 
