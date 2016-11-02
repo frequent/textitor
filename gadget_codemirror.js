@@ -648,19 +648,17 @@
     console.log("active_path", props.editor_active_path)
 
     if (position === "idle") {
-      console.log("IDLE")
-      if (my_direction === "left" && props.editor_active_path) {
-        console.log("chop path")
-        path_list = props.editor_active_path.split("/");
-        props.editor_active_path = path_list.splice(path_list.length, -1, 1).join("/") || null;
-        if (props.dialog) {
-          console.log("emtpy search with chopped path = UP")
+      if (my_direction === "left") {
+        if (props.editor_active_path) {
+          path_list = props.editor_active_path.split("/");
+          props.editor_active_path = path_list.splice(path_list.length, -1, 1).join("/") || null;
           parameter = {"target": {'name': "search", 'find': {'value': ""}}};
-        } else {
-          console.log("init")
-          return CodeMirror.commands.myEditor_openDialog(my_codemirror, my_direction);
+          console.log("done with parameter", parameter)
+          return props.dialog_evaluateState(parameter);
         }
       }
+      console.log("opening dialog", my_direction)
+      return CodeMirror.commands.myEditor_openDialog(my_codemirror, my_direction);
     }
     if (position === my_direction) {
       parameter = false;
