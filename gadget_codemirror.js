@@ -223,11 +223,28 @@
   }
   
   function editor_setDialog(my_editor, my_template, my_bottom) {
+    /*
+    var wrap = my_editor.getWrapperElement(),
+      container = wrap.querySelector(".CodeMirror-dialog") || 
+        wrap.appendChild(document.createElement("div"));
+    
+    if (my_bottom) {
+      container.className = "CodeMirror-dialog CodeMirror-dialog-bottom";
+    } else {
+      container.className = "CodeMirror-dialog CodeMirror-dialog-top";
+    }
+    if (typeof my_template == "string") {
+      container.innerHTML = my_template;
+    } else {
+      container.appendChild(my_template);
+    }
+    return container;
+    */
     var wrap = my_editor.getWrapperElement(),
       position = 'top',
       selector,
       container;
-      
+    console.log(wrap)
     if (my_bottom) {
       position = 'bottom';
     }
@@ -235,7 +252,9 @@
     selector = ".CodeMirror-dialog.CodeMirror-dialog-" + position;
     container = wrap.querySelector(selector) || wrap.appendChild(document.createElement("div"));
     container.className = selector.replace(".", " ");  
-    
+    console.log(selector)
+    console.log(wrap.querySelector(selector))
+    console.log(container)
     if (typeof my_template == "string") {
       container.innerHTML = my_template;
     } else {
@@ -254,7 +273,7 @@
 
   function editor_setDisplay(my_file_name) {
     var props = CodeMirror.menu_dict,
-      template;
+      display;
     console.log("debug DISPLAY")
     console.log(props.display)
     console.log(my_file_name)
@@ -265,8 +284,8 @@
       props.display.parentNode.removeChild(props.display);
       props.display = null;
     }
-    template = props.dialog_parseTemplate(FILE_NAME_TEMPLATE, [my_file_name]);
-    props.display = props.editor_setDialog(props.editor, template, true);
+    display = props.dialog_parseTemplate(FILE_NAME_TEMPLATE, [my_file_name]);
+    props.display = props.editor_setDialog(props.editor, display, true);
     console.log("done")
     console.log(props.display)
     return;
