@@ -224,14 +224,18 @@
   
   function editor_setDialog(my_editor, my_template, my_bottom) {
     var wrap = my_editor.getWrapperElement(),
-      container = wrap.querySelector(".CodeMirror-dialog") || 
-        wrap.appendChild(document.createElement("div"));
-    
+      position = 'top',
+      selector,
+      container;
+      
     if (my_bottom) {
-      container.className = "CodeMirror-dialog CodeMirror-dialog-bottom";
-    } else {
-      container.className = "CodeMirror-dialog CodeMirror-dialog-top";
+      position = 'bottom';
     }
+
+    selector = ".CodeMirror-dialog.CodeMirror-dialog-" + position;
+    container = wrap.querySelector(selector) || wrap.appendChild(document.createElement("div"));
+    container.className = selector.replace(".", " ");  
+    
     if (typeof my_template == "string") {
       container.innerHTML = my_template;
     } else {
@@ -250,19 +254,21 @@
 
   function editor_setDisplay(my_file_name) {
     var props = CodeMirror.menu_dict,
-      display;
+      template;
     console.log("debug DISPLAY")
     console.log(props.display)
-
+    console.log(my_file_name)
+    if (!my_file_name) {
+      return;
+    }
     if (props.display) {
       props.display.parentNode.removeChild(props.display);
       props.display = null;
     }
-    if (!my_file_name) {
-      return;
-    }
-    display = props.dialog_parseTemplate(FILE_NAME_TEMPLATE, [my_file_name]);
-    props.display = props.editor_setDialog(props.editor, display, true);
+    template = props.dialog_parseTemplate(FILE_NAME_TEMPLATE, [my_file_name]);
+    props.display = props.editor_setDialog(props.editor, template, true);
+    console.log("done")
+    console.log(props.display)
     return;
   }
 
@@ -657,6 +663,7 @@
         console.log("left+left+activepath => chop")
         path_list = props.editor_active_path.split("/");
         props.editor_active_path = path_list.splice(path_list.length, -1, 1).join("/") || null;
+        props.editor_setDisplay(props.editor.active_path)
         parameter = BLANK_SEARCH;
       } else {
         parameter = false;
@@ -1210,6 +1217,7 @@
       if (file_name_to_open.split(".").length === 1) {
         props.editor_setActivePath(file_name_to_open);
         props.dialog_evaluateState(BLANK_SEARCH);
+        props.editor_setDisplay(file_name_to_open + "/");
         return;
       }
       
