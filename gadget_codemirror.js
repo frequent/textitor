@@ -7,6 +7,8 @@
   /////////////////////////////
   // Placeholder Instructions
   /////////////////////////////
+  var BLANK_SEARCH = {"target": {'name': "search",  'find': {'value': ''}}};
+
   var PLACEHOLDER = "Textitor Shortcuts:\n" +
     "[CTRL+ALT+o]     Open Selected File\n" +
     "[CTRL+ALT+s]     Save Current/All Selected File(s)\n" +
@@ -655,7 +657,7 @@
         console.log("left+left+activepath => chop")
         path_list = props.editor_active_path.split("/");
         props.editor_active_path = path_list.splice(path_list.length, -1, 1).join("/") || null;
-        parameter = {"target": {'name': "search", 'find': {'value': ""}}};
+        parameter = BLANK_SEARCH;
       } else {
         parameter = false;
       }
@@ -1204,11 +1206,10 @@
       active_cache = props.editor_active_cache || "textitor";
       file_name_to_open = file_name_input.nextSibling.textContent.split(" | ")[1];
       
-      // folder
+      // folder, add path and update panel
       if (file_name_to_open.split(".").length === 1) {
-        props.dialog_position = 'idle';
-        CodeMirror.commands.myEditor_navigateHorizontal(props.editor, "left");
         props.editor_setActivePath(file_name_to_open);
+        props.dialog_evaluateState(BLANK_SEARCH);
         return;
       }
       
