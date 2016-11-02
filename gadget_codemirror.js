@@ -667,7 +667,7 @@
         parameter = {"target": {'name': "search", 'find': {'value': ""}}};
       } else {
         console.log("initial call, create dialog")
-        return props.editor_openDialog(my_codemirror, my_direction);
+        return CodeMirror.commands.myEditor_openDialog(my_codemirror, my_direction);
       }
     }
     if (position === "right" && my_direction == "left") {
