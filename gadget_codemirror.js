@@ -253,7 +253,7 @@
       display;
     console.log("debug DISPLAY")
     console.log(props.display)
-    console.log(props.display.parentNode)
+
     if (props.display) {
       props.display.parentNode.removeChild(props.display);
       props.display = null;
