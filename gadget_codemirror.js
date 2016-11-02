@@ -648,20 +648,17 @@
     console.log("active_path", props.editor_active_path)
 
     if (position === "idle") {
-      if (my_direction === "left") {
-        if (props.editor_active_path) {
-          path_list = props.editor_active_path.split("/");
-          props.editor_active_path = path_list.splice(path_list.length, -1, 1).join("/") || null;
-          parameter = {"target": {'name': "search", 'find': {'value': ""}}};
-          console.log("done with parameter", parameter)
-          return props.dialog_evaluateState(parameter);
-        }
-      }
-      console.log("opening dialog", my_direction)
       return CodeMirror.commands.myEditor_openDialog(my_codemirror, my_direction);
     }
     if (position === my_direction) {
-      parameter = false;
+      if (position === "left" && props.editor_active_path) {
+        console.log("left+left+activepath => chop")
+        path_list = props.editor_active_path.split("/");
+        props.editor_active_path = path_list.splice(path_list.length, -1, 1).join("/") || null;
+        parameter = {"target": {'name': "search", 'find': {'value': ""}}};
+      } else {
+        parameter = false;
+      }
     }
     if (position === "right" && my_direction == "left") {
       parameter = true;
