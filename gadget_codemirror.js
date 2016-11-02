@@ -652,6 +652,7 @@
     console.log("horiztonal")
     console.log(my_direction)
     console.log(position)
+    console.log(props.editor_active_path)
     if (my_direction === "left") {
       if (position === "idle" && props.editor_active_path === null) {
         console.log("opening...")
@@ -675,7 +676,6 @@
     if (position === "left" && my_direction === "right") {
       parameter = {"target": {"name": "open"}};
     }
-    console.log("evaluatestate with ", parameter)
     return props.dialog_evaluateState(parameter);
   }
 
