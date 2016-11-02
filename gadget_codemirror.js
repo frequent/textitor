@@ -243,15 +243,19 @@
     var wrap = my_editor.getWrapperElement(),
       position = 'top',
       selector,
-      container;
-    console.log(wrap)
+      container,
+      element;
+
     if (my_bottom) {
       position = 'bottom';
     }
 
     selector = ".CodeMirror-dialog.CodeMirror-dialog-" + position;
-    container = wrap.querySelector(selector) || wrap.appendChild(document.createElement("div"));
+    element = wrap.querySelector(selector);
+    container =  element || wrap.appendChild(document.createElement("div"));
     container.className = selector.replace(".", " ");  
+
+    console.log(wrap)
     console.log(selector)
     console.log(wrap.querySelector(selector))
     console.log(container)
@@ -259,6 +263,17 @@
       container.innerHTML = my_template;
     } else {
       container.appendChild(my_template);
+    }
+    
+    if (!element) {
+      console.log("needs inserting")
+      if (my_bottom) {
+        console.log("insert at bottom")
+        wrap.appendChild(container);
+      } else {
+        console.log("insert at top")
+        wrap.insertBefore(container, wrap.firstElementChild);
+      }
     }
     return container;
   }
