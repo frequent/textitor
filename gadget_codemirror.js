@@ -253,7 +253,7 @@
     selector = ".CodeMirror-dialog.CodeMirror-dialog-" + position;
     element = wrap.querySelector(selector);
     container =  element || wrap.appendChild(document.createElement("div"));
-    container.className = selector.replace(".", " ");  
+    container.className = selector.split(".").jon(" ");  
 
     console.log(wrap)
     console.log(selector)
