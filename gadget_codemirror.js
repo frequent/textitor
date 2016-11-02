@@ -662,7 +662,13 @@
         path_list = props.editor_active_path.split("/");
         props.editor_active_path = path_list.splice(path_list.length, -1, 1).join("/") || null;
       }
-      parameter = {"target": {'name': "search", 'find': {'value': ""}}};
+      if (props.dialog) {
+        console.log("have a dialog, pass parameter")
+        parameter = {"target": {'name': "search", 'find': {'value': ""}}};
+      } else {
+        console.log("initial call, create dialog")
+        return props.editor_openDialog(my_codemirror, my_direction);
+      }
     }
     if (position === "right" && my_direction == "left") {
       parameter = true;
