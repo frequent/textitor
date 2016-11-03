@@ -179,7 +179,7 @@
   CodeMirror.menu_dict.dialog = null;
   CodeMirror.menu_dict.dialog_position = "idle";
   CodeMirror.menu_dict.dialog_option_dict = {
-    "bottom": false,
+    "position": 'top',
     "closeOnEnter": false,
     "closeOnBlur": false,
     "value": null,
@@ -222,37 +222,12 @@
     CodeMirror.menu_dict.editor_active_path = my_folder_path;
   }
   
-  function editor_setDialog(my_editor, my_template, my_bottom) {
-    /*
+  function editor_setDialog(my_editor, my_template, my_position) {
     var wrap = my_editor.getWrapperElement(),
-      container = wrap.querySelector(".CodeMirror-dialog") || 
-        wrap.appendChild(document.createElement("div"));
-    
-    if (my_bottom) {
-      container.className = "CodeMirror-dialog CodeMirror-dialog-bottom";
-    } else {
-      container.className = "CodeMirror-dialog CodeMirror-dialog-top";
-    }
-    if (typeof my_template == "string") {
-      container.innerHTML = my_template;
-    } else {
-      container.appendChild(my_template);
-    }
-    return container;
-    */
-    var wrap = my_editor.getWrapperElement(),
-      position = 'top',
-      selector,
-      container,
-      element;
+      selector = ".CodeMirror-dialog.CodeMirror-dialog-" + my_position,
+      element = wrap.querySelector(selector),
+      container =  element || wrap.appendChild(document.createElement("div"));
 
-    if (my_bottom) {
-      position = 'bottom';
-    }
-
-    selector = ".CodeMirror-dialog.CodeMirror-dialog-" + position;
-    element = wrap.querySelector(selector);
-    container =  element || wrap.appendChild(document.createElement("div"));
     container.className = selector.split(".").join(" ");  
 
     if (typeof my_template == "string") {
@@ -262,7 +237,7 @@
     }
     
     if (!element) {
-      if (my_bottom) {
+      if (my_position === "bottom") {
         wrap.appendChild(container);
       } else {
         wrap.insertBefore(container, wrap.firstElementChild);
@@ -291,7 +266,7 @@
       props.display = null;
     }
     display = props.dialog_parseTemplate(FILE_NAME_TEMPLATE, [my_file_name]);
-    props.display = props.editor_setDialog(props.editor, display, true);
+    props.display = props.editor_setDialog(props.editor, display, 'bottom');
     return;
   }
 
@@ -1307,7 +1282,7 @@
           dialog_input,
           dialog;
 
-        dialog = props.dialog = props.editor_setDialog(editor, my_template, opts.bottom);
+        dialog = props.dialog = props.editor_setDialog(editor, my_template, opts.position);
         dialog_input = dialog.querySelector("input[type='text']");
         props.editor_active_dialog = true;
         closeNotification(props.editor, null);
