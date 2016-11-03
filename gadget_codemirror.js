@@ -255,18 +255,19 @@
   }
 
   function editor_setDisplay(my_file_name) {
-    var props = CodeMirror.menu_dict,
-      display;
-
-    if (!my_file_name) {
-      return;
-    }
+    var props = CodeMirror.menu_dict;
     if (props.display) {
       props.display.parentNode.removeChild(props.display);
       props.display = null;
     }
-    display = props.dialog_parseTemplate(FILE_NAME_TEMPLATE, [my_file_name]);
-    props.display = props.editor_setDialog(props.editor, display, 'bottom');
+    if (!my_file_name) {
+      return;
+    }
+    props.display = props.editor_setDialog(
+      props.editor,
+      props.dialog_parseTemplate(FILE_NAME_TEMPLATE, [my_file_name]),
+      'bottom'
+    );
     return;
   }
 
