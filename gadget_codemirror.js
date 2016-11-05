@@ -741,6 +741,7 @@
               return my_gadget.editor_openFile();
             }
             if (action === "close") {
+              console.log("CLOSEING = SWAP")
               return my_gadget.editor_swapFile();
             }
             if (action === "save") {
@@ -1043,13 +1044,17 @@
         content = props.editor.getValue();
         
         if (is_container) {
+          console.log("creating a folder")
+          console.log(file_name)
+          console.log("need to add path", props.editor_active_path)
           if (is_container.value === 'cache') {
             return props.dialog_flagInput(file_name_input, 'Cache not supported');
           }
           mime_type = "application/json";
           folder_file_list = [];
         }
-        } else {
+      } else {
+        console.log("what is this?")
         file_name = my_file_id;
         mime_type = setMimeType(file_name.split(".").pop().replace("/", ""));
       }
@@ -1060,8 +1065,6 @@
       //  file_name_input.focus();
       //  return;
       //}
-
-
 
       return new RSVP.Queue()
         .push(function () {
@@ -1089,9 +1092,11 @@
         )
         .push(function(my_content) {
           content = content || folder_file_list || my_content[0].target.result;
+          console.log("content", content)
           return gadget.setActiveStorage("serviceworker");
         })
         .push(function() {
+          console.log("putAttachment", active_cache, file_name)
           return gadget.jio_putAttachment(
             active_cache,
             file_name,
@@ -1206,8 +1211,12 @@
       active_cache = props.editor_active_cache || "textitor";
       file_name_to_open = file_name_input.nextSibling.textContent.split(" | ")[1];
       
+      console.log("opening something")
+      console.log(file_name_to_open)
       // folder, add path and update panel
       if (file_name_to_open.split(".").length === 1) {
+        console.log("this is a folder")
+        console.log("active_path", props.editor_active_path)
         props.editor_setActivePath(file_name_to_open);
         props.dialog_evaluateState(BLANK_SEARCH);
         props.editor_setDisplay(file_name_to_open + "/");
@@ -1254,6 +1263,7 @@
           ]);
         })
         .push(function (my_content) {
+          console.log("SWAPPING")
           return gadget.editor_swapFile(my_content);
         })
         .push(function () {
