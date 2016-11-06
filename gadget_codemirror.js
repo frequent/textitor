@@ -745,6 +745,7 @@
               return my_gadget.editor_swapFile();
             }
             if (action === "save") {
+              console.log("SAVING")
               return my_gadget.editor_saveFile();
             }
             if (action === "remove") {
