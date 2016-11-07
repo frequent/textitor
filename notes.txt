@@ -3,6 +3,10 @@
 - implement folders =
 > fix folders within folders
 > fix display on file-close
+> create a folder inside folder via path
+> create a file inside a folder via path
+> remove all folders
+> open a folder should open a blank file, not the folder itself
 > folders include list of containing items? YES
 > folders containing items used navigating versus always fetching all files
 > allow file creation inside a folder adding the folder to the file id/url
