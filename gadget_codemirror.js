@@ -1046,11 +1046,16 @@
         
         if (is_container) {
           console.log("creating a folder")
-          console.log(file_name)
+          console.log("file_name", file_name)
+          console.log("active_path", props.editor_active_path)
           console.log("need to add path", props.editor_active_path)
           if (is_container.value === 'cache') {
             return props.dialog_flagInput(file_name_input, 'Cache not supported');
           }
+          if (props.editor_active_path) {
+            file_name = props.editor_active_path + "/" + file_name;
+          }
+          console.log("new file-name", file_name)
           mime_type = "application/json";
           folder_file_list = [];
         }
