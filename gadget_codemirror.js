@@ -881,7 +881,11 @@
               for (item in response) {
                 if (response.hasOwnProperty(item)) {
                   last = item.split("/").pop();
+                  console.log("adding item, ", item)
+                  console.log("last item element", last)
+                  console.log("path", path)
                   if (item.indexOf(path) > -1 && last !== path) {
+                    console.log("put on menu", item)
                     if (item.indexOf("_history") === -1) {
                       if (memory_list.indexOf(last) > -1) {
                         item = item + "*";
@@ -1060,7 +1064,6 @@
           folder_file_list = [];
         }
       } else {
-        console.log("what is this?")
         file_name = my_file_id;
         mime_type = setMimeType(file_name.split(".").pop().replace("/", ""));
       }
