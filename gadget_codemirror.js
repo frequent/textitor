@@ -450,7 +450,9 @@
     var folder = my_folder || "/",
       path = my_path.split(window.location.href).pop(),
       indexFolder = path.indexOf(folder),
-      splitFolder = path.split(folder);
+      splitFolder = path.split(folder),
+      splitFolderPop = splitFolder.pop();
+
     console.log("IN, ", folder, my_path, indexFolder, splitFolder)
     // self
     if (my_path === folder) {
@@ -477,8 +479,8 @@
     }
     
     // direct child file/folder
-    if (splitFolder.pop().split(".").length !== 2) {
-      if (splitFolder.pop().split("/").length === 1) {
+    if (splitFolderPop.split(".").length !== 2) {
+      if (splitFolderPop.split("/").length === 1) {
         console.log("sub-file, TRUE")
         return true;
       }
