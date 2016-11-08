@@ -446,6 +446,41 @@
       });
   }
 
+  function dialog_isFileMenuItem(my_path, my_folder) {
+    var folder = my_folder || "/",
+      indexFolder = path.indexOf(folder),
+      splitFolder = path.split(folder);
+
+    // self
+    if (my_path === folder) {
+      return false;
+    }
+
+    // parent folder/file
+    if (indexFolder === -1 && my_folder) {
+      return false;
+    }
+    
+    // inside subfolder
+    if (indexFolder > -1) {
+      
+      // current active folder, ok
+      if (splitFolder[0] === "" && splitFolder[1].split("/").length === 2) {
+        return true;
+      }
+      return false;
+    }
+    
+    // direct child file/folder
+    if (splitFolder.pop().split(".").length !== 2) {
+      if (splitFolder.pop().split("/").length === 1) {
+        return true;
+      }
+      return false;
+    }                  
+    return true;              
+  }
+
   function dialog_setNavigationMenu(my_direction) {
     switch (CodeMirror.menu_dict.dialog_position) {
       case "idle":
@@ -520,6 +555,7 @@
   CodeMirror.menu_dict.editor_setActiveFile = editor_setActiveFile;
   CodeMirror.menu_dict.editor_getActiveFile = editor_getActiveFile;
   CodeMirror.menu_dict.editor_getActiveFileList = editor_getActiveFileList;
+  CodeMirror.menu_dict.dialog_isFileMenuItem = dialog_isFileMenuItem;
   CodeMirror.menu_dict.dialog_flagInput = dialog_flagInput;
   CodeMirror.menu_dict.dialog_parseTemplate = dialog_parseTemplate;
   CodeMirror.menu_dict.dialog_createFileMenu = dialog_createFileMenu;
@@ -865,8 +901,8 @@
           var editor = props.dialog.parentNode,
             file_menu = editor.querySelector(".custom-file-menu"),
             len = my_directory_content.length,
-            path = props.editor_active_path || "",
-            last,
+            current_folder = props.editor_active_path || "",
+            path,
             is_nested,
             response,
             item,
@@ -881,21 +917,10 @@
               response = my_directory_content[i];
               for (item in response) {
                 if (response.hasOwnProperty(item)) {
-                  last = item.split(window.location.href).pop(); // file/folder path
-                  console.log("IN")
-                  is_nested = last.split(path).pop().split("/").length === 1;
-                  
-                  
-                  console.log("adding item, ", item)
-                  console.log("is_nested, ", is_nested)
-                  console.log("last item element, ", last)
-                  console.log("path, ", path)
-                  
-                  
-                  if (item.indexOf(path) > -1 && is_nested && last !== path) {
+                  if (props.dialog_isFileMenuItem(item, current_folder)) {  
                     console.log("put on menu", item)
                     if (item.indexOf("_history") === -1) {
-                      if (memory_list.indexOf(last) > -1) {
+                      if (memory_list.indexOf(path) > -1) {
                         item = item + "*";
                       }
                       if (item.indexOf(my_search_value || "") > -1) {
