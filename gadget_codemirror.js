@@ -944,6 +944,10 @@
               props.dialog.querySelector('span')
             );
           }
+        })
+        .push(null, function (my_error) {
+          console.log(my_error);
+          throw my_error;
         });
     })  
 
