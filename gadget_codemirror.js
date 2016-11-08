@@ -867,6 +867,7 @@
             len = my_directory_content.length,
             path = props.editor_active_path || "",
             last,
+            is_subfolder,
             response,
             item,
             i;
@@ -880,11 +881,17 @@
               response = my_directory_content[i];
               for (item in response) {
                 if (response.hasOwnProperty(item)) {
-                  last = item.split("/").pop();
+                  last = item.split(window.location.href).pop(); // file/folder path
+                  is_nested = last.split(path).pop().split("/").length === 1;
+                  
+                  
                   console.log("adding item, ", item)
-                  console.log("last item element", last)
-                  console.log("path", path)
-                  if (item.indexOf(path) > -1 && last !== path) {
+                  console.log("is_nested, ", is_nested)
+                  console.log("last item element, ", last)
+                  console.log("path, ", path)
+                  
+                  
+                  if (item.indexOf(path) > -1 && is_nested && last !== path) {
                     console.log("put on menu", item)
                     if (item.indexOf("_history") === -1) {
                       if (memory_list.indexOf(last) > -1) {
