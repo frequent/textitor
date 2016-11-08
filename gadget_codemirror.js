@@ -450,34 +450,41 @@
     var folder = my_folder || "/",
       indexFolder = my_path.indexOf(folder),
       splitFolder = my_path.split(folder);
-
+    console.log("IN, ", folder, my_path, indexFolder, splitFolder)
     // self
     if (my_path === folder) {
+      console.log("self, FALSE")
       return false;
     }
 
     // parent folder/file
-    if (indexFolder === -1 && my_folder) {
+    if (indexFolder === -1 && folder !== "/") {
+      console.log("parent folder/file, FALSE")
       return false;
     }
     
     // inside subfolder
     if (indexFolder > -1) {
-      
+
       // current active folder, ok
       if (splitFolder[0] === "" && splitFolder[1].split("/").length === 2) {
+        console.log("subfolder, but currently on it, TRUE")
         return true;
       }
+      console.log("subfolder, FALSE")
       return false;
     }
     
     // direct child file/folder
     if (splitFolder.pop().split(".").length !== 2) {
       if (splitFolder.pop().split("/").length === 1) {
+        console.log("sub-file, TRUE")
         return true;
       }
+      console.log("sub-folder, path, FALSE")
       return false;
     }                  
+    console.log("nothing, TRUE")
     return true;              
   }
 
