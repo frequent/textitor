@@ -867,7 +867,7 @@
             len = my_directory_content.length,
             path = props.editor_active_path || "",
             last,
-            is_subfolder,
+            is_nested,
             response,
             item,
             i;
@@ -882,6 +882,7 @@
               for (item in response) {
                 if (response.hasOwnProperty(item)) {
                   last = item.split(window.location.href).pop(); // file/folder path
+                  console.log("IN")
                   is_nested = last.split(path).pop().split("/").length === 1;
                   
                   
