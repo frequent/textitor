@@ -455,7 +455,7 @@
 
     console.log("IN, ", folder, my_path, indexFolder, splitFolder)
     // self
-    if (my_path === folder) {
+    if (path === folder) {
       console.log("self, FALSE")
       return false;
     }
