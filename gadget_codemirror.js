@@ -448,8 +448,8 @@
 
   function dialog_isFileMenuItem(my_path, my_folder) {
     var folder = my_folder || "/",
-      indexFolder = path.indexOf(folder),
-      splitFolder = path.split(folder);
+      indexFolder = my_path.indexOf(folder),
+      splitFolder = my_path.split(folder);
 
     // self
     if (my_path === folder) {
