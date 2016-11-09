@@ -3,6 +3,8 @@
 - implement folders =
 > fix folders within folders
 > fix display on file-close
+> fix file close
+> fix delete folder
 > create a folder inside folder via path
 > create a file inside a folder via path
 > remove all folders
