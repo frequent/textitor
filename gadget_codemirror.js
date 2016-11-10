@@ -451,11 +451,10 @@
       path = my_path.split(window.location.href).pop(),
       indexFolder = path.indexOf(folder),
       splitFolder = path.split(folder),
-      is_not_start_similar = path.length !== folder.length,
       splitFolderPop;
 
     console.log("IN, ", folder, my_path, indexFolder, splitFolder)
-                    // aye    aye/baaam, 0, [""]
+
     // self
     if (path === folder) {
       console.log("self, FALSE")
@@ -1125,12 +1124,11 @@
       //  return;
       //}
 
-      console.log("saving a file with name, ", file_name)
       if (props.editor_active_path) {
-        console.log("BUT WE HAVE AN ACTIVE PATH")
         file_name = props.editor_active_path + "/" + file_name
       }
-      console.log("upgraded filename to", file_name)
+
+      console.log("saveing with file_name to", file_name)
       return new RSVP.Queue()
         .push(function () {
           return gadget.setActiveStorage("memory");
@@ -1157,11 +1155,9 @@
         )
         .push(function(my_content) {
           content = content || folder_file_list || my_content[0].target.result;
-          console.log("content", content)
           return gadget.setActiveStorage("serviceworker");
         })
         .push(function() {
-          console.log("putAttachment", active_cache, file_name)
           return gadget.jio_putAttachment(
             active_cache,
             file_name,
@@ -1176,6 +1172,7 @@
             props.editor.setOption("mode", mime_type);
             props.editor_setActiveFile(file_name, mime_type);
             props.editor_resetModified();
+            props.editor_setDisplay(file_name);
             return true;
           }
           return false;
