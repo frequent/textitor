@@ -451,10 +451,11 @@
       path = my_path.split(window.location.href).pop(),
       indexFolder = path.indexOf(folder),
       splitFolder = path.split(folder),
-      splitFolderPop = splitFolder.pop(),
-      is_not_start_similar = path.length !== folder.length;
+      is_not_start_similar = path.length !== folder.length,
+      splitFolderPop;
 
     console.log("IN, ", folder, my_path, indexFolder, splitFolder)
+                    // aye    aye/baaam, 0, [""]
     // self
     if (path === folder) {
       console.log("self, FALSE")
@@ -478,8 +479,9 @@
       console.log("subfolder, FALSE")
       return false;
     }
-    
+
     // direct child file/folder
+    splitFolderPop = splitFolder.pop();
     if (splitFolderPop.split(".").length !== 2) {
       if (splitFolderPop.split("/").length === 1) {
         console.log("sub-file, TRUE")
