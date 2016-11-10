@@ -463,7 +463,7 @@
     }
 
     // parent folder/file
-    if ((indexFolder === -1 || indexFolder === 0 && is_not_start_similar) && folder !== "/") {
+    if ((indexFolder === -1) && folder !== "/") {
       console.log("parent folder/file, FALSE")
       return false;
     }
