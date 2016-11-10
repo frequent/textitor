@@ -1125,6 +1125,12 @@
       //  return;
       //}
 
+      console.log("saving a file with name, ", file_name)
+      if (props.editor_active_path) {
+        console.log("BUT WE HAVE AN ACTIVE PATH")
+        file_name = props.editor_active_path + "/" + file_name
+      }
+      console.log("upgraded filename to", file_name)
       return new RSVP.Queue()
         .push(function () {
           return gadget.setActiveStorage("memory");
