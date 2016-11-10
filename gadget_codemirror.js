@@ -451,7 +451,8 @@
       path = my_path.split(window.location.href).pop(),
       indexFolder = path.indexOf(folder),
       splitFolder = path.split(folder),
-      splitFolderPop = splitFolder.pop();
+      splitFolderPop = splitFolder.pop(),
+      is_not_start_similar = path.length !== folder.length;
 
     console.log("IN, ", folder, my_path, indexFolder, splitFolder)
     // self
@@ -461,7 +462,7 @@
     }
 
     // parent folder/file
-    if (indexFolder === -1 && folder !== "/") {
+    if ((indexFolder === -1 || indexFolder === 0 && is_not_start_similar) && folder !== "/") {
       console.log("parent folder/file, FALSE")
       return false;
     }
