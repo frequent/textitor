@@ -703,8 +703,9 @@
     }
     if (position === my_direction) {
       if (position === "left" && props.editor_active_path) {
+        console.log("position and direction are left, if active path, go up", props.editor_active_path)
         path_list = props.editor_active_path.split("/");
-        props.editor_active_path = path_list.splice(path_list.length, -1, 1).join("/") || null;
+        props.editor_active_path = path_list.pop().join("/") || null;
         props.editor_setDisplay(props.editor.active_path)
         parameter = BLANK_SEARCH;
       } else {
