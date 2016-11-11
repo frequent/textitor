@@ -789,11 +789,9 @@
               return my_gadget.editor_openFile();
             }
             if (action === "close") {
-              console.log("CLOSEING = SWAP")
               return my_gadget.editor_swapFile();
             }
             if (action === "save") {
-              console.log("SAVING")
               return my_gadget.editor_saveFile();
             }
             if (action === "remove") {
@@ -1098,17 +1096,12 @@
         content = props.editor.getValue();
         
         if (is_container) {
-          console.log("creating a folder")
-          console.log("file_name", file_name)
-          console.log("active_path", props.editor_active_path)
-          console.log("need to add path", props.editor_active_path)
           if (is_container.value === 'cache') {
             return props.dialog_flagInput(file_name_input, 'Cache not supported');
           }
           if (props.editor_active_path) {
             file_name = props.editor_active_path + "/" + file_name;
           }
-          console.log("new file-name", file_name)
           mime_type = "application/json";
           folder_file_list = [];
         }
@@ -1128,7 +1121,6 @@
         file_name = props.editor_active_path + "/" + file_name
       }
 
-      console.log("saveing with file_name to", file_name)
       return new RSVP.Queue()
         .push(function () {
           return gadget.setActiveStorage("memory");
@@ -1272,13 +1264,9 @@
 
       active_cache = props.editor_active_cache || "textitor";
       file_name_to_open = file_name_input.nextSibling.textContent.split(" | ")[1];
-      
-      console.log("opening something")
-      console.log(file_name_to_open)
+
       // folder, add path and update panel
       if (file_name_to_open.split(".").length === 1) {
-        console.log("this is a folder")
-        console.log("active_path", props.editor_active_path)
         props.editor_setActivePath(file_name_to_open);
         props.dialog_evaluateState(BLANK_SEARCH);
         props.editor_setDisplay(file_name_to_open + "/");
@@ -1325,7 +1313,6 @@
           ]);
         })
         .push(function (my_content) {
-          console.log("SWAPPING")
           return gadget.editor_swapFile(my_content);
         })
         .push(function () {
