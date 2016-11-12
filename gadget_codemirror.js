@@ -1172,16 +1172,17 @@
         })
         .push(function () {
           console.log("DONE")
-          if (!is_container) {
-            console.log("no container, end here with true, why???")
-            return true;
-          }
+          
           if (!my_file_id) {
-            console.log("no file id, regualr save, update everything")
-            props.editor.setOption("mode", mime_type);
-            props.editor_setActiveFile(file_name, mime_type);
+            console.log("no file id, regualr save, file or folder, update everything")
             props.editor_resetModified();
             props.editor_setDisplay(file_name);
+            if (is_container) {
+              console.log("CONTAINER, end here")
+              return true;
+            }
+            props.editor.setOption("mode", mime_type);
+            props.editor_setActiveFile(file_name, mime_type);
             return true;
           }
           return false;
