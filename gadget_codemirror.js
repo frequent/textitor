@@ -1131,7 +1131,9 @@
       //  return;
       //}
 
-      if (props.editor_active_path) {
+      console.log("prefixing...")
+      console.log(file_name.indexOf(props.editor_active_path))
+      if (props.editor_active_path && file_name.indexOf(props.editor_active_path)) {
         console.log("prefixing with active path")
         file_name = props.editor_active_path + "/" + file_name
       }
