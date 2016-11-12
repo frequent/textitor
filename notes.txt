@@ -1,8 +1,9 @@
 
 => progress
 - implement folders =
-> fix folders within folders
-> fix display on file-close
+> fix save existing file in nested folder, update display
+> fix save new file in nested folder, update display
+> fix file close on new file inside folder
 > fix file close
 > fix delete folder
 > fix repeating folder names
