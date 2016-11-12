@@ -704,11 +704,8 @@
     if (position === my_direction) {
       if (position === "left" && props.editor_active_path) {
         console.log("position and direction are left, active_path", props.editor_active_path)
-        //props.editor_active_path = path_list.splice(path_list.length, -1, 1).join("/") || null;
         path_list = props.editor_active_path.split("/");
-        console.log(path_list)
-        path_list.splice(path_list.length - 1, 1).join("/");
-        console.log(path_list)
+        path_list.splice(0, path_list.length - 1).join("/");
         props.editor_active_path = path_list || null;
         console.log("editor active_path, ", props.editor_active_path)
         props.editor_setDisplay(props.editor.active_path)
