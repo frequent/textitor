@@ -703,11 +703,9 @@
     }
     if (position === my_direction) {
       if (position === "left" && props.editor_active_path) {
-        console.log("IN ACTIVE PATH", props.editor_active_path)
         path_list = props.editor_active_path.split("/");
         path_list = path_list.splice(0, path_list.length - 1).join("/");
         props.editor_active_path = path_list || null;
-        console.log("OUT ACTIVE PATH, ", props.editor_active_path)
         props.editor_setDisplay(props.editor.active_path)
         parameter = BLANK_SEARCH;
       } else {
@@ -1091,6 +1089,10 @@
 
         // validate form
         if (dialog) {
+          console.log("dialog is defined")
+          console.log(props)
+          console.log(file_name)
+          console.log(file_name_input)
           //if (!file_name) {
           if (!file_name || file_name_input.value === "Enter valid URL.") {
             return props.dialog_flagInput(file_name_input, 'Enter valid URL.');
