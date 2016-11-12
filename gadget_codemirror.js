@@ -1069,33 +1069,41 @@
         return MIMES[my_mime] || MIMES[SHIMMIMES[my_mime]] || "text/plain";
       }
 
-      // bulkSave will pass file_id, file won't be open, need to get content
-      // XXX simplify
+      // bulkSave will pass file_id, file will not be open, need to get content
+      
+      // XXX refactor
       if (!my_file_id) {
+        console.log("no filen_id passed -> base safe")
         if (!dialog || (!props.editor_active_dialog && !props.editor_active_file)) {
+          console.log("no dialog, force and end")
           CodeMirror.commands.myEditor_navigateHorizontal(props.editor, "right");
           return;
         }
         if (!props.editor_active_file) {
+          console.log("active file")
           file_name_input = dialog.querySelector("input");
           file_name = file_name_input.value;
           is_container = dialog.querySelector('input[name="is_container"]:checked');
           mime_type_input = file_name.split(".").pop().replace("/", "");
           mime_type = setMimeType(mime_type_input);
         } else {
+          console.log("no active file")
           file_name = props.editor_active_file.name;
           mime_type = props.editor_active_file.mime_type;
         }
 
         // validate form
         if (dialog) {
+          console.log("dialog set")
           if (!file_name || file_name_input && file_name_input.value === "Enter valid URL.") {
+            console.log("dialog set missing file name")
             return props.dialog_flagInput(file_name_input, 'Enter valid URL.');
           }
         }
         content = props.editor.getValue();
         
         if (is_container) {
+          console.log("creating a folder")
           if (is_container.value === 'cache') {
             return props.dialog_flagInput(file_name_input, 'Cache not supported');
           }
@@ -1106,6 +1114,7 @@
           folder_file_list = [];
         }
       } else {
+        console.log("file_id passed, bulk save?")
         file_name = my_file_id;
         mime_type = setMimeType(file_name.split(".").pop().replace("/", ""));
       }
@@ -1118,9 +1127,13 @@
       //}
 
       if (props.editor_active_path) {
+        console.log("prefixing with active path")
         file_name = props.editor_active_path + "/" + file_name
       }
 
+      console.log("SAVING")
+      console.log(file_name)
+      console.log(content)
       return new RSVP.Queue()
         .push(function () {
           return gadget.setActiveStorage("memory");
@@ -1147,6 +1160,7 @@
         )
         .push(function(my_content) {
           content = content || folder_file_list || my_content[0].target.result;
+          console.log("storing on service worker")
           return gadget.setActiveStorage("serviceworker");
         })
         .push(function() {
@@ -1157,10 +1171,13 @@
           );
         })
         .push(function () {
+          console.log("DONE")
           if (!is_container) {
+            console.log("no container, end here with true, why???")
             return true;
           }
           if (!my_file_id) {
+            console.log("no file id, regualr save, update everything")
             props.editor.setOption("mode", mime_type);
             props.editor_setActiveFile(file_name, mime_type);
             props.editor_resetModified();
