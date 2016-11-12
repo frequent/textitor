@@ -971,6 +971,10 @@
 
       // REMOVE => clear file from memory and serviceworker
 
+      console.log("what up Remove?")
+      console.log(props.editor_active_file)
+      console.log(props.editor_active_path)
+
       // no file selected
       if (!props.editor_active_file) {
         return true;
