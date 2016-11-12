@@ -1089,12 +1089,7 @@
 
         // validate form
         if (dialog) {
-          console.log("dialog is defined")
-          console.log(props)
-          console.log(file_name)
-          console.log(file_name_input)
-          //if (!file_name) {
-          if (!file_name || file_name_input.value === "Enter valid URL.") {
+          if (!file_name || file_name_input && file_name_input.value === "Enter valid URL.") {
             return props.dialog_flagInput(file_name_input, 'Enter valid URL.');
           }
         }
