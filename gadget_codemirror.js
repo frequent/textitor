@@ -1010,7 +1010,8 @@
           var new_doc = props.editor_createDoc(),
             old_doc = props.editor.swapDoc(new_doc);
           props.editor_resetActiveFile();
-          props.editor_resetModified("removeFile");
+          props.editor_resetModified();
+          props.editor_setDisplay();
           return true;
         });
     })
@@ -1276,6 +1277,7 @@
         file_name_to_open_save_flag;
 
       // open = get from memory/serviceworker, close and store any open file!
+      
       if (file_name_input === null) {
         return true;
       }
