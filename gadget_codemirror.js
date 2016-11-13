@@ -1141,10 +1141,6 @@
           if (is_container.value === 'cache') {
             return props.dialog_flagInput(file_name_input, 'Cache not supported');
           }
-          console.log("prefix active path in folder")
-          //if (active_path) {
-          //  file_name = active_path + "/" + file_name;
-          //}
           mime_type = "application/json";
           folder_file_list = [];
         }
@@ -1160,10 +1156,8 @@
       //  file_name_input.focus();
       //  return;
       //}
-      console.log("active_path, ", active_path)
-      console.log(file_name.indexOf(active_path) === -1)
+
       if (active_path && file_name.indexOf(active_path) === -1) {
-        console.log("prefixing active path in general")
         file_name = active_path + "/" + file_name
       }
 
@@ -1294,7 +1288,7 @@
             props.dialog_clearTextInput(dialog);
             props.editor_resetActiveFile();
             props.editor_resetModified();
-            props.editor_setDisplay();
+            props.editor_setDisplay(props.editor_active_path);
           }
           return true;
         });
