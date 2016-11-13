@@ -1,27 +1,17 @@
 
 => progress
-- implement folders =
-> fix save existing file in nested folder, update display
-> fix save new file in nested folder, update display
-> fix file close on new file inside folder
-> fix file close
+> fix lost temp files
 > fix delete folder
 > fix repeating folder names
-> create a folder inside folder via path
-> create a file inside a folder via path
-> remove all folders
-> open a folder should open a blank file, not the folder itself
 > folders include list of containing items? YES
 > folders containing items used navigating versus always fetching all files
-> allow file creation inside a folder adding the folder to the file id/url
 > delete/rename/move/copy folder?
 > delete/rename/move/copy file?
 > how to handle save all across multiple folders?
 > how to handle close across multiple folders with unsaved filed?
-> make cache checkbox work, cache is top-level folder
-> fix cache handling throughout to allow handling multiple caches = projects
+> fix why checkbox via space does not work
+- enable multiple caches = projects
 - fix serviceworker throw on existing file with same name
-- fix why checkbox via space does not work
 - stop passing CodeMirror around, it's a global anyway
 - on 2nd invalid save, focus input to prevent using mouse
 
