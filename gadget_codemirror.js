@@ -192,6 +192,7 @@
   CodeMirror.menu_dict.editor_active_path = null;
   CodeMirror.menu_dict.editor_active_file = null;
   CodeMirror.menu_dict.editor_active_cache = null;
+  CodeMirror.menu_dict.editor_is_idle = null;
   CodeMirror.menu_dict.editor_is_modified = null;
   CodeMirror.menu_dict.dialog = null;
   CodeMirror.menu_dict.dialog_position = IDLE;
@@ -710,29 +711,26 @@
     var props = CodeMirror.menu_dict,
       position = props.dialog_position,
       parameter,
-      path_list,
-      wrap;
+      path_list;
 
     if (position === IDLE) {
       return CodeMirror.commands.myEditor_openDialog(my_codemirror, my_direction);
     }
     if (position === my_direction) {
       if (position === LEFT && props.editor_active_path) {
-        wrap = props.editor.getWrapperElement(),
-      
-        console.log("HEYA, should be null")
-        console.log(props.editor_active_dialog)
-        // XXX editor_active_dialog is already set - find out why
-        console.log(wrap)
-        console.log(wrap.querySelector(".CodeMirror-dialog-top"))
-        if (wrap && wrap.querySelector(".CodeMirror-dialog-top")) {
-          console.log("shrink")
+        
+        // XXX editor_active_dialog already set, why? is_idle in the meantime
+        if (props.editor_is_idle) {
+          console.log("NOW GO")
+          props.editor_is_idle = null;
           path_list = props.editor_active_path.split("/");
           path_list = path_list.splice(0, path_list.length - 1).join("/");
           props.editor_active_path = path_list || null;
           props.editor_setDisplay(props.editor.active_path);
+        } else {
+          props.editor_is_idle = true;
         }
-        console.log("pass blank search")
+        console.log("WAIT")
         parameter = BLANK_SEARCH;
       } else {
         parameter = false;
