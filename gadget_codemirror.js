@@ -708,6 +708,7 @@
 
   function editor_navigateHorizontal(my_codemirror, my_direction) {
     var props = CodeMirror.menu_dict,
+      wrap = my_codemirror.getWrapperElement(),
       position = props.dialog_position,
       parameter,
       path_list;
@@ -717,9 +718,12 @@
     }
     if (position === my_direction) {
       if (position === LEFT && props.editor_active_path) {
-        console.log("HEYA, should be nulll")
+        console.log("HEYA, should be null")
         console.log(props.editor_active_dialog)
-        if (props.editor_active_dialog) {
+        // XXX editor_active_dialog is already set - find out why
+        console.log(wrap)
+        console.log(wrap.querySelector(".CodeMirror-dialog-top"))
+        if (wrap && wrap.querySelector(".CodeMirror-dialog-top")) {
           console.log("shrink")
           path_list = props.editor_active_path.split("/");
           path_list = path_list.splice(0, path_list.length - 1).join("/");
