@@ -5,10 +5,25 @@
   "use strict";
 
   /////////////////////////////
+  // Vocabulary
+  /////////////////////////////
+  var LEFT = "left";
+  var RIGHT = "right";
+  var UP = "up";
+  var DOWN = "down";
+  var SAVE = "save";
+  var CLOSE = "close";
+  var OPEN = "open";
+  var REMOVE = "remove";
+  var SEARCH = "search";
+  var BULK = "bulk";
+  
+  // and...
+  var IDLE = "idle";
+
+  /////////////////////////////
   // Placeholder Instructions
   /////////////////////////////
-  var BLANK_SEARCH = {"target": {'name': "search",  'find': {'value': ''}}};
-
   var PLACEHOLDER = "Textitor Shortcuts:\n" +
     "[CTRL+ALT+o]     Open Selected File\n" +
     "[CTRL+ALT+s]     Save Current/All Selected File(s)\n" +
@@ -50,6 +65,8 @@
   /////////////////////////////
   // Templates
   /////////////////////////////
+  var BLANK_SEARCH = {"target": {'name': SEARCH,  'find': {'value': ''}}};
+
   var FILE_NAME_TEMPLATE = "<div class='custom-file-name'>%s</div>";
 
   var FILE_MENU_TEMPLATE = "<div class='custom-file-menu'>%s</div>";
@@ -177,7 +194,7 @@
   CodeMirror.menu_dict.editor_active_cache = null;
   CodeMirror.menu_dict.editor_is_modified = null;
   CodeMirror.menu_dict.dialog = null;
-  CodeMirror.menu_dict.dialog_position = "idle";
+  CodeMirror.menu_dict.dialog_position = IDLE;
   CodeMirror.menu_dict.dialog_option_dict = {
     "position": 'top',
     "closeOnEnter": false,
@@ -401,7 +418,7 @@
           input_list[i].checked = false;
         }
       }
-      if (my_direction === "down") {
+      if (my_direction === DOWN) {
         selected_index = selected_index || len;
         input_element = input_list[selected_index - 1] || input_list[len - 1];
       } else {
@@ -437,7 +454,7 @@
           props.dialog.parentNode.removeChild(props.dialog);
           props.editor_active_dialog = null;
           props.editor.focus();
-          props.dialog_position = "idle";
+          props.dialog_position = IDLE;
         }
       })
       .push(null, function (error) {
@@ -495,24 +512,24 @@
 
   function dialog_setNavigationMenu(my_direction) {
     switch (CodeMirror.menu_dict.dialog_position) {
-      case "idle":
+      case IDLE:
         CodeMirror.menu_dict.dialog_position = my_direction;
-        if (my_direction === "right") {
+        if (my_direction === RIGHT) {
           return CodeMirror.menu_dict.dialog_parseTemplate(
             OBJECT_MENU_TEMPLATE,
             CodeMirror.menu_dict.editor_getActiveFile()
           );
         }
         return OBJECT_LIST_TEMPLATE;
-      case "left":
-        if (my_direction === "left") {
+      case LEFT:
+        if (my_direction === LEFT) {
           return OBJECT_LIST_TEMPLATE;
         }
-        CodeMirror.menu_dict.dialog_position = "idle";
+        CodeMirror.menu_dict.dialog_position = IDLE;
         return;
-      case "right":
-        if (my_direction === "left") {
-          CodeMirror.menu_dict.dialog_position = "idle";
+      case RIGHT:
+        if (my_direction === LEFT) {
+          CodeMirror.menu_dict.dialog_position = IDLE;
           return;
         }
         return OBJECT_LIST_TEMPLATE;
@@ -528,10 +545,10 @@
 
     // overide chrome page start/end shortcut
     if (my_event.keyCode === 35) {
-      return CodeMirror.commands.myEditor_navigateVertical(undefined, "up");
+      return CodeMirror.commands.myEditor_navigateVertical(undefined, UP);
     }
     if (my_event.keyCode === 36) {
-      return CodeMirror.commands.myEditor_navigateVertical(undefined, "down");
+      return CodeMirror.commands.myEditor_navigateVertical(undefined, DOWN);
     }
 
     if (my_event.type === "input") {
@@ -549,10 +566,10 @@
         case 88: return CodeMirror.commands.myEditor_closeDialog();
 
         // NOTE: we could pass CodeMirror.menu_dict.editor;
-        case 37: return CodeMirror.commands.myEditor_navigateHorizontal(undefined, "left");
-        case 39: return CodeMirror.commands.myEditor_navigateHorizontal(undefined, "right");
-        case 38: return CodeMirror.commands.myEditor_navigateVertical(undefined, "up");
-        case 40: return CodeMirror.commands.myEditor_navigateVertical(undefined, "down");
+        case 37: return CodeMirror.commands.myEditor_navigateHorizontal(undefined, LEFT);
+        case 39: return CodeMirror.commands.myEditor_navigateHorizontal(undefined, RIGHT);
+        case 38: return CodeMirror.commands.myEditor_navigateVertical(undefined, UP);
+        case 40: return CodeMirror.commands.myEditor_navigateVertical(undefined, DOWN);
       }
     }
   }
@@ -624,27 +641,24 @@
   /////////////////////////////
   function editor_closeFile() {
     if (CodeMirror.menu_dict.dialog_evaluateState) {
-      return CodeMirror.menu_dict.dialog_evaluateState({"target":{"name": "close"}});
+      return CodeMirror.menu_dict.dialog_evaluateState({"target":{"name": CLOSE}});
     }
   }
 
   function editor_deleteFile() {
     if (CodeMirror.menu_dict.dialog_evaluateState) {
-      return CodeMirror.menu_dict.dialog_evaluateState({"target": {"name": "remove"}});
+      return CodeMirror.menu_dict.dialog_evaluateState({"target": {"name": REMOVE}});
     }
   }
 
   function editor_searchFileMenu() {
     var props = CodeMirror.menu_dict,
       input;
-    if (props.dialog_evaluateState && props.dialog && props.dialog_position === "left") {
+    if (props.dialog_evaluateState && props.dialog && props.dialog_position === LEFT) {
       input = props.dialog.querySelector("input[type='text']");
       if (input) {
         return props.dialog_evaluateState({
-          "target": {
-            'name': "search", 
-            'find': {'value': input.value}
-          }
+          "target": {'name': SEARCH, 'find': {'value': input.value}}
         });
       }
     }
@@ -669,11 +683,11 @@
   }
 
   function editor_saveFromDialog(my_codemirror) {
-    if (CodeMirror.menu_dict.dialog_position !== "left") {
+    if (CodeMirror.menu_dict.dialog_position !== LEFT) {
       if (CodeMirror.menu_dict.dialog_evaluateState) {
-        return CodeMirror.menu_dict.dialog_evaluateState({"target":{"name": "save"}});
+        return CodeMirror.menu_dict.dialog_evaluateState({"target":{"name": SAVE}});
       } else {
-        return CodeMirror.commands.myEditor_openDialog(CodeMirror, "right");
+        return CodeMirror.commands.myEditor_openDialog(CodeMirror, RIGHT);
       }
     } else {
       CodeMirror.commands.myEditor_bulkSaveFromDialog();
@@ -681,14 +695,14 @@
   }
 
   function editor_openFromDialog() {
-    if (CodeMirror.menu_dict.dialog_position === "left") {
-      return CodeMirror.menu_dict.dialog_evaluateState({"target":{"name": "open"}});
+    if (CodeMirror.menu_dict.dialog_position === LEFT) {
+      return CodeMirror.menu_dict.dialog_evaluateState({"target":{"name": OPEN}});
     }
   }
 
   function editor_bulkSaveFromDialog() {
-    if (CodeMirror.menu_dict.dialog_position === "left") {
-      return CodeMirror.menu_dict.dialog_evaluateState({"target":{"name": "bulk"}});
+    if (CodeMirror.menu_dict.dialog_position === LEFT) {
+      return CodeMirror.menu_dict.dialog_evaluateState({"target":{"name": BULK}});
     }
   }
 
@@ -698,25 +712,25 @@
       parameter,
       path_list;
 
-    if (position === "idle") {
+    if (position === IDLE) {
       return CodeMirror.commands.myEditor_openDialog(my_codemirror, my_direction);
     }
     if (position === my_direction) {
-      if (position === "left" && props.editor_active_path) {
+      if (position === LEFT && props.editor_active_path) {
         path_list = props.editor_active_path.split("/");
         path_list = path_list.splice(0, path_list.length - 1).join("/");
         props.editor_active_path = path_list || null;
-        props.editor_setDisplay(props.editor.active_path)
+        props.editor_setDisplay(props.editor.active_path);
         parameter = BLANK_SEARCH;
       } else {
         parameter = false;
       }
     }
-    if (position === "right" && my_direction == "left") {
+    if (position === RIGHT && my_direction == LEFT) {
       parameter = true;
     }
-    if (position === "left" && my_direction === "right") {
-      parameter = {"target": {"name": "open"}};
+    if (position === LEFT && my_direction === RIGHT) {
+      parameter = {"target": {"name": OPEN}};
     }
     return props.dialog_evaluateState(parameter);
   }
@@ -726,19 +740,19 @@
   }
 
   function editor_navigateRight(cm) {
-    return CodeMirror.commands.myEditor_navigateHorizontal(cm, "right");
+    return CodeMirror.commands.myEditor_navigateHorizontal(cm, RIGHT);
   }
 
   function editor_navigateLeft(cm) {
-    return CodeMirror.commands.myEditor_navigateHorizontal(cm, "left");
+    return CodeMirror.commands.myEditor_navigateHorizontal(cm, LEFT);
   }
 
   function editor_navigateUp(cm) {
-    return CodeMirror.commands.myEditor_navigateVertical(cm, "up");
+    return CodeMirror.commands.myEditor_navigateVertical(cm, UP);
   }
 
   function editor_navigateDown(cm) {
-    return CodeMirror.commands.myEditor_navigateVertical(cm, "down");
+    return CodeMirror.commands.myEditor_navigateVertical(cm, DOWN);
   }
 
   CodeMirror.commands.myEditor_closeFile = editor_closeFile;
@@ -780,22 +794,22 @@
         if (my_pointer) {
           if (my_pointer.target) {
             action = my_pointer.target.name;
-            if (action === "bulk") {
+            if (action === BULK) {
               return my_gadget.editor_bulkSave();
             }
-            if (action === "search") {
+            if (action === SEARCH) {
               return my_gadget.dialog_setFileMenu(my_pointer.target.find.value);
             }
-            if (action === "open") {
+            if (action === OPEN) {
               return my_gadget.editor_openFile();
             }
-            if (action === "close") {
+            if (action === CLOSE) {
               return my_gadget.editor_swapFile();
             }
-            if (action === "save") {
+            if (action === SAVE) {
               return my_gadget.editor_saveFile();
             }
-            if (action === "remove") {
+            if (action === REMOVE) {
               return my_gadget.editor_removeFile();
             }
           }
@@ -1081,7 +1095,7 @@
         console.log("no filen_id passed -> base safe")
         if (!dialog || (!props.editor_active_dialog && !props.editor_active_file)) {
           console.log("no dialog, force and end")
-          CodeMirror.commands.myEditor_navigateHorizontal(props.editor, "right");
+          CodeMirror.commands.myEditor_navigateHorizontal(props.editor, RIGHT);
           return;
         }
         if (!props.editor_active_file) {
@@ -1131,9 +1145,7 @@
       //  return;
       //}
 
-      console.log("prefixing...")
-      console.log(file_name.indexOf(props.editor_active_path))
-      if (props.editor_active_path && file_name.indexOf(props.editor_active_path)) {
+      if (props.editor_active_path) {
         console.log("prefixing with active path")
         file_name = props.editor_active_path + "/" + file_name
       }
@@ -1209,7 +1221,7 @@
       if (is_no_new_or_active_file) {
         if (!dialog) {
           if (props.editor_is_modified) {
-            CodeMirror.commands.myEditor_navigateHorizontal(props.editor, "right");
+            CodeMirror.commands.myEditor_navigateHorizontal(props.editor, RIGHT);
           }
           return;
         }
@@ -1220,7 +1232,7 @@
             if (props.editor_active_dialog) {
               return true;
             }
-            CodeMirror.commands.myEditor_navigateHorizontal(props.editor, "right");
+            CodeMirror.commands.myEditor_navigateHorizontal(props.editor, RIGHT);
             return;
           }
           return;
