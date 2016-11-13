@@ -982,6 +982,7 @@
           }
           console.log("set filemenu")
           props.dialog_is_filemenu_set = true;
+          return false;
         })
         .push(null, function (my_error) {
           console.log(my_error);
