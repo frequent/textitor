@@ -192,9 +192,9 @@
   CodeMirror.menu_dict.editor_active_path = null;
   CodeMirror.menu_dict.editor_active_file = null;
   CodeMirror.menu_dict.editor_active_cache = null;
-  CodeMirror.menu_dict.editor_is_idle = null;
   CodeMirror.menu_dict.editor_is_modified = null;
   CodeMirror.menu_dict.dialog = null;
+  CodeMirror.menu_dict.dialog_is_filemenu_set = null;
   CodeMirror.menu_dict.dialog_position = IDLE;
   CodeMirror.menu_dict.dialog_option_dict = {
     "position": 'top',
@@ -277,6 +277,7 @@
     if (props.display) {
       props.display.parentNode.removeChild(props.display);
       props.display = null;
+      props.dialog.is_filemenu_set = null;
     }
     if (!my_file_name) {
       return;
@@ -718,19 +719,17 @@
     }
     if (position === my_direction) {
       if (position === LEFT && props.editor_active_path) {
-        
-        // XXX editor_active_dialog already set, why? is_idle in the meantime
-        if (props.editor_is_idle) {
-          console.log("NOW GO")
+        console.log("is it set?")
+        if (props.dialog_is_filemenu_set) {
+          console.log("yep")
           props.editor_is_idle = null;
           path_list = props.editor_active_path.split("/");
           path_list = path_list.splice(0, path_list.length - 1).join("/");
           props.editor_active_path = path_list || null;
           props.editor_setDisplay(props.editor.active_path);
         } else {
-          props.editor_is_idle = true;
+          console.log("NAH")
         }
-        console.log("WAIT")
         parameter = BLANK_SEARCH;
       } else {
         parameter = false;
@@ -808,6 +807,7 @@
               return my_gadget.editor_bulkSave();
             }
             if (action === SEARCH) {
+              console.log("going through updateStorage")
               return my_gadget.dialog_setFileMenu(my_pointer.target.find.value);
             }
             if (action === OPEN) {
@@ -886,6 +886,7 @@
     })
 
     .declareMethod('dialog_setFileMenu', function (my_search_value) {
+      console.log("CALL SETMENU")
       var gadget = this,
         props = CodeMirror.menu_dict,
         memory_list = [],
@@ -979,6 +980,8 @@
               props.dialog.querySelector('span')
             );
           }
+          console.log("set filemenu")
+          props.dialog_is_filemenu_set = true;
         })
         .push(null, function (my_error) {
           console.log(my_error);
@@ -1431,6 +1434,7 @@
 
         // file menu
         if (props.dialog_position === 'left') {
+          console.log("opendialog, position left")
           queue.push(gadget.dialog_setFileMenu(dialog_input.value));
         }
 
