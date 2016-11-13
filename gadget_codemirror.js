@@ -717,12 +717,16 @@
     }
     if (position === my_direction) {
       if (position === LEFT && props.editor_active_path) {
+        console.log("HEYA, should be nulll")
+        console.log(props.editor_active_dialog)
         if (props.editor_active_dialog) {
+          console.log("shrink")
           path_list = props.editor_active_path.split("/");
           path_list = path_list.splice(0, path_list.length - 1).join("/");
           props.editor_active_path = path_list || null;
           props.editor_setDisplay(props.editor.active_path);
         }
+        console.log("pass blank search")
         parameter = BLANK_SEARCH;
       } else {
         parameter = false;
