@@ -277,7 +277,6 @@
     if (props.display) {
       props.display.parentNode.removeChild(props.display);
       props.display = null;
-      props.dialog.is_filemenu_set = null;
     }
     if (!my_file_name) {
       return;
@@ -453,7 +452,10 @@
           if (props.dialog_option_dict.onClose) {
             props.dialog_option_dict.onClose(dialog);
           }
+          
           props.dialog.parentNode.removeChild(props.dialog);
+          console.log("resetting filemenue_set")
+          props.dialog.is_filemenu_set = null;
           props.editor_active_dialog = null;
           props.editor.focus();
           props.dialog_position = IDLE;
