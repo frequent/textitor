@@ -982,6 +982,11 @@
           }
           console.log("set filemenu")
           props.dialog_is_filemenu_set = true;
+          if (props.editor_active_file) {
+            props.editor_setDisplay(props.editor_active_file);
+          } else {
+            props.editor_setDisplay(props.editor_active_path);
+          }
           return false;
         })
         .push(null, function (my_error) {
