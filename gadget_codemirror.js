@@ -708,16 +708,18 @@
 
   function editor_navigateHorizontal(my_codemirror, my_direction) {
     var props = CodeMirror.menu_dict,
-      wrap = my_codemirror.getWrapperElement(),
       position = props.dialog_position,
       parameter,
-      path_list;
+      path_list,
+      wrap;
 
     if (position === IDLE) {
       return CodeMirror.commands.myEditor_openDialog(my_codemirror, my_direction);
     }
     if (position === my_direction) {
       if (position === LEFT && props.editor_active_path) {
+        wrap = props.editor.getWrapperElement(),
+      
         console.log("HEYA, should be null")
         console.log(props.editor_active_dialog)
         // XXX editor_active_dialog is already set - find out why
