@@ -1388,6 +1388,7 @@
 
         dialog = props.dialog = props.editor_setDialog(editor, my_template, opts.position);
         dialog_input = dialog.querySelector("input[type='text']");
+        console.log("DIALOGCALLBACK; setting active_dialog to true")
         props.editor_active_dialog = true;
         closeNotification(props.editor, null);
 
