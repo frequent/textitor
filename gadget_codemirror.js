@@ -452,9 +452,7 @@
           if (props.dialog_option_dict.onClose) {
             props.dialog_option_dict.onClose(dialog);
           }
-          
           props.dialog.parentNode.removeChild(props.dialog);
-          console.log("resetting filemenue_set")
           props.dialog_is_filemenu_set = null;
           props.editor_active_dialog = null;
           props.editor.focus();
@@ -1089,6 +1087,8 @@
         props = CodeMirror.menu_dict,
         dialog = props.dialog,
         active_cache = props.editor_active_cache || "textitor",
+        active_path = props.editor_active_path,
+        active_file = props.editor_active_file,
         file_name_input,
         file_name,
         is_container,
@@ -1108,12 +1108,12 @@
       // XXX refactor
       if (!my_file_id) {
         console.log("no filen_id passed -> base safe")
-        if (!dialog || (!props.editor_active_dialog && !props.editor_active_file)) {
+        if (!dialog || (!props.editor_active_dialog && !active_file)) {
           console.log("no dialog, force and end")
           CodeMirror.commands.myEditor_navigateHorizontal(props.editor, RIGHT);
           return;
         }
-        if (!props.editor_active_file) {
+        if (!active_file) {
           console.log("active file")
           file_name_input = dialog.querySelector("input");
           file_name = file_name_input.value;
@@ -1122,8 +1122,8 @@
           mime_type = setMimeType(mime_type_input);
         } else {
           console.log("no active file")
-          file_name = props.editor_active_file.name;
-          mime_type = props.editor_active_file.mime_type;
+          file_name = active_file.name;
+          mime_type = active_file.mime_type;
         }
 
         // validate form
@@ -1141,9 +1141,10 @@
           if (is_container.value === 'cache') {
             return props.dialog_flagInput(file_name_input, 'Cache not supported');
           }
-          if (props.editor_active_path) {
-            file_name = props.editor_active_path + "/" + file_name;
-          }
+          console.log("prefix active path in folder")
+          //if (active_path) {
+          //  file_name = active_path + "/" + file_name;
+          //}
           mime_type = "application/json";
           folder_file_list = [];
         }
@@ -1159,10 +1160,11 @@
       //  file_name_input.focus();
       //  return;
       //}
-
-      if (props.editor_active_path) {
-        console.log("prefixing with active path")
-        file_name = props.editor_active_path + "/" + file_name
+      console.log("active_path, ", active_path)
+      console.log(file_name.indexOf(active_path) === -1)
+      if (active_path && file_name.indexOf(active_path) === -1) {
+        console.log("prefixing active path in general")
+        file_name = active_path + "/" + file_name
       }
 
       console.log("SAVING")
