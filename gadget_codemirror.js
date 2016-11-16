@@ -274,6 +274,7 @@
   }
 
   function editor_setDisplay(my_file_name) {
+    console.log("setting display with", file_name)
     var props = CodeMirror.menu_dict;
     if (props.display) {
       props.display.parentNode.removeChild(props.display);
@@ -720,7 +721,8 @@
     }
     if (position === my_direction) {
       if (position === LEFT && props.editor_active_path) {
-        console.log("is it set?")
+        console.log("LEFT + LEFT, beware to immediately traverse up!")
+        console.log("file-menu-set=", props.dialog_is_filemenu_set)
         if (props.dialog_is_filemenu_set) {
           console.log("yep")
           props.editor_is_idle = null;
@@ -729,7 +731,7 @@
           props.editor_active_path = path_list || null;
           props.editor_setDisplay(props.editor.active_path);
         } else {
-          console.log("NAH")
+          console.log("NAH, we don't move up!!!")
         }
         parameter = BLANK_SEARCH;
       } else {
@@ -742,6 +744,7 @@
     if (position === LEFT && my_direction === RIGHT) {
       parameter = {"target": {"name": OPEN}};
     }
+    console.log("evaluating with parameter, ", parameter)
     return props.dialog_evaluateState(parameter);
   }
 
