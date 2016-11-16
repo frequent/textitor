@@ -17,6 +17,7 @@
   var REMOVE = "remove";
   var SEARCH = "search";
   var BULK = "bulk";
+  var SYNC = "sync";
   
   // and...
   var IDLE = "idle";
@@ -1010,11 +1011,18 @@
 
       // no file selected
       if (!props.editor_active_file) {
-        return true;
+        
+        // this will wipe a folder, without it's contents? are you sure?
+        if (props.editor_active_path) {
+          file_name = props.editor_active_path;
+          mime_type = "application/json";
+        } else {
+          return true;
+        }
+      } else {
+        active_cache = props.editor_active_cache || "textitor";
+        file_name = props.editor_active_file.name;
       }
-
-      active_cache = props.editor_active_cache || "textitor";
-      file_name = props.editor_active_file.name;
 
       return new RSVP.Queue()
         .push(function () {
