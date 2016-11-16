@@ -1015,7 +1015,6 @@
         // this will wipe a folder, without it's contents? are you sure?
         if (props.editor_active_path) {
           file_name = props.editor_active_path;
-          mime_type = "application/json";
         } else {
           return true;
         }
