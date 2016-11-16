@@ -1010,18 +1010,23 @@
       console.log(props.editor_active_path)
 
       // no file selected
+      // XXX refactor
       if (!props.editor_active_file) {
         
         // this will wipe a folder, without it's contents? are you sure?
         if (props.editor_active_path) {
-          file_name = props.editor_active_path;
+          if (window.confirm("Delete folder " + props.editor_active_path)) {
+            file_name = props.editor_active_path;
+          } else {
+            return true;
+          }
         } else {
           return true;
         }
       } else {
-        active_cache = props.editor_active_cache || "textitor";
         file_name = props.editor_active_file.name;
       }
+      active_cache = props.editor_active_cache || "textitor";
 
       return new RSVP.Queue()
         .push(function () {
