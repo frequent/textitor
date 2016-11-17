@@ -1,7 +1,6 @@
 
 => progress
 > fix lost temp files
-> fix delete folder
 > split file menu into temp files and folder contents?
 > fix repeating folder names
 > folders include list of containing items? YES
