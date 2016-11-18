@@ -274,7 +274,6 @@
   }
 
   function editor_setDisplay(my_file_name) {
-    console.log("setting display with", my_file_name)
     var props = CodeMirror.menu_dict;
     if (props.display) {
       props.display.parentNode.removeChild(props.display);
@@ -475,17 +474,17 @@
       splitFolder = path.split(folder),
       splitFolderPop;
 
-    console.log("IN, ", folder, my_path, indexFolder, splitFolder)
+    //console.log("IN, ", folder, my_path, indexFolder, splitFolder)
 
     // self
     if (path === folder) {
-      console.log("self, FALSE")
+      //console.log("self, FALSE")
       return false;
     }
 
     // parent folder/file
     if ((indexFolder === -1) && folder !== "/") {
-      console.log("parent folder/file, FALSE")
+      //console.log("parent folder/file, FALSE")
       return false;
     }
     
@@ -494,10 +493,10 @@
 
       // current active folder, ok
       if (splitFolder[0] === "" && splitFolder[1].split("/").length === 2) {
-        console.log("subfolder, but currently on it, TRUE")
+        //console.log("subfolder, but currently on it, TRUE")
         return true;
       }
-      console.log("subfolder, FALSE")
+      //console.log("subfolder, FALSE")
       return false;
     }
 
@@ -505,13 +504,13 @@
     splitFolderPop = splitFolder.pop();
     if (splitFolderPop.split(".").length !== 2) {
       if (splitFolderPop.split("/").length === 1) {
-        console.log("sub-file, TRUE")
+        //console.log("sub-file, TRUE")
         return true;
       }
-      console.log("sub-folder, path, FALSE")
+      //console.log("sub-folder, path, FALSE")
       return false;
     }                  
-    console.log("nothing, TRUE")
+    //console.log("nothing, TRUE")
     return true;              
   }
 
@@ -724,7 +723,7 @@
       if (position === LEFT && props.editor_active_path) {
         console.log("XXX testing for is_filemenu-set", props.dialog_is_filemenu_set)
         if (props.dialog_is_filemenu_set) {
-          console.log("yep")
+          console.log("already set, shorten path")
           path_list = props.editor_active_path.split("/");
           path_list = path_list.splice(0, path_list.length - 1).join("/");
           props.editor_active_path = path_list || null;
@@ -952,7 +951,7 @@
               for (item in response) {
                 if (response.hasOwnProperty(item)) {
                   if (props.dialog_isFileMenuItem(item, current_folder)) {  
-                    console.log("put on menu", item)
+                    //console.log("put on menu", item)
                     if (item.indexOf("_history") === -1) {
                       if (memory_list.indexOf(path) > -1) {
                         item = item + "*";
