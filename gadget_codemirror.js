@@ -722,7 +722,6 @@
     }
     if (position === my_direction) {
       if (position === LEFT && props.editor_active_path) {
-        console.log("LEFT + LEFT, beware to immediately traverse up!")
         console.log("XXX testing for is_filemenu-set", props.dialog_is_filemenu_set)
         if (props.dialog_is_filemenu_set) {
           console.log("yep")
@@ -730,8 +729,6 @@
           path_list = path_list.splice(0, path_list.length - 1).join("/");
           props.editor_active_path = path_list || null;
           props.editor_setDisplay(props.editor.active_path);
-        } else {
-          console.log("NAH, we don't move up!!!")
         }
         parameter = BLANK_SEARCH;
       } else {
@@ -744,7 +741,6 @@
     if (position === LEFT && my_direction === RIGHT) {
       parameter = {"target": {"name": OPEN}};
     }
-    console.log("evaluating with parameter, ", parameter)
     return props.dialog_evaluateState(parameter);
   }
 
@@ -811,7 +807,6 @@
               return my_gadget.editor_bulkSave();
             }
             if (action === SEARCH) {
-              console.log("going through updateStorage")
               return my_gadget.dialog_setFileMenu(my_pointer.target.find.value);
             }
             if (action === OPEN) {
@@ -890,7 +885,6 @@
     })
 
     .declareMethod('dialog_setFileMenu', function (my_search_value) {
-      console.log("CALL SETMENU")
       var gadget = this,
         props = CodeMirror.menu_dict,
         memory_list = [],
@@ -1008,10 +1002,6 @@
 
       // REMOVE => clear file from memory and serviceworker
 
-      console.log("what up Remove?")
-      console.log(props.editor_active_file)
-      console.log(props.editor_active_path)
-
       // no file selected
       // XXX refactor
       if (!props.editor_active_file) {
@@ -1128,7 +1118,6 @@
       
       // XXX refactor
       if (!my_file_id) {
-        console.log("no filen_id passed -> base safe")
         if (!dialog || (!props.editor_active_dialog && !active_file)) {
           console.log("no dialog, force and end")
           CodeMirror.commands.myEditor_navigateHorizontal(props.editor, RIGHT);
@@ -1182,9 +1171,6 @@
         file_name = active_path + "/" + file_name
       }
 
-      console.log("SAVING")
-      console.log(file_name)
-      console.log(content)
       return new RSVP.Queue()
         .push(function () {
           return gadget.setActiveStorage("memory");
@@ -1211,7 +1197,6 @@
         )
         .push(function(my_content) {
           content = content || folder_file_list || my_content[0].target.result;
-          console.log("storing on service worker")
           return gadget.setActiveStorage("serviceworker");
         })
         .push(function() {
@@ -1225,11 +1210,9 @@
           console.log("DONE")
           
           if (!my_file_id) {
-            console.log("no file id, regualr save, file or folder, update everything")
             props.editor_resetModified();
             props.editor_setDisplay(file_name);
             if (is_container) {
-              console.log("CONTAINER, end here")
               return true;
             }
             props.editor.setOption("mode", mime_type);
