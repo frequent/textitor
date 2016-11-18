@@ -455,6 +455,7 @@
             props.dialog_option_dict.onClose(dialog);
           }
           props.dialog.parentNode.removeChild(props.dialog);
+          console.log("XXX resetting is_filemenu_set")
           props.dialog_is_filemenu_set = null;
           props.editor_active_dialog = null;
           props.editor.focus();
@@ -722,10 +723,9 @@
     if (position === my_direction) {
       if (position === LEFT && props.editor_active_path) {
         console.log("LEFT + LEFT, beware to immediately traverse up!")
-        console.log("file-menu-set=", props.dialog_is_filemenu_set)
+        console.log("XXX testing for is_filemenu-set", props.dialog_is_filemenu_set)
         if (props.dialog_is_filemenu_set) {
           console.log("yep")
-          props.editor_is_idle = null;
           path_list = props.editor_active_path.split("/");
           path_list = path_list.splice(0, path_list.length - 1).join("/");
           props.editor_active_path = path_list || null;
@@ -984,7 +984,7 @@
               props.dialog.querySelector('span')
             );
           }
-          console.log("set filemenu")
+          console.log("XXX setting is_filemenu_set to true")
           props.dialog_is_filemenu_set = true;
           if (props.editor_active_file) {
             props.editor_setDisplay(props.editor_active_file.name);
