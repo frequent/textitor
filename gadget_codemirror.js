@@ -977,22 +977,24 @@
               props.dialog.querySelector('span')
             );
           }
-          //console.log("XXX setting is_filemenu_set to true")
-
+          
           if (!props.dialog_is_filemenu_set) {
             props.dialog_is_filemenu_set = true;
             return false;
           }
 
-          // file open and opening a path?
+          props.editor_setDisplay(props.editor_active_path || props.editor_active_file.name);
+          
+          // file open and opening a path? 
           console.log("WHAT DO SET?")
           console.log(props.editor_active_file)
-          console.log(props.editor_active_path)
+          console.log(props.editor_active_path) 
+          /*
           if (props.editor_active_file) {
             props.editor_setDisplay(props.editor_active_file.name);
           } else {
             props.editor_setDisplay(props.editor_active_path);
-          }
+          }*/
           return false;
         })
         .push(null, function (my_error) {
