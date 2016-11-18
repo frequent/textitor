@@ -977,8 +977,9 @@
               props.dialog.querySelector('span')
             );
           }
-          
-          if (!props.dialog_is_filemenu_set) {
+          console.log("checking..., ", props.dialog_is_filemenu_set)
+          if (props.dialog_is_filemenu_set === null) {
+            console.log("Setting it now")
             props.dialog_is_filemenu_set = true;
             return false;
           }
@@ -1407,7 +1408,6 @@
 
         dialog = props.dialog = props.editor_setDialog(editor, my_template, opts.position);
         dialog_input = dialog.querySelector("input[type='text']");
-        console.log("DIALOGCALLBACK; setting active_dialog to true")
         props.editor_active_dialog = true;
         closeNotification(props.editor, null);
 
@@ -1446,7 +1446,6 @@
 
         // file menu
         if (props.dialog_position === 'left') {
-          console.log("opendialog, position left")
           queue.push(gadget.dialog_setFileMenu(dialog_input.value));
         }
 
