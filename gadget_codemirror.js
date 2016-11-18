@@ -806,6 +806,7 @@
               return my_gadget.editor_bulkSave();
             }
             if (action === SEARCH) {
+              console.log("FILEMENU from search")
               return my_gadget.dialog_setFileMenu(my_pointer.target.find.value);
             }
             if (action === OPEN) {
@@ -1446,6 +1447,7 @@
 
         // file menu
         if (props.dialog_position === 'left') {
+          console.log("FILEMENU from left")
           queue.push(gadget.dialog_setFileMenu(dialog_input.value));
         }
 
