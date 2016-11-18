@@ -978,8 +978,12 @@
             );
           }
           //console.log("XXX setting is_filemenu_set to true")
-          props.dialog_is_filemenu_set = true;
-          
+
+          if (!props.dialog_is_filemenu_set) {
+            props.dialog_is_filemenu_set = true;
+            return false;
+          }
+
           // file open and opening a path?
           console.log("WHAT DO SET?")
           console.log(props.editor_active_file)
