@@ -274,7 +274,7 @@
   }
 
   function editor_setDisplay(my_file_name) {
-    console.log("setting display with", file_name)
+    console.log("setting display with", my_file_name)
     var props = CodeMirror.menu_dict;
     if (props.display) {
       props.display.parentNode.removeChild(props.display);
