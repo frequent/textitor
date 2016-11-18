@@ -977,8 +977,13 @@
               props.dialog.querySelector('span')
             );
           }
-          console.log("XXX setting is_filemenu_set to true")
+          //console.log("XXX setting is_filemenu_set to true")
           props.dialog_is_filemenu_set = true;
+          
+          // file open and opening a path?
+          console.log("WHAT DO SET?")
+          console.log(props.editor_active_file)
+          console.log(props.editor_active_path)
           if (props.editor_active_file) {
             props.editor_setDisplay(props.editor_active_file.name);
           } else {
