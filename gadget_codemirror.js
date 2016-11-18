@@ -987,7 +987,7 @@
           console.log("set filemenu")
           props.dialog_is_filemenu_set = true;
           if (props.editor_active_file) {
-            props.editor_setDisplay(props.editor_active_file);
+            props.editor_setDisplay(props.editor_active_file.name);
           } else {
             props.editor_setDisplay(props.editor_active_path);
           }
