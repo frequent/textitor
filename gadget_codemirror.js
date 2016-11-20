@@ -394,7 +394,7 @@
               [folder.name + " | " + folder.item_list[i].replace(href, "")]
             );
           }
-        } else {
+        } else if (folder.name !== "open") {
           str += props.dialog_parseTemplate(
             EMPTY_TEMPLATE,
             ["[empty folder]"]
@@ -903,7 +903,7 @@
     .declareMethod('dialog_setFileMenu', function (my_search_value) {
       var gadget = this,
         props = CodeMirror.menu_dict,
-        entry_dict = {"memory": {"name":"active", "item_list": []}},
+        entry_dict = {"memory": {"name":"open", "item_list": []}},
         memory_list = [],
         option_dict,
         memory;
