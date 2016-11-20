@@ -952,6 +952,10 @@
           // and match against search (can't user query on allAttachments)
           // if no search is run, indexOf("") = 0 & account for folders/cache
           // by filtering ids for them until keeping a file index in the folder
+          console.log("BUILD TWO menus")
+          console.log(memory_list)
+          console.log(my_directory_content)
+
           for (i = 0; i < len; i += 1) {
             response = my_directory_content[i];
             for (item in response) {
