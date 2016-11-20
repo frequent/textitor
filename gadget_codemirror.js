@@ -397,7 +397,7 @@
         } else {
           str += props.dialog_parseTemplate(
             EMPTY_TEMPLATE,
-            [folder.name + " | []"]
+            ["[empty folder]"]
           );
         }
       }

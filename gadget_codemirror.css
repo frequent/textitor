@@ -74,3 +74,7 @@ body {
   color: #fff; /* #3E7087; */
 }  
   
+/* empty folder */
+.CodeMirror .custom-file-menu-empty-folder {
+  opacity: .25;
+}
