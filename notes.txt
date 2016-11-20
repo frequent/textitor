@@ -1,19 +1,18 @@
 
 => progress
-> fix lost temp files
-> split file menu into temp files and folder contents?
+> don't allow to save file.name as folder and vice versa
 > fix repeating folder names
-> folders include list of containing items? YES
-> folders containing items used navigating versus always fetching all files
-> delete/rename/move/copy folder?
-> delete/rename/move/copy file?
+> rename/move/copy folder?
+> rename/move/copy file?
+> fix bulk save
+> once I leave a folder an active file should be added to list, even if open
 > how to handle save all across multiple folders?
 > how to handle close across multiple folders with unsaved filed?
-> fix why checkbox via space does not work
 - enable multiple caches = projects
 - fix serviceworker throw on existing file with same name
 - stop passing CodeMirror around, it's a global anyway
 - on 2nd invalid save, focus input to prevent using mouse
+
 
 => maintain self
 - add manifest
