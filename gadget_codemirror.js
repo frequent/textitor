@@ -570,7 +570,7 @@
         case 88: return CodeMirror.commands.myEditor_closeDialog();
 
         // NOTE: we could pass CodeMirror.menu_dict.editor;
-        case 37: return CodeMirror.commands.myEditor_navigateHorizontal(undefined, LEFT);
+        //case 37: return CodeMirror.commands.myEditor_navigateHorizontal(undefined, LEFT);
         case 39: return CodeMirror.commands.myEditor_navigateHorizontal(undefined, RIGHT);
         case 38: return CodeMirror.commands.myEditor_navigateVertical(undefined, UP);
         case 40: return CodeMirror.commands.myEditor_navigateVertical(undefined, DOWN);
