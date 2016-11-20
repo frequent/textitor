@@ -935,7 +935,8 @@
           var editor = props.dialog.parentNode,
             file_menu = editor.querySelector(".custom-file-menu"),
             len = my_directory_content.length,
-            current_folder = props.editor_active_path || "",
+            active_path = props.editor_active_path,
+            active_file = props.editor_active_file,
             path,
             is_nested,
             response,
@@ -951,7 +952,7 @@
               response = my_directory_content[i];
               for (item in response) {
                 if (response.hasOwnProperty(item)) {
-                  if (props.dialog_isFileMenuItem(item, current_folder)) {  
+                  if (props.dialog_isFileMenuItem(item, active_path)) {  
                     //console.log("put on menu", item)
                     if (item.indexOf("_history") === -1) {
                       if (memory_list.indexOf(path) > -1) {
@@ -985,10 +986,10 @@
             return false;
           }
 
-          props.editor_setDisplay(props.editor_active_path || props.editor_active_file.name);
+          props.editor_setDisplay(active_path || active_file && active_file.name);
           
           // file open and opening a path? 
-          console.log("WHAT DO SET?")
+          console.log("WHAT COULD EWE SET?")
           console.log(props.editor_active_file)
           console.log(props.editor_active_path) 
           /*
