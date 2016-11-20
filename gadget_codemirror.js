@@ -196,6 +196,7 @@
   CodeMirror.menu_dict.editor_is_modified = null;
   CodeMirror.menu_dict.dialog = null;
   CodeMirror.menu_dict.dialog_is_filemenu_set = null;
+  CodeMirror.menu_dict.dialog_is_codemirror_call = null;
   CodeMirror.menu_dict.dialog_position = IDLE;
   CodeMirror.menu_dict.dialog_option_dict = {
     "position": 'top',
@@ -543,16 +544,6 @@
   function dialog_setNavigationCallback(my_event, my_value, my_callback) {
     var cmd = CodeMirror.commands;
 
-    // XXX: pass CodeMirror.menu_dict.editor?
-    function isDialogActive(command_to_call, direction) {
-      console.log("INSIDE SHORTCUT SHIM")
-      console.log("active dialog=", CodeMirror.menu_dict, CodeMirror.menu_dict.editor_active_dialog)
-      console.log("is_fielemnueset, ", CodeMirror.menu_dict.dialog_is_filemenu_set)
-      if (CodeMirror.menu_dict.editor_active_dialog) {
-        return cmd[command_to_call](undefined, direction);
-      }
-    }
-
     // esc
     if (my_event.keyCode === 27) {
       return cmd.myEditor_closeDialog();
@@ -580,11 +571,12 @@
         case 83: return cmd.myEditor_saveFromDialog(CodeMirror);
         case 88: return cmd.myEditor_closeDialog();
 
-        // if dialog is open, CodeMirror shortcuts don't work. this shims them
-        case 37: return isDialogActive("myEditor_navigateHorizontal", LEFT);
-        case 39: return isDialogActive("myEditor_navigateHorizontal", RIGHT);
-        case 38: return isDialogActive("myEditor_navigateVertical", UP);
-        case 40: return isDialogActive("myEditor_navigateVertical", DOWN);
+        // NOTE: pass CodeMirror.menu_dict.editor?
+        // NOTE: manual capture is necessary when dialog is open
+        case 37: return cmd.myEditor_navigateHorizontal(undefined, LEFT);
+        case 39: return cmd.myEditor_navigateHorizontal(undefined, RIGHT);
+        case 38: return cmd.myEditor_navigateVertical(undefined, UP);
+        case 40: return cmd.myEditor_navigateVertical(undefined, DOWN);
       }
     }
   }
@@ -721,12 +713,22 @@
     }
   }
 
-  function editor_navigateHorizontal(my_codemirror, my_direction) {
+  function editor_navigateHorizontal(my_codemirror, my_direction, my_cm_call) {
     console.log("NAV-HORIZONTAL")
     var props = CodeMirror.menu_dict,
       position = props.dialog_position,
       parameter,
       path_list;
+    
+    // prevent double triggers from codemirror and shim
+    if (!props.dialog_is_codemirror_call) {
+      console.log("undefined, set to:", my_cm_call)
+      props.dialog_is_codemirror_call = my_cm_call;
+    } else {
+      console.log("defined, reset and STOP")
+      props.dialog_is_codemirror_call = null;
+      return;
+    }
 
     if (position === IDLE) {
       return CodeMirror.commands.myEditor_openDialog(my_codemirror, my_direction);
@@ -761,12 +763,12 @@
 
   function editor_navigateRight(cm) {
     console.log("CALL NAV-RIGHT")
-    return CodeMirror.commands.myEditor_navigateHorizontal(cm, RIGHT);
+    return CodeMirror.commands.myEditor_navigateHorizontal(cm, RIGHT, true);
   }
 
   function editor_navigateLeft(cm) {
     console.log("CALL NAV-LEFT")
-    return CodeMirror.commands.myEditor_navigateHorizontal(cm, LEFT);
+    return CodeMirror.commands.myEditor_navigateHorizontal(cm, LEFT, true);
   }
 
   function editor_navigateUp(cm) {
