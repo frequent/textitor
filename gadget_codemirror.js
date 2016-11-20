@@ -740,7 +740,7 @@
     }
     if (position === my_direction) {
       if (position === LEFT && props.editor_active_path) {
-        if (props.dialog_is_filemenu_set) {
+        if (props.dialog_is_filemenu_set || !props.editor_active_file) {
           path_list = props.editor_active_path.split("/");
           path_list = path_list.splice(0, path_list.length - 1).join("/");
           props.editor_active_path = path_list || null;
