@@ -892,9 +892,10 @@
     .declareMethod('dialog_setFileMenu', function (my_search_value) {
       var gadget = this,
         props = CodeMirror.menu_dict,
+        entry_dict = {"memory": {"name":"active", "item_list": []}},
         memory_list = [],
-        entry_dict = {},
-        option_dict;
+        option_dict,
+        memory;
 
       return new RSVP.Queue()
         .push(function () {
@@ -913,6 +914,10 @@
               }
             }
           }
+          memory = {
+            item_list: memory_list,
+            size: memory_list.length
+          };
           return gadget.setActiveStorage("serviceworker");
         })
         .push(function () {
@@ -946,35 +951,41 @@
             is_nested,
             response,
             item,
-            i;
+            i,
+            j;
 
           // loop folder contents, exclude history, check if file is on memory
           // and match against search (can't user query on allAttachments)
           // if no search is run, indexOf("") = 0 & account for folders/cache
           // by filtering ids for them until keeping a file index in the folder
           console.log("BUILD TWO menus")
-          console.log(memory_list)
+          console.log(memory)
           console.log(my_directory_content)
 
           for (i = 0; i < len; i += 1) {
             response = my_directory_content[i];
             for (item in response) {
-              console.log("testing, ", item)
               if (response.hasOwnProperty(item)) {
                 if (props.dialog_isFileMenuItem(item, active_path)) {  
                   console.log("put on menu", item)
-                  if (item.indexOf("_history") === -1) {
-                    if (memory_list.indexOf(path) > -1) {
-                      item = item + "*";
-                    }
-                    if (item.indexOf(my_search_value || "") > -1) {
-                      entry_dict[i].item_list.push(item);
-                    }
+                  if (item.indexOf(my_search_value || "") > -1) {
+                    entry_dict[i].item_list.push(item);
                   }
                 }
               }
             }
           }
+
+          for (j = 0; j < memory.size; j += 1) {
+            item = memory.item_list[j];
+            if (item.indexOf("_history") === -1) {
+              if (item.indexOf(my_search_value || "") > -1) {
+                entry_dict["memory"].item_list.push(item + "*");
+              }
+            }
+          }
+
+          console.log(entry_dict)
 
           if (file_menu) {
             file_menu.parentNode.replaceChild(
