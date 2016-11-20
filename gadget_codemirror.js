@@ -1324,7 +1324,6 @@
       if (file_name_to_open.split(".").length === 1) {
         props.editor_setActivePath(file_name_to_open);
         props.dialog_evaluateState(BLANK_SEARCH);
-        props.editor_setDisplay(file_name_to_open + "/");
         return;
       }
       
