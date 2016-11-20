@@ -455,7 +455,6 @@
             props.dialog_option_dict.onClose(dialog);
           }
           props.dialog.parentNode.removeChild(props.dialog);
-          console.log("XXX evaluatestate, resetting is_filemenu_set, because dialog is closed")
           props.dialog_is_filemenu_set = null;
           props.editor_active_dialog = null;
           props.editor.focus();
@@ -475,17 +474,17 @@
       splitFolder = path.split(folder),
       splitFolderPop;
 
-    //console.log("IN, ", folder, my_path, indexFolder, splitFolder)
+    console.log("IN, ", folder, my_path, indexFolder, splitFolder)
 
     // self
     if (path === folder) {
-      //console.log("self, FALSE")
+      console.log("self, FALSE")
       return false;
     }
 
     // parent folder/file
     if ((indexFolder === -1) && folder !== "/") {
-      //console.log("parent folder/file, FALSE")
+      console.log("parent folder/file, FALSE")
       return false;
     }
     
@@ -494,10 +493,10 @@
 
       // current active folder, ok
       if (splitFolder[0] === "" && splitFolder[1].split("/").length === 2) {
-        //console.log("subfolder, but currently on it, TRUE")
+        console.log("subfolder, but currently on it, TRUE")
         return true;
       }
-      //console.log("subfolder, FALSE")
+      console.log("subfolder, FALSE")
       return false;
     }
 
@@ -505,13 +504,13 @@
     splitFolderPop = splitFolder.pop();
     if (splitFolderPop.split(".").length !== 2) {
       if (splitFolderPop.split("/").length === 1) {
-        //console.log("sub-file, TRUE")
+        console.log("sub-file, TRUE")
         return true;
       }
-      //console.log("sub-folder, path, FALSE")
+      console.log("sub-folder, path, FALSE")
       return false;
     }                  
-    //console.log("nothing, TRUE")
+    console.log("nothing, TRUE")
     return true;              
   }
 
@@ -714,30 +713,23 @@
   }
 
   function editor_navigateHorizontal(my_codemirror, my_direction, my_cm_call) {
-    console.log("NAV-HORIZONTAL")
     var props = CodeMirror.menu_dict,
       position = props.dialog_position,
       parameter,
       path_list;
-    
-    // prevent double triggers from codemirror and shim
+
     if (!props.dialog_is_codemirror_call) {
-      console.log("undefined, set to:", my_cm_call)
       props.dialog_is_codemirror_call = my_cm_call;
     } else {
-      console.log("defined, reset and STOP")
       props.dialog_is_codemirror_call = null;
       return;
     }
-
     if (position === IDLE) {
       return CodeMirror.commands.myEditor_openDialog(my_codemirror, my_direction);
     }
     if (position === my_direction) {
       if (position === LEFT && props.editor_active_path) {
-        console.log("XXX in Navigate Horizontal, testing for is_filemenu-set", props.dialog_is_filemenu_set)
         if (props.dialog_is_filemenu_set) {
-          console.log("XXX already set, shorten path")
           path_list = props.editor_active_path.split("/");
           path_list = path_list.splice(0, path_list.length - 1).join("/");
           props.editor_active_path = path_list || null;
@@ -762,12 +754,10 @@
   }
 
   function editor_navigateRight(cm) {
-    console.log("CALL NAV-RIGHT")
     return CodeMirror.commands.myEditor_navigateHorizontal(cm, RIGHT, true);
   }
 
   function editor_navigateLeft(cm) {
-    console.log("CALL NAV-LEFT")
     return CodeMirror.commands.myEditor_navigateHorizontal(cm, LEFT, true);
   }
 
@@ -822,7 +812,6 @@
               return my_gadget.editor_bulkSave();
             }
             if (action === SEARCH) {
-              console.log("FILEMENU from search")
               return my_gadget.dialog_setFileMenu(my_pointer.target.find.value);
             }
             if (action === OPEN) {
@@ -966,9 +955,10 @@
           for (i = 0; i < len; i += 1) {
             response = my_directory_content[i];
             for (item in response) {
+              console.log("testing, ", item)
               if (response.hasOwnProperty(item)) {
                 if (props.dialog_isFileMenuItem(item, active_path)) {  
-                  //console.log("put on menu", item)
+                  console.log("put on menu", item)
                   if (item.indexOf("_history") === -1) {
                     if (memory_list.indexOf(path) > -1) {
                       item = item + "*";
@@ -993,9 +983,7 @@
               props.dialog.querySelector('span')
             );
           }
-          console.log("inside setFile Menu, checking..., ", props.dialog_is_filemenu_set)
           if (props.dialog_is_filemenu_set === null) {
-            console.log("inside setFile Menu, not set, next call will pass")
             props.dialog_is_filemenu_set = true;
             return false;
           }
@@ -1134,35 +1122,29 @@
       // XXX refactor
       if (!my_file_id) {
         if (!dialog || (!props.editor_active_dialog && !active_file)) {
-          console.log("CALL SAVE-FILE")
           CodeMirror.commands.myEditor_navigateHorizontal(props.editor, RIGHT);
           return;
         }
         if (!active_file) {
-          console.log("active file")
           file_name_input = dialog.querySelector("input");
           file_name = file_name_input.value;
           is_container = dialog.querySelector('input[name="is_container"]:checked');
           mime_type_input = file_name.split(".").pop().replace("/", "");
           mime_type = setMimeType(mime_type_input);
         } else {
-          console.log("no active file")
           file_name = active_file.name;
           mime_type = active_file.mime_type;
         }
 
         // validate form
         if (dialog) {
-          console.log("dialog set")
           if (!file_name || file_name_input && file_name_input.value === "Enter valid URL.") {
-            console.log("dialog set missing file name")
             return props.dialog_flagInput(file_name_input, 'Enter valid URL.');
           }
         }
         content = props.editor.getValue();
         
         if (is_container) {
-          console.log("creating a folder")
           if (is_container.value === 'cache') {
             return props.dialog_flagInput(file_name_input, 'Cache not supported');
           }
@@ -1170,7 +1152,6 @@
           folder_file_list = [];
         }
       } else {
-        console.log("file_id passed, bulk save?")
         file_name = my_file_id;
         mime_type = setMimeType(file_name.split(".").pop().replace("/", ""));
       }
@@ -1222,8 +1203,6 @@
           );
         })
         .push(function () {
-          console.log("DONE")
-          
           if (!my_file_id) {
             props.editor_resetModified();
             props.editor_setDisplay(file_name);
@@ -1251,7 +1230,6 @@
       if (is_no_new_or_active_file) {
         if (!dialog) {
           if (props.editor_is_modified) {
-            console.log("CALL SWAP-FILE 1")
             CodeMirror.commands.myEditor_navigateHorizontal(props.editor, RIGHT);
           }
           return;
@@ -1263,7 +1241,6 @@
             if (props.editor_active_dialog) {
               return true;
             }
-            console.log("CALL SWAP-FILE 2")
             CodeMirror.commands.myEditor_navigateHorizontal(props.editor, RIGHT);
             return;
           }
@@ -1451,7 +1428,6 @@
 
         // file menu
         if (props.dialog_position === 'left') {
-          console.log("FILEMENU from left")
           queue.push(gadget.dialog_setFileMenu(dialog_input.value));
         }
 
