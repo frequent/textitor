@@ -274,7 +274,6 @@
   }
 
   function editor_setDisplay(my_file_name) {
-    console.log("CALLED DISPLAY WITH ,", my_file_name)
     var props = CodeMirror.menu_dict;
     if (props.display) {
       props.display.parentNode.removeChild(props.display);
@@ -455,7 +454,7 @@
             props.dialog_option_dict.onClose(dialog);
           }
           props.dialog.parentNode.removeChild(props.dialog);
-          console.log("XXX resetting is_filemenu_set")
+          console.log("XXX evaluatestate, resetting is_filemenu_set, because dialog is closed")
           props.dialog_is_filemenu_set = null;
           props.editor_active_dialog = null;
           props.editor.focus();
@@ -722,9 +721,9 @@
     }
     if (position === my_direction) {
       if (position === LEFT && props.editor_active_path) {
-        console.log("XXX testing for is_filemenu-set", props.dialog_is_filemenu_set)
+        console.log("XXX in Navigate Horizontal, testing for is_filemenu-set", props.dialog_is_filemenu_set)
         if (props.dialog_is_filemenu_set) {
-          console.log("already set, shorten path")
+          console.log("XXX already set, shorten path")
           path_list = props.editor_active_path.split("/");
           path_list = path_list.splice(0, path_list.length - 1).join("/");
           props.editor_active_path = path_list || null;
@@ -948,20 +947,18 @@
           // and match against search (can't user query on allAttachments)
           // if no search is run, indexOf("") = 0 & account for folders/cache
           // by filtering ids for them until keeping a file index in the folder
-          if (len > 0) {
-            for (i = 0; i < len; i += 1) {
-              response = my_directory_content[i];
-              for (item in response) {
-                if (response.hasOwnProperty(item)) {
-                  if (props.dialog_isFileMenuItem(item, active_path)) {  
-                    //console.log("put on menu", item)
-                    if (item.indexOf("_history") === -1) {
-                      if (memory_list.indexOf(path) > -1) {
-                        item = item + "*";
-                      }
-                      if (item.indexOf(my_search_value || "") > -1) {
-                        entry_dict[i].item_list.push(item);
-                      }
+          for (i = 0; i < len; i += 1) {
+            response = my_directory_content[i];
+            for (item in response) {
+              if (response.hasOwnProperty(item)) {
+                if (props.dialog_isFileMenuItem(item, active_path)) {  
+                  //console.log("put on menu", item)
+                  if (item.indexOf("_history") === -1) {
+                    if (memory_list.indexOf(path) > -1) {
+                      item = item + "*";
+                    }
+                    if (item.indexOf(my_search_value || "") > -1) {
+                      entry_dict[i].item_list.push(item);
                     }
                   }
                 }
@@ -980,9 +977,9 @@
               props.dialog.querySelector('span')
             );
           }
-          console.log("checking..., ", props.dialog_is_filemenu_set)
+          console.log("inside setFile Menu, checking..., ", props.dialog_is_filemenu_set)
           if (props.dialog_is_filemenu_set === null) {
-            console.log("Setting it now")
+            console.log("inside setFile Menu, not set, next call will pass")
             props.dialog_is_filemenu_set = true;
             return false;
           }
