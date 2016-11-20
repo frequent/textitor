@@ -541,18 +541,26 @@
   }
 
   function dialog_setNavigationCallback(my_event, my_value, my_callback) {
-    
+    var cmd = CodeMirror.commands;
+
+    // XXX: pass CodeMirror.menu_dict.editor?
+    function isDialogActive(command_to_call, direction) {
+      if (CodeMirror.menu_dict.editor_active_dialog) {
+        return cmd[command_to_call](undefined, direction);
+      }
+    }
+
     // esc
     if (my_event.keyCode === 27) {
-      return CodeMirror.commands.myEditor_closeDialog();
+      return cmd.myEditor_closeDialog();
     }
 
     // overide chrome page start/end shortcut
     if (my_event.keyCode === 35) {
-      return CodeMirror.commands.myEditor_navigateVertical(undefined, UP);
+      return cmd.myEditor_navigateVertical(undefined, UP);
     }
     if (my_event.keyCode === 36) {
-      return CodeMirror.commands.myEditor_navigateVertical(undefined, DOWN);
+      return cmd.myEditor_navigateVertical(undefined, DOWN);
     }
 
     if (my_event.type === "input") {
@@ -562,18 +570,18 @@
     // ctrl + alt +
     if (my_event.ctrlKey && my_event.altKey) {
       switch(my_event.keyCode) {
-        case 68: return CodeMirror.commands.myEditor_deleteFile();
-        case 67: return CodeMirror.commands.myEditor_closeFile();
-        case 70: return CodeMirror.commands.myEditor_searchFileMenu();
-        case 79: return CodeMirror.commands.myEditor_openFromDialog();
-        case 83: return CodeMirror.commands.myEditor_saveFromDialog(CodeMirror);
-        case 88: return CodeMirror.commands.myEditor_closeDialog();
+        case 68: return cmd.myEditor_deleteFile();
+        case 67: return cmd.myEditor_closeFile();
+        case 70: return cmd.myEditor_searchFileMenu();
+        case 79: return cmd.myEditor_openFromDialog();
+        case 83: return cmd.myEditor_saveFromDialog(CodeMirror);
+        case 88: return cmd.myEditor_closeDialog();
 
-        // NOTE: we could pass CodeMirror.menu_dict.editor;
-        //case 37: return CodeMirror.commands.myEditor_navigateHorizontal(undefined, LEFT);
-        case 39: return CodeMirror.commands.myEditor_navigateHorizontal(undefined, RIGHT);
-        case 38: return CodeMirror.commands.myEditor_navigateVertical(undefined, UP);
-        case 40: return CodeMirror.commands.myEditor_navigateVertical(undefined, DOWN);
+        // if dialog is open, CodeMirror shortcuts don't work. this shims them
+        case 37: return isDialogActive("myEditor_navigateHorizontal", LEFT);
+        case 39: return isDialogActive("myEditor_navigateHorizontal", RIGHT);
+        case 38: return isDialogActive("myEditor_navigateVertical", UP);
+        case 40: return isDialogActive("myEditor_navigateVertical", DOWN);
       }
     }
   }
