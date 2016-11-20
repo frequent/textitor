@@ -72,6 +72,8 @@
 
   var FILE_MENU_TEMPLATE = "<div class='custom-file-menu'>%s</div>";
 
+  var EMPTY_TEMPLATE = "<span class='custom-file-menu-empty-folder'>%s</span>";
+
   var FILE_ENTRY_TEMPLATE = "<div class='custom-file-menu-row'>" +
       "<input type='checkbox' autocomplete='off' />" +
       "<span class='custom-file-menu-checkbox-overlay'>%s</span>" +
@@ -372,7 +374,8 @@
   }
 
   function dialog_createFileMenu(my_file_dict) {
-    var href = window.location.href,
+    var props = CodeMirror.menu_dict,
+      href = window.location.href,
       str = "",
       div,
       i,
@@ -383,10 +386,18 @@
     for (counter in my_file_dict) {
       if (my_file_dict.hasOwnProperty(counter)) {
         folder = my_file_dict[counter];
-        for (i = 0, len = folder.item_list.length; i < len; i += 1) {
-          str += CodeMirror.menu_dict.dialog_parseTemplate(
-            FILE_ENTRY_TEMPLATE,
-            [folder.name + " | " + folder.item_list[i].replace(href, "")]
+        len = folder.item_list.length;
+        if (len > 0) {
+          for (i = 0; i < len; i += 1) {
+            str += props.dialog_parseTemplate(
+              FILE_ENTRY_TEMPLATE,
+              [folder.name + " | " + folder.item_list[i].replace(href, "")]
+            );
+          }
+        } else {
+          str += props.dialog_parseTemplate(
+            EMPTY_TEMPLATE,
+            [folder.name + " | []"]
           );
         }
       }
@@ -947,8 +958,7 @@
             len = my_directory_content.length,
             active_path = props.editor_active_path,
             active_file = props.editor_active_file,
-            path,
-            is_nested,
+            is_search_or_pass = my_search_value || "",
             response,
             item,
             i,
@@ -956,19 +966,12 @@
 
           // loop folder contents, exclude history, check if file is on memory
           // and match against search (can't user query on allAttachments)
-          // if no search is run, indexOf("") = 0 & account for folders/cache
-          // by filtering ids for them until keeping a file index in the folder
-          console.log("BUILD TWO menus")
-          console.log(memory)
-          console.log(my_directory_content)
-
           for (i = 0; i < len; i += 1) {
             response = my_directory_content[i];
             for (item in response) {
               if (response.hasOwnProperty(item)) {
                 if (props.dialog_isFileMenuItem(item, active_path)) {  
-                  console.log("put on menu", item)
-                  if (item.indexOf(my_search_value || "") > -1) {
+                  if (item.indexOf(is_search_or_pass) > -1) {
                     entry_dict[i].item_list.push(item);
                   }
                 }
@@ -979,13 +982,11 @@
           for (j = 0; j < memory.size; j += 1) {
             item = memory.item_list[j];
             if (item.indexOf("_history") === -1) {
-              if (item.indexOf(my_search_value || "") > -1) {
+              if (item.indexOf(is_search_or_pass) > -1) {
                 entry_dict["memory"].item_list.push(item + "*");
               }
             }
           }
-
-          console.log(entry_dict)
 
           if (file_menu) {
             file_menu.parentNode.replaceChild(
