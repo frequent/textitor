@@ -711,6 +711,7 @@
   }
 
   function editor_navigateHorizontal(my_codemirror, my_direction) {
+    console.log("NAV-HORIZONTAL")
     var props = CodeMirror.menu_dict,
       position = props.dialog_position,
       parameter,
@@ -748,10 +749,12 @@
   }
 
   function editor_navigateRight(cm) {
+    console.log("CALL NAV-RIGHT")
     return CodeMirror.commands.myEditor_navigateHorizontal(cm, RIGHT);
   }
 
   function editor_navigateLeft(cm) {
+    console.log("CALL NAV-LEFT")
     return CodeMirror.commands.myEditor_navigateHorizontal(cm, LEFT);
   }
 
@@ -1118,7 +1121,7 @@
       // XXX refactor
       if (!my_file_id) {
         if (!dialog || (!props.editor_active_dialog && !active_file)) {
-          console.log("no dialog, force and end")
+          console.log("CALL SAVE-FILE")
           CodeMirror.commands.myEditor_navigateHorizontal(props.editor, RIGHT);
           return;
         }
@@ -1235,6 +1238,7 @@
       if (is_no_new_or_active_file) {
         if (!dialog) {
           if (props.editor_is_modified) {
+            console.log("CALL SWAP-FILE 1")
             CodeMirror.commands.myEditor_navigateHorizontal(props.editor, RIGHT);
           }
           return;
@@ -1246,6 +1250,7 @@
             if (props.editor_active_dialog) {
               return true;
             }
+            console.log("CALL SWAP-FILE 2")
             CodeMirror.commands.myEditor_navigateHorizontal(props.editor, RIGHT);
             return;
           }
