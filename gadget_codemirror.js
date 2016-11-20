@@ -545,6 +545,9 @@
 
     // XXX: pass CodeMirror.menu_dict.editor?
     function isDialogActive(command_to_call, direction) {
+      console.log("INSIDE SHORTCUT SHIM")
+      console.log("active dialog=", CodeMirror.menu_dict, CodeMirror.menu_dict.editor_active_dialog)
+      console.log("is_fielemnueset, ", CodeMirror.menu_dict.dialog_is_filemenu_set)
       if (CodeMirror.menu_dict.editor_active_dialog) {
         return cmd[command_to_call](undefined, direction);
       }
