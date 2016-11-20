@@ -740,7 +740,7 @@
     }
     if (position === my_direction) {
       if (position === LEFT && props.editor_active_path) {
-        if (props.dialog_is_filemenu_set || !props.editor_active_file) {
+        if (props.dialog_is_filemenu_set) {
           path_list = props.editor_active_path.split("/");
           path_list = path_list.splice(0, path_list.length - 1).join("/");
           props.editor_active_path = path_list || null;
@@ -1128,6 +1128,7 @@
         mime_type;
 
       // SAVE => store on serviceworker, remove from memory
+      console.log(my_file_id)
 
       function setMimeType(my_mime) {
         return MIMES[my_mime] || MIMES[SHIMMIMES[my_mime]] || "text/plain";
@@ -1183,6 +1184,13 @@
         file_name = active_path + "/" + file_name
       }
 
+      console.log("DONE, now remove, save")
+      console.log(file_name)
+      console.log(mime_type)
+      console.log(active_cache)
+      console.log(content)
+      
+
       return new RSVP.Queue()
         .push(function () {
           return gadget.setActiveStorage("memory");
@@ -1208,6 +1216,8 @@
           }
         )
         .push(function(my_content) {
+          console.log(my_content)
+          console.log(folder_file_list)
           content = content || folder_file_list || my_content[0].target.result;
           return gadget.setActiveStorage("serviceworker");
         })
