@@ -274,6 +274,7 @@
   }
 
   function editor_setDisplay(my_file_name) {
+    console.log("CALLED DISPLAY WITH ,", my_file_name)
     var props = CodeMirror.menu_dict;
     if (props.display) {
       props.display.parentNode.removeChild(props.display);
@@ -985,19 +986,7 @@
             props.dialog_is_filemenu_set = true;
             return false;
           }
-
           props.editor_setDisplay(active_path || active_file && active_file.name);
-          
-          // file open and opening a path? 
-          console.log("WHAT COULD EWE SET?")
-          console.log(props.editor_active_file)
-          console.log(props.editor_active_path) 
-          /*
-          if (props.editor_active_file) {
-            props.editor_setDisplay(props.editor_active_file.name);
-          } else {
-            props.editor_setDisplay(props.editor_active_path);
-          }*/
           return false;
         })
         .push(null, function (my_error) {
