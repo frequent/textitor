@@ -1340,7 +1340,6 @@
       if (file_name_to_open.indexOf("*") > -1) {
         file_name_to_open_save_flag = true;
       }
-      console.log(file_name_to_open)
       open_name = file_name_to_open.split("*")[0];
 
       return new RSVP.Queue()
@@ -1376,20 +1375,14 @@
           ]);
         })
         .push(function (my_content) {
-          console.log(my_content)
           return gadget.editor_swapFile(my_content);
         })
         .push(function () {
           var list;
-          console.log("done open/swappping")
-          console.log(props.editor_active_path)
-          console.log(open_name)
           props.editor.setOption("mode", mime_type);
           props.editor_setActiveFile(open_name, mime_type);
-          console.log("why?, ", open_name)
           props.editor_setDisplay(open_name);
           if (open_name.indexOf(props.editor_active_path) === -1) {
-            console.log("need to update path")
             list = open_name.split("/")
             props.editor_setActivePath(list.splice(0, list.length - 1).join("/"));
           }
