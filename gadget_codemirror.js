@@ -5,7 +5,7 @@
   "use strict";
 
   /////////////////////////////
-  // Vocabulary
+  // Vocabularcy
   /////////////////////////////
   var LEFT = "left";
   var RIGHT = "right";
@@ -485,17 +485,13 @@
       splitFolder = path.split(folder),
       splitFolderPop;
 
-    console.log("IN, ", folder, my_path, indexFolder, splitFolder)
-
     // self
     if (path === folder) {
-      console.log("self, FALSE")
       return false;
     }
 
     // parent folder/file
     if ((indexFolder === -1) && folder !== "/") {
-      console.log("parent folder/file, FALSE")
       return false;
     }
     
@@ -504,10 +500,8 @@
 
       // current active folder, ok
       if (splitFolder[0] === "" && splitFolder[1].split("/").length === 2) {
-        console.log("subfolder, but currently on it, TRUE")
         return true;
       }
-      console.log("subfolder, FALSE")
       return false;
     }
 
@@ -515,13 +509,10 @@
     splitFolderPop = splitFolder.pop();
     if (splitFolderPop.split(".").length !== 2) {
       if (splitFolderPop.split("/").length === 1) {
-        console.log("sub-file, TRUE")
         return true;
       }
-      console.log("sub-folder, path, FALSE")
       return false;
     }                  
-    console.log("nothing, TRUE")
     return true;              
   }
 
@@ -1128,7 +1119,6 @@
         mime_type;
 
       // SAVE => store on serviceworker, remove from memory
-      console.log(my_file_id)
 
       function setMimeType(my_mime) {
         return MIMES[my_mime] || MIMES[SHIMMIMES[my_mime]] || "text/plain";
@@ -1241,7 +1231,7 @@
         is_no_new_or_active_file = !props.editor_active_file && !my_content,
         is_no_file_name,
         file_name;
-      console.log("inside swap")
+      
       // SWAP => put existing file on memory storage, replace with new content!
 
       if (is_no_new_or_active_file) {
@@ -1264,7 +1254,7 @@
           return;
         }
       }
-      console.log("let's save")
+
       return new RSVP.Queue()
         .push(function () {
           return gadget.setActiveStorage("memory");
@@ -1276,13 +1266,12 @@
             active_file = props.editor_active_file,
             save_file_name,
             save_mime_type;
-          console.log("only save if modified")
+
           // set active file to active and save previous file (old_doc)
           if (active_file && props.editor_is_modified) {
             save_file_name = props.editor_active_file.name,
             save_mime_type = props.editor_active_file.mime_type;
-            console.log(save_file_name)
-            console.log(save_mime_type)
+
             return RSVP.all([
               gadget.jio_putAttachment(
                 active_storage,
@@ -1300,16 +1289,11 @@
           }
         })
         .push(function () {
-          console.log("DONE saving or not")
-          console.log("no content, ", !my_content)
           if (!my_content) {
-            console.log("clearing input,s etting active file to null, resetModified and path will be active Path!")
             props.dialog_clearTextInput(dialog);
             props.editor_resetActiveFile();
             props.editor_resetModified();
-            console.log(props.editor_active_path)
             props.editor_setDisplay(props.editor_active_path);
-            console.log("keep panel open?, we could return false here, but as swap is called directly, nothing will close the panel")
           }
           return true;
         });
@@ -1341,13 +1325,11 @@
         // props.dialog_evaluateState(BLANK_SEARCH);
         // return
         if (props.editor_active_file) {
-          console.log("active file, try to store it and keep panel open!")
           return new RSVP.Queue()
             .push(function () {
               return gadget.editor_swapFile();
             })
             .push(function (answer) {
-              console.log("done swap, answer = ", answer)
               props.dialog_evaluateState(BLANK_SEARCH);
             });
         } else {
