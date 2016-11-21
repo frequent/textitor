@@ -1164,6 +1164,7 @@
       }
 
       file_name_input = dialog.querySelector("input");
+      console.log(file_name_input)
       if (file_name_input.value === "Enter valid URL.") {
         console.log("yo, it is")
         console.log(file_name_input)
