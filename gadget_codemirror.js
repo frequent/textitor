@@ -1184,13 +1184,6 @@
         file_name = active_path + "/" + file_name
       }
 
-      console.log("DONE, now remove, save")
-      console.log(file_name)
-      console.log(mime_type)
-      console.log(active_cache)
-      console.log(content)
-      
-
       return new RSVP.Queue()
         .push(function () {
           return gadget.setActiveStorage("memory");
@@ -1216,8 +1209,6 @@
           }
         )
         .push(function(my_content) {
-          console.log(my_content)
-          console.log(folder_file_list)
           content = content || folder_file_list || my_content[0].target.result;
           return gadget.setActiveStorage("serviceworker");
         })
@@ -1250,7 +1241,7 @@
         is_no_new_or_active_file = !props.editor_active_file && !my_content,
         is_no_file_name,
         file_name;
-
+      console.log("inside swap")
       // SWAP => put existing file on memory storage, replace with new content!
 
       if (is_no_new_or_active_file) {
@@ -1273,7 +1264,7 @@
           return;
         }
       }
-
+      console.log("let's save")
       return new RSVP.Queue()
         .push(function () {
           return gadget.setActiveStorage("memory");
@@ -1285,12 +1276,13 @@
             active_file = props.editor_active_file,
             save_file_name,
             save_mime_type;
-
+          console.log("only save if modified")
           // set active file to active and save previous file (old_doc)
           if (active_file && props.editor_is_modified) {
             save_file_name = props.editor_active_file.name,
             save_mime_type = props.editor_active_file.mime_type;
-
+            console.log(save_file_name)
+            console.log(save_mime_type)
             return RSVP.all([
               gadget.jio_putAttachment(
                 active_storage,
@@ -1308,11 +1300,16 @@
           }
         })
         .push(function () {
+          console.log("DONE saving or not")
+          console.log("no content, ", !my_content)
           if (!my_content) {
+            console.log("clearing input,s etting active file to null, resetModified and path will be active Path!")
             props.dialog_clearTextInput(dialog);
             props.editor_resetActiveFile();
             props.editor_resetModified();
+            console.log(props.editor_active_path)
             props.editor_setDisplay(props.editor_active_path);
+            console.log("keep panel open?, we could return false here, but as swap is called directly, nothing will close the panel")
           }
           return true;
         });
@@ -1338,10 +1335,24 @@
       active_cache = props.editor_active_cache || "textitor";
       file_name_to_open = file_name_input.nextSibling.textContent.split(" | ")[1];
 
-      // folder, add path and update panel
+      // folder, update display and shelf open file on memory
       if (file_name_to_open.split(".").length === 1) {
         props.editor_setActivePath(file_name_to_open);
-        props.dialog_evaluateState(BLANK_SEARCH);
+        // props.dialog_evaluateState(BLANK_SEARCH);
+        // return
+        if (props.editor_active_file) {
+          console.log("active file, try to store it and keep panel open!")
+          return new RSVP.Queue()
+            .push(function () {
+              return gadget.editor_swapFile();
+            })
+            .push(function (answer) {
+              console.log("done swap, answer = ", answer)
+              props.dialog_evaluateState(BLANK_SEARCH);
+            });
+        } else {
+          props.dialog_evaluateState(BLANK_SEARCH);
+        }
         return;
       }
       
