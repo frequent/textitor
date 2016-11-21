@@ -1342,7 +1342,7 @@
       if (file_name_to_open.indexOf("*") > -1) {
         file_name_to_open_save_flag = true;
       }
-
+      console.log(file_name_to_open)
       open_name = file_name_to_open.split("*")[0];
 
       return new RSVP.Queue()
@@ -1381,6 +1381,9 @@
           return gadget.editor_swapFile(my_content);
         })
         .push(function () {
+          console.log("done open/swappping")
+          console.log(props.editor_active_path)
+          console.log(open_name)
           props.editor.setOption("mode", mime_type);
           props.editor_setActiveFile(open_name, mime_type);
           props.editor_setDisplay(open_name);
