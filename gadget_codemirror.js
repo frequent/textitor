@@ -691,14 +691,10 @@
   }
 
   function editor_saveFromDialog() {
-    console.log("HEYA SAVE")
     if (CodeMirror.menu_dict.dialog_position !== LEFT) {
-      console.log("not left")
       if (CodeMirror.menu_dict.dialog_evaluateState) {
-        console.log("SAVING")
         return CodeMirror.menu_dict.dialog_evaluateState({"target":{"name": SAVE}});
       } else {
-        console.log("Opendialog, right")
         return CodeMirror.commands.myEditor_openDialog(CodeMirror, RIGHT);
       }
     } else {
@@ -811,7 +807,6 @@
     .ready(function (my_gadget){
       function editor_updateStorage(my_pointer) {
         var action;
-        console.log("update storage, ", my_pointer)
         if (my_pointer) {
           if (my_pointer.target) {
             action = my_pointer.target.name;
@@ -828,7 +823,6 @@
               return my_gadget.editor_swapFile();
             }
             if (action === SAVE) {
-              console.log("savefile")
               return my_gadget.editor_saveFile();
             }
             if (action === REMOVE) {
@@ -1132,28 +1126,42 @@
       }
 
       // bulkSave will pass file_id, file will not be open, need to get content
-      
+      console.log("alas")
+      console.log(my_file_id)
+      console.log(dialog)
+      console.log(active_file)
+      console.log(active_path)
       // XXX refactor
       if (!my_file_id) {
         if (!dialog || (!props.editor_active_dialog && !active_file)) {
+          console.log("no dialog or active dialog, but no file, move right!")
           CodeMirror.commands.myEditor_navigateHorizontal(props.editor, RIGHT);
           return;
         }
         if (!active_file) {
+          console.log("no active file, hm")
           file_name_input = dialog.querySelector("input");
           file_name = file_name_input.value;
           is_container = dialog.querySelector('input[name="is_container"]:checked');
           mime_type_input = file_name.split(".").pop().replace("/", "");
           mime_type = setMimeType(mime_type_input);
         } else {
+          console.log("active file, easy")
           file_name = active_file.name;
           mime_type = active_file.mime_type;
         }
 
         // validate form
         if (dialog) {
-          if (!file_name || file_name_input && file_name_input.value === "Enter valid URL.") {
+          console.log("DIALOG")
+          if (!file_name) {
+            console.log("eh, no file")
             return props.dialog_flagInput(file_name_input, 'Enter valid URL.');
+          }
+          if (file_name_input && file_name_input.value === "Enter valid URL.") {
+            console.log("meh, Enter valid URL?")
+            file_name_input.focus();
+            return;
           }
         }
         content = props.editor.getValue();
@@ -1169,15 +1177,7 @@
         file_name = my_file_id;
         mime_type = setMimeType(file_name.split(".").pop().replace("/", ""));
       }
-
-      file_name_input = dialog.querySelector("input");
-      console.log(file_name_input)
-      if (file_name_input.value === "Enter valid URL.") {
-        console.log("yo, it is")
-        console.log(file_name_input)
-      //  file_name_input.focus();
-      //  return;
-      }
+      console.log("REACH?")
 
       if (active_path && file_name.indexOf(active_path) === -1) {
         file_name = active_path + "/" + file_name
