@@ -569,7 +569,7 @@
         case 67: return cmd.myEditor_closeFile();
         case 70: return cmd.myEditor_searchFileMenu();
         case 79: return cmd.myEditor_openFromDialog();
-        case 83: return cmd.myEditor_saveFromDialog(CodeMirror);
+        case 83: return cmd.myEditor_saveFromDialog();
         case 88: return cmd.myEditor_closeDialog();
 
         // NOTE: pass CodeMirror.menu_dict.editor?
@@ -690,11 +690,15 @@
       });
   }
 
-  function editor_saveFromDialog(my_codemirror) {
+  function editor_saveFromDialog() {
+    console.log("HEYA SAVE")
     if (CodeMirror.menu_dict.dialog_position !== LEFT) {
+      console.log("not left")
       if (CodeMirror.menu_dict.dialog_evaluateState) {
+        console.log("SAVING")
         return CodeMirror.menu_dict.dialog_evaluateState({"target":{"name": SAVE}});
       } else {
+        console.log("Opendialog, right")
         return CodeMirror.commands.myEditor_openDialog(CodeMirror, RIGHT);
       }
     } else {
@@ -807,6 +811,7 @@
     .ready(function (my_gadget){
       function editor_updateStorage(my_pointer) {
         var action;
+        console.log("update storage, ", my_pointer)
         if (my_pointer) {
           if (my_pointer.target) {
             action = my_pointer.target.name;
@@ -823,6 +828,7 @@
               return my_gadget.editor_swapFile();
             }
             if (action === SAVE) {
+              console.log("savefile")
               return my_gadget.editor_saveFile();
             }
             if (action === REMOVE) {
@@ -1104,6 +1110,7 @@
     })
 
     .declareMethod('editor_saveFile', function (my_file_id) {
+      console.log("savefile, id= ", my_file_id)
       var gadget = this,
         props = CodeMirror.menu_dict,
         dialog = props.dialog,
@@ -1520,3 +1527,4 @@
     });
 
 }(window, document, rJS, CodeMirror, JSON, loopEventListener));
+
