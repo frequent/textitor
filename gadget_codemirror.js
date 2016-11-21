@@ -1163,12 +1163,13 @@
         mime_type = setMimeType(file_name.split(".").pop().replace("/", ""));
       }
 
-      // XXX fix double trigger
-      //file_name_input = dialog.querySelector("input");
-      //if (file_name_input.value === "Enter valid URL.") {
+      file_name_input = dialog.querySelector("input");
+      if (file_name_input.value === "Enter valid URL.") {
+        console.log("yo, it is")
+        console.log(file_name_input)
       //  file_name_input.focus();
       //  return;
-      //}
+      }
 
       if (active_path && file_name.indexOf(active_path) === -1) {
         file_name = active_path + "/" + file_name
@@ -1518,4 +1519,3 @@
     });
 
 }(window, document, rJS, CodeMirror, JSON, loopEventListener));
-
