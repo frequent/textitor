@@ -1290,6 +1290,7 @@
         })
         .push(function () {
           if (!my_content) {
+            console.log("here???")
             props.dialog_clearTextInput(dialog);
             props.editor_resetActiveFile();
             props.editor_resetModified();
@@ -1322,8 +1323,6 @@
       // folder, update display and shelf open file on memory
       if (file_name_to_open.split(".").length === 1) {
         props.editor_setActivePath(file_name_to_open);
-        // props.dialog_evaluateState(BLANK_SEARCH);
-        // return
         if (props.editor_active_file) {
           return new RSVP.Queue()
             .push(function () {
@@ -1378,6 +1377,7 @@
           ]);
         })
         .push(function (my_content) {
+          console.log(my_content)
           return gadget.editor_swapFile(my_content);
         })
         .push(function () {
@@ -1386,6 +1386,7 @@
           console.log(open_name)
           props.editor.setOption("mode", mime_type);
           props.editor_setActiveFile(open_name, mime_type);
+          console.log("why?, ", open_name)
           props.editor_setDisplay(open_name);
 
           if (file_name_to_open_save_flag) {
