@@ -1104,7 +1104,7 @@
     })
 
     .declareMethod('editor_saveFile', function (my_file_id) {
-      console.log("savefile, id= ", my_file_id)
+      console.log("SAVE")
       var gadget = this,
         props = CodeMirror.menu_dict,
         dialog = props.dialog,
@@ -1126,11 +1126,7 @@
       }
 
       // bulkSave will pass file_id, file will not be open, need to get content
-      console.log("alas")
-      console.log(my_file_id)
-      console.log(dialog)
-      console.log(active_file)
-      console.log(active_path)
+
       // XXX refactor
       if (!my_file_id) {
         if (!dialog || (!props.editor_active_dialog && !active_file)) {
