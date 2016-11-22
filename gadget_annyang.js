@@ -35,7 +35,6 @@
         commands = {},
         cmd;
       
-      /*  
       commands["left"] = function () {
         return gadget.setCommand("myEditor_navigateLeft");
       };
@@ -78,8 +77,9 @@
       commands["escape"] = function () {
         return gadget.setCommand("myEditor_closeDialog");
       };      
-      */
       
+      
+      /*
       gadget.property_dict.command_dict = my_option_dict.commands;
 
       for (cmd in gadget.property_dict.command_dict) {
@@ -89,7 +89,7 @@
           };
         }
       }
-
+      */
       annyang.addCommands(commands);
       annyang.start();
       return gadget;
