@@ -888,7 +888,14 @@
     // published methods
     /////////////////////////////
     .allowPublicAcquisition('routeCodeMirrorCommand', function (my_command) {
-      return CodeMirror.commands[my_command[0]]();
+      return new RSVP.Queue() 
+        .push(function () {
+          return CodeMirror.commands[my_command[0]]();
+        })
+        .push(null, function (err) {
+          console.log(err)
+          throw err
+        });
     })
 
     /////////////////////////////
