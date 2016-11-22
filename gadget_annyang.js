@@ -32,8 +32,10 @@
     
     .declareMethod('render', function (my_option_dict) {
       var gadget = this,
-        commands = {};
-        
+        commands = {},
+        cmd;
+      
+      /*  
       commands["left"] = function () {
         return gadget.setCommand("myEditor_navigateLeft");
       };
@@ -41,10 +43,10 @@
         return gadget.setCommand("myEditor_navigateRight");
       };
       commands["up"] = function () {
-        return gadget.setCommand("myEditor_navigateUp");
+        return gadget.setCommand("myEditor_navigateDown");
       };
       commands["down"] = function () {
-        return gadget.setCommand("myEditor_navigateDown");
+        return gadget.setCommand("myEditor_navigateUp");
       };
       commands["save"] = function () {
         return gadget.setCommand("myEditor_saveFromDialog");
@@ -76,28 +78,18 @@
       commands["escape"] = function () {
         return gadget.setCommand("myEditor_closeDialog");
       };      
+      */
+      
+      gadget.property_dict.command_dict = my_option_dict.commands;
 
-      /*
-      gadget.property_dict.command_dict = command_dict = my_option_dict.commands;
-
-      function wrap (my_parameter) {
-        console.log("ok")
-        console.log(my_parameter)
-        return gadget.setCommand(my_parameter);
-      }
-
-      for (cmd in command_dict) {
-        console.log(cmd)
-        if (command_dict.hasOwnProperty(cmd)) {
+      for (cmd in gadget.property_dict.command_dict) {
+        if (gadget.property_dict.command_dict.hasOwnProperty(cmd)) {
           commands[cmd] = function () {
-            return wrap(gadget.property_dict.command_dict[cmd]);
-          }
+            return gadget.setCommand(gadget.property_dict.command_dict[cmd]);
+          };
         }
       }
-      commands["test"] = function () {
-        console.log("hello, test");
-      };
-      */
+
       annyang.addCommands(commands);
       annyang.start();
       return gadget;
