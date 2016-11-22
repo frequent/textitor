@@ -11,10 +11,37 @@
   
   rJS(window)
 
+    /////////////////////////////
+    // ready
+    /////////////////////////////
     .ready(function (my_gadget) {
       my_gadget.property_dict = {};
     })
 
+    /////////////////////////////
+    // acquired methods
+    /////////////////////////////
+    .declareAcquiredMethod('routeCodeMirrorCommand', 'routeCodeMirrorCommand')
+    
+    /////////////////////////////
+    // declared methods
+    /////////////////////////////
+    .declareMethod('setCommand', function (my_command) {
+      var gadget = this;
+      return new RSVP.Queue()
+        .push(function () {
+          return gadget.routeCodeMirrorCommand(my_command); 
+        })
+        .push(function (my_result) {
+          console.log("done");
+          console.log(my_result);
+        })
+        .push(null, function (my_error) {
+          console.log(my_error);
+          throw my_error;
+        });
+    })
+    
     .declareMethod('render', function (my_option_dict) {
       var gadget = this,
         commands = {},
@@ -27,10 +54,7 @@
         
       for (command in dictionary) {
         if (dictionary.hasOwnProperty(command)) {
-          console.log(command)
-          commands[command] = function () {
-            return CodeMirror.commands[dictionary[command]];
-          };
+          commands[command] = gadget.setCommand(dictionary[command]);
         }
       }
       commands["test"] = function () {
@@ -43,3 +67,4 @@
     });
     
 }(window, rJS, CodeMirror, annyang));
+
