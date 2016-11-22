@@ -49,15 +49,15 @@
         dictionary = my_option_dict.commands,
         command;
 
-      function routeCommand (my_command) {
-        return gadget.setCommand(my_command);
-      } 
       console.log("setting")
       for (command in dictionary) {
         if (dictionary.hasOwnProperty(command)) {
           console.log(command)
           console.log(dictionary[command])
-          commands[command] = routeCommand(dictionary[command]);
+          commands[command] = function () {
+            console.log("called with " + my_command)
+            return gadget.setCommand(my_command);
+          } 
         }
       }
       commands["test"] = function () {
