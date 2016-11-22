@@ -567,14 +567,15 @@
     // ctrl + alt +
     if (my_event.ctrlKey && my_event.altKey) {
       switch(my_event.keyCode) {
+        case 66: return cmd.myEditor_bulkSaveFromDialog();
         case 68: return cmd.myEditor_deleteFile();
         case 67: return cmd.myEditor_closeFile();
         case 70: return cmd.myEditor_searchFileMenu();
         case 79: return cmd.myEditor_openFromDialog();
         case 83: return cmd.myEditor_saveFromDialog();
         case 88: return cmd.myEditor_closeDialog();
+        case 89: return cmd.myEditor_sync();
 
-        // NOTE: pass CodeMirror.menu_dict.editor?
         // NOTE: manual capture is necessary when dialog is open
         case 37: return cmd.myEditor_navigateHorizontal(undefined, LEFT);
         case 39: return cmd.myEditor_navigateHorizontal(undefined, RIGHT);
@@ -611,7 +612,7 @@
   CodeMirror.keyMap.my = {"fallthrough": "default"};
 
   // CodeMirror.keyMap.my["Ctrl-Alt-A"] = undefined;
-  // CodeMirror.keyMap.my["Ctrl-Alt-B"] = undefined;
+  CodeMirror.keyMap.my["Ctrl-Alt-B"] = "myEditor_bulkSaveFromDialog";
   CodeMirror.keyMap.my["Ctrl-Alt-C"] = "myEditor_closeFile";
   CodeMirror.keyMap.my["Ctrl-Alt-D"] = "myEditor_deleteFile";
   // CodeMirror.keyMap.my["Ctrl-Alt-E"] = undefined;
@@ -634,7 +635,7 @@
   // CodeMirror.keyMap.my["Ctrl-Alt-V"] = undefined;
   // CodeMirror.keyMap.my["Ctrl-Alt-W"] = undefined;
   CodeMirror.keyMap.my["Ctrl-Alt-X"] = "myEditor_closeDialog";
-  // CodeMirror.keyMap.my["Ctrl-Alt-Y"] = undefined;
+  CodeMirror.keyMap.my["Ctrl-Alt-Y"] = "myEditor_sync";
   // CodeMirror.keyMap.my["Ctrl-Alt-Z"] = undefined;
   // CodeMirror.keyMap.my["Ctrl-Alt--"] = undefined;
   CodeMirror.keyMap.my["Ctrl-Alt-Home"] = "myEditor_navigateUp";
@@ -772,6 +773,18 @@
   function editor_navigateDown(cm) {
     return CodeMirror.commands.myEditor_navigateVertical(cm, DOWN);
   }
+  
+  function editor_sync(cm) {
+    return;
+  }
+  
+  function editor_pickDialogOption(cm) {
+    return;
+  }
+
+  function editor_traverseDialog(cm) {
+    return;
+  }
 
   CodeMirror.commands.myEditor_closeFile = editor_closeFile;
   CodeMirror.commands.myEditor_deleteFile = editor_deleteFile;
@@ -787,6 +800,9 @@
   CodeMirror.commands.myEditor_navigateLeft = editor_navigateLeft;
   CodeMirror.commands.myEditor_navigateUp = editor_navigateUp;
   CodeMirror.commands.myEditor_navigateDown = editor_navigateDown;
+  CodeMirror.commands.myEditor_sync = editor_sync;
+  CodeMirror.commands.myEditor_pickDialogOption = editor_pickDialogOption;
+  CodeMirror.commands.myEditor_traverseDialog = editor_traverseDialog;
 
   rJS(window)
 
@@ -808,15 +824,31 @@
           ]);
         })
         .push(function (my_response_list) {
-          console.log(my_response_list)
           props.element = my_response_list[0];
           props.textarea = document.createElement("textarea");
           props.element.appendChild(props.textarea);
           return my_gadget.getDeclaredGadget("annyang");
         })
         .push(function (my_annyang_gadget) {
-          return my_annyang_gadget.render({"boo": "yah"});
-        });
+          return my_annyang_gadget.render({
+            "trigger": 'lucy',
+            "commands": {
+              "left": 'myEditor_navigateLeft',
+              "right": 'myEditor_navigateRight',
+              "up": 'myEditor_navigateUp',
+              "down": 'myEditor_navigateDown',
+              "save": 'myEditor_saveFromDialog',
+              "close": 'myEditor_closeFile',
+              "open": 'myEditor_openFromDialog',
+              "remove": 'myEditor_deleteFile',
+              "search": 'myEditor_searchFileMenu',
+              "bulk": 'myEditor_bulkSaveFromDialog',
+              "sync": 'myEditor_sync',
+              "pick": 'myEditor_pickDialogOption',
+              "tab": 'myEditor_traverseDialog',
+              "escape": 'myEditor_closeDialog'
+            }
+          });
     })
 
     // Init CodeMirror methods which require gadget to be passed as parameter

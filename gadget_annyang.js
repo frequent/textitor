@@ -3,6 +3,12 @@
 (function (window, rJS, CodeMirror, annyang) {
   "use strict";
 
+  //var utterance = new SpeechSynthesisUtterance('ok');
+  //utterance.rate = 1.5;
+  //window.speechSynthesis.speak(utterance);
+  
+  //https://github.com/alanjames1987/Cross-Browser-Voice-Recognition-with-PocketSphinx.js
+  
   rJS(window)
 
     .ready(function (my_gadget) {
@@ -10,9 +16,19 @@
     })
 
     .declareMethod('render', function (my_option_dict) {
-      var gadget = this;
-      console.log(my_option_dict);
-      console.log(annyang)
+      var gadget = this,
+        commands = {},
+        dictionary = my_option_dict.commands,
+        command;
+        
+      for (command in dictionary) {
+        if (dictionary.hasOwnProperty(command)) {
+          commands[command] = CodeMirror.commands[dictionary[command]];
+        }
+      }
+
+      annyang.addCommands(my_option_dict.commands);
+      annyang.start();
       return gadget;
     });
     
