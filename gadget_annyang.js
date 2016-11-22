@@ -58,14 +58,17 @@
       }
 
       for (cmd in command_dict) {
+        console.log(cmd)
         if (command_dict.hasOwnProperty(cmd)) {
           commands[cmd] = function () {
             console.log(cmd)
-            return wrap(my_option_dict.commands[cmd]);
+            console.log(gadget.property_dict.command_dict[cmd])
+            return wrap(gadget.property_dict.command_dict[cmd]);
           };
         }
       }
-
+      console.log("set")
+      console.log(commands)
       commands["test"] = function () {
         console.log("hello, test");
       };
@@ -76,4 +79,3 @@
     });
     
 }(window, rJS, CodeMirror, annyang));
-
