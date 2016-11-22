@@ -683,6 +683,7 @@
   }
 
   function editor_openDialog(my_codemirror, my_direction) {
+    my_codemirror = my_codemirror || CodeMirror.menu_dict.editor;
     return new RSVP.Queue()
       .push(function () {
         return my_codemirror.openDialog(
