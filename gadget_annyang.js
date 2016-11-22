@@ -54,7 +54,7 @@
       function wrap (my_parameter) {
         console.log("ok")
         console.log(my_parameter)
-        return gadget.setCommand(my_parameter);
+        gadget.setCommand(my_parameter);
       }
 
       for (cmd in command_dict) {
@@ -73,4 +73,3 @@
     });
     
 }(window, rJS, CodeMirror, annyang));
-
