@@ -46,24 +46,27 @@
     .declareMethod('render', function (my_option_dict) {
       var gadget = this,
         commands = {},
-        dictionary = my_option_dict.commands,
-        command;
+        command_dict,
+        cmd;
+      
+      gadget.property_dict.command_dict = command_dict = my_option_dict.commands;
 
-      console.log("setting")
-      for (command in dictionary) {
-        if (dictionary.hasOwnProperty(command)) {
-          console.log(command)
-          console.log(dictionary[command])
-          commands[command] = function () {
-            console.log("called with")
-            return gadget.setCommand(dictionary[command]);
-          } 
+      function wrap (my_parameter) {
+        console.log("ok")
+        console.log(my_parameter)
+        return gadget.setCommand(my_parameter);
+      }
+
+      for (cmd in command_dict) {
+        if (command_dict.hasOwnProperty(cmd)) {
+          commands[command] = wrap(my_option_dict.commands[command]);
         }
       }
+
       commands["test"] = function () {
         console.log("hello, test");
-      }
-      console.log(commands)
+      };
+      
       annyang.addCommands(commands);
       annyang.start();
       return gadget;
