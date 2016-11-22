@@ -814,7 +814,7 @@
           props.element.appendChild(props.textarea);
           return my_gadget.getDeclaredGadget("annyang");
         })
-        -push(function (my_annyang_gadget) {
+        .push(function (my_annyang_gadget) {
           return my_annyang_gadget.render({"boo": "yah"});
         });
     })
