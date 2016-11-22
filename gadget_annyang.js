@@ -27,28 +27,57 @@
     // declared methods
     /////////////////////////////
     .declareMethod('setCommand', function (my_command) {
-      var gadget = this;
-      console.log("Call made with " + my_command)
-      return new RSVP.Queue()
-        .push(function () {
-          return gadget.routeCodeMirrorCommand(my_command); 
-        })
-        .push(function (my_result) {
-          console.log("done");
-          console.log(my_result);
-        })
-        .push(null, function (my_error) {
-          console.log(my_error);
-          throw my_error;
-        });
+      return this.routeCodeMirrorCommand(my_command);
     })
     
     .declareMethod('render', function (my_option_dict) {
       var gadget = this,
-        commands = {},
-        command_dict,
-        cmd;
-      
+        commands = {};
+        
+      commands["left"] = function () {
+        return gadget.setCommand("myEditor_navigateLeft");
+      };
+      commands["right"] = function () {
+        return gadget.setCommand("myEditor_navigateRight");
+      };
+      commands["up"] = function () {
+        return gadget.setCommand("myEditor_navigateUp");
+      };
+      commands["down"] = function () {
+        return gadget.setCommand("myEditor_navigateDown");
+      };
+      commands["save"] = function () {
+        return gadget.setCommand("myEditor_saveFromDialog");
+      };
+      commands["close"] = function () {
+        return gadget.setCommand("myEditor_closeFile");
+      };
+      commands["open"] = function () {
+        return gadget.setCommand("myEditor_openFromDialog");
+      };
+      commands["remove"] = function () {
+        return gadget.setCommand("myEditor_deleteFile");
+      };
+      commands["search"] = function () {
+        return gadget.setCommand("myEditor_searchFileMenu");
+      };
+      commands["bulk"] = function () {
+        return gadget.setCommand("myEditor_bulkSaveFromDialog");
+      };
+      commands["sync"] = function () {
+        return gadget.setCommand("myEditor_sync");
+      };
+      commands["pick"] = function () {
+        return gadget.setCommand("myEditor_pickDialogOption");
+      };
+      commands["tab"] = function () {
+        return gadget.setCommand("myEditor_traverseDialog");
+      };
+      commands["escape"] = function () {
+        return gadget.setCommand("myEditor_closeDialog");
+      };      
+
+      /*
       gadget.property_dict.command_dict = command_dict = my_option_dict.commands;
 
       function wrap (my_parameter) {
@@ -60,26 +89,19 @@
       for (cmd in command_dict) {
         console.log(cmd)
         if (command_dict.hasOwnProperty(cmd)) {
-          commands[cmd] = new RSVP.Queue()
-            .push(function () {
-              console.log(cmd)
-              console.log(gadget.property_dict.command_dict[cmd])
-              return wrap(gadget.property_dict.command_dict[cmd]);
-            })
-            .push(function(result) {
-              console.log(result)
-            });
+          commands[cmd] = function () {
+            return wrap(gadget.property_dict.command_dict[cmd]);
+          }
         }
       }
-      console.log("set")
-      console.log(commands)
       commands["test"] = function () {
         console.log("hello, test");
       };
-      
+      */
       annyang.addCommands(commands);
       annyang.start();
       return gadget;
     });
     
 }(window, rJS, CodeMirror, annyang));
+
