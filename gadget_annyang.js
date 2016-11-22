@@ -13,8 +13,7 @@
       var gadget = this;
       console.log(my_option_dict);
       console.log(annyang)
-      return_gadget;
+      return gadget;
     });
     
 }(window, rJS, CodeMirror, annyang));
-
