@@ -23,8 +23,13 @@
         
       for (command in dictionary) {
         if (dictionary.hasOwnProperty(command)) {
-          commands[command] = CodeMirror.commands[dictionary[command]];
+          commands[command] = function () {
+            return CodeMirror.commands[dictionary[command]];
+          };
         }
+      }
+      commands["test"] = function () {
+        console.log("hello, test");
       }
       console.log(commands)
       annyang.addCommands(commands);
