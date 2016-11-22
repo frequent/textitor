@@ -55,8 +55,8 @@
           console.log(command)
           console.log(dictionary[command])
           commands[command] = function () {
-            console.log("called with " + my_command)
-            return gadget.setCommand(my_command);
+            console.log("called with")
+            return gadget.setCommand(dictionary[command]);
           } 
         }
       }
