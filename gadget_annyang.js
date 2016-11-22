@@ -59,7 +59,7 @@
 
       for (cmd in command_dict) {
         if (command_dict.hasOwnProperty(cmd)) {
-          commands[command] = wrap(my_option_dict.commands[command]);
+          commands[cmd] = wrap(my_option_dict.commands[cmd]);
         }
       }
 
