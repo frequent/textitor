@@ -60,11 +60,15 @@
       for (cmd in command_dict) {
         console.log(cmd)
         if (command_dict.hasOwnProperty(cmd)) {
-          commands[cmd] = function () {
-            console.log(cmd)
-            console.log(gadget.property_dict.command_dict[cmd])
-            return wrap(gadget.property_dict.command_dict[cmd]);
-          };
+          commands[cmd] = new RSVP.Queue()
+            .push(function () {
+              console.log(cmd)
+              console.log(gadget.property_dict.command_dict[cmd])
+              return wrap(gadget.property_dict.command_dict[cmd]);
+            })
+            .push(function(result) {
+              console.log(result)
+            });
         }
       }
       console.log("set")
