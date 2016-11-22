@@ -887,6 +887,11 @@
     /////////////////////////////
     // published methods
     /////////////////////////////
+    .allowPublicAcquisition('routeCodeMirrorCommand', function (my_command) {
+      console.log("Caught");
+      console.log(my_command);
+      return CodeMirror.commands[my_command];
+    })
 
     /////////////////////////////
     // acquired methods
@@ -939,7 +944,7 @@
           return gadget;
         });
     })
-
+    
     .declareMethod('dialog_setFileMenu', function (my_search_value) {
       var gadget = this,
         props = CodeMirror.menu_dict,
