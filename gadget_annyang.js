@@ -47,14 +47,12 @@
         commands = {},
         dictionary = my_option_dict.commands,
         command;
-      
-      console.log(my_option_dict)
-      console.log(CodeMirror)
-      console.log(CodeMirror.command)
-        
+
       for (command in dictionary) {
         if (dictionary.hasOwnProperty(command)) {
-          commands[command] = gadget.setCommand(dictionary[command]);
+          commands[command] = function () {
+            return gadget.setCommand(dictionary[command]);
+          }
         }
       }
       commands["test"] = function () {
