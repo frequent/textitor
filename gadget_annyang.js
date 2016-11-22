@@ -57,7 +57,7 @@
         if (dictionary.hasOwnProperty(command)) {
           console.log(command)
           console.log(dictionary[command])
-          commands[command] = gadget.setCommand(dictionary[command]);
+          commands[command] = routeCommand(dictionary[command]);
         }
       }
       commands["test"] = function () {
