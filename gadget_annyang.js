@@ -35,11 +35,7 @@
         commands = {};
         
       commands["left"] = function () {
-        return new RSVP.Queue()
-          .push(function () {
-            return gadget.setCommand("myEditor_navigateLeft");
-          })
-          .push(function (r) {console.log(r);}, function (err) {console.log(err);throw err;})
+        return gadget.setCommand("myEditor_navigateLeft");
       };
       commands["right"] = function () {
         return gadget.setCommand("myEditor_navigateRight");
