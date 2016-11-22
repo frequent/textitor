@@ -28,6 +28,7 @@
     /////////////////////////////
     .declareMethod('setCommand', function (my_command) {
       var gadget = this;
+      console.log("Call made with " + my_command)
       return new RSVP.Queue()
         .push(function () {
           return gadget.routeCodeMirrorCommand(my_command); 
@@ -48,11 +49,15 @@
         dictionary = my_option_dict.commands,
         command;
 
+      function routeCommand (my_command) {
+        return gadget.setCommand(my_command);
+      } 
+      console.log("setting")
       for (command in dictionary) {
         if (dictionary.hasOwnProperty(command)) {
-          commands[command] = function () {
-            return gadget.setCommand(dictionary[command]);
-          }
+          console.log(command)
+          console.log(dictionary[command])
+          commands[command] = gadget.setCommand(dictionary[command]);
         }
       }
       commands["test"] = function () {
