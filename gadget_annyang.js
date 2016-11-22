@@ -54,12 +54,15 @@
       function wrap (my_parameter) {
         console.log("ok")
         console.log(my_parameter)
-        gadget.setCommand(my_parameter);
+        return gadget.setCommand(my_parameter);
       }
 
       for (cmd in command_dict) {
         if (command_dict.hasOwnProperty(cmd)) {
-          commands[cmd] = wrap(my_option_dict.commands[cmd]);
+          commands[cmd] = function () {
+            console.log(cmd)
+            return wrap(my_option_dict.commands[cmd]);
+          };
         }
       }
 
@@ -73,3 +76,4 @@
     });
     
 }(window, rJS, CodeMirror, annyang));
+
