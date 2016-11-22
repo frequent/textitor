@@ -18,6 +18,8 @@
   var SEARCH = "search";
   var BULK = "bulk";
   var SYNC = "sync";
+  var PICK = "pick";
+  var TAB = "tab";
   
   // and...
   var IDLE = "idle";
