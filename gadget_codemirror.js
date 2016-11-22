@@ -849,6 +849,7 @@
               "escape": 'myEditor_closeDialog'
             }
           });
+        });
     })
 
     // Init CodeMirror methods which require gadget to be passed as parameter
