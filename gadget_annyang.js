@@ -26,8 +26,8 @@
           commands[command] = CodeMirror.commands[dictionary[command]];
         }
       }
-
-      annyang.addCommands(my_option_dict.commands);
+      console.log(commands)
+      annyang.addCommands(commands);
       annyang.start();
       return gadget;
     });
