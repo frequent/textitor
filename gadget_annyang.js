@@ -10,8 +10,11 @@
     })
 
     .declareMethod('render', function (my_option_dict) {
-      var gadget = this,
-        return_gadget;
+      var gadget = this;
+      console.log(my_option_dict);
+      console.log(annyang)
+      return_gadget;
     });
     
 }(window, rJS, CodeMirror, annyang));
+

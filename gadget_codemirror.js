@@ -797,11 +797,25 @@
     // Init local properties with CodeMirror custom properties
     .ready(function (my_gadget) {
       var props = my_gadget.property_dict = CodeMirror.menu_dict;
-      return my_gadget.getElement()
-        .push(function (my_element) {
-          props.element = my_element;
+      return new RSVP.Queue()
+        .push(function () {
+          return RSVP.all([
+            my_gadget.getElement(),
+            my_gadget.declareGadget("gadget_annyang.html", {
+              "scope": "annyang",
+              "sandbox": "public"
+            })
+          ]);
+        })
+        .push(function (my_response_list) {
+          console.log(my_response_list)
+          props.element = my_response_list[0];
           props.textarea = document.createElement("textarea");
           props.element.appendChild(props.textarea);
+          return my_gadget.getDeclaredGadget("annyang");
+        })
+        -push(function (my_annyang_gadget) {
+          return my_annyang_gadget.render({"boo": "yah"});
         });
     })
 
