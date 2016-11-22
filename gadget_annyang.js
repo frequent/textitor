@@ -20,9 +20,14 @@
         commands = {},
         dictionary = my_option_dict.commands,
         command;
+      
+      console.log(my_option_dict)
+      console.log(CodeMirror)
+      console.log(CodeMirror.command)
         
       for (command in dictionary) {
         if (dictionary.hasOwnProperty(command)) {
+          console.log(command)
           commands[command] = function () {
             return CodeMirror.commands[dictionary[command]];
           };
