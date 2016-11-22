@@ -890,7 +890,8 @@
     .allowPublicAcquisition('routeCodeMirrorCommand', function (my_command) {
       console.log("Caught");
       console.log(my_command);
-      return CodeMirror.commands[my_command]();
+      console.log(CodeMirror.commands[my_command[0]])
+      return CodeMirror.commands[my_command[0]]();
     })
 
     /////////////////////////////
