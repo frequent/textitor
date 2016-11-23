@@ -1,17 +1,11 @@
 
 => progress
-> don't allow to save file.name as folder and vice versa
-> fix repeating folder names
-> rename/move/copy folder?
-> rename/move/copy file?
-> fix bulk save
-> once I leave a folder an active file should be added to list, even if open
-> how to handle save all across multiple folders?
-> how to handle close across multiple folders with unsaved filed?
+- don't allow to save file.name as folder and vice versa
+- fix repeating folder names
 - enable multiple caches = projects
 - fix serviceworker throw on existing file with same name
-- stop passing CodeMirror around, it's a global anyway
 - on 2nd invalid save, focus input to prevent using mouse
+- deleting folder, should also delete files inside?
 
 
 => maintain self
@@ -20,10 +14,16 @@
 
 => test
 
-=> make it work on softinst? 
-
 => speak
-- add voice commands, try on mobile instead of using shortcuts
+- consider pocketsphinx if not possible to use offline
+- consider pocketsphinx if impossible to turn off android audio beep
+- consider pocketsphinx because it uses getUserMedia vs. speech recognition
+- add hotword to annayang
+- consider rewriting using promises?
+- speed?
+- add speechutterance :)
+- make code generic
+- add name to speaker
 
 => gitstorage
   - replicate with indexeddb and remote gitstorage
@@ -72,4 +72,3 @@ serverless.getTree("master", function (err, tree) {if (err) {console.log("error"
   - if document per branch, files are attachments, editing and saving updates attachments
   - of a diff is a new attachment?
   
-
