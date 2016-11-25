@@ -19,8 +19,7 @@
 
 => speak
 - add voice commands, try on mobile instead of using shortcuts
-- think about pocketsphinx but it needs to be trained or support multiple keywords
-- if pocketsphinx clone and renderjs-if
+- juliusjs, find out how to build grammar with emscriptem online
 
 => gitstorage
   - replicate with indexeddb and remote gitstorage
@@ -69,4 +68,3 @@ serverless.getTree("master", function (err, tree) {if (err) {console.log("error"
   - if document per branch, files are attachments, editing and saving updates attachments
   - of a diff is a new attachment?
   
-
