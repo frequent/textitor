@@ -818,18 +818,19 @@
         .push(function () {
           return RSVP.all([
             my_gadget.getElement(),
-            my_gadget.declareGadget("gadget_annyang.html", {
-              "scope": "annyang",
-              "sandbox": "public"
-            })
+            //my_gadget.declareGadget("gadget_annyang.html", {
+            //  "scope": "annyang",
+            //  "sandbox": "public"
+            //})
           ]);
         })
         .push(function (my_response_list) {
           props.element = my_response_list[0];
           props.textarea = document.createElement("textarea");
           props.element.appendChild(props.textarea);
-          return my_gadget.getDeclaredGadget("annyang");
-        })
+          //return my_gadget.getDeclaredGadget("annyang");
+        });
+        /*
         .push(function (my_annyang_gadget) {
           return my_annyang_gadget.render({
             "trigger": 'lucy',
@@ -851,6 +852,7 @@
             }
           });
         });
+        */
     })
 
     // Init CodeMirror methods which require gadget to be passed as parameter
@@ -1164,7 +1166,6 @@
     })
 
     .declareMethod('editor_saveFile', function (my_file_id) {
-      console.log("SAVE")
       var gadget = this,
         props = CodeMirror.menu_dict,
         dialog = props.dialog,
@@ -1190,32 +1191,26 @@
       // XXX refactor
       if (!my_file_id) {
         if (!dialog || (!props.editor_active_dialog && !active_file)) {
-          console.log("no dialog or active dialog, but no file, move right!")
           CodeMirror.commands.myEditor_navigateHorizontal(props.editor, RIGHT);
           return;
         }
         if (!active_file) {
-          console.log("no active file, hm")
           file_name_input = dialog.querySelector("input");
           file_name = file_name_input.value;
           is_container = dialog.querySelector('input[name="is_container"]:checked');
           mime_type_input = file_name.split(".").pop().replace("/", "");
           mime_type = setMimeType(mime_type_input);
         } else {
-          console.log("active file, easy")
           file_name = active_file.name;
           mime_type = active_file.mime_type;
         }
 
         // validate form
         if (dialog) {
-          console.log("DIALOG")
           if (!file_name) {
-            console.log("eh, no file")
             return props.dialog_flagInput(file_name_input, 'Enter valid URL.');
           }
           if (file_name_input && file_name_input.value === "Enter valid URL.") {
-            console.log("meh, Enter valid URL?")
             file_name_input.focus();
             return;
           }
@@ -1233,8 +1228,6 @@
         file_name = my_file_id;
         mime_type = setMimeType(file_name.split(".").pop().replace("/", ""));
       }
-      console.log("REACH?")
-
       if (active_path && file_name.indexOf(active_path) === -1) {
         file_name = active_path + "/" + file_name
       }
