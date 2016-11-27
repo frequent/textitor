@@ -15,8 +15,6 @@
 
 => test
 
-=> make it work on softinst? 
-
 => speak
 - add voice commands, try on mobile instead of using shortcuts
 - juliusjs, find out how to build grammar with emscriptem online
