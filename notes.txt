@@ -3,11 +3,9 @@
 > don't allow to save file.name as folder and vice versa
 > deleting folder, should also delete files inside?
 > fix repeating folder names
+> on 2nd invalid save, focus input to prevent using mouse
 - enable multiple caches = projects
 - fix serviceworker throw on existing file with same name
-- stop passing CodeMirror around, it's a global anyway
-- on 2nd invalid save, focus input to prevent using mouse
-
 
 => maintain self
 - add manifest
@@ -32,11 +30,11 @@
   - post-document = create new branch
   - remove-document = delete branch
   - get-document = checkout branch
-  - put?
+  - put - edit branch?
   - putAttachment = commit file
   - getAttachment = ?
   - removeAttachment = ?
-  - repair = push all branches? one branch?
+  - repair/sync = push
 
 => cachestorage
   - this is my filesystem to work on, create, edit, delete, ....
