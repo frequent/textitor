@@ -6,6 +6,7 @@
 > on 2nd invalid save, focus input to prevent using mouse
 - enable multiple caches = projects
 - fix serviceworker throw on existing file with same name
+- add a queue of activities
 
 => maintain self
 - add manifest
