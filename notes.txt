@@ -1,5 +1,7 @@
 
 => progress
+> fix throwing on navigating up/down on empty folder
+> fix is modified when closing tabs
 > don't allow to save file.name as folder and vice versa
 > deleting folder, should also delete files inside?
 > fix repeating folder names
@@ -65,3 +67,4 @@ serverless.getTree("master", function (err, tree) {if (err) {console.log("error"
   - if document per branch, files are attachments, editing and saving updates attachments
   - of a diff is a new attachment?
   
+
