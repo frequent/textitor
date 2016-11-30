@@ -6,7 +6,7 @@
   function initializeStorage(my_gadget, my_name) {
     var config;
     if (my_name === "serviceworker") {
-      config = {"type": "serviceworker", "cache": "textitor"};
+      config = {"type": "serviceworker"};
     } else {
       config = {"type": "memory"};
     }
@@ -148,4 +148,3 @@
     });
 
 }(window, rJS));
-
