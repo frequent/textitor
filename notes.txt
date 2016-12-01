@@ -14,8 +14,6 @@
 - add manifest
 - try image handling with favicon, must be possible to handle images without opening
 
-=> test
-
 => speak
 - add voice commands, try on mobile instead of using shortcuts
 - juliusjs, find out how to build grammar with emscriptem online
@@ -67,4 +65,3 @@ serverless.getTree("master", function (err, tree) {if (err) {console.log("error"
   - if document per branch, files are attachments, editing and saving updates attachments
   - of a diff is a new attachment?
   
-
