@@ -696,7 +696,9 @@
       });
   }
 
-  function editor_saveFromDialog() {
+  function editor_saveFromDialog(x) {
+    console.log("SAVING FROM DIALOG")
+    console.log(x)
     if (CodeMirror.menu_dict.dialog_position !== LEFT) {
       if (CodeMirror.menu_dict.dialog_evaluateState) {
         return CodeMirror.menu_dict.dialog_evaluateState({"target":{"name": SAVE}});
