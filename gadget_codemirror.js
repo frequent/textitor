@@ -1187,7 +1187,8 @@
       function setMimeType(my_mime) {
         return MIMES[my_mime] || MIMES[SHIMMIMES[my_mime]] || "text/plain";
       }
-
+      console.log("SAVE FILE")
+      console.log(CodeMirror.menu_dict)
       // bulkSave will pass file_id, file will not be open, need to get content
 
       // XXX refactor
@@ -1212,6 +1213,9 @@
           if (!file_name) {
             return props.dialog_flagInput(file_name_input, 'Enter valid URL.');
           }
+          console.log(dialog)
+          console.log(file_name_input)
+          console.log(file_name_input.value)
           if (file_name_input && file_name_input.value === "Enter valid URL.") {
             file_name_input.focus();
             return;
