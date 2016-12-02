@@ -421,9 +421,6 @@
       i;
 
     if (file_menu) {
-      console.log("filemenu")
-      console.log(file_menu.querySelectorAll('input[type="checkbox"]'))
-      
       input_list = Array.prototype.slice.call(
         file_menu.querySelectorAll('input[type="checkbox"]')
       ),
@@ -431,27 +428,18 @@
       input_element,
       i;
 
-      console.log(input_list)
       if (len > 0) {
-        console.log("got checkboxes, let's continue")
         for (i = 0; i < len; i += 1) {
-          console.log("hm")
           if (input_list[i].checked) {
             selected_index = i;
             input_list[i].checked = false;
           }
         }
-        console.log(selected_index)
-        console.log(len)
         if (my_direction === DOWN) {
-          console.log("DOWN")
           selected_index = selected_index || len;
-          console.log(selected_index)
           input_element = input_list[selected_index - 1] || input_list[len - 1];
         } else {
-          console.log("UP")
           selected_index = selected_index || 0;
-          console.log(selected_index)
           input_element = input_list[selected_index + 1] || input_list[0];
         }
         input_element.checked = true;
