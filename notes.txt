@@ -1,6 +1,5 @@
 
 => progress
-> fix throwing on navigating up/down on empty folder
 > fix is modified when closing tabs
 > don't allow to save file.name as folder and vice versa
 > deleting folder, should also delete files inside?
@@ -8,11 +7,15 @@
 > on 2nd invalid save, focus input to prevent using mouse
 - enable multiple caches = projects
 - fix serviceworker throw on existing file with same name
-- add a queue of activities
+- add a queue of activities, should be able to pass multiple commands and
+  run through them in a queue (like voice commands). Pass all method calls
+  through the queue.
 
 => maintain self
 - add manifest
 - try image handling with favicon, must be possible to handle images without opening
+
+=> test
 
 => speak
 - add voice commands, try on mobile instead of using shortcuts
@@ -65,3 +68,4 @@ serverless.getTree("master", function (err, tree) {if (err) {console.log("error"
   - if document per branch, files are attachments, editing and saving updates attachments
   - of a diff is a new attachment?
   
+
