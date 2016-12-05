@@ -697,8 +697,6 @@
   }
 
   function editor_saveFromDialog(x) {
-    console.log("SAVING FROM DIALOG")
-    console.log(x)
     if (CodeMirror.menu_dict.dialog_position !== LEFT) {
       if (CodeMirror.menu_dict.dialog_evaluateState) {
         return CodeMirror.menu_dict.dialog_evaluateState({"target":{"name": SAVE}});
@@ -1213,11 +1211,11 @@
         // validate form
         if (dialog) {
           if (!file_name) {
+            console.log(file_name_input)
+            console.log(file_name_input.value)
             return props.dialog_flagInput(file_name_input, 'Enter valid URL.');
           }
           console.log(dialog)
-          console.log(file_name_input)
-          console.log(file_name_input.value)
           if (file_name_input && file_name_input.value === "Enter valid URL.") {
             file_name_input.focus();
             return;
