@@ -701,9 +701,23 @@
     console.log(x)
     console.log(CodeMirror)
     console.log(CodeMirror.menu_dict)
+    if (CodeMirror.menu_dict.action_pending === SAVE) {
+      console.log("BLOCKER")
+      return;
+    }
+    CodeMirror.menu_dict.action_pending = SAVE;
     if (CodeMirror.menu_dict.dialog_position !== LEFT) {
       if (CodeMirror.menu_dict.dialog_evaluateState) {
-        return CodeMirror.menu_dict.dialog_evaluateState({"target":{"name": SAVE}});
+        return new RSVP.Queue()
+          .push(function () {
+            return CodeMirror.menu_dict.dialog_evaluateState({"target":{"name": SAVE}});
+          })
+          .push(function (my_answer) {
+            console.log(my_answer)
+            console.log("deleting")
+            delete CodeMirror.menu_dict.action_pending;
+            return my_answer;
+          });
       } else {
         return CodeMirror.commands.myEditor_openDialog(CodeMirror, RIGHT);
       }
