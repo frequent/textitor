@@ -714,7 +714,6 @@
             return CodeMirror.menu_dict.dialog_evaluateState({"target":{"name": SAVE}});
           })
           .push(function (my_answer) {
-            console.log(my_answer)
             console.log("deleting")
             CodeMirror.menu_dict.action_pending = null;
             return my_answer;
