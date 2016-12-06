@@ -701,6 +701,7 @@
     console.log(x)
     console.log(CodeMirror)
     console.log(CodeMirror.menu_dict)
+    console.log(CodeMirror.menu_dict.action_pending)
     if (CodeMirror.menu_dict.action_pending === SAVE) {
       console.log("BLOCKER")
       return;
@@ -715,7 +716,7 @@
           .push(function (my_answer) {
             console.log(my_answer)
             console.log("deleting")
-            delete CodeMirror.menu_dict.action_pending;
+            CodeMirror.menu_dict.action_pending = null;
             return my_answer;
           });
       } else {
@@ -1205,8 +1206,7 @@
       function setMimeType(my_mime) {
         return MIMES[my_mime] || MIMES[SHIMMIMES[my_mime]] || "text/plain";
       }
-      console.log("SAVE FILE")
-      console.log(CodeMirror.menu_dict)
+
       // bulkSave will pass file_id, file will not be open, need to get content
 
       // XXX refactor
