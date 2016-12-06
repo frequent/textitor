@@ -697,6 +697,10 @@
   }
 
   function editor_saveFromDialog(x) {
+    console.log("SAVING")
+    console.log(x)
+    console.log(CodeMirror)
+    console.log(CodeMirror.menu_dict)
     if (CodeMirror.menu_dict.dialog_position !== LEFT) {
       if (CodeMirror.menu_dict.dialog_evaluateState) {
         return CodeMirror.menu_dict.dialog_evaluateState({"target":{"name": SAVE}});
