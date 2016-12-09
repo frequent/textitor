@@ -683,9 +683,7 @@
   // CodeMirror Commands Extensions (shortcut calls)
   /////////////////////////////
   function editor_closeFile() {
-    console.log("closing")
     return queueCall(function () {
-      console.log("callback called")
       if (CodeMirror.menu_dict.dialog_evaluateState) {
         return CodeMirror.menu_dict.dialog_evaluateState({"target":{"name": CLOSE}});
       }
@@ -693,152 +691,184 @@
   }
 
   function editor_deleteFile() {
-    if (CodeMirror.menu_dict.dialog_evaluateState) {
-      return CodeMirror.menu_dict.dialog_evaluateState({"target": {"name": REMOVE}});
-    }
+    return queueCall(function () {
+      if (CodeMirror.menu_dict.dialog_evaluateState) {
+        return CodeMirror.menu_dict.dialog_evaluateState({"target": {"name": REMOVE}});
+      }
+    });
   }
 
   function editor_searchFileMenu() {
-    var props = CodeMirror.menu_dict,
-      input;
-    if (props.dialog_evaluateState && props.dialog && props.dialog_position === LEFT) {
-      input = props.dialog.querySelector("input[type='text']");
-      if (input) {
-        return props.dialog_evaluateState({
-          "target": {'name': SEARCH, 'find': {'value': input.value}}
-        });
+    return queueCall(function () {
+      var props = CodeMirror.menu_dict,
+        input;
+      if (props.dialog_evaluateState && props.dialog && props.dialog_position === LEFT) {
+        input = props.dialog.querySelector("input[type='text']");
+        if (input) {
+          return props.dialog_evaluateState({
+            "target": {'name': SEARCH, 'find': {'value': input.value}}
+          });
+        }
       }
-    }
-    return;
+      return;
+    });
   }
 
   function editor_closeDialog() {
-    if (CodeMirror.menu_dict.dialog_evaluateState) {
-      return CodeMirror.menu_dict.dialog_evaluateState(true);
-    }
+    return queueCall(function () {
+      if (CodeMirror.menu_dict.dialog_evaluateState) {
+        return CodeMirror.menu_dict.dialog_evaluateState(true);
+      }
+    });
   }
 
   function editor_openDialog(my_codemirror, my_direction) {
-    my_codemirror = my_codemirror || CodeMirror.menu_dict.editor;
-    return new RSVP.Queue()
-      .push(function () {
-        return my_codemirror.openDialog(
-          CodeMirror.menu_dict.dialog_setNavigationMenu(my_direction),
-          CodeMirror.menu_dict.dialog_closeCallback,
-          CodeMirror.menu_dict.dialog_option_dict
-        );
-      });
+    return queueCall(function (my_codemirror, my_direction) {
+      my_codemirror = my_codemirror || CodeMirror.menu_dict.editor;
+      return new RSVP.Queue()
+        .push(function () {
+          return my_codemirror.openDialog(
+            CodeMirror.menu_dict.dialog_setNavigationMenu(my_direction),
+            CodeMirror.menu_dict.dialog_closeCallback,
+            CodeMirror.menu_dict.dialog_option_dict
+          );
+        });
+    });
   }
 
   function editor_saveFromDialog(x) {
-    console.log("SAVING")
-    console.log(x)
-    console.log(CodeMirror)
-    console.log(CodeMirror.menu_dict)
-    console.log(CodeMirror.menu_dict.action_pending)
-    if (CodeMirror.menu_dict.action_pending === SAVE) {
-      console.log("BLOCKER")
-      return;
-    }
-    CodeMirror.menu_dict.action_pending = SAVE;
-    if (CodeMirror.menu_dict.dialog_position !== LEFT) {
-      if (CodeMirror.menu_dict.dialog_evaluateState) {
-        return new RSVP.Queue()
-          .push(function () {
-            return CodeMirror.menu_dict.dialog_evaluateState({"target":{"name": SAVE}});
-          })
-          .push(function (my_answer) {
-            console.log("deleting")
-            CodeMirror.menu_dict.action_pending = null;
-            return my_answer;
-          });
-      } else {
-        return CodeMirror.commands.myEditor_openDialog(CodeMirror, RIGHT);
+    return queueCall(function (x) {
+      console.log("SAVING")
+      console.log(x)
+      console.log(CodeMirror)
+      console.log(CodeMirror.menu_dict)
+      console.log(CodeMirror.menu_dict.action_pending)
+      if (CodeMirror.menu_dict.action_pending === SAVE) {
+        console.log("BLOCKER")
+        return;
       }
-    } else {
-      CodeMirror.commands.myEditor_bulkSaveFromDialog();
-    }
+      CodeMirror.menu_dict.action_pending = SAVE;
+      if (CodeMirror.menu_dict.dialog_position !== LEFT) {
+        if (CodeMirror.menu_dict.dialog_evaluateState) {
+          return new RSVP.Queue()
+            .push(function () {
+              return CodeMirror.menu_dict.dialog_evaluateState({"target":{"name": SAVE}});
+            })
+            .push(function (my_answer) {
+              console.log("deleting")
+              CodeMirror.menu_dict.action_pending = null;
+              return my_answer;
+            });
+        } else {
+          return CodeMirror.commands.myEditor_openDialog(CodeMirror, RIGHT);
+        }
+      } else {
+        CodeMirror.commands.myEditor_bulkSaveFromDialog();
+      }
+    });
   }
 
   function editor_openFromDialog() {
-    if (CodeMirror.menu_dict.dialog_position === LEFT) {
-      return CodeMirror.menu_dict.dialog_evaluateState({"target":{"name": OPEN}});
-    }
+    return queueCall(function () {
+      if (CodeMirror.menu_dict.dialog_position === LEFT) {
+        return CodeMirror.menu_dict.dialog_evaluateState({"target":{"name": OPEN}});
+      }
+    });
   }
 
   function editor_bulkSaveFromDialog() {
-    if (CodeMirror.menu_dict.dialog_position === LEFT) {
-      return CodeMirror.menu_dict.dialog_evaluateState({"target":{"name": BULK}});
-    }
+    return queueCall(function () {
+      if (CodeMirror.menu_dict.dialog_position === LEFT) {
+        return CodeMirror.menu_dict.dialog_evaluateState({"target":{"name": BULK}});
+      }
+    });
   }
 
   function editor_navigateHorizontal(my_codemirror, my_direction, my_cm_call) {
-    var props = CodeMirror.menu_dict,
-      position = props.dialog_position,
-      parameter,
-      path_list;
-
-    if (!props.dialog_is_codemirror_call) {
-      props.dialog_is_codemirror_call = my_cm_call;
-    } else {
-      props.dialog_is_codemirror_call = null;
-      return;
-    }
-    if (position === IDLE) {
-      return CodeMirror.commands.myEditor_openDialog(my_codemirror, my_direction);
-    }
-    if (position === my_direction) {
-      if (position === LEFT && props.editor_active_path) {
-        if (props.dialog_is_filemenu_set) {
-          path_list = props.editor_active_path.split("/");
-          path_list = path_list.splice(0, path_list.length - 1).join("/");
-          props.editor_active_path = path_list || null;
-          props.editor_setDisplay(props.editor.active_path);
-        }
-        parameter = BLANK_SEARCH;
+    return queueCall(function (my_codemirror, my_direction, my_cm_call) {
+      var props = CodeMirror.menu_dict,
+        position = props.dialog_position,
+        parameter,
+        path_list;
+  
+      if (!props.dialog_is_codemirror_call) {
+        props.dialog_is_codemirror_call = my_cm_call;
       } else {
-        parameter = false;
+        props.dialog_is_codemirror_call = null;
+        return;
       }
-    }
-    if (position === RIGHT && my_direction == LEFT) {
-      parameter = true;
-    }
-    if (position === LEFT && my_direction === RIGHT) {
-      parameter = {"target": {"name": OPEN}};
-    }
-    return props.dialog_evaluateState(parameter);
+      if (position === IDLE) {
+        return CodeMirror.commands.myEditor_openDialog(my_codemirror, my_direction);
+      }
+      if (position === my_direction) {
+        if (position === LEFT && props.editor_active_path) {
+          if (props.dialog_is_filemenu_set) {
+            path_list = props.editor_active_path.split("/");
+            path_list = path_list.splice(0, path_list.length - 1).join("/");
+            props.editor_active_path = path_list || null;
+            props.editor_setDisplay(props.editor.active_path);
+          }
+          parameter = BLANK_SEARCH;
+        } else {
+          parameter = false;
+        }
+      }
+      if (position === RIGHT && my_direction == LEFT) {
+        parameter = true;
+      }
+      if (position === LEFT && my_direction === RIGHT) {
+        parameter = {"target": {"name": OPEN}};
+      }
+      return props.dialog_evaluateState(parameter);
+    });
   }
 
   function editor_navigateVertical(my_codemirror, my_direction) {
-    return CodeMirror.menu_dict.dialog_updateFileMenu(my_direction);
+    return queueCall(function (my_codemirror, my_direction) {
+      return CodeMirror.menu_dict.dialog_updateFileMenu(my_direction);
+    });
   }
 
   function editor_navigateRight(cm) {
-    return CodeMirror.commands.myEditor_navigateHorizontal(cm, RIGHT, true);
+    return queueCall(function (cm) {
+      return CodeMirror.commands.myEditor_navigateHorizontal(cm, RIGHT, true);
+    });
   }
 
   function editor_navigateLeft(cm) {
-    return CodeMirror.commands.myEditor_navigateHorizontal(cm, LEFT, true);
+    return queueCall(function (cm) {
+      return CodeMirror.commands.myEditor_navigateHorizontal(cm, LEFT, true);
+    });
   }
 
   function editor_navigateUp(cm) {
-    return CodeMirror.commands.myEditor_navigateVertical(cm, UP);
+    return queueCall(function (cm) {
+      return CodeMirror.commands.myEditor_navigateVertical(cm, UP);
+    });
   }
 
   function editor_navigateDown(cm) {
-    return CodeMirror.commands.myEditor_navigateVertical(cm, DOWN);
+    return queueCall(function (cm) {
+      return CodeMirror.commands.myEditor_navigateVertical(cm, DOWN);
+    });
   }
   
   function editor_sync(cm) {
-    return;
+    return queueCall(function (cm) {
+      return;
+    });
   }
   
   function editor_pickDialogOption(cm) {
-    return;
+    return queueCall(function () {
+      return;
+    });
   }
 
   function editor_traverseDialog(cm) {
-    return;
+    return queueCall(function () {
+      return;
+    });
   }
 
   CodeMirror.commands.myEditor_closeFile = editor_closeFile;
@@ -912,31 +942,33 @@
     // Init CodeMirror methods which require gadget to be passed as parameter
     .ready(function (my_gadget){
       function editor_updateStorage(my_pointer) {
-        var action;
-        if (my_pointer) {
-          if (my_pointer.target) {
-            action = my_pointer.target.name;
-            if (action === BULK) {
-              return my_gadget.editor_bulkSave();
-            }
-            if (action === SEARCH) {
-              return my_gadget.dialog_setFileMenu(my_pointer.target.find.value);
-            }
-            if (action === OPEN) {
-              return my_gadget.editor_openFile();
-            }
-            if (action === CLOSE) {
-              return my_gadget.editor_swapFile();
-            }
-            if (action === SAVE) {
-              return my_gadget.editor_saveFile();
-            }
-            if (action === REMOVE) {
-              return my_gadget.editor_removeFile();
+        return queueCall(function (my_pointer) {
+          var action;
+          if (my_pointer) {
+            if (my_pointer.target) {
+              action = my_pointer.target.name;
+              if (action === BULK) {
+                return my_gadget.editor_bulkSave();
+              }
+              if (action === SEARCH) {
+                return my_gadget.dialog_setFileMenu(my_pointer.target.find.value);
+              }
+              if (action === OPEN) {
+                return my_gadget.editor_openFile();
+              }
+              if (action === CLOSE) {
+                return my_gadget.editor_swapFile();
+              }
+              if (action === SAVE) {
+                return my_gadget.editor_saveFile();
+              }
+              if (action === REMOVE) {
+                return my_gadget.editor_removeFile();
+              }
             }
           }
-        }
-        return my_pointer;
+          return my_pointer;
+        });
       }
       CodeMirror.menu_dict.editor_updateStorage = editor_updateStorage;
     })
