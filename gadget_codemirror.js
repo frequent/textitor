@@ -1609,6 +1609,9 @@
       
       // queue enabling to buffer method calls (eg voice commands)
       gadget.property_dict.service_queue = new RSVP.Queue();
+      queueCall(function () {
+        console.log("Queued")
+      });
       
       return new RSVP.Queue()
         .push(function () {
