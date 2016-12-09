@@ -172,6 +172,36 @@
   // Some Methods
   /////////////////////////////
 
+  // Queue function calls
+  function queueCall(gadget, callback) {
+    var props = gadget.property_dict,
+      deferred = props.current_deferred;
+
+    // Unblock queue
+    if (deferred !== undefined) {
+      deferred.resolve("Another event added");
+    }
+
+    // Add next callback
+    try {
+      props.service_queue.push(callback);
+    } catch (error) {
+      throw new Error(
+        "Service already crashed... " +
+        props.service_queue.rejectedReason.toString()
+      );
+    }
+
+    // Block the queue
+    deferred = RSVP.defer();
+    props.current_deferred = deferred;
+    props.service_queue.push(function () {
+      return deferred.promise;
+    });
+  }
+
+  
+
   // CodeMirror needs this on dialog close
   function closeNotification(my_editor, my_newVal) {
     if (my_editor.state.currentNotificationClose) {
@@ -1570,6 +1600,26 @@
       });
     })
 
+    .declareService(function () {
+      var gadget = this;
+      
+      // queue enabling to buffer method calls (eg voice commands)
+      gadget.property_dict.service_queue = new RSVP.Queue();
+      
+      return new RSVP.Queue()
+        .push(function () {
+          return gadget.property_dict.service_queue;
+        })
+        .push(function () {
+          throw new Error("Service should not have been stopped!");
+        })
+        .push(null, function (my_service_stopped_error) {
+          
+          // XXX handle service stoppage before throwing
+          throw my_service_stopped_error;
+        });
+    })
+  
     .declareService(function () {
       var gadget = this,
         props = gadget.property_dict,
