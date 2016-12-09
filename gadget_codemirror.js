@@ -723,7 +723,11 @@
   }
 
   function editor_openDialog(my_codemirror, my_direction) {
+    console.log(my_codemirror)
     return queueCall(function (my_codemirror, my_direction) {
+      console.log("queuecall")
+      console.log(my_codemirror)
+      console.log(my_direction)
       my_codemirror = my_codemirror || CodeMirror.menu_dict.editor;
       return new RSVP.Queue()
         .push(function () {
@@ -1307,19 +1311,21 @@
         content = props.editor.getValue();
         
         if (is_container) {
+          
           console.log("saving a new cache")
           if (is_container.value === 'cache') {
             return props.dialog_flagInput(file_name_input, 'Cache not supported');
+          } else {
+            mime_type = "application/json";
+            folder_file_list = [];
           }
-          mime_type = "application/json";
-          folder_file_list = [];
         }
       } else {
         file_name = my_file_id;
         mime_type = setMimeType(file_name.split(".").pop().replace("/", ""));
       }
       if (active_path && file_name.indexOf(active_path) === -1) {
-        file_name = active_path + "/" + file_name
+        file_name = active_path + "/" + file_name;
       }
 
       return new RSVP.Queue()
