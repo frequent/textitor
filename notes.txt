@@ -6,10 +6,6 @@
 > fix repeating folder names
 > on 2nd invalid save, focus input to prevent using mouse
 - enable multiple caches = projects
-- fix serviceworker throw on existing file with same name
-- add a queue of activities, should be able to pass multiple commands and
-  run through them in a queue (like voice commands). Pass all method calls
-  through the queue.
 
 => maintain self
 - add manifest
@@ -68,4 +64,3 @@ serverless.getTree("master", function (err, tree) {if (err) {console.log("error"
   - if document per branch, files are attachments, editing and saving updates attachments
   - of a diff is a new attachment?
   
-
