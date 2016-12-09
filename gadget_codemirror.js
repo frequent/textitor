@@ -724,7 +724,7 @@
 
   function editor_openDialog(my_codemirror, my_direction) {
     console.log(my_codemirror)
-    return queueCall(function (my_codemirror, my_direction) {
+    queueCall(function (my_codemirror, my_direction) {
       console.log("queuecall")
       console.log(my_codemirror)
       console.log(my_direction)
