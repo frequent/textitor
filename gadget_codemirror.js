@@ -683,9 +683,13 @@
   // CodeMirror Commands Extensions (shortcut calls)
   /////////////////////////////
   function editor_closeFile() {
-    if (CodeMirror.menu_dict.dialog_evaluateState) {
-      return CodeMirror.menu_dict.dialog_evaluateState({"target":{"name": CLOSE}});
-    }
+    console.log("closing")
+    return queueCall(function () {
+      console.log("callback called")
+      if (CodeMirror.menu_dict.dialog_evaluateState) {
+        return CodeMirror.menu_dict.dialog_evaluateState({"target":{"name": CLOSE}});
+      }
+    });
   }
 
   function editor_deleteFile() {
