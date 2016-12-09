@@ -173,8 +173,8 @@
   /////////////////////////////
 
   // Queue function calls
-  function queueCall(gadget, callback) {
-    var props = gadget.property_dict,
+  function queueCall(callback) {
+    var props = CodeMirror.menu_dict,
       deferred = props.current_deferred;
 
     // Unblock queue
@@ -1002,7 +1002,7 @@
           return gadget;
         });
     })
-    
+
     .declareMethod('dialog_setFileMenu', function (my_search_value) {
       var gadget = this,
         props = CodeMirror.menu_dict,
