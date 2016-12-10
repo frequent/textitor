@@ -726,8 +726,13 @@
   }
 
   function editor_openDialog(my_codemirror, my_direction) {
-    return queueCall(function (my_codemirror, my_direction) {
-      my_codemirror = my_codemirror || CodeMirror.menu_dict.editor;
+    my_codemirror = my_codemirror || CodeMirror.menu_dict.editor;
+    console.log(my_codemirror)
+    
+    foo = function (my_codemirror, my_direction) {
+      console.log("what is it?")
+      console.log(my_codemirror)
+      console.log(my_direction)
       return new RSVP.Queue()
         .push(function () {
           return my_codemirror.openDialog(
@@ -736,7 +741,8 @@
             CodeMirror.menu_dict.dialog_option_dict
           );
         });
-    });
+    };
+    return queueCall(foo);
   }
 
   function editor_saveFromDialog(x) {
