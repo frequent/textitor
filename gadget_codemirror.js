@@ -199,7 +199,7 @@
     // Block the queue
     deferred = RSVP.defer();
     props.current_deferred = deferred;
-    console.log(current_deferred)
+    console.log(props.current_deferred)
     props.service_queue.push(function () {
       console.log("returning deferred promise, will block the queue until resolved")
       return deferred.promise;
