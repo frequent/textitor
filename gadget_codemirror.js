@@ -1007,9 +1007,10 @@
     .declareMethod('render', function (my_option_dict) {
       var gadget = this,
         dict = gadget.property_dict;
-
+      console.log("CALLED render")
       return new RSVP.Queue()
         .push(function () {
+          console.log("setting dialog extension")
           return gadget.dialog_setDialogExtension();
         })
         .push(function () {
@@ -1624,6 +1625,7 @@
             });
         });
       }
+      console.log("CALLING Codemirror to define extension")
       return CodeMirror.defineExtension("openDialog", dialogCallback);
     })
 
@@ -1649,6 +1651,8 @@
       // queue enabling to buffer method calls (eg voice commands)
       gadget.property_dict.service_queue = new RSVP.Queue();
       queueCall(function () {
+        console.log("heya callback")
+        console.log(CodeMirror)
         return;
       });
       
