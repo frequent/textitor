@@ -176,12 +176,12 @@
   function queueCall(callback) {
     console.log("called queue, callback ", callback)
     var props = CodeMirror.menu_dict,
-      deferred;
+      deferred = props.current_deferred;
 
     // Unblock queue
-    if (props.current_deferred !== undefined) {
-      console.log("there is a block, remove it", props.current_deferred)
-      props.current_deferred.resolve("resolving blocking deferred to add new callback");
+    if (deferred !== undefined) {
+      console.log(deferred)
+      deferred.resolve("resolving blocking deferred to add new callback");
     } else {
       console.log("no deferred, set, add callback to service_queue")
     }
@@ -195,14 +195,14 @@
       throw new Error("Service already crashed... ");
     }
 
-    console.log("push a block = new deferred to service_queue to prevent it from being returned and finishing")
+    console.log("add a new deferred to prevent queue from being returned and finishing")
     // Block the queue
-    // deferred = RSVP.defer();
-    props.current_deferred = RSVP.defer();
+    deferred = RSVP.defer();
+    props.current_deferred = deferred;
     console.log(props.current_deferred)
     props.service_queue.push(function () {
       console.log("returning deferred promise, will block the queue until resolved")
-      return props.current_deferred.promise;
+      return deferred.promise;
     });
   }
 
