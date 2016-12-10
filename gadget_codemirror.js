@@ -187,12 +187,9 @@
     try {
       props.service_queue.push(callback);
       console.log("worked")
-      console.log(service_queue)
+      console.log(props.service_queue)
     } catch (error) {
-      throw new Error(
-        "Service already crashed... " +
-        props.service_queue.rejectedReason.toString()
-      );
+      throw new Error("Service already crashed... ");
     }
 
     console.log("blocking ")
