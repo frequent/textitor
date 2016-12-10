@@ -729,7 +729,7 @@
     my_codemirror = my_codemirror || CodeMirror.menu_dict.editor;
     console.log(my_codemirror)
     
-    foo = function (my_codemirror, my_direction) {
+    var foo = function (my_codemirror, my_direction) {
       console.log("what is it?")
       console.log(my_codemirror)
       console.log(my_direction)
