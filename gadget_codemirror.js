@@ -174,6 +174,7 @@
 
   // Queue function calls
   function queueCall(callback) {
+    console.log("called queue, callback ", callback)
     var props = CodeMirror.menu_dict,
       deferred = props.current_deferred;
 
@@ -181,10 +182,12 @@
     if (deferred !== undefined) {
       deferred.resolve("Another event added");
     }
-
+    console.log("no deferred, let's go")
     // Add next callback
     try {
       props.service_queue.push(callback);
+      console.log("worked")
+      console.log(service_queue)
     } catch (error) {
       throw new Error(
         "Service already crashed... " +
@@ -192,10 +195,13 @@
       );
     }
 
+    console.log("blocking ")
     // Block the queue
     deferred = RSVP.defer();
     props.current_deferred = deferred;
     props.service_queue.push(function () {
+      console.log("inside service queue, blocker")
+      console.log(deferred)
       return deferred.promise;
     });
   }
@@ -723,16 +729,8 @@
   }
 
   function editor_openDialog(my_codemirror, my_direction) {
-    console.log(my_codemirror)
-    console.log("queuecall")
-    console.log(my_codemirror)
-    console.log(my_direction)
     return queueCall(function (my_codemirror, my_direction) {
       my_codemirror = my_codemirror || CodeMirror.menu_dict.editor;
-      console.log("inside Queue Call")
-      console.log(my_direction)
-      console.log(my_codemirror)
-      console.log(my_codemirror.openDialog)
       return new RSVP.Queue()
         .push(function () {
           return my_codemirror.openDialog(
@@ -1654,7 +1652,7 @@
       // queue enabling to buffer method calls (eg voice commands)
       gadget.property_dict.service_queue = new RSVP.Queue();
       queueCall(function () {
-        console.log("Queued")
+        return;
       });
       
       return new RSVP.Queue()
