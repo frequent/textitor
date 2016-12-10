@@ -1651,14 +1651,11 @@
       
       // queue enabling to buffer method calls (eg voice commands)
       gadget.property_dict.service_queue = new RSVP.Queue();
-      /*
+
       queueCall(function () {
-        console.log("heya callback")
-        console.log(CodeMirror)
-        return;
+        return true;
       });
-      */
-      
+
       return new RSVP.Queue()
         .push(function () {
           return gadget.property_dict.service_queue;
