@@ -1553,6 +1553,7 @@
       var gadget = this;
 
       function dialogCallback(my_template, my_callback, my_option_dict) {
+        console.log("inside dialog callback")
         return queueCall(function (my_template, my_callback, my_option_dict) {
           var queue = new RSVP.Queue(),
             props = CodeMirror.menu_dict,
@@ -1650,11 +1651,13 @@
       
       // queue enabling to buffer method calls (eg voice commands)
       gadget.property_dict.service_queue = new RSVP.Queue();
+      /*
       queueCall(function () {
         console.log("heya callback")
         console.log(CodeMirror)
         return;
       });
+      */
       
       return new RSVP.Queue()
         .push(function () {
