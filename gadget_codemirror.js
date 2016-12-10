@@ -724,11 +724,15 @@
 
   function editor_openDialog(my_codemirror, my_direction) {
     console.log(my_codemirror)
-    queueCall(function (my_codemirror, my_direction) {
-      console.log("queuecall")
-      console.log(my_codemirror)
-      console.log(my_direction)
+    console.log("queuecall")
+    console.log(my_codemirror)
+    console.log(my_direction)
+    return queueCall(function (my_codemirror, my_direction) {
       my_codemirror = my_codemirror || CodeMirror.menu_dict.editor;
+      console.log("inside Queue Call")
+      console.log(my_direction)
+      console.log(my_codemirror)
+      console.log(my_codemirror.openDialog)
       return new RSVP.Queue()
         .push(function () {
           return my_codemirror.openDialog(
@@ -1553,75 +1557,77 @@
       var gadget = this;
 
       function dialogCallback(my_template, my_callback, my_option_dict) {
-        var queue = new RSVP.Queue(),
-          props = CodeMirror.menu_dict,
-          editor = props.editor,
-          opts = my_option_dict || {},
-          dialog_event_list = [],
-          dialog_form_submit_list = [],
-          dialog_input,
-          dialog;
-
-        dialog = props.dialog = props.editor_setDialog(editor, my_template, opts.position);
-        dialog_input = dialog.querySelector("input[type='text']");
-        props.editor_active_dialog = true;
-        closeNotification(props.editor, null);
-
-        function wrapBind(my_element, my_event_name, my_property_name) {
-          return loopEventListener(my_element, my_event_name, false, function (my_event) {
-            return opts[my_property_name](my_event, dialog_input.value, props.dialog_evaluateState);
+        return queueCall(function (my_template, my_callback, my_option_dict) {
+          var queue = new RSVP.Queue(),
+            props = CodeMirror.menu_dict,
+            editor = props.editor,
+            opts = my_option_dict || {},
+            dialog_event_list = [],
+            dialog_form_submit_list = [],
+            dialog_input,
+            dialog;
+  
+          dialog = props.dialog = props.editor_setDialog(editor, my_template, opts.position);
+          dialog_input = dialog.querySelector("input[type='text']");
+          props.editor_active_dialog = true;
+          closeNotification(props.editor, null);
+  
+          function wrapBind(my_element, my_event_name, my_property_name) {
+            return loopEventListener(my_element, my_event_name, false, function (my_event) {
+              return opts[my_property_name](my_event, dialog_input.value, props.dialog_evaluateState);
+            });
+          }
+  
+          if (dialog_input) {
+  
+            // focus to enable up/down shortcuts
+            //if (props.dialog_position === 'left') {
+              dialog_input.focus();
+            //}
+            if (props.dialog_position === 'right') {
+              dialog_input.value = opts.value || props.editor_getActiveFile()[0];
+            }
+            if (opts.selectValueOnOpen !== false) {
+              dialog_input.select();
+            }
+            if (opts.onInput) {
+              dialog_event_list.push(wrapBind(dialog_input, "input", "onInput"));
+            }
+            if (opts.closeOnBlur !== false && opts.onBlur) {
+              dialog_event_list.push(wrapBind(dialog, "blur", "onBlur"));
+            }
+          }
+  
+          if (opts.onKeyUp) {
+            dialog_event_list.push(wrapBind(dialog, "keyup", "onKeyUp"));
+          }
+          if (opts.onKeyDown) {
+            dialog_event_list.push(wrapBind(dialog, "keydown", "onKeyDown"));
+          }
+  
+          // file menu
+          if (props.dialog_position === 'left') {
+            queue.push(gadget.dialog_setFileMenu(dialog_input.value));
+          }
+  
+          // form submits
+          dialog_form_submit_list = Array.prototype.slice.call(
+            dialog.querySelectorAll('form')
+          ).map(function(my_element) {
+            return wrapBind(my_element, "submit", "onSubmit");
           });
-        }
-
-        if (dialog_input) {
-
-          // focus to enable up/down shortcuts
-          //if (props.dialog_position === 'left') {
-            dialog_input.focus();
-          //}
-          if (props.dialog_position === 'right') {
-            dialog_input.value = opts.value || props.editor_getActiveFile()[0];
-          }
-          if (opts.selectValueOnOpen !== false) {
-            dialog_input.select();
-          }
-          if (opts.onInput) {
-            dialog_event_list.push(wrapBind(dialog_input, "input", "onInput"));
-          }
-          if (opts.closeOnBlur !== false && opts.onBlur) {
-            dialog_event_list.push(wrapBind(dialog, "blur", "onBlur"));
-          }
-        }
-
-        if (opts.onKeyUp) {
-          dialog_event_list.push(wrapBind(dialog, "keyup", "onKeyUp"));
-        }
-        if (opts.onKeyDown) {
-          dialog_event_list.push(wrapBind(dialog, "keydown", "onKeyDown"));
-        }
-
-        // file menu
-        if (props.dialog_position === 'left') {
-          queue.push(gadget.dialog_setFileMenu(dialog_input.value));
-        }
-
-        // form submits
-        dialog_form_submit_list = Array.prototype.slice.call(
-          dialog.querySelectorAll('form')
-        ).map(function(my_element) {
-          return wrapBind(my_element, "submit", "onSubmit");
+  
+          return queue
+            .push(function () {
+              return RSVP.all([
+                RSVP.all(dialog_event_list),
+                RSVP.any(dialog_form_submit_list)
+              ]);
+            })
+            .push(function () {
+              return props.dialog_evaluateState(false);
+            });
         });
-
-        return queue
-          .push(function () {
-            return RSVP.all([
-              RSVP.all(dialog_event_list),
-              RSVP.any(dialog_form_submit_list)
-            ]);
-          })
-          .push(function () {
-            return props.dialog_evaluateState(false);
-          });
       }
       return CodeMirror.defineExtension("openDialog", dialogCallback);
     })
