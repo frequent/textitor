@@ -180,25 +180,28 @@
 
     // Unblock queue
     if (deferred !== undefined) {
-      deferred.resolve("Another event added");
+      console.log(deferred)
+      deferred.resolve("resolving blocking deferred to add new callback");
+    } else {
+      console.log("no deferred, set, add callback to service_queue")
     }
-    console.log("no deferred, let's go")
+
     // Add next callback
     try {
       props.service_queue.push(callback);
-      console.log("worked")
+      console.log("pushed callback into service_queue:")
       console.log(props.service_queue)
     } catch (error) {
       throw new Error("Service already crashed... ");
     }
 
-    console.log("blocking ")
+    console.log("add a new deferred to prevent queue from being returned and finishing")
     // Block the queue
     deferred = RSVP.defer();
     props.current_deferred = deferred;
+    console.log(current_deferred)
     props.service_queue.push(function () {
-      console.log("inside service queue, blocker")
-      console.log(deferred)
+      console.log("returning deferred promise, will block the queue until resolved")
       return deferred.promise;
     });
   }
