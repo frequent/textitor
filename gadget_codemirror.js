@@ -177,40 +177,24 @@
     var props = CodeMirror.menu_dict,
       deferred = props.current_deferred;
     
-    console.log("DEFERRED, what's in it...")
-    console.log(props.current_deferred)
-    console.log("Service Queue")
-    console.log(props.service_queue)
-    
     // Unblock queue
     if (deferred !== undefined) {
-      console.log(deferred)
-      console.log("what is callback?")
-      console.log(callback)
-      deferred.resolve("resolving blocking deferred to add new callback, but this calls the callback with deferred parameters");
+      deferred.resolve("resolving blocking deferred");
     } else {
       console.log("no deferred, set, add callback to service_queue")
     }
 
     // Add next callback
     try {
-      props.service_queue.push(function () {
-        console.log("Called?")
-        return callback;
-      });
-      console.log("pushed callback into service_queue:")
-      console.log(props.service_queue)
+      props.service_queue.push(callback);
     } catch (error) {
       throw new Error("Service already crashed... ");
     }
 
-    console.log("add a new deferred to prevent queue from being returned and finishing")
     // Block the queue
     deferred = RSVP.defer();
     props.current_deferred = deferred;
-    console.log(props.current_deferred)
     props.service_queue.push(function () {
-      console.log("returning deferred promise, will block the queue until resolved")
       return deferred.promise;
     });
   }
@@ -738,12 +722,9 @@
   }
 
   function editor_openDialog(my_codemirror, my_direction) {
-    my_codemirror = my_codemirror || CodeMirror.menu_dict.editor;
-    
-    queueCall(function (my_codemirror, my_direction) {
-      console.log("OpenDialog?")
-      console.log(my_codemirror)
-      console.log(my_direction)
+    queueCall(function () {
+      var my_codemirror = my_codemirror || CodeMirror.menu_dict.editor,
+        my_direction = my_direction;
       return new RSVP.Queue()
         .push(function () {
           return my_codemirror.openDialog(
@@ -804,24 +785,24 @@
   }
 
   function editor_navigateHorizontal(my_codemirror, my_direction, my_cm_call) {
-    queueCall(function (my_codemirror, my_direction, my_cm_call) {
+    queueCall(function () {
       console.log("NAVHORIZONTAL")
-      console.log(my_codemirror)
-      console.log(my_direction)
-      console.log(my_cm_call)
-      var props = CodeMirror.menu_dict,
+      var cm = my_codemirror,
+        direction = my_direction,
+        cm_call = my_cm_call,
+        props = CodeMirror.menu_dict,
         position = props.dialog_position,
         parameter,
         path_list;
   
       if (!props.dialog_is_codemirror_call) {
-        props.dialog_is_codemirror_call = my_cm_call;
+        props.dialog_is_codemirror_call = cm_call;
       } else {
         props.dialog_is_codemirror_call = null;
         return;
       }
       if (position === IDLE) {
-        return CodeMirror.commands.myEditor_openDialog(my_codemirror, my_direction);
+        return CodeMirror.commands.myEditor_openDialog(cm, direction);
       }
       if (position === my_direction) {
         if (position === LEFT && props.editor_active_path) {
@@ -836,10 +817,10 @@
           parameter = false;
         }
       }
-      if (position === RIGHT && my_direction == LEFT) {
+      if (position === RIGHT && direction == LEFT) {
         parameter = true;
       }
-      if (position === LEFT && my_direction === RIGHT) {
+      if (position === LEFT && direction === RIGHT) {
         parameter = {"target": {"name": OPEN}};
       }
       return props.dialog_evaluateState(parameter);
