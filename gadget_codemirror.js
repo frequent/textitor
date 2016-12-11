@@ -1,4 +1,4 @@
-/*jslint indent: 2, vars: true, nomen: true, maxerr: 3 */
+c/*jslint indent: 2, vars: true, nomen: true, maxerr: 3 */
 /*global window, document, rJS, CodeMirror, JSON, loopEventListener */
 
 (function (window, document, rJS, CodeMirror, JSON, loopEventListener) {
@@ -185,7 +185,9 @@
     // Unblock queue
     if (deferred !== undefined) {
       console.log(deferred)
-      deferred.resolve("resolving blocking deferred to add new callback");
+      console.log("what is callback?")
+      console.log(callback)
+      deferred.resolve("resolving blocking deferred to add new callback, but this calls the callback with deferred parameters");
     } else {
       console.log("no deferred, set, add callback to service_queue")
     }
@@ -734,10 +736,9 @@
 
   function editor_openDialog(my_codemirror, my_direction) {
     my_codemirror = my_codemirror || CodeMirror.menu_dict.editor;
-    console.log(my_codemirror)
     
-    var foo = function (my_codemirror, my_direction) {
-      console.log("what is it?")
+    queueCall(function (my_codemirror, my_direction) {
+      console.log("OpenDialog?")
       console.log(my_codemirror)
       console.log(my_direction)
       return new RSVP.Queue()
@@ -748,8 +749,7 @@
             CodeMirror.menu_dict.dialog_option_dict
           );
         });
-    };
-    queueCall(foo);
+    });
   }
 
   function editor_saveFromDialog(x) {
@@ -802,6 +802,10 @@
 
   function editor_navigateHorizontal(my_codemirror, my_direction, my_cm_call) {
     queueCall(function (my_codemirror, my_direction, my_cm_call) {
+      console.log("NAVHORIZONTAL")
+      console.log(my_codemirror)
+      console.log(my_direction)
+      console.log(my_cm_call)
       var props = CodeMirror.menu_dict,
         position = props.dialog_position,
         parameter,
