@@ -174,10 +174,14 @@
 
   // Queue function calls
   function queueCall(callback) {
-    console.log("called queue, callback ", callback)
     var props = CodeMirror.menu_dict,
       deferred = props.current_deferred;
-
+    
+    console.log("DEFERRED, what's in it...")
+    console.log(props.current_deferred)
+    console.log("Service Queue")
+    console.log(props.service_queue)
+    
     // Unblock queue
     if (deferred !== undefined) {
       console.log(deferred)
