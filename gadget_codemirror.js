@@ -1,4 +1,4 @@
-c/*jslint indent: 2, vars: true, nomen: true, maxerr: 3 */
+/*jslint indent: 2, vars: true, nomen: true, maxerr: 3 */
 /*global window, document, rJS, CodeMirror, JSON, loopEventListener */
 
 (function (window, document, rJS, CodeMirror, JSON, loopEventListener) {
