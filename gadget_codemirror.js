@@ -194,7 +194,10 @@
 
     // Add next callback
     try {
-      props.service_queue.push(callback);
+      props.service_queue.push(function () {
+        console.log("Called?")
+        return callback;
+      });
       console.log("pushed callback into service_queue:")
       console.log(props.service_queue)
     } catch (error) {
