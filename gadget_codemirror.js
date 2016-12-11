@@ -689,7 +689,7 @@
   // CodeMirror Commands Extensions (shortcut calls)
   /////////////////////////////
   function editor_closeFile() {
-    return queueCall(function () {
+    queueCall(function () {
       if (CodeMirror.menu_dict.dialog_evaluateState) {
         return CodeMirror.menu_dict.dialog_evaluateState({"target":{"name": CLOSE}});
       }
@@ -697,7 +697,7 @@
   }
 
   function editor_deleteFile() {
-    return queueCall(function () {
+    queueCall(function () {
       if (CodeMirror.menu_dict.dialog_evaluateState) {
         return CodeMirror.menu_dict.dialog_evaluateState({"target": {"name": REMOVE}});
       }
@@ -705,7 +705,7 @@
   }
 
   function editor_searchFileMenu() {
-    return queueCall(function () {
+    queueCall(function () {
       var props = CodeMirror.menu_dict,
         input;
       if (props.dialog_evaluateState && props.dialog && props.dialog_position === LEFT) {
@@ -721,7 +721,7 @@
   }
 
   function editor_closeDialog() {
-    return queueCall(function () {
+    queueCall(function () {
       if (CodeMirror.menu_dict.dialog_evaluateState) {
         return CodeMirror.menu_dict.dialog_evaluateState(true);
       }
@@ -745,11 +745,11 @@
           );
         });
     };
-    return queueCall(foo);
+    queueCall(foo);
   }
 
   function editor_saveFromDialog(x) {
-    return queueCall(function (x) {
+    queueCall(function (x) {
       console.log("SAVING")
       console.log(x)
       console.log(CodeMirror)
@@ -781,7 +781,7 @@
   }
 
   function editor_openFromDialog() {
-    return queueCall(function () {
+    queueCall(function () {
       if (CodeMirror.menu_dict.dialog_position === LEFT) {
         return CodeMirror.menu_dict.dialog_evaluateState({"target":{"name": OPEN}});
       }
@@ -789,7 +789,7 @@
   }
 
   function editor_bulkSaveFromDialog() {
-    return queueCall(function () {
+    queueCall(function () {
       if (CodeMirror.menu_dict.dialog_position === LEFT) {
         return CodeMirror.menu_dict.dialog_evaluateState({"target":{"name": BULK}});
       }
@@ -797,7 +797,7 @@
   }
 
   function editor_navigateHorizontal(my_codemirror, my_direction, my_cm_call) {
-    return queueCall(function (my_codemirror, my_direction, my_cm_call) {
+    queueCall(function (my_codemirror, my_direction, my_cm_call) {
       var props = CodeMirror.menu_dict,
         position = props.dialog_position,
         parameter,
@@ -836,49 +836,49 @@
   }
 
   function editor_navigateVertical(my_codemirror, my_direction) {
-    return queueCall(function (my_codemirror, my_direction) {
+    queueCall(function (my_codemirror, my_direction) {
       return CodeMirror.menu_dict.dialog_updateFileMenu(my_direction);
     });
   }
 
   function editor_navigateRight(cm) {
-    return queueCall(function (cm) {
+    queueCall(function (cm) {
       return CodeMirror.commands.myEditor_navigateHorizontal(cm, RIGHT, true);
     });
   }
 
   function editor_navigateLeft(cm) {
-    return queueCall(function (cm) {
+    queueCall(function (cm) {
       return CodeMirror.commands.myEditor_navigateHorizontal(cm, LEFT, true);
     });
   }
 
   function editor_navigateUp(cm) {
-    return queueCall(function (cm) {
+    queueCall(function (cm) {
       return CodeMirror.commands.myEditor_navigateVertical(cm, UP);
     });
   }
 
   function editor_navigateDown(cm) {
-    return queueCall(function (cm) {
+    queueCall(function (cm) {
       return CodeMirror.commands.myEditor_navigateVertical(cm, DOWN);
     });
   }
   
   function editor_sync(cm) {
-    return queueCall(function (cm) {
+    queueCall(function (cm) {
       return;
     });
   }
   
   function editor_pickDialogOption(cm) {
-    return queueCall(function () {
+    queueCall(function () {
       return;
     });
   }
 
   function editor_traverseDialog(cm) {
-    return queueCall(function () {
+    queueCall(function () {
       return;
     });
   }
@@ -954,7 +954,7 @@
     // Init CodeMirror methods which require gadget to be passed as parameter
     .ready(function (my_gadget){
       function editor_updateStorage(my_pointer) {
-        return queueCall(function (my_pointer) {
+        queueCall(function (my_pointer) {
           var action;
           if (my_pointer) {
             if (my_pointer.target) {
@@ -1563,7 +1563,7 @@
 
       function dialogCallback(my_template, my_callback, my_option_dict) {
         console.log("inside dialog callback")
-        return queueCall(function (my_template, my_callback, my_option_dict) {
+        queueCall(function (my_template, my_callback, my_option_dict) {
           var queue = new RSVP.Queue(),
             props = CodeMirror.menu_dict,
             editor = props.editor,
@@ -1623,7 +1623,7 @@
             return wrapBind(my_element, "submit", "onSubmit");
           });
   
-          return queue
+          queue
             .push(function () {
               return RSVP.all([
                 RSVP.all(dialog_event_list),
