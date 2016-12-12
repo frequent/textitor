@@ -295,7 +295,7 @@
   }
 
   function editor_setDialog(my_editor, my_template, my_position) {
-    queueCall(function () {
+    //queueCall(function () {
       var editor = my_editor,
         template = my_template,
         position = my_position,
@@ -320,7 +320,7 @@
         }
       }
       return container;
-    });
+    //});
   }
 
   function editor_setModified() {
@@ -626,7 +626,6 @@
               CodeMirror.menu_dict.editor_getActiveFile()
             );
           }
-          console.log("returning template")
           return OBJECT_LIST_TEMPLATE;
         case LEFT:
           if (direction === LEFT) {
@@ -801,7 +800,6 @@
         direction = my_direction;
       return new RSVP.Queue()
         .push(function () {
-          console.log("OPENING")
           return my_codemirror.openDialog(
             CodeMirror.menu_dict.dialog_setNavigationMenu(direction),
             CodeMirror.menu_dict.dialog_closeCallback,
@@ -1634,7 +1632,6 @@
       var gadget = this;
 
       function dialogCallback(my_template, my_callback, my_option_dict) {
-        console.log("INSIDE CALLER TO OPEN DIALOG")
         queueCall(function () {
           var queue = new RSVP.Queue(),
             template = my_template,
@@ -1646,12 +1643,7 @@
             dialog_form_submit_list = [],
             dialog_input,
             dialog;
-          
-          console.log(props)
-          console.log(props.dialog)
-          console.log(editor)
-          console.log(template)
-          console.log(opts.position)
+
           dialog = props.dialog = props.editor_setDialog(editor, template, opts.position);
           console.log(dialog)
           dialog_input = dialog.querySelector("input[type='text']");
