@@ -13,7 +13,7 @@
   var DOWN = "down";
   var SAVE = "save";
   var CLOSE = "close";
-  var OPEN = "open";/
+  var OPEN = "open";
   var REMOVE = "remove";
   var SEARCH = "search";
   var BULK = "bulk";
