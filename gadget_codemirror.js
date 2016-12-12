@@ -304,8 +304,18 @@
         })
         .push(function () {
           return gadget.put(cache_name);
+        })
+        .push(function () {
+          return gadget.editor_setActiveCache(cache_name);
         });
     });
+  }
+
+  function editor_setActiveCache(my_cache_name) {
+    //queueCall(function () {
+      var cache_name = my_cache_name;
+      CodeMirror.menu_dict.editor_active_cache = cache_name;  
+    //});
   }
 
   function editor_setActivePath(my_folder_path) {
@@ -712,6 +722,7 @@
 
   CodeMirror.menu_dict.editor_createDoc = editor_createDoc;
   CodeMirror.menu_dict.editor_createCache = editor_createCache;
+  CodeMirror.menu_dict.editor_setActiveCache = editor_setActiveCache;
   CodeMirror.menu_dict.editor_setDialog = editor_setDialog;
   CodeMirror.menu_dict.editor_setModified = editor_setModified;
   CodeMirror.menu_dict.editor_setDisplay = editor_setDisplay;
