@@ -13,7 +13,7 @@
   var DOWN = "down";
   var SAVE = "save";
   var CLOSE = "close";
-  var OPEN = "open";
+  var OPEN = "open";/
   var REMOVE = "remove";
   var SEARCH = "search";
   var BULK = "bulk";
@@ -615,7 +615,7 @@
   }
 
   function dialog_setNavigationMenu(my_direction) {
-    //queueCall(function () {
+    queueCall(function () {
       var direction = my_direction;
       switch (CodeMirror.menu_dict.dialog_position) {
         case IDLE:
@@ -640,7 +640,7 @@
           }
           return OBJECT_LIST_TEMPLATE;
       }
-    //});
+    });
   }
 
   function dialog_setNavigationCallback(my_event, my_value, my_callback) {
@@ -800,8 +800,11 @@
         direction = my_direction;
       return new RSVP.Queue()
         .push(function () {
+          return CodeMirror.menu_dict.dialog_setNavigationMenu(direction);
+        })
+        .push(function (my_dialog_template) {
           return my_codemirror.openDialog(
-            CodeMirror.menu_dict.dialog_setNavigationMenu(direction),
+            my_dialog_template,
             CodeMirror.menu_dict.dialog_closeCallback,
             CodeMirror.menu_dict.dialog_option_dict
           );
