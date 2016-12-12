@@ -236,7 +236,7 @@
     "value": null,
     "selectValueOnOpen": false,
     "onKeyUp": function (my_event, my_value, my_callback) {
-      queueCall(function () {
+      //queueCall(function () {
         var event = my_event,
           value = my_value,
           callback = my_callback;
@@ -245,10 +245,10 @@
           value,
           callback
         );
-      });
+      //});
     },
     "onInput": function (my_event, my_value, my_callback) {
-      queueCall(function () {
+      //queueCall(function () {
         var event = my_event,
           value = my_value,
           callback = my_callback;
@@ -257,13 +257,13 @@
           value,
           callback
         );
-      });
+      //});
     },
     "onSubmit": function (my_event, my_value, my_callback) {
-      queueCall(function () {
+      //queueCall(function () {
         var event = my_event;
         return my_callback(event);
-      });
+      //});
     }
   };
 
@@ -755,23 +755,23 @@
   // CodeMirror Commands Extensions (shortcut calls)
   /////////////////////////////
   function editor_closeFile() {
-    queueCall(function () {
+    //queueCall(function () {
       if (CodeMirror.menu_dict.dialog_evaluateState) {
         return CodeMirror.menu_dict.dialog_evaluateState({"target":{"name": CLOSE}});
       }
-    });
+    //});
   }
 
   function editor_deleteFile() {
-    queueCall(function () {
+    //queueCall(function () {
       if (CodeMirror.menu_dict.dialog_evaluateState) {
         return CodeMirror.menu_dict.dialog_evaluateState({"target": {"name": REMOVE}});
       }
-    });
+    //});
   }
 
   function editor_searchFileMenu() {
-    queueCall(function () {
+    //queueCall(function () {
       var props = CodeMirror.menu_dict,
         input;
       if (props.dialog_evaluateState && props.dialog && props.dialog_position === LEFT) {
@@ -783,15 +783,15 @@
         }
       }
       return;
-    });
+    //});
   }
 
   function editor_closeDialog() {
-    queueCall(function () {
+    //queueCall(function () {
       if (CodeMirror.menu_dict.dialog_evaluateState) {
         return CodeMirror.menu_dict.dialog_evaluateState(true);
       }
-    });
+    //});
   }
 
   function editor_openDialog(my_codemirror, my_direction) {
@@ -813,7 +813,7 @@
   }
 
   function editor_saveFromDialog(x) {
-    queueCall(function () {
+    //queueCall(function () {
       var x = x;
       console.log("SAVING")
       console.log(x)
@@ -842,27 +842,27 @@
       } else {
         CodeMirror.commands.myEditor_bulkSaveFromDialog();
       }
-    });
+    //});
   }
 
   function editor_openFromDialog() {
-    queueCall(function () {
+    //queueCall(function () {
       if (CodeMirror.menu_dict.dialog_position === LEFT) {
         return CodeMirror.menu_dict.dialog_evaluateState({"target":{"name": OPEN}});
       }
-    });
+    //});
   }
 
   function editor_bulkSaveFromDialog() {
-    queueCall(function () {
+    //queueCall(function () {
       if (CodeMirror.menu_dict.dialog_position === LEFT) {
         return CodeMirror.menu_dict.dialog_evaluateState({"target":{"name": BULK}});
       }
-    });
+    //});
   }
 
   function editor_navigateHorizontal(my_codemirror, my_direction, my_cm_call) {
-    queueCall(function () {
+    //queueCall(function () {
       console.log("NAVHORIZONTAL")
       var cm = my_codemirror,
         direction = my_direction,
@@ -901,60 +901,60 @@
         parameter = {"target": {"name": OPEN}};
       }
       return props.dialog_evaluateState(parameter);
-    });
+    //});
   }
 
   function editor_navigateVertical(my_codemirror_instance, my_direction) {
-    queueCall(function () {
+    //queueCall(function () {
       var direction = my_direction;
       return CodeMirror.menu_dict.dialog_updateFileMenu(direction);
-    });
+    //});
   }
 
   function editor_navigateRight(my_codemirror_instance) {
-    queueCall(function () {
+    //queueCall(function () {
       var instance = my_codemirror_instance;
       return CodeMirror.commands.myEditor_navigateHorizontal(instance, RIGHT, true);
-    });
+    //});
   }
 
   function editor_navigateLeft(my_codemirror_instance) {
-    queueCall(function () {
+    //queueCall(function () {
       var instance = my_codemirror_instance;
       return CodeMirror.commands.myEditor_navigateHorizontal(instance, LEFT, true);
-    });
+    //});
   }
 
   function editor_navigateUp(my_codemirror_instance) {
-    queueCall(function () {
+    //queueCall(function () {
       var instance = my_codemirror_instance;
       return CodeMirror.commands.myEditor_navigateVertical(instance, UP);
-    });
+    //});
   }
 
   function editor_navigateDown(my_codemirror_instance) {
-    queueCall(function () {
+    //queueCall(function () {
       var instance = my_codemirror_instance;
       return CodeMirror.commands.myEditor_navigateVertical(instance, DOWN);
-    });
+    //});
   }
   
   function editor_sync(my_codemirror_instance) {
-    queueCall(function () {
+    //queueCall(function () {
       return;
-    });
+    //});
   }
   
   function editor_pickDialogOption(my_codemirror_instance) {
-    queueCall(function () {
+    //queueCall(function () {
       return;
-    });
+    //});
   }
 
   function editor_traverseDialog(my_codemirror_instance) {
-    queueCall(function () {
+    //queueCall(function () {
       return;
-    });
+    //});
   }
 
   CodeMirror.commands.myEditor_closeFile = editor_closeFile;
@@ -1028,7 +1028,7 @@
     // Init CodeMirror methods which require gadget to be passed as parameter
     .ready(function (my_gadget){
       function editor_updateStorage(my_pointer) {
-        queueCall(function () {
+        //queueCall(function () {
           var pointer = my_pointer,
             action;
           if (pointer) {
@@ -1055,7 +1055,7 @@
             }
           }
           return pointer;
-        });
+        //});
       }
       CodeMirror.menu_dict.editor_updateStorage = editor_updateStorage;
     })
@@ -1635,7 +1635,7 @@
       var gadget = this;
 
       function dialogCallback(my_template, my_callback, my_option_dict) {
-        queueCall(function () {
+        //queueCall(function () {
           var queue = new RSVP.Queue(),
             template = my_template,
             callback = my_callback,
@@ -1708,7 +1708,7 @@
             .push(function () {
               return props.dialog_evaluateState(false);
             });
-        });
+        //});
       }
 
       return CodeMirror.defineExtension("openDialog", dialogCallback);
