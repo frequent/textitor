@@ -615,7 +615,7 @@
   }
 
   function dialog_setNavigationMenu(my_direction) {
-    queueCall(function () {
+    //queueCall(function () {
       var direction = my_direction;
       switch (CodeMirror.menu_dict.dialog_position) {
         case IDLE:
@@ -641,7 +641,7 @@
           }
           return OBJECT_LIST_TEMPLATE;
       }
-    });
+    //});
   }
 
   function dialog_setNavigationCallback(my_event, my_value, my_callback) {
