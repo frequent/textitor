@@ -268,7 +268,7 @@
   };
 
   function editor_createDoc(my_content) {
-    queueCall(function () {
+    //queueCall(function () {
       var content = my_content,
         new_content,
         new_doc,
@@ -284,14 +284,14 @@
        return new_doc;
       }
       return CodeMirror.Doc("");
-    });
+    //});
   }
 
   function editor_setActivePath(my_folder_path) {
-    queueCall(function () {
+    //queueCall(function () {
       var folder_path = my_folder_path;
       CodeMirror.menu_dict.editor_active_path = folder_path;
-    });
+    //});
   }
 
   function editor_setDialog(my_editor, my_template, my_position) {
@@ -324,17 +324,17 @@
   }
 
   function editor_setModified() {
-    queueCall(function () {
+    //queueCall(function () {
       var props = CodeMirror.menu_dict;
       if (props.editor_is_modified !== true) {
         props.editor_is_modified = true;
         props.element.querySelector(".CodeMirror").className += " custom-set-modified";
       }
-    });
+    //});
   }
 
   function editor_setDisplay(my_file_name) {
-    queueCall(function () {
+    //queueCall(function () {
       var file_name = my_file_name,
         props = CodeMirror.menu_dict;
       if (props.display) {
@@ -350,40 +350,40 @@
         'bottom'
       );
       return;
-    });
+    //});
   }
 
   function editor_resetModified() {
-    queueCall(function () {
+    //queueCall(function () {
       var props = CodeMirror.menu_dict,
         element = props.element.querySelector(".CodeMirror");
       props.editor_is_modified = null;
       element.className = element.className.split("custom-set-modified").join("");
-    });
+    //});
   }
 
   function editor_resetActiveFile() {
-    queueCall(function () {
+    //queueCall(function () {
       CodeMirror.menu_dict.editor_active_file = null;
-    });
+    //});
   }
 
   function editor_setActiveFile(my_name, my_mime_type) {
-    queueCall(function () {
+    //queueCall(function () {
       var name = my_name,
         mime_type = my_mime_type,
         props = CodeMirror.menu_dict;
       props.editor_active_file = props.editor_active_file || {};
       props.editor_active_file.name = name;
       props.editor_active_file.mime_type = mime_type;
-    });
+    //});
   }
 
   function editor_getActiveFile() {
-    queueCall(function () {
+    //queueCall(function () {
       var active_file = CodeMirror.menu_dict.editor_active_file || {};
       return [active_file.name || "", active_file.mime_type || ""];
-    });
+    //});
   }
 
   function editor_getActiveFileList(my_gadget) {
@@ -414,7 +414,7 @@
   }
 
   function dialog_flagInput(my_input, my_message) {
-    queueCall(function () {
+    //queueCall(function () {
       var input = my_input,
         message = message;
     
@@ -434,11 +434,11 @@
           input.value = '';
           return false;
         });
-    });
+    //});
   }
 
   function dialog_parseTemplate(my_template, my_value_list) {
-    queueCall(function () {
+    //queueCall(function () {
       var template = my_template,
         value_list = my_value_list,
         html_content = [],
@@ -452,11 +452,11 @@
         };
       template.split("%s").map(setHtmlContent(html_content));
       return html_content.join("");
-    });
+    //});
   }
 
   function dialog_createFileMenu(my_file_dict) {
-    queueCall(function () {
+    //queueCall(function () {
       var file_dict = my_file_dict,
         props = CodeMirror.menu_dict,
         href = window.location.href,
@@ -492,11 +492,11 @@
       div = document.createElement("div");
       div.innerHTML = str;
       return div.firstChild;
-    });
+    //});
   }
 
   function dialog_updateFileMenu(my_direction) {
-    queueCall(function () {
+    //queueCall(function () {
       var direction = my_direction,
         file_menu = CodeMirror.menu_dict.dialog.querySelector(".custom-file-menu"),
         input_list,
@@ -530,11 +530,11 @@
           input_element.checked = true;
         }
       }
-    });
+    //});
   }
 
   function dialog_clearTextInput(my_dialog) {
-    queueCall(function () {
+    //queueCall(function () {
       var dialog = my_dialog,
         input_list = dialog.querySelectorAll("input"),
         len,
@@ -544,7 +544,7 @@
           input_list[i].value = '';
         }
       }
-    });
+    //});
   }
 
   function dialog_evaluateState(my_parameter) {
@@ -575,7 +575,7 @@
   }
 
   function dialog_isFileMenuItem(my_path, my_folder) {
-    queueCall(function () {
+    //queueCall(function () {
       var folder = my_folder || "/",
         path = my_path.split(window.location.href).pop(),
         indexFolder = path.indexOf(folder),
@@ -611,11 +611,11 @@
         return false;
       }                  
       return true;
-    });
+    //});
   }
 
   function dialog_setNavigationMenu(my_direction) {
-    queueCall(function () {
+    //queueCall(function () {
       var direction = my_direction;
       switch (CodeMirror.menu_dict.dialog_position) {
         case IDLE:
@@ -640,11 +640,11 @@
           }
           return OBJECT_LIST_TEMPLATE;
       }
-    });
+    //});
   }
 
   function dialog_setNavigationCallback(my_event, my_value, my_callback) {
-    queueCall(function () {
+    //queueCall(function () {
       var event = my_event,
         value = my_value,
         callback = my_callback,
@@ -686,7 +686,7 @@
           case 40: return cmd.myEditor_navigateVertical(undefined, DOWN);
         }
       }
-    });
+    //});
   }
 
   CodeMirror.menu_dict.editor_createDoc = editor_createDoc;
@@ -800,7 +800,7 @@
         direction = my_direction;
       return new RSVP.Queue()
         .push(function () {
-          return CodeMirror.menu_dict.dialog_setNavigationMenu(direction);
+          return CodeMirror.menu_dict.(direction);
         })
         .push(function (my_dialog_template) {
           return my_codemirror.openDialog(
