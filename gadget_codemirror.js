@@ -800,7 +800,7 @@
         direction = my_direction;
       return new RSVP.Queue()
         .push(function () {
-          return CodeMirror.menu_dict.(direction);
+          return CodeMirror.menu_dict.dialog_setNavigationMenu(direction);
         })
         .push(function (my_dialog_template) {
           return my_codemirror.openDialog(
