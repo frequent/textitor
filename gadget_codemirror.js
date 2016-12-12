@@ -286,6 +286,27 @@
       return CodeMirror.Doc("");
     //});
   }
+  
+  function editor_createCache(my_gadget, my_cache_name) {
+    // queueCall(function () {
+    var gadget = my_gadget,
+      cache_name = my_cache_name;
+    return queueCall(function () {
+      new RSVP.Queue()
+        .push(function () {
+          return gadget.setActiveStorage("memory");
+        })
+        .push(function () {
+          return gadget.put(cache_name);
+        })
+        .push(function () {
+          return gadget.setActiveStorage("serviceworker");
+        })
+        .push(function () {
+          return gadget.put(cache_name);
+        });
+    });
+  }
 
   function editor_setActivePath(my_folder_path) {
     //queueCall(function () {
@@ -690,6 +711,7 @@
   }
 
   CodeMirror.menu_dict.editor_createDoc = editor_createDoc;
+  CodeMirror.menu_dict.editor_createCache = editor_createCache;
   CodeMirror.menu_dict.editor_setDialog = editor_setDialog;
   CodeMirror.menu_dict.editor_setModified = editor_setModified;
   CodeMirror.menu_dict.editor_setDisplay = editor_setDisplay;
@@ -1080,6 +1102,7 @@
     .declareAcquiredMethod('setActiveStorage', 'setActiveStorage')
     .declareAcquiredMethod('jio_create', 'jio_create')
     .declareAcquiredMethod('jio_allDocs', 'jio_allDocs')
+    .declareAcquiredMethod('jio_put', 'jio_put')
     .declareAcquiredMethod('jio_allAttachments', 'jio_allAttachments')
     .declareAcquiredMethod('jio_putAttachment', 'jio_putAttachment')
     .declareAcquiredMethod('jio_removeAttachment', 'jio_removeAttachment')
@@ -1380,11 +1403,8 @@
         // validate form
         if (dialog) {
           if (!file_name) {
-            console.log(file_name_input)
-            console.log(file_name_input.value)
             return props.dialog_flagInput(file_name_input, 'Enter valid URL.');
           }
-          console.log(dialog)
           if (file_name_input && file_name_input.value === "Enter valid URL.") {
             file_name_input.focus();
             return;
@@ -1396,7 +1416,8 @@
           
           console.log("saving a new cache")
           if (is_container.value === 'cache') {
-            return props.dialog_flagInput(file_name_input, 'Cache not supported');
+            //return props.dialog_flagInput(file_name_input, 'Cache not supported');
+            return props.editor_createCache(gadget, file_name_input.value);
           } else {
             mime_type = "application/json";
             folder_file_list = [];
