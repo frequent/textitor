@@ -617,7 +617,7 @@
   function dialog_setNavigationMenu(my_direction) {
     queueCall(function () {
       var direction = my_direction;
-      
+      console.log("setting menu, ", direction)
       switch (CodeMirror.menu_dict.dialog_position) {
         case IDLE:
           CodeMirror.menu_dict.dialog_position = direction;
