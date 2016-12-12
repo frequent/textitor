@@ -1639,16 +1639,21 @@
           var queue = new RSVP.Queue(),
             template = my_template,
             callback = my_callback,
-            option_dict = my_option_dict,
-            opts = option_dict || {},
+            opts = my_option_dict || {},
             props = CodeMirror.menu_dict,
             editor = props.editor,
             dialog_event_list = [],
             dialog_form_submit_list = [],
             dialog_input,
             dialog;
-
+          
+          console.log(props)
+          console.log(props.dialog)
+          console.log(editor)
+          console.log(template)
+          console.log(opts.position)
           dialog = props.dialog = props.editor_setDialog(editor, template, opts.position);
+          console.log(dialog)
           dialog_input = dialog.querySelector("input[type='text']");
           props.editor_active_dialog = true;
           closeNotification(props.editor, null);
