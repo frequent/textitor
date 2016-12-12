@@ -617,7 +617,6 @@
   function dialog_setNavigationMenu(my_direction) {
     queueCall(function () {
       var direction = my_direction;
-      console.log("setting menu, ", direction)
       switch (CodeMirror.menu_dict.dialog_position) {
         case IDLE:
           CodeMirror.menu_dict.dialog_position = direction;
@@ -627,6 +626,7 @@
               CodeMirror.menu_dict.editor_getActiveFile()
             );
           }
+          console.log("returning template")
           return OBJECT_LIST_TEMPLATE;
         case LEFT:
           if (direction === LEFT) {
@@ -801,6 +801,7 @@
         direction = my_direction;
       return new RSVP.Queue()
         .push(function () {
+          console.log("OPENING")
           return my_codemirror.openDialog(
             CodeMirror.menu_dict.dialog_setNavigationMenu(direction),
             CodeMirror.menu_dict.dialog_closeCallback,
@@ -1089,10 +1090,8 @@
     .declareMethod('render', function (my_option_dict) {
       var gadget = this,
         dict = gadget.property_dict;
-      console.log("CALLED render")
       return new RSVP.Queue()
         .push(function () {
-          console.log("setting dialog extension")
           return gadget.dialog_setDialogExtension();
         })
         .push(function () {
@@ -1635,6 +1634,7 @@
       var gadget = this;
 
       function dialogCallback(my_template, my_callback, my_option_dict) {
+        console.log("INSIDE CALLER TO OPEN DIALOG")
         queueCall(function () {
           var queue = new RSVP.Queue(),
             template = my_template,
