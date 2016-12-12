@@ -180,8 +180,6 @@
     // Unblock queue
     if (deferred !== undefined) {
       deferred.resolve("resolving blocking deferred");
-    } else {
-      console.log("no deferred, set, add callback to service_queue")
     }
 
     // Add next callback
@@ -238,382 +236,458 @@
     "value": null,
     "selectValueOnOpen": false,
     "onKeyUp": function (my_event, my_value, my_callback) {
-      return CodeMirror.menu_dict.dialog_setNavigationCallback(
-        my_event,
-        my_value,
-        my_callback
-      );
+      queueCall(function () {
+        var event = my_event,
+          value = my_value,
+          callback = my_callback;
+        return CodeMirror.menu_dict.dialog_setNavigationCallback(
+          event,
+          value,
+          callback
+        );
+      });
     },
     "onInput": function (my_event, my_value, my_callback) {
-      return CodeMirror.menu_dict.dialog_setNavigationCallback(
-        my_event,
-        my_value,
-        my_callback
-      );
+      queueCall(function () {
+        var event = my_event,
+          value = my_value,
+          callback = my_callback;
+        return CodeMirror.menu_dict.dialog_setNavigationCallback(
+          event,
+          value,
+          callback
+        );
+      });
     },
     "onSubmit": function (my_event, my_value, my_callback) {
-      return my_callback(my_event);
+      queueCall(function () {
+        var event = my_event;
+        return my_callback(event);
+      });
     }
   };
 
   function editor_createDoc(my_content) {
-    var new_doc,content, history;
+    queueCall(function () {
+      var content = my_content,
+        new_content,
+        new_doc,
+        history;
 
-    if (my_content && my_content.length) {
-      content = my_content[0].target.result;
-      history = my_content[1].target.result;
-      new_doc = CodeMirror.Doc(content);
-      if (history) {
-        new_doc.setHistory(JSON.parse(history));
+      if (content && content.length) {
+        new_content = content[0].target.result;
+        history = content[1].target.result;
+        new_doc = CodeMirror.Doc(new_content);
+        if (history) {
+          new_doc.setHistory(JSON.parse(history));
+        }
+       return new_doc;
       }
-     return new_doc;
-    }
-    return CodeMirror.Doc("");
+      return CodeMirror.Doc("");
+    });
   }
 
   function editor_setActivePath(my_folder_path) {
-    CodeMirror.menu_dict.editor_active_path = my_folder_path;
+    queueCall(function () {
+      var folder_path = my_folder_path;
+      CodeMirror.menu_dict.editor_active_path = folder_path;
+    });
   }
-  
+
   function editor_setDialog(my_editor, my_template, my_position) {
-    var wrap = my_editor.getWrapperElement(),
-      selector = ".CodeMirror-dialog.CodeMirror-dialog-" + my_position,
-      element = wrap.querySelector(selector),
-      container =  element || wrap.appendChild(document.createElement("div"));
-
-    container.className = selector.split(".").join(" ");  
-
-    if (typeof my_template == "string") {
-      container.innerHTML = my_template;
-    } else {
-      container.appendChild(my_template);
-    }
-    
-    if (!element) {
-      if (my_position === "bottom") {
-        wrap.appendChild(container);
+    queueCall(function () {
+      var editor = my_editor,
+        template = my_template,
+        position = my_position,
+        wrap = editor.getWrapperElement(),
+        selector = ".CodeMirror-dialog.CodeMirror-dialog-" + position,
+        element = wrap.querySelector(selector),
+        container =  element || wrap.appendChild(document.createElement("div"));
+  
+      container.className = selector.split(".").join(" ");  
+  
+      if (typeof template == "string") {
+        container.innerHTML = template;
       } else {
-        wrap.insertBefore(container, wrap.firstElementChild);
+        container.appendChild(template);
       }
-    }
-    return container;
+      
+      if (!element) {
+        if (my_position === "bottom") {
+          wrap.appendChild(container);
+        } else {
+          wrap.insertBefore(container, wrap.firstElementChild);
+        }
+      }
+      return container;
+    });
   }
 
-  function editor_setModified(source) {
-    var props = CodeMirror.menu_dict;
-    if (props.editor_is_modified !== true) {
-      props.editor_is_modified = true;
-      props.element.querySelector(".CodeMirror").className += " custom-set-modified";
-    }
+  function editor_setModified() {
+    queueCall(function () {
+      var props = CodeMirror.menu_dict;
+      if (props.editor_is_modified !== true) {
+        props.editor_is_modified = true;
+        props.element.querySelector(".CodeMirror").className += " custom-set-modified";
+      }
+    });
   }
 
   function editor_setDisplay(my_file_name) {
-    var props = CodeMirror.menu_dict;
-    if (props.display) {
-      props.display.parentNode.removeChild(props.display);
-      props.display = null;
-    }
-    if (!my_file_name) {
+    queueCall(function () {
+      var file_name = my_file_name,
+        props = CodeMirror.menu_dict;
+      if (props.display) {
+        props.display.parentNode.removeChild(props.display);
+        props.display = null;
+      }
+      if (!file_name) {
+        return;
+      }
+      props.display = props.editor_setDialog(
+        props.editor,
+        props.dialog_parseTemplate(FILE_NAME_TEMPLATE, [file_name]),
+        'bottom'
+      );
       return;
-    }
-    props.display = props.editor_setDialog(
-      props.editor,
-      props.dialog_parseTemplate(FILE_NAME_TEMPLATE, [my_file_name]),
-      'bottom'
-    );
-    return;
+    });
   }
 
   function editor_resetModified() {
-    var props = CodeMirror.menu_dict,
-      element = props.element.querySelector(".CodeMirror");
-
-    props.editor_is_modified = null;
-    element.className = element.className.split("custom-set-modified").join("");
+    queueCall(function () {
+      var props = CodeMirror.menu_dict,
+        element = props.element.querySelector(".CodeMirror");
+      props.editor_is_modified = null;
+      element.className = element.className.split("custom-set-modified").join("");
+    });
   }
 
   function editor_resetActiveFile() {
-    CodeMirror.menu_dict.editor_active_file = null;
+    queueCall(function () {
+      CodeMirror.menu_dict.editor_active_file = null;
+    });
   }
 
   function editor_setActiveFile(my_name, my_mime_type) {
-    CodeMirror.menu_dict.editor_active_file = CodeMirror.menu_dict.editor_active_file || {};
-    CodeMirror.menu_dict.editor_active_file.name = my_name;
-    CodeMirror.menu_dict.editor_active_file.mime_type = my_mime_type;
+    queueCall(function () {
+      var name = my_name,
+        mime_type = my_mime_type,
+        props = CodeMirror.menu_dict;
+      props.editor_active_file = props.editor_active_file || {};
+      props.editor_active_file.name = name;
+      props.editor_active_file.mime_type = mime_type;
+    });
   }
 
   function editor_getActiveFile() {
-    var active_file = CodeMirror.menu_dict.editor_active_file || {};
-    return [active_file.name || "", active_file.mime_type || ""];
+    queueCall(function () {
+      var active_file = CodeMirror.menu_dict.editor_active_file || {};
+      return [active_file.name || "", active_file.mime_type || ""];
+    });
   }
 
   function editor_getActiveFileList(my_gadget) {
-    return new RSVP.Queue()
-      .push(function () {
-        return my_gadget.setActiveStorage("memory");
-      })
-      .push(function () {
-        return my_gadget.jio_allDocs();
-      })
-      .push(function (my_directory_list) {
-        var response_dict = my_directory_list.data,
-          directory_content_list = [],
-          cache_id,
-          i;
-
-        for (i = 0; i < response_dict.total_rows; i += 1) {
-          cache_id = response_dict.rows[i].id;
-          directory_content_list.push(
-            my_gadget.jio_allAttachments(cache_id)
-          );
-        }
-        return RSVP.all(directory_content_list);
-      });
+    queueCall(function () {
+      var gadget = my_gadget;
+      return new RSVP.Queue()
+        .push(function () {
+          return gadget.setActiveStorage("memory");
+        })
+        .push(function () {
+          return gadget.jio_allDocs();
+        })
+        .push(function (my_directory_list) {
+          var response_dict = my_directory_list.data,
+            directory_content_list = [],
+            cache_id,
+            i;
+  
+          for (i = 0; i < response_dict.total_rows; i += 1) {
+            cache_id = response_dict.rows[i].id;
+            directory_content_list.push(
+              gadget.jio_allAttachments(cache_id)
+            );
+          }
+          return RSVP.all(directory_content_list);
+        });
+    });
   }
 
   function dialog_flagInput(my_input, my_message) {
-    if (my_input.className.indexOf("custom-invalid") > 0) {
-      return false;
-    }
-    return new RSVP.Queue()
-      .push(function () {
-        my_input.className += ' custom-invalid';
-        my_input.value = my_message;
-        my_input.blur();
-        CodeMirror.menu_dict.editor.focus();
-        return promiseEventListener(my_input, 'focus', false);
-      })
-      .push(function () {
-        my_input.className = '';
-        my_input.value = '';
+    queueCall(function () {
+      var input = my_input,
+        message = message;
+    
+      if (input.className.indexOf("custom-invalid") > 0) {
         return false;
-      });
+      }
+      return new RSVP.Queue()
+        .push(function () {
+          input.className += ' custom-invalid';
+          input.value = message;
+          input.blur();
+          CodeMirror.menu_dict.editor.focus();
+          return promiseEventListener(input, 'focus', false);
+        })
+        .push(function () {
+          input.className = '';
+          input.value = '';
+          return false;
+        });
+    });
   }
 
   function dialog_parseTemplate(my_template, my_value_list) {
-    var html_content = [],
-      counter = 0,
-      setHtmlContent = function (my_content_list) {
-        return function (my_snippet) {
-          var value = my_value_list[counter] || "";
-          my_content_list.push(my_snippet + value);
-          counter += 1;
+    queueCall(function () {
+      var template = my_template,
+        value_list = my_value_list,
+        html_content = [],
+        counter = 0,
+        setHtmlContent = function (my_content_list) {
+          return function (my_snippet) {
+            var value = value_list[counter] || "";
+            my_content_list.push(my_snippet + value);
+            counter += 1;
+          };
         };
-      };
-    my_template.split("%s").map(setHtmlContent(html_content));
-    return html_content.join("");
+      template.split("%s").map(setHtmlContent(html_content));
+      return html_content.join("");
+    });
   }
 
   function dialog_createFileMenu(my_file_dict) {
-    var props = CodeMirror.menu_dict,
-      href = window.location.href,
-      str = "",
-      div,
-      i,
-      len,
-      folder,
-      counter;
+    queueCall(function () {
+      var file_dict = my_file_dict,
+        props = CodeMirror.menu_dict,
+        href = window.location.href,
+        str = "",
+        div,
+        i,
+        len,
+        folder,
+        counter;
 
-    for (counter in my_file_dict) {
-      if (my_file_dict.hasOwnProperty(counter)) {
-        folder = my_file_dict[counter];
-        len = folder.item_list.length;
-        if (len > 0) {
-          for (i = 0; i < len; i += 1) {
+      for (counter in file_dict) {
+        if (file_dict.hasOwnProperty(counter)) {
+          folder = file_dict[counter];
+          len = folder.item_list.length;
+          if (len > 0) {
+            for (i = 0; i < len; i += 1) {
+              str += props.dialog_parseTemplate(
+                FILE_ENTRY_TEMPLATE,
+                [folder.name + " | " + folder.item_list[i].replace(href, "")]
+              );
+            }
+          } else if (folder.name !== "open") {
             str += props.dialog_parseTemplate(
-              FILE_ENTRY_TEMPLATE,
-              [folder.name + " | " + folder.item_list[i].replace(href, "")]
+              EMPTY_TEMPLATE,
+              ["[empty folder]"]
             );
           }
-        } else if (folder.name !== "open") {
-          str += props.dialog_parseTemplate(
-            EMPTY_TEMPLATE,
-            ["[empty folder]"]
-          );
         }
       }
-    }
-
-    // XXX: WTFix
-    str = CodeMirror.menu_dict.dialog_parseTemplate(FILE_MENU_TEMPLATE, [str]);
-    div = document.createElement("div");
-    div.innerHTML = str;
-    return div.firstChild;
+  
+      // XXX: WTFix
+      str = CodeMirror.menu_dict.dialog_parseTemplate(FILE_MENU_TEMPLATE, [str]);
+      div = document.createElement("div");
+      div.innerHTML = str;
+      return div.firstChild;
+    });
   }
 
   function dialog_updateFileMenu(my_direction) {
-    var file_menu = CodeMirror.menu_dict.dialog.querySelector(".custom-file-menu"),
-      input_list,
-      input_element,
-      selected_index,
-      len,
-      i;
+    queueCall(function () {
+      var direction = my_direction,
+        file_menu = CodeMirror.menu_dict.dialog.querySelector(".custom-file-menu"),
+        input_list,
+        input_element,
+        selected_index,
+        len,
+        i;
 
-    if (file_menu) {
-      input_list = Array.prototype.slice.call(
-        file_menu.querySelectorAll('input[type="checkbox"]')
-      ),
-      len = input_list.length,
-      input_element,
-      i;
-
-      if (len > 0) {
-        for (i = 0; i < len; i += 1) {
-          if (input_list[i].checked) {
-            selected_index = i;
-            input_list[i].checked = false;
+      if (file_menu) {
+        input_list = Array.prototype.slice.call(
+          file_menu.querySelectorAll('input[type="checkbox"]')
+        ),
+        len = input_list.length,
+        input_element,
+        i;
+  
+        if (len > 0) {
+          for (i = 0; i < len; i += 1) {
+            if (input_list[i].checked) {
+              selected_index = i;
+              input_list[i].checked = false;
+            }
           }
+          if (direction === DOWN) {
+            selected_index = selected_index || len;
+            input_element = input_list[selected_index - 1] || input_list[len - 1];
+          } else {
+            selected_index = selected_index || 0;
+            input_element = input_list[selected_index + 1] || input_list[0];
+          }
+          input_element.checked = true;
         }
-        if (my_direction === DOWN) {
-          selected_index = selected_index || len;
-          input_element = input_list[selected_index - 1] || input_list[len - 1];
-        } else {
-          selected_index = selected_index || 0;
-          input_element = input_list[selected_index + 1] || input_list[0];
-        }
-        input_element.checked = true;
       }
-    }
+    });
   }
 
   function dialog_clearTextInput(my_dialog) {
-    var input_list = my_dialog.querySelectorAll("input"),
-      len,
-      i;
-    for (i = 0, len = input_list.length; i < len; i += 1) {
-      if (input_list[i].type === 'text') {
-        input_list[i].value = '';
+    queueCall(function () {
+      var dialog = my_dialog,
+        input_list = dialog.querySelectorAll("input"),
+        len,
+        i;
+      for (i = 0, len = input_list.length; i < len; i += 1) {
+        if (input_list[i].type === 'text') {
+          input_list[i].value = '';
+        }
       }
-    }
+    });
   }
 
   function dialog_evaluateState(my_parameter) {
-    var props = CodeMirror.menu_dict;
-    return new RSVP.Queue()
-      .push(function () {
-        return props.editor_updateStorage(my_parameter);
-      })
-      .push(function (my_close_dialog) {
-        if (my_close_dialog === true && props.editor_active_dialog) {
-          if (props.dialog_option_dict.onClose) {
-            props.dialog_option_dict.onClose(dialog);
+    queueCall(function () {
+      var parameter = my_parameter,
+        props = CodeMirror.menu_dict;
+      return new RSVP.Queue()
+        .push(function () {
+          return props.editor_updateStorage(parameter);
+        })
+        .push(function (my_close_dialog) {
+          if (my_close_dialog === true && props.editor_active_dialog) {
+            if (props.dialog_option_dict.onClose) {
+              props.dialog_option_dict.onClose(dialog);
+            }
+            props.dialog.parentNode.removeChild(props.dialog);
+            props.dialog_is_filemenu_set = null;
+            props.editor_active_dialog = null;
+            props.editor.focus();
+            props.dialog_position = IDLE;
           }
-          props.dialog.parentNode.removeChild(props.dialog);
-          props.dialog_is_filemenu_set = null;
-          props.editor_active_dialog = null;
-          props.editor.focus();
-          props.dialog_position = IDLE;
-        }
-      })
-      .push(null, function (error) {
-        console.log(error);
-        throw error;
-      });
+        })
+        .push(null, function (error) {
+          console.log(error);
+          throw error;
+        });
+    });
   }
 
   function dialog_isFileMenuItem(my_path, my_folder) {
-    var folder = my_folder || "/",
-      path = my_path.split(window.location.href).pop(),
-      indexFolder = path.indexOf(folder),
-      splitFolder = path.split(folder),
-      splitFolderPop;
-
-    // self
-    if (path === folder) {
-      return false;
-    }
-
-    // parent folder/file
-    if ((indexFolder === -1) && folder !== "/") {
-      return false;
-    }
-    
-    // inside subfolder
-    if (indexFolder > -1) {
-
-      // current active folder, ok
-      if (splitFolder[0] === "" && splitFolder[1].split("/").length === 2) {
-        return true;
+    queueCall(function () {
+      var folder = my_folder || "/",
+        path = my_path.split(window.location.href).pop(),
+        indexFolder = path.indexOf(folder),
+        splitFolder = path.split(folder),
+        splitFolderPop;
+  
+      // self
+      if (path === folder) {
+        return false;
       }
-      return false;
-    }
-
-    // direct child file/folder
-    splitFolderPop = splitFolder.pop();
-    if (splitFolderPop.split(".").length !== 2) {
-      if (splitFolderPop.split("/").length === 1) {
-        return true;
+  
+      // parent folder/file
+      if ((indexFolder === -1) && folder !== "/") {
+        return false;
       }
-      return false;
-    }                  
-    return true;              
+      
+      // inside subfolder
+      if (indexFolder > -1) {
+  
+        // current active folder, ok
+        if (splitFolder[0] === "" && splitFolder[1].split("/").length === 2) {
+          return true;
+        }
+        return false;
+      }
+  
+      // direct child file/folder
+      splitFolderPop = splitFolder.pop();
+      if (splitFolderPop.split(".").length !== 2) {
+        if (splitFolderPop.split("/").length === 1) {
+          return true;
+        }
+        return false;
+      }                  
+      return true;
+    });
   }
 
   function dialog_setNavigationMenu(my_direction) {
-    switch (CodeMirror.menu_dict.dialog_position) {
-      case IDLE:
-        CodeMirror.menu_dict.dialog_position = my_direction;
-        if (my_direction === RIGHT) {
-          return CodeMirror.menu_dict.dialog_parseTemplate(
-            OBJECT_MENU_TEMPLATE,
-            CodeMirror.menu_dict.editor_getActiveFile()
-          );
-        }
-        return OBJECT_LIST_TEMPLATE;
-      case LEFT:
-        if (my_direction === LEFT) {
+    queueCall(function () {
+      var direction = my_direction;
+      
+      switch (CodeMirror.menu_dict.dialog_position) {
+        case IDLE:
+          CodeMirror.menu_dict.dialog_position = direction;
+          if (direction === RIGHT) {
+            return CodeMirror.menu_dict.dialog_parseTemplate(
+              OBJECT_MENU_TEMPLATE,
+              CodeMirror.menu_dict.editor_getActiveFile()
+            );
+          }
           return OBJECT_LIST_TEMPLATE;
-        }
-        CodeMirror.menu_dict.dialog_position = IDLE;
-        return;
-      case RIGHT:
-        if (my_direction === LEFT) {
+        case LEFT:
+          if (direction === LEFT) {
+            return OBJECT_LIST_TEMPLATE;
+          }
           CodeMirror.menu_dict.dialog_position = IDLE;
           return;
-        }
-        return OBJECT_LIST_TEMPLATE;
-    }
+        case RIGHT:
+          if (direction === LEFT) {
+            CodeMirror.menu_dict.dialog_position = IDLE;
+            return;
+          }
+          return OBJECT_LIST_TEMPLATE;
+      }
+    });
   }
 
   function dialog_setNavigationCallback(my_event, my_value, my_callback) {
-    var cmd = CodeMirror.commands;
-
-    // esc
-    if (my_event.keyCode === 27) {
-      return cmd.myEditor_closeDialog();
-    }
-
-    // overide chrome page start/end shortcut
-    if (my_event.keyCode === 35) {
-      return cmd.myEditor_navigateVertical(undefined, UP);
-    }
-    if (my_event.keyCode === 36) {
-      return cmd.myEditor_navigateVertical(undefined, DOWN);
-    }
-
-    if (my_event.type === "input") {
-      return my_callback(my_value);
-    }
-
-    // ctrl + alt +
-    if (my_event.ctrlKey && my_event.altKey) {
-      switch(my_event.keyCode) {
-        case 66: return cmd.myEditor_bulkSaveFromDialog();
-        case 68: return cmd.myEditor_deleteFile();
-        case 67: return cmd.myEditor_closeFile();
-        case 70: return cmd.myEditor_searchFileMenu();
-        case 79: return cmd.myEditor_openFromDialog();
-        case 83: return cmd.myEditor_saveFromDialog();
-        case 88: return cmd.myEditor_closeDialog();
-        case 89: return cmd.myEditor_sync();
-
-        // NOTE: manual capture is necessary when dialog is open
-        case 37: return cmd.myEditor_navigateHorizontal(undefined, LEFT);
-        case 39: return cmd.myEditor_navigateHorizontal(undefined, RIGHT);
-        case 38: return cmd.myEditor_navigateVertical(undefined, UP);
-        case 40: return cmd.myEditor_navigateVertical(undefined, DOWN);
+    queueCall(function () {
+      var event = my_event,
+        value = my_value,
+        callback = my_callback,
+        cmd = CodeMirror.commands;
+  
+      // esc
+      if (event.keyCode === 27) {
+        return cmd.myEditor_closeDialog();
       }
-    }
+  
+      // overide chrome page start/end shortcut
+      if (event.keyCode === 35) {
+        return cmd.myEditor_navigateVertical(undefined, UP);
+      }
+      if (event.keyCode === 36) {
+        return cmd.myEditor_navigateVertical(undefined, DOWN);
+      }
+  
+      if (event.type === "input") {
+        return callback(value);
+      }
+  
+      // ctrl + alt +
+      if (event.ctrlKey && event.altKey) {
+        switch(event.keyCode) {
+          case 66: return cmd.myEditor_bulkSaveFromDialog();
+          case 68: return cmd.myEditor_deleteFile();
+          case 67: return cmd.myEditor_closeFile();
+          case 70: return cmd.myEditor_searchFileMenu();
+          case 79: return cmd.myEditor_openFromDialog();
+          case 83: return cmd.myEditor_saveFromDialog();
+          case 88: return cmd.myEditor_closeDialog();
+          case 89: return cmd.myEditor_sync();
+  
+          // NOTE: manual capture is necessary when dialog is open
+          case 37: return cmd.myEditor_navigateHorizontal(undefined, LEFT);
+          case 39: return cmd.myEditor_navigateHorizontal(undefined, RIGHT);
+          case 38: return cmd.myEditor_navigateVertical(undefined, UP);
+          case 40: return cmd.myEditor_navigateVertical(undefined, DOWN);
+        }
+      }
+    });
   }
 
   CodeMirror.menu_dict.editor_createDoc = editor_createDoc;
@@ -737,7 +811,8 @@
   }
 
   function editor_saveFromDialog(x) {
-    queueCall(function (x) {
+    queueCall(function () {
+      var x = x;
       console.log("SAVING")
       console.log(x)
       console.log(CodeMirror)
@@ -827,49 +902,54 @@
     });
   }
 
-  function editor_navigateVertical(my_codemirror, my_direction) {
-    queueCall(function (my_codemirror, my_direction) {
-      return CodeMirror.menu_dict.dialog_updateFileMenu(my_direction);
+  function editor_navigateVertical(my_codemirror_instance, my_direction) {
+    queueCall(function () {
+      var direction = my_direction;
+      return CodeMirror.menu_dict.dialog_updateFileMenu(direction);
     });
   }
 
-  function editor_navigateRight(cm) {
-    queueCall(function (cm) {
-      return CodeMirror.commands.myEditor_navigateHorizontal(cm, RIGHT, true);
+  function editor_navigateRight(my_codemirror_instance) {
+    queueCall(function () {
+      var instance = my_codemirror_instance;
+      return CodeMirror.commands.myEditor_navigateHorizontal(instance, RIGHT, true);
     });
   }
 
-  function editor_navigateLeft(cm) {
-    queueCall(function (cm) {
-      return CodeMirror.commands.myEditor_navigateHorizontal(cm, LEFT, true);
+  function editor_navigateLeft(my_codemirror_instance) {
+    queueCall(function () {
+      var instance = my_codemirror_instance;
+      return CodeMirror.commands.myEditor_navigateHorizontal(instance, LEFT, true);
     });
   }
 
-  function editor_navigateUp(cm) {
-    queueCall(function (cm) {
-      return CodeMirror.commands.myEditor_navigateVertical(cm, UP);
+  function editor_navigateUp(my_codemirror_instance) {
+    queueCall(function () {
+      var instance = my_codemirror_instance;
+      return CodeMirror.commands.myEditor_navigateVertical(instance, UP);
     });
   }
 
-  function editor_navigateDown(cm) {
-    queueCall(function (cm) {
-      return CodeMirror.commands.myEditor_navigateVertical(cm, DOWN);
+  function editor_navigateDown(my_codemirror_instance) {
+    queueCall(function () {
+      var instance = my_codemirror_instance;
+      return CodeMirror.commands.myEditor_navigateVertical(instance, DOWN);
     });
   }
   
-  function editor_sync(cm) {
-    queueCall(function (cm) {
+  function editor_sync(my_codemirror_instance) {
+    queueCall(function () {
       return;
     });
   }
   
-  function editor_pickDialogOption(cm) {
+  function editor_pickDialogOption(my_codemirror_instance) {
     queueCall(function () {
       return;
     });
   }
 
-  function editor_traverseDialog(cm) {
+  function editor_traverseDialog(my_codemirror_instance) {
     queueCall(function () {
       return;
     });
@@ -946,16 +1026,17 @@
     // Init CodeMirror methods which require gadget to be passed as parameter
     .ready(function (my_gadget){
       function editor_updateStorage(my_pointer) {
-        queueCall(function (my_pointer) {
-          var action;
-          if (my_pointer) {
-            if (my_pointer.target) {
-              action = my_pointer.target.name;
+        queueCall(function () {
+          var pointer = my_pointer,
+            action;
+          if (pointer) {
+            if (pointer.target) {
+              action = pointer.target.name;
               if (action === BULK) {
                 return my_gadget.editor_bulkSave();
               }
               if (action === SEARCH) {
-                return my_gadget.dialog_setFileMenu(my_pointer.target.find.value);
+                return my_gadget.dialog_setFileMenu(pointer.target.find.value);
               }
               if (action === OPEN) {
                 return my_gadget.editor_openFile();
@@ -971,7 +1052,7 @@
               }
             }
           }
-          return my_pointer;
+          return pointer;
         });
       }
       CodeMirror.menu_dict.editor_updateStorage = editor_updateStorage;
@@ -1554,22 +1635,23 @@
       var gadget = this;
 
       function dialogCallback(my_template, my_callback, my_option_dict) {
-        console.log("inside dialog callback")
-        queueCall(function (my_template, my_callback, my_option_dict) {
+        queueCall(function () {
           var queue = new RSVP.Queue(),
+            template = my_template,
+            callback = my_callback,
+            opts = my_option_dict || {},
             props = CodeMirror.menu_dict,
             editor = props.editor,
-            opts = my_option_dict || {},
             dialog_event_list = [],
             dialog_form_submit_list = [],
             dialog_input,
             dialog;
-  
-          dialog = props.dialog = props.editor_setDialog(editor, my_template, opts.position);
+
+          dialog = props.dialog = props.editor_setDialog(editor, template, opts.position);
           dialog_input = dialog.querySelector("input[type='text']");
           props.editor_active_dialog = true;
           closeNotification(props.editor, null);
-  
+
           function wrapBind(my_element, my_event_name, my_property_name) {
             return loopEventListener(my_element, my_event_name, false, function (my_event) {
               return opts[my_property_name](my_event, dialog_input.value, props.dialog_evaluateState);
@@ -1627,7 +1709,7 @@
             });
         });
       }
-      console.log("CALLING Codemirror to define extension")
+
       return CodeMirror.defineExtension("openDialog", dialogCallback);
     })
 
