@@ -387,7 +387,7 @@
   }
 
   function editor_getActiveFileList(my_gadget) {
-    queueCall(function () {
+    //queueCall(function () {
       var gadget = my_gadget;
       return new RSVP.Queue()
         .push(function () {
@@ -410,7 +410,7 @@
           }
           return RSVP.all(directory_content_list);
         });
-    });
+    //});
   }
 
   function dialog_flagInput(my_input, my_message) {
