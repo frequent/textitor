@@ -798,11 +798,11 @@
   function editor_openDialog(my_codemirror, my_direction) {
     queueCall(function () {
       var my_codemirror = my_codemirror || CodeMirror.menu_dict.editor,
-        my_direction = my_direction;
+        direction = my_direction;
       return new RSVP.Queue()
         .push(function () {
           return my_codemirror.openDialog(
-            CodeMirror.menu_dict.dialog_setNavigationMenu(my_direction),
+            CodeMirror.menu_dict.dialog_setNavigationMenu(direction),
             CodeMirror.menu_dict.dialog_closeCallback,
             CodeMirror.menu_dict.dialog_option_dict
           );
