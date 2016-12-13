@@ -4,8 +4,9 @@
 > don't allow to save file.name as folder and vice versa
 > deleting folder, should also delete files inside?
 > fix repeating folder names
-> on 2nd invalid save, focus input to prevent using mouse
-- enable multiple caches = projects
+> on second invalid save, focus input to prevent using mouse
+> allow to createJIO inside project = support storages, find place to add params
+> add all methods to queue after finding out how to make nested queue calls
 
 => maintain self
 - add manifest
@@ -26,7 +27,7 @@
     * upstream - where to send stuff, else local, must be reinitialized
     * user
     * pass
-  - documents are branches, attachments are files?
+  - documents are branches, attachments are files? but caches are already files
   - post-document = create new branch
   - remove-document = delete branch
   - get-document = checkout branch
