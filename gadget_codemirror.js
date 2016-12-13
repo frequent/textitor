@@ -1585,6 +1585,7 @@
         props = CodeMirror.menu_dict,
         dialog = props.dialog,
         file_name_input = dialog.querySelector('input:checked'),
+        file_name_input_list = file_name_input.nextSibling.textContent.split(" | "),
         file_name_to_open,
         open_name,
         active_cache,
@@ -1598,11 +1599,18 @@
       }
 
       active_cache = props.editor_active_cache || SELF;
-      file_name_to_open = file_name_input.nextSibling.textContent.split(" | ")[1];
-
-      // folder, update display and shelf open file on memory
+      file_name_to_open = file_name_input_list[1];
+      
+      console.log(file_name_input_list)
+      
+      // project/folder, update display and shelf open file on memory
       if (file_name_to_open.split(".").length === 1) {
         props.editor_setActivePath(file_name_to_open);
+        if (file_name_to_open === "[Project]") {
+          console.log("got it")
+          file_name_to_open = file_name_input_list[0];
+          props.editor_setActiveCache(file_name_to_open);
+        }
         if (props.editor_active_file) {
           return new RSVP.Queue()
             .push(function () {
