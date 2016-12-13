@@ -846,18 +846,14 @@
     });
   }
 
-  function editor_saveFromDialog(x) {
+  function editor_saveFromDialog() {
     //queueCall(function () {
-      var x = x;
-      console.log("SAVING")
-      console.log(x)
-      console.log(CodeMirror)
-      console.log(CodeMirror.menu_dict)
-      console.log(CodeMirror.menu_dict.action_pending)
+    
       if (CodeMirror.menu_dict.action_pending === SAVE) {
         console.log("BLOCKER")
         return;
       }
+    
       CodeMirror.menu_dict.action_pending = SAVE;
       if (CodeMirror.menu_dict.dialog_position !== LEFT) {
         if (CodeMirror.menu_dict.dialog_evaluateState) {
@@ -866,7 +862,6 @@
               return CodeMirror.menu_dict.dialog_evaluateState({"target":{"name": SAVE}});
             })
             .push(function (my_answer) {
-              console.log("deleting")
               CodeMirror.menu_dict.action_pending = null;
               return my_answer;
             });
@@ -897,7 +892,6 @@
 
   function editor_navigateHorizontal(my_codemirror, my_direction, my_cm_call) {
     //queueCall(function () {
-      console.log("NAVHORIZONTAL")
       var cm = my_codemirror,
         direction = my_direction,
         cm_call = my_cm_call,
@@ -1195,6 +1189,8 @@
           return gadget.jio_allDocs();
         })
         .push(function (my_directory_list) {
+          console.log("my_directory_list")
+          console.log(my_directory_list)
           var response_dict = my_directory_list.data,
             directory_content_list = [],
             cache_id,
@@ -1425,7 +1421,6 @@
         content = props.editor.getValue();
         
         if (is_container) {
-          
           console.log("saving a new cache")
           if (is_container.value === 'cache') {
             //return props.dialog_flagInput(file_name_input, 'Cache not supported');
@@ -1681,7 +1676,6 @@
             dialog;
 
           dialog = props.dialog = props.editor_setDialog(editor, template, opts.position);
-          console.log(dialog)
           dialog_input = dialog.querySelector("input[type='text']");
           props.editor_active_dialog = true;
           closeNotification(props.editor, null);
