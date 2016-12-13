@@ -308,6 +308,10 @@
         })
         .push(function () {
           return gadget.editor_setActiveCache(cache_name);
+        })
+        .push(null, function (my_error) {
+          console.log(my_error);
+          throw my_error;
         });
     });
   }
@@ -1422,6 +1426,8 @@
         
         if (is_container) {
           console.log("saving a new cache")
+          console.log(file_name_input)
+          console.log(file_name_input.value)
           if (is_container.value === 'cache') {
             //return props.dialog_flagInput(file_name_input, 'Cache not supported');
             return props.editor_createCache(gadget, file_name_input.value);
