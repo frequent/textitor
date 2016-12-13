@@ -523,7 +523,7 @@
             if (!props.editor_active_path) {
               str += props.dialog_parseTemplate(
                 FILE_ENTRY_TEMPLATE,
-                [folder.name + " | " + "[project]"]
+                [folder.name + " | " + "[Project]"]
               );
             } else {
               str += props.dialog_parseTemplate(
