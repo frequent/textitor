@@ -624,13 +624,15 @@
 
   function dialog_isFileMenuItem(my_path, my_folder) {
     //queueCall(function () {
+      console.log("my_path: ", my_path, " vs my_folder: ", my_folder)
       var folder = my_folder || "/",
         path = my_path.split(window.location.href).pop(),
         indexFolder = path.indexOf(folder),
         splitFolder = path.split(folder),
         splitFolderPop;
-        
-      console.log(path, " vs ", folder)
+  
+      console.log("modified to:")
+      console.log("path: ", my_path, " vs folder: ", my_folder)
       // self
       if (path === folder) {
         console.log("self, nope")
@@ -639,19 +641,19 @@
   
       // parent folder/file
       if ((indexFolder === -1) && folder !== "/") {
-        console.log("parent folder/file, nope")
+        console.log("parent.folder/file, nope")
         return false;
       }
       
       // inside subfolder
       if (indexFolder > -1) {
-        console.log("in subfolder")
+  
         // current active folder, ok
         if (splitFolder[0] === "" && splitFolder[1].split("/").length === 2) {
-          console.log("hum, dunno why, but subfolder-true!")
+          console.log("in active subfolder, ok")
           return true;
         }
-        console.log("in subfolder-false")
+        console.log("in other subfolder, nope")
         return false;
       }
   
@@ -659,10 +661,13 @@
       splitFolderPop = splitFolder.pop();
       if (splitFolderPop.split(".").length !== 2) {
         if (splitFolderPop.split("/").length === 1) {
+          console.log("direct child, yep")
           return true;
         }
+        console.log("direct child?, nope")
         return false;
-      }                  
+      }
+      console.log("?, yep")
       return true;
     //});
   }
@@ -1220,8 +1225,6 @@
           // only load contents of active cache
           for (i = 0; i < response_dict.total_rows; i += 1) {
             cache_id = response_dict.rows[i].id;
-            console.log(cache_id)
-            console.log(active_cache)
             entry_dict[i] = {"name": cache_id, "item_list": []};
             if (cache_id === active_cache) {
               cache_content = gadget.jio_allAttachments(cache_id);
@@ -1230,11 +1233,12 @@
             }
             directory_content_list.push(cache_content);
           }
-          console.log(entry_dict)
           console.log(directory_content_list)
           return RSVP.all(directory_content_list);
         })
         .push(function (my_directory_content) {
+          console.log("WHAT IS IN CONTENT?")
+          console.log(my_directory_content)
           var editor = props.dialog.parentNode,
             file_menu = editor.querySelector(".custom-file-menu"),
             len = my_directory_content.length,
@@ -1251,7 +1255,6 @@
           for (i = 0; i < len; i += 1) {
             response = my_directory_content[i];
             for (item in response) {
-              console.log("testing, ", item)
               if (response.hasOwnProperty(item)) {
                 if (props.dialog_isFileMenuItem(item, active_path)) {  
                   if (item.indexOf(is_search_or_pass) > -1) {
@@ -1848,4 +1851,3 @@
     });
 
 }(window, document, rJS, CodeMirror, JSON, loopEventListener));
-
