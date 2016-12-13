@@ -298,13 +298,13 @@
           return gadget.setActiveStorage("memory");
         })
         .push(function () {
-          return gadget.put(cache_name);
+          return gadget.jio_put(cache_name);
         })
         .push(function () {
           return gadget.setActiveStorage("serviceworker");
         })
         .push(function () {
-          return gadget.put(cache_name);
+          return gadget.jio_put(cache_name);
         })
         .push(function () {
           return gadget.editor_setActiveCache(cache_name);
