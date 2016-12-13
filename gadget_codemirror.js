@@ -1215,12 +1215,16 @@
           // only load contents of active cache
           for (i = 0; i < response_dict.total_rows; i += 1) {
             cache_id = response_dict.rows[i].id;
+            console.log(cache_id)
+            console.log(active_cache)
             entry_dict[i] = {"name": cache_id, "item_list": []};
             if (cache_id === active_cache) {
               cache_content = gadget.jio_allAttachments(cache_id);
             }
             directory_content_list.push(cache_content || {});
           }
+          console.log(entry_dict)
+          console.log(directory_content_list)
           return RSVP.all(directory_content_list);
         })
         .push(function (my_directory_content) {
