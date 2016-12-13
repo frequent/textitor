@@ -500,6 +500,7 @@
       var file_dict = my_file_dict,
         props = CodeMirror.menu_dict,
         href = window.location.href,
+        active_cache = props.editor_active_cache,
         str = "",
         div,
         i,
@@ -507,19 +508,9 @@
         folder,
         counter;
 
-
-      // XXX if no active cache is set, only fetch caches show [name] | "project folder"
-      // if actice cache is set, only fetch this one
-      // memory is independend of cache, but bulksave needs to be cache aware?
-      // what resets active-cache?
-      console.log(file_dict)
-      
       for (counter in file_dict) {
         if (file_dict.hasOwnProperty(counter)) {
           folder = file_dict[counter];
-
-          console.log(folder)
-
           len = folder.item_list.length;
           if (len > 0) {
             for (i = 0; i < len; i += 1) {
@@ -529,10 +520,17 @@
               );
             }
           } else if (folder.name !== "open") {
-            str += props.dialog_parseTemplate(
-              EMPTY_TEMPLATE,
-              ["[empty folder]"]
-            );
+            if (!props.editor_active_path) {
+              str += props.dialog_parseTemplate(
+                FILE_ENTRY_TEMPLATE,
+                [folder.name + " | " + "[project]"]
+              );
+            } else {
+              str += props.dialog_parseTemplate(
+                EMPTY_TEMPLATE,
+                ["[empty folder]"]
+              );  
+            }
           }
         }
       }
@@ -1223,19 +1221,6 @@
             }
             directory_content_list.push(cache_content || {});
           }
-
-          /*
-          if (my_directory_list !== undefined) {
-            if (response_dict.total_rows === 1) {
-              props.editor_active_cache = response_dict.rows[0].id;
-            }
-            for (i = 0; i < response_dict.total_rows; i += 1) {
-              cache_id = response_dict.rows[i].id;
-              entry_dict[i] = {"name": cache_id, "item_list": []};
-              directory_content_list.push(gadget.jio_allAttachments(cache_id));
-            }
-          }
-          */
           return RSVP.all(directory_content_list);
         })
         .push(function (my_directory_content) {
@@ -1679,7 +1664,7 @@
           props.editor_setActiveFile(open_name, mime_type);
           props.editor_setDisplay(open_name);
           if (open_name.indexOf(props.editor_active_path) === -1) {
-            list = open_name.split("/")
+            list = open_name.split("/");
             props.editor_setActivePath(list.splice(0, list.length - 1).join("/"));
           }
           if (file_name_to_open_save_flag) {
