@@ -3,10 +3,15 @@
 > fix is modified when closing tabs
 > don't allow to save file.name as folder and vice versa
 > deleting folder, should also delete files inside?
+> fix creating folder, goes into folder, going left, should leave immediately
 > fix repeating folder names
 > on second invalid save, focus input to prevent using mouse
 > allow to createJIO inside project = support storages, find place to add params
 > add all methods to queue after finding out how to make nested queue calls
+> fix why does error propagation not work
+> fix creating a new cache should so it creates only on root
+> fix new cache active path goes into new path
+
 
 => maintain self
 - add manifest
@@ -65,3 +70,4 @@ serverless.getTree("master", function (err, tree) {if (err) {console.log("error"
   - if document per branch, files are attachments, editing and saving updates attachments
   - of a diff is a new attachment?
   
+
