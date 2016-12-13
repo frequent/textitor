@@ -307,7 +307,7 @@
           return gadget.jio_put(cache_name);
         })
         .push(function () {
-          return gadget.editor_setActiveCache(cache_name);
+          return CodeMirror.menu_dict.editor_setActiveCache(cache_name);
         })
         .push(null, function (my_error) {
           console.log(my_error);
@@ -318,8 +318,12 @@
 
   function editor_setActiveCache(my_cache_name) {
     //queueCall(function () {
-      var cache_name = my_cache_name;
-      CodeMirror.menu_dict.editor_active_cache = cache_name;  
+      var cache_name = my_cache_name,
+        props = CodeMirror.menu_dict;
+
+      props.editor_active_cache = cache_name;
+      props.editor_setActivePath(cache_name);
+      props.editor_setDisplay(cache_name);
     //});
   }
 
