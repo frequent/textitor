@@ -23,6 +23,7 @@
   
   // and...
   var IDLE = "idle";
+  var SELF = "textitor";
 
   /////////////////////////////
   // Placeholder Instructions
@@ -1297,7 +1298,7 @@
       } else {
         file_name = props.editor_active_file.name;
       }
-      active_cache = props.editor_active_cache || "textitor";
+      active_cache = props.editor_active_cache || SELF;
 
       return new RSVP.Queue()
         .push(function () {
@@ -1375,7 +1376,7 @@
       var gadget = this,
         props = CodeMirror.menu_dict,
         dialog = props.dialog,
-        active_cache = props.editor_active_cache || "textitor",
+        active_cache = props.editor_active_cache || SELF,
         active_path = props.editor_active_path,
         active_file = props.editor_active_file,
         file_name_input,
@@ -1530,7 +1531,7 @@
         .push(function () {
           var new_doc = props.editor_createDoc(my_content),
             old_doc = props.editor.swapDoc(new_doc),
-            active_storage = props.editor_active_cache || "textitor",
+            active_storage = props.editor_active_cache || SELF,
             active_file = props.editor_active_file,
             save_file_name,
             save_mime_type;
@@ -1584,7 +1585,7 @@
         return true;
       }
 
-      active_cache = props.editor_active_cache || "textitor";
+      active_cache = props.editor_active_cache || SELF;
       file_name_to_open = file_name_input.nextSibling.textContent.split(" | ")[1];
 
       // folder, update display and shelf open file on memory
