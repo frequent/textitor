@@ -525,8 +525,7 @@
                 FILE_ENTRY_TEMPLATE,
                 [folder.name + " | " + "[Project]"]
               );
-            } else {
-              console.log("what to do?", folder, props.editor_active_path, props.editor_active_cache)
+            } else if (folder.name === active_cache) {
               str += props.dialog_parseTemplate(
                 EMPTY_TEMPLATE,
                 ["[empty folder]"]
