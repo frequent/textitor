@@ -623,30 +623,36 @@
   }
 
   function dialog_isFileMenuItem(my_path, my_folder) {
+    console.log("checking", my_path, my_folder)
+    
     //queueCall(function () {
       var folder = my_folder || "/",
         path = my_path.split(window.location.href).pop(),
         indexFolder = path.indexOf(folder),
         splitFolder = path.split(folder),
         splitFolderPop;
-  
+      console.log("path vs folder", path, folder)
       // self
       if (path === folder) {
+        console.log("self, nope")
         return false;
       }
   
       // parent folder/file
       if ((indexFolder === -1) && folder !== "/") {
+        console.log("parent folder/file, nope")
         return false;
       }
       
       // inside subfolder
       if (indexFolder > -1) {
-  
+        console.log("in subfolder")
         // current active folder, ok
         if (splitFolder[0] === "" && splitFolder[1].split("/").length === 2) {
+          console.log("hum, dunno why, but subfolder-true!")
           return true;
         }
+        console.log("in subfolder-false")
         return false;
       }
   
@@ -1246,6 +1252,7 @@
           for (i = 0; i < len; i += 1) {
             response = my_directory_content[i];
             for (item in response) {
+              console.log("testing, ", item)
               if (response.hasOwnProperty(item)) {
                 if (props.dialog_isFileMenuItem(item, active_path)) {  
                   if (item.indexOf(is_search_or_pass) > -1) {
