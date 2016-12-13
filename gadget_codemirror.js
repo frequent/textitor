@@ -1220,8 +1220,10 @@
             entry_dict[i] = {"name": cache_id, "item_list": []};
             if (cache_id === active_cache) {
               cache_content = gadget.jio_allAttachments(cache_id);
+            } else {
+              cache_content = {};
             }
-            directory_content_list.push(cache_content || {});
+            directory_content_list.push(cache_content);
           }
           console.log(entry_dict)
           console.log(directory_content_list)
