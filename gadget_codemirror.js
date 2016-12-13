@@ -623,15 +623,14 @@
   }
 
   function dialog_isFileMenuItem(my_path, my_folder) {
-    console.log("checking", my_path, my_folder)
-    
     //queueCall(function () {
       var folder = my_folder || "/",
         path = my_path.split(window.location.href).pop(),
         indexFolder = path.indexOf(folder),
         splitFolder = path.split(folder),
         splitFolderPop;
-      console.log("path vs folder", path, folder)
+        
+      console.log(path, " vs ", folder)
       // self
       if (path === folder) {
         console.log("self, nope")
