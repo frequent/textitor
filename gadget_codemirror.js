@@ -505,13 +505,20 @@
         len,
         folder,
         counter;
-      console.log("where are the root files?")
-      console.log(my_file_dict)
+
       for (counter in file_dict) {
         if (file_dict.hasOwnProperty(counter)) {
           folder = file_dict[counter];
           len = folder.item_list.length;
           if (len > 0) {
+            
+            // XXX root files
+            if (folder.init) {
+              str += props.dialog_parseTemplate(
+                FILE_ENTRY_TEMPLATE,
+                [folder.name + " | " + "[Project]"]
+              );
+            }
             for (i = 0; i < len; i += 1) {
               str += props.dialog_parseTemplate(
                 FILE_ENTRY_TEMPLATE,
@@ -1221,14 +1228,12 @@
             is_init,
             cache_content,
             i;
-          console.log("what do I get from allDocs")
-          console.log(my_directory_list)
+
           // only load contents of active cache
           for (i = 0; i < response_dict.total_rows; i += 1) {
             cache_id = response_dict.rows[i].id;
             is_init = cache_id === SELF && active_cache === null;
-            console.log(is_init)
-            entry_dict[i] = {"name": cache_id, "item_list": []};
+            entry_dict[i] = {"name": cache_id, "item_list": [], "init": is_init};
             if (cache_id === active_cache || is_init) {
               cache_content = gadget.jio_allAttachments(cache_id);
             } else {
