@@ -630,24 +630,19 @@
 
   function dialog_isFileMenuItem(my_path, my_folder) {
     //queueCall(function () {
-      console.log("my_path: ", my_path, " vs my_folder: ", my_folder)
       var folder = my_folder || "/",
         path = my_path.split(window.location.href).pop(),
         indexFolder = path.indexOf(folder),
         splitFolder = path.split(folder),
         splitFolderPop;
-  
-      console.log("modified to:")
-      console.log("path: ", my_path, " vs folder: ", my_folder)
+      
       // self
       if (path === folder) {
-        console.log("self, nope")
         return false;
       }
   
       // parent folder/file
       if ((indexFolder === -1) && folder !== "/") {
-        console.log("parent.folder/file, nope")
         return false;
       }
       
@@ -656,10 +651,8 @@
   
         // current active folder, ok
         if (splitFolder[0] === "" && splitFolder[1].split("/").length === 2) {
-          console.log("in active subfolder, ok")
           return true;
         }
-        console.log("in other subfolder, nope")
         return false;
       }
   
@@ -667,13 +660,10 @@
       splitFolderPop = splitFolder.pop();
       if (splitFolderPop.split(".").length !== 2) {
         if (splitFolderPop.split("/").length === 1) {
-          console.log("direct child, yep")
           return true;
         }
-        console.log("direct child?, nope")
         return false;
       }
-      console.log("?, yep")
       return true;
     //});
   }
@@ -1279,6 +1269,8 @@
             }
           }
 
+          console.log("entries")
+          console.log(entry_dict)
           if (file_menu) {
             file_menu.parentNode.replaceChild(
               props.dialog_createFileMenu(entry_dict),
@@ -1456,11 +1448,7 @@
         content = props.editor.getValue();
         
         if (is_container) {
-          console.log("saving a new cache")
-          console.log(file_name_input)
-          console.log(file_name_input.value)
           if (is_container.value === 'cache') {
-            //return props.dialog_flagInput(file_name_input, 'Cache not supported');
             return props.editor_createCache(gadget, file_name_input.value);
           } else {
             mime_type = "application/json";
@@ -1471,8 +1459,14 @@
         file_name = my_file_id;
         mime_type = setMimeType(file_name.split(".").pop().replace("/", ""));
       }
+      console.log("Saving..., if there is an active path, like a project and a name only entered without path, prefix file name by active path")
+      console.log(active_path)
+      console.log(file_name)
+      console.log(file_name.indexOf(active_path))
       if (active_path && file_name.indexOf(active_path) === -1) {
+        console.log("prefixing")
         file_name = active_path + "/" + file_name;
+        console.log(file_name)
       }
 
       return new RSVP.Queue()
@@ -1605,7 +1599,7 @@
         props = CodeMirror.menu_dict,
         dialog = props.dialog,
         file_name_input = dialog.querySelector('input:checked'),
-        file_name_input_list = file_name_input.nextSibling.textContent.split(" | "),
+        file_name_input_list,
         file_name_to_open,
         open_name,
         active_cache,
@@ -1619,6 +1613,7 @@
       }
 
       active_cache = props.editor_active_cache || SELF;
+      file_name_input_list = file_name_input.nextSibling.textContent.split(" | ");
       file_name_to_open = file_name_input_list[1];
 
       // project/folder, update display and shelf open file on memory
