@@ -198,8 +198,6 @@
     });
   }
 
-  c
-
   // CodeMirror needs this on dialog close
   function closeNotification(my_editor, my_newVal) {
     if (my_editor.state.currentNotificationClose) {
