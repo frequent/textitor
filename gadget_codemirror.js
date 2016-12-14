@@ -1225,7 +1225,7 @@
             directory_content_list = [],
             active_cache = props.editor_active_cache,
             cache_id,
-            is_init,
+            is_root,
             cache_content,
             i;
 
