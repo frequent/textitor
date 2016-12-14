@@ -1218,6 +1218,7 @@
             directory_content_list = [],
             active_cache = props.editor_active_cache,
             cache_id,
+            is_init,
             cache_content,
             i;
           console.log("what do I get from allDocs")
@@ -1225,8 +1226,10 @@
           // only load contents of active cache
           for (i = 0; i < response_dict.total_rows; i += 1) {
             cache_id = response_dict.rows[i].id;
+            is_init = cache_id === SELF && active_cache === null;
+            console.log(is_init)
             entry_dict[i] = {"name": cache_id, "item_list": []};
-            if (cache_id === active_cache) {
+            if (cache_id === active_cache || is_init) {
               cache_content = gadget.jio_allAttachments(cache_id);
             } else {
               cache_content = {};
