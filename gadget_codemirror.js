@@ -513,7 +513,7 @@
           if (len > 0) {
             
             // XXX root files
-            if (folder.init) {
+            if (folder.root) {
               str += props.dialog_parseTemplate(
                 FILE_ENTRY_TEMPLATE,
                 [folder.name + " | " + "[Project]"]
@@ -1232,9 +1232,9 @@
           // only load contents of active cache
           for (i = 0; i < response_dict.total_rows; i += 1) {
             cache_id = response_dict.rows[i].id;
-            is_init = cache_id === SELF && active_cache === null;
-            entry_dict[i] = {"name": cache_id, "item_list": [], "init": is_init};
-            if (cache_id === active_cache || is_init) {
+            is_root = cache_id === SELF && !props.editor_active_path;
+            entry_dict[i] = {"name": cache_id, "item_list": [], "root": is_root};
+            if (cache_id === active_cache || is_root) {
               cache_content = gadget.jio_allAttachments(cache_id);
             } else {
               cache_content = {};
