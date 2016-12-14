@@ -198,7 +198,7 @@
     });
   }
 
-  
+  c
 
   // CodeMirror needs this on dialog close
   function closeNotification(my_editor, my_newVal) {
@@ -507,7 +507,8 @@
         len,
         folder,
         counter;
-
+      console.log("where are the root files?")
+      console.log(my_file_dict)
       for (counter in file_dict) {
         if (file_dict.hasOwnProperty(counter)) {
           folder = file_dict[counter];
@@ -1221,7 +1222,8 @@
             cache_id,
             cache_content,
             i;
-
+          console.log("what do I get from allDocs")
+          console.log(my_directory_list)
           // only load contents of active cache
           for (i = 0; i < response_dict.total_rows; i += 1) {
             cache_id = response_dict.rows[i].id;
@@ -1233,12 +1235,9 @@
             }
             directory_content_list.push(cache_content);
           }
-          console.log(directory_content_list)
           return RSVP.all(directory_content_list);
         })
         .push(function (my_directory_content) {
-          console.log("WHAT IS IN CONTENT?")
-          console.log(my_directory_content)
           var editor = props.dialog.parentNode,
             file_menu = editor.querySelector(".custom-file-menu"),
             len = my_directory_content.length,
@@ -1615,14 +1614,11 @@
 
       active_cache = props.editor_active_cache || SELF;
       file_name_to_open = file_name_input_list[1];
-      
-      console.log(file_name_input_list)
-      
+
       // project/folder, update display and shelf open file on memory
       if (file_name_to_open.split(".").length === 1) {
         props.editor_setActivePath(file_name_to_open);
         if (file_name_to_open === "[Project]") {
-          console.log("got it")
           file_name_to_open = file_name_input_list[0];
           props.editor_setActiveCache(file_name_to_open);
         }
