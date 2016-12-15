@@ -118,12 +118,12 @@
       })
       .push(function (attachment_dict) {
         var url_list = [],
-          key;
-        for (key in attachment_dict) {
+          url;
+        for (url in attachment_dict) {
           if (attachment_dict.hasOwnProperty(url)) {
             url_list.append(sendMessage({
               command: 'removeAttachment',
-              id: key
+              id: url
             }));
           }
         }
@@ -244,4 +244,3 @@
   jIO.addStorage('serviceworker', ServiceWorkerStorage);
 
 }(jIO, RSVP, Blob));
-
