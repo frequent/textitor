@@ -1134,6 +1134,7 @@
     .declareAcquiredMethod('jio_create', 'jio_create')
     .declareAcquiredMethod('jio_allDocs', 'jio_allDocs')
     .declareAcquiredMethod('jio_put', 'jio_put')
+    .declareAcquiredMethod('jio_remove', 'jio_remove')
     .declareAcquiredMethod('jio_allAttachments', 'jio_allAttachments')
     .declareAcquiredMethod('jio_putAttachment', 'jio_putAttachment')
     .declareAcquiredMethod('jio_removeAttachment', 'jio_removeAttachment')
@@ -1300,64 +1301,87 @@
 
     .declareMethod('editor_removeFile', function () {
       var gadget = this, 
+        queue = new RSVP.Queue(),
         props = CodeMirror.menu_dict,
+        active_cache = props.editor_active_cache || SELF,
+        active_path = props.editor_active_path,
+        active_file = props.editor_active_file,
         dialog = props.dialog,
-        active_cache,
-        file_name;
+        file_name,
+        target,
+        handler;
 
       // REMOVE => clear file/folder/cache from memory and serviceworker
+      function clearProject(my_cache) {
+        return new RSVP.Queue()
+          .push(function () {
+            return gadget.setActiveStorage("memory");
+          })
+          .push(function () {
+            return gadget.jio_remove(my_cache);
+          })
+          .push(function () {
+            return gadget.setActiveStorage("serviceworker");
+          })
+          .push(function () {
+            return gadget.jio_remove(my_cache);
+          });
+      }
+      
+      function clearFile(my_cache, my_file) {
+        return new RSVP.Queue()
+          .push(function () {
+            return gadget.setActiveStorage("memory");
+          })
+          .push(function () {
+            return gadget.jio_getAttachment(my_cache, my_file);
+          })
+          .push(
+            function () {
+              return RSVP.all([
+                gadget.jio_removeAttachment(my_cache, my_file),
+                gadget.jio_removeAttachment(my_cache, my_file + "_history")
+              ]);
+            },
+            function (my_error) {
+              if (is404(my_error)) {
+                return;
+              }
+              throw my_error;
+            }
+          )
+          .push(function () {
+            return gadget.setActiveStorage("serviceworker");
+          })
+          .push(function () {
+            return gadget.jio_removeAttachment(active_cache, file_name);
+          });
+      }
 
-      // no file selected
-      // XXX refactor
-      console.log(props.editor_active_file)
-      if (!props.editor_active_file) {
-        
-        // this will wipe a folder, without it's contents? are you sure?
-        console.log(props.editor_active_path)
-
-        if (props.editor_active_path) {
-          console.log("olalal, cache equal path?")
-          console.log(props.editor_active_cache)
-          if (window.confirm("Delete folder " + props.editor_active_path)) {
-            file_name = props.editor_active_path;
+      if (active_file) {
+        file_name = editor_active_file.name;
+        queue.push(clearFile(active_cache, file_name));
+      } else {
+        if (active_path) {
+          if (active_path === active_cache) {
+            target = "Project";
+            handler = clearProject;
+          } else {
+            target = "Folder";
+            handler = clearFile;
+          }
+          if (window.confirm("Delete " + target + " " + active_path + "?")) {
+            file_name = active_path;
+            queue.push(handler(active_cache, file_name));
           } else {
             return true;
           }
         } else {
           return true;
         }
-      } else {
-        file_name = props.editor_active_file.name;
       }
-      active_cache = props.editor_active_cache || SELF;
 
-      return new RSVP.Queue()
-        .push(function () {
-          return gadget.setActiveStorage("memory");
-        })
-        .push(function () {
-          return gadget.jio_getAttachment(active_cache, file_name);
-        })
-        .push(
-          function () {
-            return RSVP.all([
-              gadget.jio_removeAttachment(active_cache, file_name),
-              gadget.jio_removeAttachment(active_cache, file_name + "_history")
-            ]);
-          },
-          function (my_error) {
-            if (is404(my_error)) {
-              return;
-            }
-            throw my_error;
-          }
-        )
-        .push(function () {
-          return gadget.setActiveStorage("serviceworker");
-        })
-        .push(function () {
-          return gadget.jio_removeAttachment(active_cache, file_name);
-        })
+      return queue
         .push(function () {
           var new_doc = props.editor_createDoc(),
             old_doc = props.editor.swapDoc(new_doc);
