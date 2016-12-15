@@ -120,7 +120,6 @@ self.addEventListener('message', function (event) {
   switch (param.command) {
     
     // case 'post' not possible
-    // case 'remove' not necessary
     
     // test if cache exits, only run ahead of put
     case 'get':
@@ -168,6 +167,22 @@ self.addEventListener('message', function (event) {
         .catch(function(error) {
           event.ports[0].postMessage({
             error: {'message': error.toString()}
+          });
+        });
+    break;
+    
+    // remove a cache
+    case 'remove':
+      CURRENT_CACHE = param.id + "-v" + CURRENT_CACHE_VERSION;
+      caches.delete(CURRENT_CACHE)
+        .then(function() {
+          event.ports[0].postMessage({
+            error: null
+          });
+        })
+        .catch(function(error) {
+          event.ports[0].postMessage({
+            error: {'message': "nah... " + error.toString()}
           });
         });
     break;
@@ -342,4 +357,5 @@ self.addEventListener('message', function (event) {
       throw 'Unknown command: ' + event.data.command;
   }
 });  
+
 
