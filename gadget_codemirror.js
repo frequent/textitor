@@ -1364,9 +1364,11 @@
             return gadget.setActiveStorage("serviceworker");
           })
           .push(function () {
-            return gadget.jio_removeAttachment(active_cache, file_name);
+            return gadget.jio_removeAttachment(my_cache, my_file);
           })
           .push(function () {
+            var list = my_file.split("/");
+            props.editor_setActivePath(list.splice(0, list.length - 1).join("/"));
             props.editor.swapDoc(props.editor_createDoc());
             props.editor_resetActiveFile();
             props.editor_resetModified();
