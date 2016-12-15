@@ -182,7 +182,7 @@ self.addEventListener('message', function (event) {
         })
         .catch(function(error) {
           event.ports[0].postMessage({
-            error: {'message': "nah... " + error.toString()}
+            error: {'message': error.toString()}
           });
         });
     break;
@@ -357,5 +357,6 @@ self.addEventListener('message', function (event) {
       throw 'Unknown command: ' + event.data.command;
   }
 });  
+
 
 
