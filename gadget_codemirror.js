@@ -1367,7 +1367,7 @@
             return gadget.jio_removeAttachment(my_cache, my_file);
           })
           .push(function () {
-            var list = my_file.split("/");
+            var list = active_path.split("/");
             props.editor_setActivePath(list.splice(0, list.length - 1).join("/"));
             props.editor.swapDoc(props.editor_createDoc());
             props.editor_resetActiveFile();
@@ -1893,4 +1893,3 @@
     });
 
 }(window, document, rJS, CodeMirror, JSON, loopEventListener));
-
