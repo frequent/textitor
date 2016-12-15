@@ -455,7 +455,7 @@
   function dialog_flagInput(my_input, my_message) {
     //queueCall(function () {
       var input = my_input,
-        message = message;
+        message = my_message;
     
       if (input.className.indexOf("custom-invalid") > 0) {
         return false;
@@ -611,8 +611,6 @@
           return props.editor_updateStorage(parameter);
         })
         .push(function (my_close_dialog) {
-          console.log("DONE UPATESTORAGE, my_close = ", my_close_dialog)
-          console.log(props.editor_active_dialog)
           if (my_close_dialog === true && props.editor_active_dialog) {
             if (props.dialog_option_dict.onClose) {
               props.dialog_option_dict.onClose(dialog);
@@ -1248,8 +1246,6 @@
             i,
             j;
 
-          console.log("In")
-          console.log(my_directory_content)
           // loop folder contents, exclude history, check if file is on memory
           // and match against search (can't user query on allAttachments)
           for (i = 0; i < len; i += 1) {
@@ -1274,8 +1270,6 @@
             }
           }
 
-          console.log("out")
-          console.log(entry_dict)
           if (file_menu) {
             file_menu.parentNode.replaceChild(
               props.dialog_createFileMenu(entry_dict),
@@ -1477,8 +1471,6 @@
           mime_type = active_file.mime_type;
         }
 
-        // XXX FIX THIS
-      
         // validate form
         if (dialog) {
           if (!file_name) {
