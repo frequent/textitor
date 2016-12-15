@@ -1305,14 +1305,19 @@
         active_cache,
         file_name;
 
-      // REMOVE => clear file from memory and serviceworker
+      // REMOVE => clear file/folder/cache from memory and serviceworker
 
       // no file selected
       // XXX refactor
+      console.log(props.editor_active_file)
       if (!props.editor_active_file) {
         
         // this will wipe a folder, without it's contents? are you sure?
+        console.log(props.editor_active_path)
+
         if (props.editor_active_path) {
+          console.log("olalal, cache equal path?")
+          console.log(props.editor_active_cache)
           if (window.confirm("Delete folder " + props.editor_active_path)) {
             file_name = props.editor_active_path;
           } else {
