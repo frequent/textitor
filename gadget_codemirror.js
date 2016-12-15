@@ -611,6 +611,8 @@
           return props.editor_updateStorage(parameter);
         })
         .push(function (my_close_dialog) {
+          console.log("DONE UPATESTORAGE, my_close = ", my_close_dialog)
+          console.log(props.editor_active_dialog)
           if (my_close_dialog === true && props.editor_active_dialog) {
             if (props.dialog_option_dict.onClose) {
               props.dialog_option_dict.onClose(dialog);
@@ -1329,10 +1331,6 @@
           .push(function () {
             props.editor_setActiveCache(null);
             return true;
-          })
-          .push(null, function (my_error) {
-            console.log(my_error);
-            throw my_error;
           });
       }
       
@@ -1398,7 +1396,10 @@
         }
       }
 
-      return queue;
+      return queue
+        .then(function () {
+          return true;
+        });
     })
 
     .declareMethod('editor_bulkSave', function () {
