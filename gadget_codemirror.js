@@ -1225,11 +1225,11 @@
             cache_id = response_dict.rows[i].id;
             is_root = cache_id === SELF && !props.editor_active_path;
             entry_dict[i] = {"name": cache_id, "item_list": [], "root": is_root};
-            if (cache_id === active_cache || is_root) {
+            //if (cache_id === active_cache || is_root) {
               cache_content = gadget.jio_allAttachments(cache_id);
-            } else {
-              cache_content = {};
-            }
+            //} else {
+            //  cache_content = {};
+            //}
             directory_content_list.push(cache_content);
           }
           return RSVP.all(directory_content_list);
