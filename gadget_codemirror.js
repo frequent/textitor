@@ -297,18 +297,15 @@
           return gadget.setActiveStorage("memory");
         })
         .push(function () {
-          console.log("Storing on Memory", cache_name)
           return gadget.jio_put(cache_name);
         })
         .push(function () {
           return gadget.setActiveStorage("serviceworker");
         })
         .push(function () {
-          console.log("storing on cache", cache_name)
           return gadget.jio_put(cache_name);
         })
         .push(function () {
-          console.log("ALL GOOD")
           props.editor_setActiveCache(cache_name);
         })
         .push(null, function (my_error) {
@@ -876,7 +873,6 @@
     //queueCall(function () {
     
       if (CodeMirror.menu_dict.action_pending === SAVE) {
-        console.log("BLOCKER")
         return;
       }
     
@@ -1250,6 +1246,8 @@
             i,
             j;
 
+          console.log("In")
+          console.log(my_directory-Content)
           // loop folder contents, exclude history, check if file is on memory
           // and match against search (can't user query on allAttachments)
           for (i = 0; i < len; i += 1) {
@@ -1274,7 +1272,7 @@
             }
           }
 
-          console.log("entries")
+          console.log("out")
           console.log(entry_dict)
           if (file_menu) {
             file_menu.parentNode.replaceChild(
@@ -1478,6 +1476,8 @@
           mime_type = active_file.mime_type;
         }
 
+        // XXX FIX THIS
+      
         // validate form
         if (dialog) {
           if (!file_name) {
@@ -1489,8 +1489,6 @@
           }
         }
         content = props.editor.getValue();
-        console.log(gadget)
-        console.log(file_name_input.value)
 
         if (is_container) {
           if (is_container.value === 'cache') {
@@ -1504,14 +1502,8 @@
         file_name = my_file_id;
         mime_type = setMimeType(file_name.split(".").pop().replace("/", ""));
       }
-      console.log("Saving..., if there is an active path, like a project and a name only entered without path, prefix file name by active path")
-      console.log(active_path)
-      console.log(file_name)
-      console.log(file_name.indexOf(active_path))
       if (active_path && file_name.indexOf(active_path) === -1) {
-        console.log("prefixing")
         file_name = active_path + "/" + file_name;
-        console.log(file_name)
       }
 
       return new RSVP.Queue()
@@ -1893,3 +1885,4 @@
     });
 
 }(window, document, rJS, CodeMirror, JSON, loopEventListener));
+
