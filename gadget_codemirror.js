@@ -1325,6 +1325,10 @@
           })
           .push(function () {
             return gadget.jio_remove(my_cache);
+          })
+          .push(null, function (my_error) {
+            console.log(my_error);
+            throw my_error;
           });
       }
       
@@ -1359,7 +1363,7 @@
       }
 
       if (active_file) {
-        file_name = editor_active_file.name;
+        file_name = active_file.name;
         queue.push(clearFile(active_cache, file_name));
       } else {
         if (active_path) {
