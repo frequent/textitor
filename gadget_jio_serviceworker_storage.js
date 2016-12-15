@@ -132,7 +132,7 @@
       .push(function () {
         return sendMessage({
           command: 'remove',
-          id: restrictedDocumentId(id)
+          id: restrictDocumentId(id)
         });
       });
   };
@@ -244,3 +244,4 @@
   jIO.addStorage('serviceworker', ServiceWorkerStorage);
 
 }(jIO, RSVP, Blob));
+
