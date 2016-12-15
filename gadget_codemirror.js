@@ -10,7 +10,7 @@
   var LEFT = "left";
   var RIGHT = "right";
   var UP = "up";
-  var DOWN = "down";s
+  var DOWN = "down";
   var SAVE = "save";
   var CLOSE = "close";
   var OPEN = "open";
