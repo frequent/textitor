@@ -10,7 +10,7 @@
   var LEFT = "left";
   var RIGHT = "right";
   var UP = "up";
-  var DOWN = "down";
+  var DOWN = "down";s
   var SAVE = "save";
   var CLOSE = "close";
   var OPEN = "open";
@@ -296,15 +296,18 @@
           return gadget.setActiveStorage("memory");
         })
         .push(function () {
+          console.log("Storing on Memory", cache_name)
           return gadget.jio_put(cache_name);
         })
         .push(function () {
           return gadget.setActiveStorage("serviceworker");
         })
         .push(function () {
+          console.log("storing on cache", cache_name)
           return gadget.jio_put(cache_name);
         })
         .push(function () {
+          console.log("ALL GOOD")
           return CodeMirror.menu_dict.editor_setActiveCache(cache_name);
         })
         .push(null, function (my_error) {
@@ -1446,7 +1449,9 @@
           }
         }
         content = props.editor.getValue();
-        
+        console.log(gadget)
+        console.log(file_name_input.value)
+
         if (is_container) {
           if (is_container.value === 'cache') {
             return props.editor_createCache(gadget, file_name_input.value);
