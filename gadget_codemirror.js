@@ -289,6 +289,7 @@
   function editor_createCache(my_gadget, my_cache_name) {
     // queueCall(function () {
     var gadget = my_gadget,
+      props = CodeMirror.menu_dict,
       cache_name = my_cache_name;
     return queueCall(function () {
       new RSVP.Queue()
@@ -308,7 +309,7 @@
         })
         .push(function () {
           console.log("ALL GOOD")
-          return CodeMirror.menu_dict.editor_setActiveCache(cache_name);
+          props.editor_setActiveCache(cache_name);
         })
         .push(null, function (my_error) {
           console.log(my_error);
@@ -1312,6 +1313,7 @@
         handler;
 
       // REMOVE => clear file/folder/cache from memory and serviceworker
+      
       function clearProject(my_cache) {
         return new RSVP.Queue()
           .push(function () {
@@ -1325,6 +1327,10 @@
           })
           .push(function () {
             return gadget.jio_remove(my_cache);
+          })
+          .push(function () {
+            props.editor_setActiveCache(null);
+            return true;
           })
           .push(null, function (my_error) {
             console.log(my_error);
@@ -1359,6 +1365,13 @@
           })
           .push(function () {
             return gadget.jio_removeAttachment(active_cache, file_name);
+          })
+          .push(function () {
+            props.editor.swapDoc(props.editor_createDoc());
+            props.editor_resetActiveFile();
+            props.editor_resetModified();
+            props.editor_setDisplay();
+            return true;
           });
       }
 
@@ -1385,15 +1398,7 @@
         }
       }
 
-      return queue
-        .push(function () {
-          var new_doc = props.editor_createDoc(),
-            old_doc = props.editor.swapDoc(new_doc);
-          props.editor_resetActiveFile();
-          props.editor_resetModified();
-          props.editor_setDisplay();
-          return true;
-        });
+      return queue;
     })
 
     .declareMethod('editor_bulkSave', function () {
