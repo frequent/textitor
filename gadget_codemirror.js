@@ -1247,7 +1247,7 @@
             j;
 
           console.log("In")
-          console.log(my_directory-Content)
+          console.log(my_directory_content)
           // loop folder contents, exclude history, check if file is on memory
           // and match against search (can't user query on allAttachments)
           for (i = 0; i < len; i += 1) {
