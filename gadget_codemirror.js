@@ -288,11 +288,10 @@
   
   function editor_createCache(my_gadget, my_cache_name) {
     // queueCall(function () {
-    var gadget = my_gadget,
-      props = CodeMirror.menu_dict,
-      cache_name = my_cache_name;
-    return queueCall(function () {
-      new RSVP.Queue()
+      var gadget = my_gadget,
+        cache_name = my_cache_name;
+
+      return new RSVP.Queue()
         .push(function () {
           return gadget.setActiveStorage("memory");
         })
@@ -313,7 +312,7 @@
           console.log(my_error);
           throw my_error;
         });
-    });
+    //});
   }
 
   function editor_setActiveCache(my_cache_name) {
@@ -1868,6 +1867,7 @@
               return CodeMirror.menu_dict.editor_getActiveFileList(gadget);
             })
             .push(function (my_memory_content) {
+              console.log(my_memory_content)
               if (my_memory_content.length > 0 || props.editor_is_modified) {
                 if (my_event) {
                   my_event.returnValue = message;
