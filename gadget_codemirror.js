@@ -1868,7 +1868,6 @@
               return CodeMirror.menu_dict.editor_getActiveFileList(gadget);
             })
             .push(function (my_memory_content) {
-              console.log(my_memor_content)
               if (my_memory_content.length > 0 || props.editor_is_modified) {
                 if (my_event) {
                   console.log(my_event)
