@@ -1483,12 +1483,12 @@
 
         // validate form
         if (dialog) {
-          if (!file_name) {
-            return props.dialog_flagInput(file_name_input, FLAG);
-          }
-          if (file_name_input && file_name_input.getAttribute("placeholder", FLAG)) {
+          if (file_name_input.className.indexOf("custom-invalid") > -1) {
             file_name_input.focus();
             return;
+          }
+          if (!file_name) {
+            return props.dialog_flagInput(file_name_input, FLAG);
           }
         }
         content = props.editor.getValue();
