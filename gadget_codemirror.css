@@ -47,7 +47,17 @@ body {
 .CodeMirror .custom-file-menu-row > input:first-child:checked + span {
   font-weight: bold;
 }
-.CodeMirror .custom-invalid {
+
+.CodeMirror .custom-invalid::-webkit-input-placeholder {
+  color: #ee0000;
+}
+.CodeMirror .custom-invalid::-moz-placeholder {
+  color: #ee0000;
+}
+.CodeMirror .custom-invalid:-ms-input-placeholder {
+  color: #ee0000;
+}
+.CodeMirror .custom-invalid:-moz-placeholder {
   color: #ee0000;
 }
 /* placeholder */
