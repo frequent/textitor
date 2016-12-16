@@ -289,6 +289,7 @@
   function editor_createCache(my_gadget, my_cache_name) {
     // queueCall(function () {
       var gadget = my_gadget,
+        props = CodeMirror.menu_dict,
         cache_name = my_cache_name;
 
       return new RSVP.Queue()
