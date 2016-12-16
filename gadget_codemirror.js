@@ -206,6 +206,15 @@
     my_editor.state.currentNotificationClose = my_newVal;
   }
 
+  function isEmpty(my_object) {
+    var key;
+    for(key in my_object) {
+      if(my_object.hasOwnProperty(key))
+        return false;
+    }
+    return true; 
+  }
+
   function is404(my_error) {
     if ((my_error instanceof jIO.util.jIOError) &&
       (my_error.status_code === 404)) {
@@ -1851,8 +1860,9 @@
   
     .declareService(function () {
       var gadget = this,
-        props = gadget.property_dict,
+        props = CodeMirror.menu_dict,
         message = "Don't forget to save your work!",
+        event,
         result;
 
       // warn of unsaved files or content
@@ -1861,21 +1871,16 @@
           return promiseEventListener(window, "beforeunload", true);
         })
         .push(function (my_event) {
-          my_event = my_event || window.event;
-
-          return new RSVP.Queue()
-            .push(function () {
-              return CodeMirror.menu_dict.editor_getActiveFileList(gadget);
-            })
-            .push(function (my_memory_content) {
-              console.log(my_memory_content)
-              if (my_memory_content.length > 0 || props.editor_is_modified) {
-                if (my_event) {
-                  my_event.returnValue = message;
-                }
-                return message;
-              }
-            });
+          event = my_event || window.event;
+          return props.editor_getActiveFileList(gadget);
+        })
+        .push(function (my_file_list) {
+          if (!isEmpty(my_file_list[0] || true) || props.editor_is_modified) {
+            if (event) {
+              my_event.returnValue = message;
+            }
+            return message;
+          }
         });
     });
 
