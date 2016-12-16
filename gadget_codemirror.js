@@ -474,14 +474,14 @@
       return new RSVP.Queue()
         .push(function () {
           input.className += ' custom-invalid';
-          input.setAttribute(placeholder, message);
+          input.setAttribute("placeholder", message);
           input.blur();
           CodeMirror.menu_dict.editor.focus();
           return promiseEventListener(input, 'focus', false);
         })
         .push(function () {
           input.className = '';
-          input.setAttribute(placeholder, '');
+          input.setAttribute("placeholder", '');
           return false;
         });
     //});
@@ -1486,7 +1486,7 @@
           if (!file_name) {
             return props.dialog_flagInput(file_name_input, FLAG);
           }
-          if (file_name_input && file_name_input.getAttribute(placeholder, FLAG)) {
+          if (file_name_input && file_name_input.getAttribute("placeholder", FLAG)) {
             file_name_input.focus();
             return;
           }
