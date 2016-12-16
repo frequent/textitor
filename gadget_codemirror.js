@@ -307,6 +307,7 @@
         })
         .push(function () {
           props.editor_setActiveCache(cache_name);
+          return true;
         })
         .push(null, function (my_error) {
           console.log(my_error);
