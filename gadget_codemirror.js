@@ -1870,7 +1870,6 @@
             .push(function (my_memory_content) {
               if (my_memory_content.length > 0 || props.editor_is_modified) {
                 if (my_event) {
-                  console.log(my_event)
                   my_event.returnValue = message;
                 }
                 return message;
