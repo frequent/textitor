@@ -1457,7 +1457,7 @@
         mime_type;
 
       // SAVE => store on serviceworker, remove from memory
-
+      console.log("INSIDE SAVE")
       function setMimeType(my_mime) {
         return MIMES[my_mime] || MIMES[SHIMMIMES[my_mime]] || "text/plain";
       }
@@ -1483,10 +1483,14 @@
 
         // validate form
         if (dialog) {
+          console.log("DIALOG")
           if (!file_name) {
+            console.log("no filename, flag")
             return props.dialog_flagInput(file_name_input, 'Enter valid URL.');
           }
+          console.log("focus and leave if the message is Enter, valid url")
           if (file_name_input && file_name_input.value === "Enter valid URL.") {
+            console.log("should focus")
             file_name_input.focus();
             return;
           }
