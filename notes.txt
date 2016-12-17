@@ -1,16 +1,18 @@
 
 => progress
-> fix is modified when closing tabs
-> don't allow to save file.name as folder and vice versa
-> deleting folder, should also delete files inside?
-> fix creating folder, goes into folder, going left, should leave immediately
-> fix repeating folder names
-> on second invalid save, focus input to prevent using mouse
-> allow to createJIO inside project = support storages, find place to add params
 > add all methods to queue after finding out how to make nested queue calls
-> fix why does error propagation not work
-> fix creating a new cache should so it creates only on root
-> fix new cache active path goes into new path
+> why does error propagation not work
+> deleting folder, should also delete files inside?
+> cleanup
+> allow to createJIO inside project = support storages, find place to add params
+
+- don't allow to save file.name as folder and vice versa => no dot in folder name and must have dot in file name
+- fix repeating folder names, should prompt then overwrite
+- on second invalid save, focus input to prevent using mouse
+- remove project prefix from file paths
+- fix display of files in folder
+- fix filter
+- fix filename prefix
 
 
 => maintain self
@@ -22,6 +24,8 @@
 => speak
 - add voice commands, try on mobile instead of using shortcuts
 - juliusjs, find out how to build grammar with emscriptem online
+- add voice find/grep and replace
+
 
 => gitstorage
   - replicate with indexeddb and remote gitstorage
