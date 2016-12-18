@@ -471,6 +471,7 @@
 
   function dialog_flagInput(my_input, my_message) {
     //queueCall(function () {
+    console.log("FLAG")
       var input = my_input,
         message = my_message,
         deferred,
@@ -492,7 +493,8 @@
         .push(function () {
           return RSVP.any([resolver, deferred]);
         })
-        .push(function () {
+        .push(function (my_trigger) {
+          console.log(my_trigger)
           input.className = '';
           input.setAttribute("placeholder", '');
           return false;
@@ -633,7 +635,8 @@
       return new RSVP.Queue()
         .push(function () {
           if (props.service_blocker) {
-            props.service_blocker.resolve("resolver blocker");
+            console.log("resolving");
+            props.service_blocker.resolve("unblocking");
           }
           return props.editor_updateStorage(parameter);
         })
