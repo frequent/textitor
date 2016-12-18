@@ -232,7 +232,7 @@
   /////////////////////////////
   CodeMirror.menu_dict = {};
   CodeMirror.menu_dict.service_blocker = null;
-  CodeMirror.menu_dict.service_deferred = null;
+  CodeMirror.menu_dict.service_deferred = undefined;
   CodeMirror.menu_dict.service_queue = null;
   CodeMirror.menu_dict.editor = null;
   CodeMirror.menu_dict.editor_active_dialog = null;
