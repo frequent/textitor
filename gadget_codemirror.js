@@ -177,9 +177,10 @@
   /////////////////////////////
 
   // Queue function calls
+  // XXX refactor to correctly buffer flurry of calls
   function queueCall(callback) {
     var props = CodeMirror.menu_dict,
-      deferred = props.current_deferred;
+      deferred = props.service_deferred;
     
     // Unblock queue
     if (deferred !== undefined) {
@@ -195,7 +196,7 @@
 
     // Block the queue
     deferred = RSVP.defer();
-    props.current_deferred = deferred;
+    props.service_deferred = deferred;
     props.service_queue.push(function () {
       return deferred.promise;
     });
@@ -230,6 +231,9 @@
   // CodeMirror Custom menu_dict Extension
   /////////////////////////////
   CodeMirror.menu_dict = {};
+  CodeMirror.menu_dict.service_blocker = null;
+  CodeMirror.menu_dict.service_deferred = null;
+  CodeMirror.menu_dict.service_queue = null;
   CodeMirror.menu_dict.editor = null;
   CodeMirror.menu_dict.editor_active_dialog = null;
   CodeMirror.menu_dict.editor_active_path = null;
@@ -468,27 +472,39 @@
   function dialog_flagInput(my_input, my_message) {
     //queueCall(function () {
       var input = my_input,
-        message = my_message;
+        message = my_message,
+        props,
+        resolver,
+        deferred;
 
-      if (input.className.indexOf("custom-invalid") > 0) {
-        console.log("field already flagged, bye.")
+      function unflag() {
+        input.className = '';
+        input.setAttribute("placeholder", '');
         return false;
       }
-      return new RSVP.Queue()
+
+      if (input.className.indexOf("custom-invalid") > 0) {
+        return false;
+      }
+      input.className += ' custom-invalid';
+      input.setAttribute("placeholder", message);
+      input.value = '';
+      input.focus();
+  
+      resolver = new RSVP.Queue()
         .push(function () {
-          input.className += ' custom-invalid';
-          input.setAttribute("placeholder", message);
-          input.value = '';
-          input.focus();
-          //input.blur();
-          //CodeMirror.menu_dict.editor.focus();
           return promiseEventListener(document, 'keypress', false);
         })
         .push(function () {
-          input.className = '';
-          input.setAttribute("placeholder", '');
-          return false;
+          unflag();
         });
+
+      CodeMirror.menu_dict.service_blocker = new RSVP.defer()
+        .push(function () {
+          unflag();
+        });
+      
+      return RSVP.any([resolver, deferred]);
     //});
   }
 
@@ -624,6 +640,9 @@
         props = CodeMirror.menu_dict;
       return new RSVP.Queue()
         .push(function () {
+          if (props.service_blocker) {
+            props.service_blocker.resolve();
+          }
           return props.editor_updateStorage(parameter);
         })
         .push(function (my_close_dialog) {
