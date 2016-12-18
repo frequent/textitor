@@ -488,6 +488,10 @@
           input.value = input.getAttribute("data-content");
           input.removeAttribute("data-content");
           return false;
+        })
+        .push(null, function (e) {
+          console.log(e);
+          throw e;
         });
     //});
   }
