@@ -469,7 +469,7 @@
     //queueCall(function () {
       var input = my_input,
         message = my_message;
-    
+
       if (input.className.indexOf("custom-invalid") > 0) {
         return false;
       }
@@ -478,9 +478,9 @@
           input.className += ' custom-invalid';
           input.setAttribute("placeholder", message);
           input.setAttribute("data-content", input.value);
-          input.blur();
+          //input.blur();
           CodeMirror.menu_dict.editor.focus();
-          return promiseEventListener(input, 'focus', false);
+          return promiseEventListener(input, 'input', false);
         })
         .push(function () {
           input.className = '';
