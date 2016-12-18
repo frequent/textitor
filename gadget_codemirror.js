@@ -231,7 +231,7 @@
   // CodeMirror Custom menu_dict Extension
   /////////////////////////////
   CodeMirror.menu_dict = {};
-  CodeMirror.menu_dict.service_blocker = null;
+  CodeMirror.menu_dict.service_blocker = undefined;
   CodeMirror.menu_dict.service_deferred = undefined;
   CodeMirror.menu_dict.service_queue = null;
   CodeMirror.menu_dict.editor = null;
@@ -491,7 +491,7 @@
 
       return new RSVP.Queue()
         .push(function () {
-          return RSVP.any([resolver, deferred]);
+          return RSVP.any([resolver, deferred.promise]);
         })
         .push(function (my_trigger) {
           console.log(my_trigger)
@@ -634,9 +634,10 @@
         props = CodeMirror.menu_dict;
       return new RSVP.Queue()
         .push(function () {
-          if (props.service_blocker) {
+          if (props.service_blocker !== undefined) {
             console.log("resolving");
-            props.service_blocker.resolve("unblocking");
+            props.service_blocker.resolve();
+            props.service_blocker = undefined;
           }
           return props.editor_updateStorage(parameter);
         })
