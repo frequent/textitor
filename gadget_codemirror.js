@@ -473,15 +473,8 @@
     //queueCall(function () {
       var input = my_input,
         message = my_message,
-        props,
-        resolver,
-        deferred;
-
-      function unflag() {
-        input.className = '';
-        input.setAttribute("placeholder", '');
-        return false;
-      }
+        deferred,
+        resolver;
 
       if (input.className.indexOf("custom-invalid") > 0) {
         return false;
@@ -491,20 +484,19 @@
       input.value = '';
       input.focus();
   
-      resolver = new RSVP.Queue()
+      resolver = promiseEventListener(document, 'keypress', false);
+      deferred = new RSVP.defer();
+      CodeMirror.menu_dict.service_blocker = deferred;
+
+      return new RSVP.Queue()
         .push(function () {
-          return promiseEventListener(document, 'keypress', false);
+          return RSVP.any([resolver, deferred]);
         })
         .push(function () {
-          unflag();
+          input.className = '';
+          input.setAttribute("placeholder", '');
+          return false;
         });
-
-      CodeMirror.menu_dict.service_blocker = new RSVP.defer()
-        .push(function () {
-          unflag();
-        });
-      
-      return RSVP.any([resolver, deferred]);
     //});
   }
 
@@ -641,7 +633,7 @@
       return new RSVP.Queue()
         .push(function () {
           if (props.service_blocker) {
-            props.service_blocker.resolve();
+            props.service_blocker.resolve("resolver blocker");
           }
           return props.editor_updateStorage(parameter);
         })
