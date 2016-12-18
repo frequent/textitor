@@ -6,7 +6,7 @@
 
   /////////////////////////////
   // Vocabularcy
-  /////////////////////////////
+  /////////////////////////////v
   var LEFT = "left";
   var RIGHT = "right";
   var UP = "up";
@@ -21,10 +21,12 @@
   var PICK = "pick";
   var TAB = "tab";
   
-  // and...
+  // and some variables...
   var IDLE = "idle";
   var SELF = "textitor";
   var FLAG = "Enter valid URL.";
+  var FILE = "Missing file extension.";
+  var FOLD = "Invalid '.' character.";
 
   /////////////////////////////
   // Placeholder Instructions
@@ -475,6 +477,7 @@
         .push(function () {
           input.className += ' custom-invalid';
           input.setAttribute("placeholder", message);
+          input.setAttribute("data-content", input.value);
           input.blur();
           CodeMirror.menu_dict.editor.focus();
           return promiseEventListener(input, 'focus', false);
@@ -482,6 +485,8 @@
         .push(function () {
           input.className = '';
           input.setAttribute("placeholder", '');
+          input.value = input.getAttribute("data-content");
+          input.removeAttribute("data-content");
           return false;
         });
     //});
@@ -1489,6 +1494,13 @@
           }
           if (!file_name) {
             return props.dialog_flagInput(file_name_input, FLAG);
+          } else {
+            if (is_container && file_name.indexOf(".") > -1) {
+              return props.dialog_flagInput(file_name_input, FOLD);
+            }
+            if (!is_container && file_name.indexOf(".") === -1) {
+              return props.dialog_flagInput(file_name_input, FILE);
+            }
           }
         }
         content = props.editor.getValue();
