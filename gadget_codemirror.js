@@ -482,16 +482,12 @@
           input.focus();
           //input.blur();
           //CodeMirror.menu_dict.editor.focus();
-          return promiseEventListener(input, 'input', false);
+          return promiseEventListener(document, 'keypress', false);
         })
         .push(function () {
           input.className = '';
           input.setAttribute("placeholder", '');
           return false;
-        })
-        .push(null, function (e) {
-          console.log(e);
-          throw e;
         });
     //});
   }
