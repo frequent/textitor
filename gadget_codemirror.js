@@ -471,6 +471,7 @@
         message = my_message;
 
       if (input.className.indexOf("custom-invalid") > 0) {
+        console.log("field already flagged, bye.")
         return false;
       }
       return new RSVP.Queue()
@@ -479,7 +480,7 @@
           input.setAttribute("placeholder", message);
           input.setAttribute("data-content", input.value);
           //input.blur();
-          CodeMirror.menu_dict.editor.focus();
+          //CodeMirror.menu_dict.editor.focus();
           return promiseEventListener(input, 'input', false);
         })
         .push(function () {
@@ -1506,12 +1507,12 @@
           } else {
             console.log("we have a filename, check it")
             console.log(is_container)
-            console.log(file_name.indexOf("."), " FOLD, no dot")
-            console.log(file_name.indexOf("."), " FILE, no dot")
             if (is_container && file_name.indexOf(".") > -1) {
+              console.log(file_name.indexOf("."), " FOLD, should have no dot")
               return props.dialog_flagInput(file_name_input, FOLD);
             }
             if (!is_container && file_name.indexOf(".") === -1) {
+              console.log(file_name.indexOf("."), " FILE, must have a dot")
               return props.dialog_flagInput(file_name_input, FILE);
             }
             console.log("all clear")
