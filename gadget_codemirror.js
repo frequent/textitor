@@ -479,6 +479,7 @@
           input.className += ' custom-invalid';
           input.setAttribute("placeholder", message);
           input.setAttribute("data-content", input.value);
+          input.focus();
           //input.blur();
           //CodeMirror.menu_dict.editor.focus();
           return promiseEventListener(input, 'input', false);
@@ -489,10 +490,6 @@
           input.value = input.getAttribute("data-content");
           input.removeAttribute("data-content");
           return false;
-        })
-        .push(null, function (e) {
-          console.log(e);
-          throw e;
         });
     //});
   }
@@ -1496,11 +1493,11 @@
           console.log("DIALOG")
           console.log(file_name_input)
           console.log(file_name_input.className.indexOf("custom-invalid"))
-          if (file_name_input.className.indexOf("custom-invalid") > -1) {
-            console.log("FOCUS and close")
-            file_name_input.focus();
-            return;
-          }
+          //if (file_name_input.className.indexOf("custom-invalid") > -1) {
+          //  console.log("FOCUS and close")
+          //  file_name_input.focus();
+          //  return;
+          //}
           if (!file_name) {
             console.log("NO FILENAME, flag")
             return props.dialog_flagInput(file_name_input, FLAG);
