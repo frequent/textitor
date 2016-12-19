@@ -231,7 +231,6 @@
   // CodeMirror Custom menu_dict Extension
   /////////////////////////////
   CodeMirror.menu_dict = {};
-  CodeMirror.menu_dict.service_blocker = undefined;
   CodeMirror.menu_dict.service_deferred = undefined;
   CodeMirror.menu_dict.service_queue = null;
   CodeMirror.menu_dict.editor = null;
@@ -491,27 +490,7 @@
           input.className = '';
           input.setAttribute("placeholder", '');
           return false;
-        })
-      
-      /*
-      //input.focus();
-      deferred = new RSVP.defer();
-      
-      //CodeMirror.menu_dict.service_blocker = deferred;
-
-      return new RSVP.Queue()
-        .push(function () {
-          return RSVP.any([
-            promiseEventListener(input, 'input', false),
-            deferred.promise
-          ]);
-        })
-        .push(function () {
-          input.className = '';
-          input.setAttribute("placeholder", '');
-          return false;
         });
-      */
   }
 
   function dialog_parseTemplate(my_template, my_value_list) {
@@ -645,14 +624,6 @@
       var parameter = my_parameter,
         props = CodeMirror.menu_dict;
       return new RSVP.Queue()
-        .push(function () {
-          if (props.service_blocker !== undefined) {
-            console.log("resolving");
-            props.service_blocker.resolve();
-            props.service_blocker = undefined;
-          }
-          return props.editor_updateStorage(parameter);
-        })
         .push(function (my_close_dialog) {
           if (my_close_dialog === true && props.editor_active_dialog) {
             if (props.dialog_option_dict.onClose) {
