@@ -1555,6 +1555,7 @@
             props.editor_resetModified();
             props.editor_setDisplay(file_name);
             if (is_container) {
+              props.editor_setActivePath(file_name);
               return true;
             }
             props.editor.setOption("mode", mime_type);
