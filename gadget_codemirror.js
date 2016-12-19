@@ -471,7 +471,6 @@
 
   function dialog_flagInput(my_input, my_message) {
     //queueCall(function () {
-    console.log("FLAG")
       var input = my_input,
         message = my_message,
         deferred,
@@ -483,9 +482,15 @@
       input.className += ' custom-invalid';
       input.setAttribute("placeholder", message);
       input.value = '';
+      
+      /*
       input.focus();
   
-      resolver = promiseEventListener(document, 'keypress', false);
+      resolver = new RSVP.Queue()
+        .push(function () {
+          return promiseEventListener(document, 'keypress', false);
+        });
+
       deferred = new RSVP.defer();
       CodeMirror.menu_dict.service_blocker = deferred;
 
@@ -494,11 +499,11 @@
           return RSVP.any([resolver, deferred.promise]);
         })
         .push(function (my_trigger) {
-          console.log(my_trigger)
           input.className = '';
           input.setAttribute("placeholder", '');
           return false;
         });
+      */
     //});
   }
 
