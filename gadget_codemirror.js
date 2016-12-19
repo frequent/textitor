@@ -1486,29 +1486,15 @@
 
         // validate form
         if (dialog) {
-          console.log("DIALOG")
-          console.log(file_name_input)
-          console.log(file_name_input.className.indexOf("custom-invalid"))
-          //if (file_name_input.className.indexOf("custom-invalid") > -1) {
-          //  console.log("FOCUS and close")
-          //  file_name_input.focus();
-          //  return;
-          //}
           if (!file_name) {
-            console.log("NO FILENAME, flag")
             return props.dialog_flagInput(file_name_input, FLAG);
           } else {
-            console.log("we have a filename, check it")
-            console.log(is_container)
             if (is_container && file_name.indexOf(".") > -1) {
-              console.log(file_name.indexOf("."), " FOLD, should have no dot")
               return props.dialog_flagInput(file_name_input, FOLD);
             }
             if (!is_container && file_name.indexOf(".") === -1) {
-              console.log(file_name.indexOf("."), " FILE, must have a dot")
               return props.dialog_flagInput(file_name_input, FILE);
             }
-            console.log("all clear")
           }
         }
         content = props.editor.getValue();
