@@ -481,8 +481,24 @@
       input.className += ' custom-invalid';
       input.setAttribute("placeholder", message);
       input.value = '';
+      
+      new RSVP.Queue()
+        .push(function () {
+          return promiseEventListener(document, 'keydown', false);
+        })
+        .push(function () {
+          input.focus();
+          input.className = '';
+          input.setAttribute("placeholder", '');
+          return false;
+        })
+      
+      /*
+      //input.focus();
       deferred = new RSVP.defer();
       
+      //CodeMirror.menu_dict.service_blocker = deferred;
+
       return new RSVP.Queue()
         .push(function () {
           return RSVP.any([
@@ -495,30 +511,7 @@
           input.setAttribute("placeholder", '');
           return false;
         });
-      
-      
-      /*
-      input.focus();
-  
-      resolver = new RSVP.Queue()
-        .push(function () {
-          return promiseEventListener(document, 'keypress', false);
-        });
-
-      deferred = new RSVP.defer();
-      CodeMirror.menu_dict.service_blocker = deferred;
-
-      return new RSVP.Queue()
-        .push(function () {
-          return RSVP.any([resolver, deferred.promise]);
-        })
-        .push(function (my_trigger) {
-          input.className = '';
-          input.setAttribute("placeholder", '');
-          return false;
-        });
       */
-    //});
   }
 
   function dialog_parseTemplate(my_template, my_value_list) {
