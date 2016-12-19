@@ -473,8 +473,7 @@
     //queueCall(function () {
       var input = my_input,
         message = my_message,
-        deferred,
-        resolver;
+        deferred;
 
       if (input.className.indexOf("custom-invalid") > 0) {
         return false;
@@ -482,6 +481,21 @@
       input.className += ' custom-invalid';
       input.setAttribute("placeholder", message);
       input.value = '';
+      deferred = new RSVP.defer();
+      
+      return new RSVP.Queue()
+        .push(function () {
+          return RSVP.any([
+            promiseEventListener(input, 'input', false),
+            deferred.promise
+          ]);
+        })
+        .push(function () {
+          input.className = '';
+          input.setAttribute("placeholder", '');
+          return false;
+        });
+      
       
       /*
       input.focus();
