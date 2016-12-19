@@ -231,6 +231,7 @@
   // CodeMirror Custom menu_dict Extension
   /////////////////////////////
   CodeMirror.menu_dict = {};
+  CodeMirror.menu_dict.service_blocker = undefined;
   CodeMirror.menu_dict.service_deferred = undefined;
   CodeMirror.menu_dict.service_queue = null;
   CodeMirror.menu_dict.editor = null;
@@ -472,7 +473,8 @@
     //queueCall(function () {
       var input = my_input,
         message = my_message,
-        deferred;
+        deferred,
+        resolver;
 
       if (input.className.indexOf("custom-invalid") > 0) {
         return false;
@@ -481,16 +483,28 @@
       input.setAttribute("placeholder", message);
       input.value = '';
       
-      new RSVP.Queue()
+      /*
+      input.focus();
+  
+      resolver = new RSVP.Queue()
         .push(function () {
-          return promiseEventListener(document, 'keydown', false);
+          return promiseEventListener(document, 'keypress', false);
+        });
+
+      deferred = new RSVP.defer();
+      CodeMirror.menu_dict.service_blocker = deferred;
+
+      return new RSVP.Queue()
+        .push(function () {
+          return RSVP.any([resolver, deferred.promise]);
         })
-        .push(function () {
-          input.focus();
+        .push(function (my_trigger) {
           input.className = '';
           input.setAttribute("placeholder", '');
           return false;
         });
+      */
+    //});
   }
 
   function dialog_parseTemplate(my_template, my_value_list) {
@@ -624,6 +638,14 @@
       var parameter = my_parameter,
         props = CodeMirror.menu_dict;
       return new RSVP.Queue()
+        .push(function () {
+          if (props.service_blocker !== undefined) {
+            console.log("resolving");
+            props.service_blocker.resolve();
+            props.service_blocker = undefined;
+          }
+          return props.editor_updateStorage(parameter);
+        })
         .push(function (my_close_dialog) {
           if (my_close_dialog === true && props.editor_active_dialog) {
             if (props.dialog_option_dict.onClose) {
