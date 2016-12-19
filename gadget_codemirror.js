@@ -231,7 +231,6 @@
   // CodeMirror Custom menu_dict Extension
   /////////////////////////////
   CodeMirror.menu_dict = {};
-  CodeMirror.menu_dict.service_blocker = undefined;
   CodeMirror.menu_dict.service_deferred = undefined;
   CodeMirror.menu_dict.service_queue = null;
   CodeMirror.menu_dict.editor = null;
@@ -473,8 +472,7 @@
     //queueCall(function () {
       var input = my_input,
         message = my_message,
-        deferred,
-        resolver;
+        deferred;
 
       if (input.className.indexOf("custom-invalid") > 0) {
         return false;
@@ -483,28 +481,16 @@
       input.setAttribute("placeholder", message);
       input.value = '';
       
-      /*
-      input.focus();
-  
-      resolver = new RSVP.Queue()
+      new RSVP.Queue()
         .push(function () {
-          return promiseEventListener(document, 'keypress', false);
-        });
-
-      deferred = new RSVP.defer();
-      CodeMirror.menu_dict.service_blocker = deferred;
-
-      return new RSVP.Queue()
-        .push(function () {
-          return RSVP.any([resolver, deferred.promise]);
+          return promiseEventListener(document, 'keydown', false);
         })
-        .push(function (my_trigger) {
+        .push(function () {
+          input.focus();
           input.className = '';
           input.setAttribute("placeholder", '');
           return false;
         });
-      */
-    //});
   }
 
   function dialog_parseTemplate(my_template, my_value_list) {
@@ -639,11 +625,6 @@
         props = CodeMirror.menu_dict;
       return new RSVP.Queue()
         .push(function () {
-          if (props.service_blocker !== undefined) {
-            console.log("resolving");
-            props.service_blocker.resolve();
-            props.service_blocker = undefined;
-          }
           return props.editor_updateStorage(parameter);
         })
         .push(function (my_close_dialog) {
