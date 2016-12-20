@@ -1207,6 +1207,8 @@
           return CodeMirror.menu_dict.editor_getActiveFileList(gadget);
         })
         .push(function (my_memory_content) {
+          console.log("active file list")
+          console.log(my_memory_content)
           var response,
             item,
             i;
@@ -1229,6 +1231,7 @@
           return gadget.jio_allDocs();
         })
         .push(function (my_directory_list) {
+          console.log(my_directory_list)
           var response_dict = my_directory_list.data,
             directory_content_list = [],
             active_cache = props.editor_active_cache,
