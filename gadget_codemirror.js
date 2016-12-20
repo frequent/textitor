@@ -1543,7 +1543,11 @@
           }
         )
         .push(function(my_content) {
-          content = content || folder_file_list || my_content[0].target.result;
+          if (my_content) {
+            content = my_content[0].target.result;
+          } else {
+            content = content || folder_file_list || "";
+          }
           return gadget.setActiveStorage("serviceworker");
         })
         .push(function() {
