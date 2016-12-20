@@ -1207,8 +1207,6 @@
           return CodeMirror.menu_dict.editor_getActiveFileList(gadget);
         })
         .push(function (my_memory_content) {
-          console.log("active file list")
-          console.log(my_memory_content)
           var response,
             item,
             i;
@@ -1231,7 +1229,6 @@
           return gadget.jio_allDocs();
         })
         .push(function (my_directory_list) {
-          console.log(my_directory_list)
           var response_dict = my_directory_list.data,
             directory_content_list = [],
             active_cache = props.editor_active_cache,
@@ -1340,6 +1337,19 @@
             return gadget.setActiveStorage("serviceworker");
           })
           .push(function () {
+            return gadget.jio_allAttachments(my_cache);
+          })
+          .push(function (my_cache_content) {
+            var file_list = [],
+              item;
+            for (item in my_cache_content) {
+              if (my_cache_content.hasOwnProperty(item)) {
+                file_list.push(clearFile(my_cache, item, true));
+              }
+            }
+            return RSVP.all(file_list);
+          })
+          .push(function () {
             return gadget.jio_remove(my_cache);
           })
           .push(function () {
@@ -1348,7 +1358,7 @@
           });
       }
       
-      function clearFile(my_cache, my_file) {
+      function clearFile(my_cache, my_file, is_bulk) {
         return new RSVP.Queue()
           .push(function () {
             return gadget.setActiveStorage("memory");
@@ -1377,6 +1387,9 @@
             return gadget.jio_removeAttachment(my_cache, my_file);
           })
           .push(function () {
+            if (is_bulk) {
+              return;
+            }
             var list = active_path.split("/");
             props.editor_setActivePath(list.splice(0, list.length - 1).join("/"));
             props.editor.swapDoc(props.editor_createDoc());
@@ -1399,7 +1412,7 @@
             target = "Folder";
             handler = clearFile;
           }
-          if (window.confirm("Delete " + target + " " + active_path + "?")) {
+          if (window.confirm("Delete " + target + " " + active_path + " (and contents)?")) {
             file_name = active_path;
             queue.push(handler(active_cache, file_name));
           } else {
