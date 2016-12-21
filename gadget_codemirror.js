@@ -1134,10 +1134,6 @@
       return new RSVP.Queue() 
         .push(function () {
           return CodeMirror.commands[my_command[0]]();
-        })
-        .push(null, function (err) {
-          console.log(err)
-          throw err
         });
     })
 
@@ -1358,33 +1354,43 @@
           });
       }
       
-      function clearFile(my_cache, my_file, is_bulk) {
+      function clearFileList(my_storage, my_document_cache, my_attachement_file) {
         return new RSVP.Queue()
           .push(function () {
-            return gadget.setActiveStorage("memory");
+            return gadget.setActiveStorage(my_storage);
           })
           .push(function () {
-            return gadget.jio_getAttachment(my_cache, my_file);
+            return gadget.allAttachments(my_document_cache);
           })
           .push(
-            function () {
-              return RSVP.all([
-                gadget.jio_removeAttachment(my_cache, my_file),
-                gadget.jio_removeAttachment(my_cache, my_file + "_history")
-              ]);
-            },
-            function (my_error) {
+            function (my_content_dict) {
+              var file_list = [],
+                item;
+              
+              for (item in my_content_dict) {
+                if (my_content_dict.hasOwnProperty(item)) {
+                  if (item.indexOf(my_attachement_file) > -1) {
+                    file_list.push(gadget.jio_removeAttachment(my_document_cache, my_attachement_file));
+                    file_list.push(gadget.jio_removeAttachment(my_document_cache, my_attachement_file + "_history"));
+                  }
+                }
+              }
+              return RSVP.all(file_list);
+          }, function (my_error) {
               if (is404(my_error)) {
                 return;
               }
               throw my_error;
-            }
-          )
+          });
+      }
+
+      function clearFile(my_cache, my_file, is_bulk) {
+        return new RSVP.Queue()
           .push(function () {
-            return gadget.setActiveStorage("serviceworker");
+            return clearFileList("memory", my_cache, my_file);
           })
           .push(function () {
-            return gadget.jio_removeAttachment(my_cache, my_file);
+            return clearFileList("serviceworker", my_cache, my_file);
           })
           .push(function () {
             if (is_bulk) {
@@ -1412,7 +1418,7 @@
             target = "Folder";
             handler = clearFile;
           }
-          if (window.confirm("Delete " + target + " " + active_path + " (and contents)?")) {
+          if (window.confirm("Delete " + target + " " + active_path + " (including contents)?")) {
             file_name = active_path;
             queue.push(handler(active_cache, file_name));
           } else {
@@ -1503,7 +1509,7 @@
           mime_type = active_file.mime_type;
         }
 
-        // validate form
+        // validate (cache and folder can be overwritten, won't change files)
         if (dialog) {
           if (!file_name) {
             return props.dialog_flagInput(file_name_input, FLAG);
