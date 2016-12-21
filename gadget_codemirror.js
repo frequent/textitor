@@ -1360,7 +1360,7 @@
             return gadget.setActiveStorage(my_storage);
           })
           .push(function () {
-            return gadget.allAttachments(my_document_cache);
+            return gadget.jio_allAttachments(my_document_cache);
           })
           .push(
             function (my_content_dict) {
@@ -1381,6 +1381,10 @@
                 return;
               }
               throw my_error;
+          })
+          .push(null, function (my_error) {
+            console.log(my_error);
+            throw my_error;
           });
       }
 
