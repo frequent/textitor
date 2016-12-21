@@ -1362,27 +1362,30 @@
           .push(function () {
             return gadget.jio_allAttachments(my_document_cache);
           })
-          .push(
-            function (my_content_dict) {
-              var file_list = [],
-                item;
-              
-              for (item in my_content_dict) {
-                if (my_content_dict.hasOwnProperty(item)) {
-                  if (item.indexOf(my_attachement_file) > -1) {
-                    file_list.push(gadget.jio_removeAttachment(my_document_cache, my_attachement_file));
+          .push(function (my_content_dict) {
+            var file_list = [],
+              item;
+            console.log(my_content_dict)
+            for (item in my_content_dict) {
+              console.log(item)
+              if (my_content_dict.hasOwnProperty(item)) {
+                console.log(item.indexOf(my_attachement_file))
+                if (item.indexOf(my_attachement_file) > -1) {
+                  file_list.push(gadget.jio_removeAttachment(my_document_cache, my_attachement_file));
+                  if (my_storage === "memory") {
+                    console.log("also clear history")
                     file_list.push(gadget.jio_removeAttachment(my_document_cache, my_attachement_file + "_history"));
                   }
                 }
               }
-              return RSVP.all(file_list);
-          }, function (my_error) {
-              if (is404(my_error)) {
-                return;
-              }
-              throw my_error;
+            }
+            return RSVP.all(file_list);
           })
           .push(null, function (my_error) {
+            console.log("nope")
+            if (is404(my_error)) {
+              return;
+            }
             console.log(my_error);
             throw my_error;
           });
