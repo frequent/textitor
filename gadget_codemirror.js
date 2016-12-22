@@ -1356,6 +1356,7 @@
       }
       
       function clearFileList(my_storage, my_document_cache, my_attachement_file) {
+        console.log(my_storage, my_document_cache, my_attachment_file)
         return new RSVP.Queue()
           .push(function () {
             return gadget.setActiveStorage(my_storage);
@@ -1389,6 +1390,11 @@
           })
           .push(null, function (my_error) {
             console.log(my_error);
+            console.log(is404(my_error))
+            if (is404(my_error)) {
+              console.log("ok, skip")
+              return true;
+            }
             throw my_error;
           });
       }
