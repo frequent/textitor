@@ -1383,6 +1383,10 @@
               }
             }
             return RSVP.all(file_list);
+          })
+          .push(null, function (my_error) {
+            console.log(my_error);
+            throw my_error;
           });
       }
 
