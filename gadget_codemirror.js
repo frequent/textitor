@@ -1356,7 +1356,7 @@
       }
       
       function clearFileList(my_storage, my_document_cache, my_attachement_file) {
-        console.log(my_storage, my_document_cache, my_attachment_file)
+        console.log(my_storage, my_document_cache, my_attachement_file)
         return new RSVP.Queue()
           .push(function () {
             return gadget.setActiveStorage(my_storage);
