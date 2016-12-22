@@ -1433,7 +1433,7 @@
       }
 
       return queue
-        .then(function () {
+        .push(function () {
           return true;
         })
         .push(null, function (my_error) {
