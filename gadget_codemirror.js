@@ -27,6 +27,7 @@
   var FLAG = "Enter valid URL.";
   var FILE = "Missing file extension.";
   var FOLD = "Invalid '.' character.";
+  var EOF = ["", "/"];
 
   /////////////////////////////
   // Placeholder Instructions
@@ -1364,17 +1365,20 @@
           })
           .push(function (my_content_dict) {
             var file_list = [],
-              item;
+              item,
+              is_index,
+              is_next_char;
             console.log("deleting:", my_document_cache, " and ", my_attachement_file)
-            console.log(CodeMirror.menu_dict.editor_active_path)
-            console.log(CodeMirror.menu_dict.editor_active_file)
-            console.log(CodeMirror.menu_dict.editor_active_cache)
-            console.log(my_content_dict)
+
             for (item in my_content_dict) {
               console.log(item)
               if (my_content_dict.hasOwnProperty(item)) {
+                is_index = item.indexOf(my_attachement_file);
+                is_next_char = item.charAt(is_index + my_attachement_file.length);
                 console.log(item.indexOf(my_attachement_file))
-                if (item.indexOf(my_attachement_file) > -1) {
+                console.log(is_next_char)
+                console.log(EOF.indexOf(is_next_char))
+                if (is_index > -1 && EOF.indexOf(is_next_char) > -1) {
                   file_list.push(gadget.jio_removeAttachment(my_document_cache, my_attachement_file));
                   if (my_storage === "memory") {
                     console.log("also clear history")
