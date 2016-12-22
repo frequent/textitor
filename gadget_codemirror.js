@@ -1365,7 +1365,7 @@
           .push(function (my_content_dict) {
             var file_list = [],
               item;
-            console.log("deleting:", my_document_cache, " and ", my_attachment_file)
+            console.log("deleting:", my_document_cache, " and ", my_attachement_file)
             console.log(CodeMirror.menu_dict.editor_active_path)
             console.log(CodeMirror.menu_dict.editor_active_file)
             console.log(CodeMirror.menu_dict.editor_active_cache)
