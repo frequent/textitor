@@ -1371,8 +1371,10 @@
 
             for (item in my_content_dict) {
               if (my_content_dict.hasOwnProperty(item)) {
+                console.log(item)
                 is_index = item.indexOf(my_attachement_file);
                 is_next_char = item.charAt(is_index + my_attachement_file.length);
+                console.log(is_index > -1 && EOF.indexOf(is_next_char) > -1)
                 if (is_index > -1 && EOF.indexOf(is_next_char) > -1) {
                   console.log("flagged to delete: ", item)
                   file_list.push(gadget.jio_removeAttachment(my_document_cache, my_attachement_file));
@@ -1382,6 +1384,7 @@
                 }
               }
             }
+            console.log(file_list)
             return RSVP.all(file_list);
           })
           .push(null, function (my_error) {
