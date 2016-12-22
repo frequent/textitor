@@ -1322,6 +1322,20 @@
 
       // REMOVE => clear file/folder/cache from memory and serviceworker
       
+      function dropFile(my_file, my_attachment) {
+        new RSVP.Queue()
+          .push(function () {
+            return gadget.jio_removeAttachment(my_file, my_attachment);
+          })
+          .push(null, function (my_error) {
+            console.log(my_file, my_attachment, " not found!")
+            if (is404(my_error)) {
+              return;
+            }
+            throw my_error;
+          });
+      }
+      
       function clearProject(my_cache) {
         return new RSVP.Queue()
           .push(function () {
@@ -1378,24 +1392,15 @@
                 console.log(is_index > -1 && EOF.indexOf(is_next_char) > -1)
                 if (is_index > -1 && EOF.indexOf(is_next_char) > -1) {
                   console.log("flagged to delete: ", item)
-                  file_list.push(gadget.jio_removeAttachment(my_document_cache, my_attachement_file));
+                  file_list.push(dropFile(my_document_cache, my_attachment_file));
                   if (my_storage === "memory") {
-                    file_list.push(gadget.jio_removeAttachment(my_document_cache, my_attachement_file + "_history"));
+                    file_list.push(dropFile(my_document_cache, my_attachment_file + "_history"));
                   }
                 }
               }
             }
             console.log(file_list)
             return RSVP.all(file_list);
-          })
-          .push(null, function (my_error) {
-            console.log(my_error);
-            console.log(is404(my_error))
-            if (is404(my_error)) {
-              console.log("ok, skip")
-              return true;
-            }
-            throw my_error;
           });
       }
 
