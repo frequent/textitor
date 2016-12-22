@@ -1379,6 +1379,7 @@
                 console.log(is_next_char)
                 console.log(EOF.indexOf(is_next_char))
                 if (is_index > -1 && EOF.indexOf(is_next_char) > -1) {
+                  console.log("IN")
                   file_list.push(gadget.jio_removeAttachment(my_document_cache, my_attachement_file));
                   if (my_storage === "memory") {
                     console.log("also clear history")
@@ -1387,15 +1388,21 @@
                 }
               }
             }
+            console.log("done")
+            console.log(file_list)
             return RSVP.all(file_list);
           })
           .push(null, function (my_error) {
             console.log("nope")
+            console.log(my_error);
             if (is404(my_error)) {
+              console.log("continue");
               return;
             }
-            console.log(my_error);
             throw my_error;
+          })
+          .push(function () {
+            return true;
           });
       }
 
@@ -1408,6 +1415,7 @@
             return clearFileList("serviceworker", my_cache, my_file);
           })
           .push(function () {
+            console.log("OUT")
             if (is_bulk) {
               return;
             }
