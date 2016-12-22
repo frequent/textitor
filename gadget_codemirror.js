@@ -1618,7 +1618,7 @@
           );
         })
         .push(function () {
-          console.log("stored on serviceworker")
+          console.log("stored on serviceworer")
           if (!my_file_id) {
             props.editor_resetModified();
             props.editor_setDisplay(file_name);
