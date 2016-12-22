@@ -1368,41 +1368,21 @@
               item,
               is_index,
               is_next_char;
-            console.log("deleting:", my_document_cache, " and ", my_attachement_file)
 
             for (item in my_content_dict) {
-              console.log(item)
               if (my_content_dict.hasOwnProperty(item)) {
                 is_index = item.indexOf(my_attachement_file);
                 is_next_char = item.charAt(is_index + my_attachement_file.length);
-                console.log(item.indexOf(my_attachement_file))
-                console.log(is_next_char)
-                console.log(EOF.indexOf(is_next_char))
                 if (is_index > -1 && EOF.indexOf(is_next_char) > -1) {
-                  console.log("IN")
+                  console.log("flagged to delete: ", item)
                   file_list.push(gadget.jio_removeAttachment(my_document_cache, my_attachement_file));
                   if (my_storage === "memory") {
-                    console.log("also clear history")
                     file_list.push(gadget.jio_removeAttachment(my_document_cache, my_attachement_file + "_history"));
                   }
                 }
               }
             }
-            console.log("done")
-            console.log(file_list)
             return RSVP.all(file_list);
-          })
-          .push(null, function (my_error) {
-            console.log("nope")
-            console.log(my_error);
-            if (is404(my_error)) {
-              console.log("continue");
-              return;
-            }
-            throw my_error;
-          })
-          .push(function () {
-            return true;
           });
       }
 
@@ -1415,11 +1395,11 @@
             return clearFileList("serviceworker", my_cache, my_file);
           })
           .push(function () {
+            var list = active_path.split("/");
             console.log("OUT")
             if (is_bulk) {
               return;
             }
-            var list = active_path.split("/");
             props.editor_setActivePath(list.splice(0, list.length - 1).join("/"));
             props.editor.swapDoc(props.editor_createDoc());
             props.editor_resetActiveFile();
@@ -1455,6 +1435,11 @@
       return queue
         .then(function () {
           return true;
+        })
+        .push(null, function (my_error) {
+          console.log("hm")
+          console.log(my_error)
+          throw my_error;
         });
     })
 
