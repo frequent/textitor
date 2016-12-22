@@ -1329,8 +1329,9 @@
           })
           .push(null, function (my_error) {
             console.log(my_file, my_attachment, " not found!")
+            console.log(is404(my_error))
             if (is404(my_error)) {
-              return;
+              return true;
             }
             throw my_error;
           });
@@ -1410,9 +1411,11 @@
             return clearFileList("memory", my_cache, my_file);
           })
           .push(function () {
+            console.log("done removing from memory")
             return clearFileList("serviceworker", my_cache, my_file);
           })
           .push(function () {
+            console.log("done removing")
             var list = active_path.split("/");
             console.log("OUT")
             if (is_bulk) {
@@ -1566,6 +1569,14 @@
         file_name = active_path + "/" + file_name;
       }
 
+
+      console.log("SAVING")
+      console.log(content)
+      console.log(file_name)
+      console.log(mime_type)
+      console.log(props.editor_active_path)
+      console.log(props.editor_active_file)
+      console.log(props.editor_active_cache)
       return new RSVP.Queue()
         .push(function () {
           return gadget.setActiveStorage("memory");
@@ -1596,6 +1607,7 @@
           } else {
             content = content || folder_file_list || "";
           }
+          console.log("stored on memory")
           return gadget.setActiveStorage("serviceworker");
         })
         .push(function() {
@@ -1606,6 +1618,7 @@
           );
         })
         .push(function () {
+          console.log("stored on serviceworker")
           if (!my_file_id) {
             props.editor_resetModified();
             props.editor_setDisplay(file_name);
