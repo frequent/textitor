@@ -1370,8 +1370,8 @@
           });
       }
       
-      function clearFileList(my_storage, my_document_cache, my_attachement_file) {
-        console.log(my_storage, my_document_cache, my_attachement_file)
+      function clearFileList(my_storage, my_document_cache, my_attachment_file) {
+        console.log(my_storage, my_document_cache, my_attachment_file)
         return new RSVP.Queue()
           .push(function () {
             return gadget.setActiveStorage(my_storage);
@@ -1388,8 +1388,8 @@
             for (item in my_content_dict) {
               if (my_content_dict.hasOwnProperty(item)) {
                 console.log(item)
-                is_index = item.indexOf(my_attachement_file);
-                is_next_char = item.charAt(is_index + my_attachement_file.length);
+                is_index = item.indexOf(my_attachment_file);
+                is_next_char = item.charAt(is_index + my_attachment_file.length);
                 if (is_index > -1 && EOF.indexOf(is_next_char) > -1) {
                   console.log("flagged to delete: ", item)
                   file_list.push(dropFile(my_document_cache, my_attachment_file));
