@@ -1323,7 +1323,7 @@
       // REMOVE => clear file/folder/cache from memory and serviceworker
       
       function dropFile(my_file, my_attachment) {
-        new RSVP.Queue()
+        return new RSVP.Queue()
           .push(function () {
             return gadget.jio_removeAttachment(my_file, my_attachment);
           })
