@@ -1569,7 +1569,6 @@
         file_name = active_path + "/" + file_name;
       }
 
-
       console.log("SAVING")
       console.log(content)
       console.log(file_name)
