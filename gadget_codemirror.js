@@ -1513,7 +1513,8 @@
         folder_file_list,
         mime_type_input,
         mime_type;
-
+      console.log("REACHED SAVE")
+      console.log(my_file_id)
       // SAVE => store on serviceworker, remove from memory
       function setMimeType(my_mime) {
         return MIMES[my_mime] || MIMES[SHIMMIMES[my_mime]] || "text/plain";
@@ -1541,6 +1542,7 @@
         // validate (cache and folder can be overwritten, won't change files)
         if (dialog) {
           if (!file_name) {
+            console.log("flag input name")
             return props.dialog_flagInput(file_name_input, FLAG);
           } else {
             if (is_container && file_name.indexOf(".") > -1) {
