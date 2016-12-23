@@ -1953,7 +1953,7 @@
         .push(function (my_file_list) {
           if (!isEmpty(my_file_list[0] || true) || props.editor_is_modified) {
             if (event) {
-              my_event.returnValue = message;
+              event.returnValue = message;
             }
             return message;
           }
