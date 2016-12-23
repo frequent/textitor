@@ -1390,7 +1390,6 @@
                 console.log(item)
                 is_index = item.indexOf(my_attachement_file);
                 is_next_char = item.charAt(is_index + my_attachement_file.length);
-                console.log(is_index > -1 && EOF.indexOf(is_next_char) > -1)
                 if (is_index > -1 && EOF.indexOf(is_next_char) > -1) {
                   console.log("flagged to delete: ", item)
                   file_list.push(dropFile(my_document_cache, my_attachment_file));
@@ -1402,6 +1401,10 @@
             }
             console.log(file_list)
             return RSVP.all(file_list);
+          })
+          .push(null, function (my_error) {
+            console.log(my_error);
+            throw my_error;
           });
       }
 
