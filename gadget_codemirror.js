@@ -1374,7 +1374,7 @@
       }
       
       function clearFileList(my_storage, my_document_cache, my_attachment_file) {
-        console.log("clearing list of files, matching: ", my_attachment_file, "in folder: ", my_docuemnt_cache, "on storage: ", my_storage)
+        console.log("clearing list of files, matching: ", my_attachment_file, "in folder: ", my_document_cache, "on storage: ", my_storage)
         return new RSVP.Queue()
           .push(function () {
             return gadget.setActiveStorage(my_storage);
@@ -1410,7 +1410,7 @@
             console.log(my_result)
             return true;
           })
-          .push(null, function (my_error) {
+          .push(undefined, function (my_error) {
             console.log("not ok")
             console.log(my_error);
             throw my_error;
