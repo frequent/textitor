@@ -1374,7 +1374,7 @@
       }
       
       function clearFileList(my_storage, my_document_cache, my_attachment_file) {
-        console.log("clearing list of files, matching: ", my_attachment_file)
+        console.log("clearing list of files, matching: ", my_attachment_file, "in folder: ", my_docuemnt_cache, "on storage: ", my_storage)
         return new RSVP.Queue()
           .push(function () {
             return gadget.setActiveStorage(my_storage);
@@ -1387,7 +1387,7 @@
               item,
               is_index,
               is_next_char;
-
+            console.log(my_content_dict)
             for (item in my_content_dict) {
               console.log("candidate: ", item)
               if (my_content_dict.hasOwnProperty(item)) {
