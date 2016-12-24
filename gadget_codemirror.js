@@ -1322,21 +1322,6 @@
 
       // REMOVE => clear file/folder/cache from memory and serviceworker
       
-      function dropFile(my_file, my_attachment) {
-        return new RSVP.Queue()
-          .push(function () {
-            return gadget.jio_removeAttachment(my_file, my_attachment);
-          })
-          .push(null, function (my_error) {
-            console.log(my_file, my_attachment, " not found!")
-            console.log(is404(my_error))
-            if (is404(my_error)) {
-              return true;
-            }
-            throw my_error;
-          });
-      }
-      
       function clearProject(my_cache) {
         return new RSVP.Queue()
           .push(function () {
@@ -1369,9 +1354,27 @@
             return true;
           });
       }
+            
+      function dropFile(my_file, my_attachment) {
+        console.log("dropping, ", my_file, my_attachment)
+        return new RSVP.Queue()
+          .push(function () {
+            return gadget.jio_removeAttachment(my_file, my_attachment);
+          })
+          .push(null, function (my_error) {
+            console.log("NOPE")
+            console.log(my_file, my_attachment, " not found!")
+            console.log(is404(my_error))
+            if (is404(my_error)) {
+              console.log("still pass")
+              return true;
+            }
+            throw my_error;
+          });
+      }
       
       function clearFileList(my_storage, my_document_cache, my_attachment_file) {
-        console.log(my_storage, my_document_cache, my_attachment_file)
+        console.log("clearing list of files, matching: ", my_attachment_file)
         return new RSVP.Queue()
           .push(function () {
             return gadget.setActiveStorage(my_storage);
@@ -1386,12 +1389,12 @@
               is_next_char;
 
             for (item in my_content_dict) {
+              console.log("candidate: ", item)
               if (my_content_dict.hasOwnProperty(item)) {
-                console.log(item)
                 is_index = item.indexOf(my_attachment_file);
                 is_next_char = item.charAt(is_index + my_attachment_file.length);
                 if (is_index > -1 && EOF.indexOf(is_next_char) > -1) {
-                  console.log("flagged to delete: ", item)
+                  console.log("Flagged to delete")
                   file_list.push(dropFile(my_document_cache, my_attachment_file));
                   if (my_storage === "memory") {
                     file_list.push(dropFile(my_document_cache, my_attachment_file + "_history"));
@@ -1399,16 +1402,23 @@
                 }
               }
             }
-            console.log(file_list)
+            console.log("deleting, ", file_list)
             return RSVP.all(file_list);
           })
+          .push(function (my_result) {
+            console.log("oki")
+            console.log(my_result)
+            return true;
+          })
           .push(null, function (my_error) {
+            console.log("not ok")
             console.log(my_error);
             throw my_error;
           });
       }
 
       function clearFile(my_cache, my_file, is_bulk) {
+        console.log("clearFile", my_cache, my_file, is_bulk)
         return new RSVP.Queue()
           .push(function () {
             return clearFileList("memory", my_cache, my_file);
@@ -1418,9 +1428,8 @@
             return clearFileList("serviceworker", my_cache, my_file);
           })
           .push(function () {
-            console.log("done removing")
+            console.log("done removing from serviceworker")
             var list = active_path.split("/");
-            console.log("OUT")
             if (is_bulk) {
               return;
             }
@@ -1447,6 +1456,8 @@
           }
           if (window.confirm("Delete " + target + " " + active_path + " (including contents)?")) {
             file_name = active_path;
+            console.log("Deleting " + target + " " + active_path)
+            console.log(handler)
             queue.push(handler(active_cache, file_name));
           } else {
             return true;
@@ -1516,8 +1527,7 @@
         folder_file_list,
         mime_type_input,
         mime_type;
-      console.log("REACHED SAVE")
-      console.log(my_file_id)
+
       // SAVE => store on serviceworker, remove from memory
       function setMimeType(my_mime) {
         return MIMES[my_mime] || MIMES[SHIMMIMES[my_mime]] || "text/plain";
@@ -1545,7 +1555,6 @@
         // validate (cache and folder can be overwritten, won't change files)
         if (dialog) {
           if (!file_name) {
-            console.log("flag input name")
             return props.dialog_flagInput(file_name_input, FLAG);
           } else {
             if (is_container && file_name.indexOf(".") > -1) {
@@ -1574,13 +1583,6 @@
         file_name = active_path + "/" + file_name;
       }
 
-      console.log("SAVING")
-      console.log(content)
-      console.log(file_name)
-      console.log(mime_type)
-      console.log(props.editor_active_path)
-      console.log(props.editor_active_file)
-      console.log(props.editor_active_cache)
       return new RSVP.Queue()
         .push(function () {
           return gadget.setActiveStorage("memory");
@@ -1611,7 +1613,6 @@
           } else {
             content = content || folder_file_list || "";
           }
-          console.log("stored on memory")
           return gadget.setActiveStorage("serviceworker");
         })
         .push(function() {
@@ -1622,7 +1623,6 @@
           );
         })
         .push(function () {
-          console.log("stored on serviceworer")
           if (!my_file_id) {
             props.editor_resetModified();
             props.editor_setDisplay(file_name);
