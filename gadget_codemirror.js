@@ -1373,14 +1373,14 @@
           });
       }
       
-      function clearFileList(my_storage, my_document_cache, my_attachment_file) {
-        console.log("clearing list of files, matching: ", my_attachment_file, "in folder: ", my_document_cache, "on storage: ", my_storage)
+      function clearFileList(my_storage, my_document, my_attachment) {
+        console.log("clearing list of files, matching: ", my_attachment, "in folder: ", my_document, "on storage: ", my_storage)
         return new RSVP.Queue()
           .push(function () {
             return gadget.setActiveStorage(my_storage);
           })
           .push(function () {
-            return gadget.jio_allAttachments(my_document_cache);
+            return gadget.jio_allAttachments(my_document);
           })
           .push(function (my_content_dict) {
             var file_list = [],
@@ -1391,13 +1391,13 @@
             for (item in my_content_dict) {
               console.log("candidate: ", item)
               if (my_content_dict.hasOwnProperty(item)) {
-                is_index = item.indexOf(my_attachment_file);
+                is_index = item.indexOf(my_attachment);
                 is_next_char = item.charAt(is_index + my_attachment_file.length);
                 if (is_index > -1 && EOF.indexOf(is_next_char) > -1) {
                   console.log("Flagged to delete")
-                  file_list.push(dropFile(my_document_cache, my_attachment_file));
+                  file_list.push(dropFile(my_document, my_attachment));
                   if (my_storage === "memory") {
-                    file_list.push(dropFile(my_document_cache, my_attachment_file + "_history"));
+                    file_list.push(dropFile(my_document, my_attachment + "_history"));
                   }
                 }
               }
@@ -1417,15 +1417,15 @@
           });
       }
 
-      function clearFile(my_cache, my_file, is_bulk) {
-        console.log("clearFile", my_cache, my_file, is_bulk)
+      function clearFile(my_document, my_attachment, is_bulk) {
+        console.log("clearFile", my_document, my_attachment, is_bulk)
         return new RSVP.Queue()
           .push(function () {
-            return clearFileList("memory", my_cache, my_file);
+            return clearFileList("memory", my_document, my_attachment);
           })
           .push(function () {
             console.log("done removing from memory")
-            return clearFileList("serviceworker", my_cache, my_file);
+            return clearFileList("serviceworker", my_document, my_attachment);
           })
           .push(function () {
             console.log("done removing from serviceworker")
@@ -1456,15 +1456,11 @@
           }
           if (window.confirm("Delete " + target + " " + active_path + " (including contents)?")) {
             file_name = active_path;
-            console.log("Deleting " + target + " " + active_path)
-            console.log(handler)
-            queue.push(handler(active_cache, file_name));
-          } else {
-            return true;
+            console.log("Deleting " + target + " at: " + active_path)
+            queue.push(handler(active_path, file_name));
           }
-        } else {
-          return true;
         }
+        return true;
       }
 
       return queue
