@@ -1346,6 +1346,13 @@
           .push(function () {
             return gadget.jio_allAttachments(my_cache);
           })
+          .push(null, function (my_error) {
+            if (is404(my_error)) {
+              console.log("file not found. file: ", my_cache, "storage: ", my_storage)
+              return;
+            }
+            throw my_error;  
+          })
           .push(function (my_content_dict) {
             var file_list = [],
               clear_all = my_file_or_folder === undefined,
