@@ -6,7 +6,7 @@
 
   /////////////////////////////
   // Vocabularcy
-  /////////////////////////////v
+  /////////////////////////////
   var LEFT = "left";
   var RIGHT = "right";
   var UP = "up";
@@ -1309,126 +1309,85 @@
     })  
 
     .declareMethod('editor_removeFile', function () {
-      var gadget = this, 
+      var gadget = this;
         queue = new RSVP.Queue(),
         props = CodeMirror.menu_dict,
         active_cache = props.editor_active_cache || SELF,
         active_path = props.editor_active_path,
         active_file = props.editor_active_file,
-        dialog = props.dialog,
-        file_name,
+        file_to_delete,
         target,
         handler;
 
       // REMOVE => clear file/folder/cache from memory and serviceworker
       
-      function clearProject(my_cache) {
+      function dropFile(my_cache, my_file_or_folder) {
+        console.log("dropping, ", my_file_or_folder, " from: ", my_cache)
         return new RSVP.Queue()
           .push(function () {
-            return gadget.setActiveStorage("memory");
-          })
-          .push(function () {
-            return gadget.jio_remove(my_cache);
-          })
-          .push(function () {
-            return gadget.setActiveStorage("serviceworker");
-          })
-          .push(function () {
-            return gadget.jio_allAttachments(my_cache);
-          })
-          .push(function (my_cache_content) {
-            var file_list = [],
-              item;
-            for (item in my_cache_content) {
-              if (my_cache_content.hasOwnProperty(item)) {
-                file_list.push(clearFile(my_cache, item, true));
-              }
-            }
-            return RSVP.all(file_list);
-          })
-          .push(function () {
-            return gadget.jio_remove(my_cache);
-          })
-          .push(function () {
-            props.editor_setActiveCache(null);
-            return true;
-          });
-      }
-            
-      function dropFile(my_file, my_attachment) {
-        console.log("dropping, ", my_file, my_attachment)
-        return new RSVP.Queue()
-          .push(function () {
-            return gadget.jio_removeAttachment(my_file, my_attachment);
+            return gadget.jio_removeAttachment(my_cache, my_file_or_folder);
           })
           .push(null, function (my_error) {
-            console.log("NOPE")
-            console.log(my_file, my_attachment, " not found!")
-            console.log(is404(my_error))
             if (is404(my_error)) {
-              console.log("still pass")
+              console.log("file not found, pass.")
               return true;
             }
+            console.log(my_error);
             throw my_error;
           });
       }
       
-      function clearFileList(my_storage, my_document, my_attachment) {
-        console.log("clearing list of files, matching: ", my_attachment, "in folder: ", my_document, "on storage: ", my_storage)
+      function clearFileList(my_storage, my_cache, my_file_or_folder) {
+        console.log("clearFileList for:", my_file_or_folder, " in cache: ", my_cache)
         return new RSVP.Queue()
           .push(function () {
             return gadget.setActiveStorage(my_storage);
           })
           .push(function () {
-            return gadget.jio_allAttachments(my_document);
+            return gadget.jio_allAttachments(my_cache);
           })
           .push(function (my_content_dict) {
             var file_list = [],
+              clear_all = my_file_or_folder === undefined,
               item,
               is_index,
-              is_next_char;
+              is_next_char,
+              drop;
             console.log(my_content_dict)
             for (item in my_content_dict) {
-              console.log("candidate: ", item)
+              console.log("testing cache item: ", item)
               if (my_content_dict.hasOwnProperty(item)) {
-                is_index = item.indexOf(my_attachment);
-                is_next_char = item.charAt(is_index + my_attachment_file.length);
-                if (is_index > -1 && EOF.indexOf(is_next_char) > -1) {
-                  console.log("Flagged to delete")
-                  file_list.push(dropFile(my_document, my_attachment));
+                if (my_file_or_folder) {
+                  is_index = item.indexOf(my_file_or_folder);
+                  is_next_char = item.charAt(is_index + my_file_or_folder.length);
+                  drop = is_index > -1 && EOF.indexOf(is_next_char) > -1;
+                }
+                if (drop || clear_all) {
+                  console.log("flagged to delete, drop:", drop, " clear_all: ", clear_all)
+                  file_list.push(dropFile(my_cache, my_file_or_folder));
                   if (my_storage === "memory") {
-                    file_list.push(dropFile(my_document, my_attachment + "_history"));
+                    file_list.push(dropFile(my_cache, my_file_or_folder + "_history"));
                   }
                 }
               }
             }
-            console.log("deleting, ", file_list)
+            console.log("deleting the following:, ", file_list)
             return RSVP.all(file_list);
-          })
-          .push(function (my_result) {
-            console.log("oki")
-            console.log(my_result)
-            return true;
-          })
-          .push(undefined, function (my_error) {
-            console.log("not ok")
-            console.log(my_error);
-            throw my_error;
           });
       }
 
-      function clearFile(my_document, my_attachment, is_bulk) {
-        console.log("clearFile", my_document, my_attachment, is_bulk)
+      function clearFileOrFolder(my_active_cache, my_file_or_folder, my_is_bulk) {
+        console.log("clearFileOrFolder:", my_active_cache, my_file_or_folder)
         return new RSVP.Queue()
           .push(function () {
-            return clearFileList("memory", my_document, my_attachment);
+            return clearFileList("memory", my_active_cache, my_file_or_folder);
           })
           .push(function () {
-            console.log("done removing from memory")
-            return clearFileList("serviceworker", my_document, my_attachment);
+            console.log("done clearFileList from memory for file or folder")
+            return clearFileList("serviceworker", my_active_cache, my_file_or_folder);
           })
           .push(function () {
-            console.log("done removing from serviceworker")
+            console.log("done clearFileList from serviceworker for file or folder")
             var list = active_path.split("/");
             if (is_bulk) {
               return;
@@ -1441,39 +1400,67 @@
             return true;
           });
       }
+      
+      function clearProject(my_active_cache) {
+        console.log("clearProject:", my_active_cache)
+        
+        return new RSVP.Queue()
+          .push(function () {
+            return clearFileList("memory", my_active_cache);
+          })
+          .push(function () {
+            console.log("done clearFileList from serviceworker for project")
+            return gadget.jio_remove(my_active_cache);
+          })
+          .push(function () {
+            return clearFileList("serviceworker", my_active_cache);
+          })
+          .push(function () {
+            console.log("done clearFileList from serviceworker for project")
+            return gadget.jio_remove(my_active_cache);
+          })
+          .push(function () {
+            props.editor_setActiveCache(null);
+            return true;
+          });
+      }
+      
 
       if (active_file) {
-        file_name = active_file.name;
-        queue.push(clearFile(active_cache, file_name));
+        file_to_delete = active_file.name;
+        queue.push(clearFile(active_cache, file_to_delete));
       } else {
+        
+        // not file => folder or cache
         if (active_path) {
           if (active_path === active_cache) {
             target = "Project";
             handler = clearProject;
+            console.log("delete project", active_cache)
           } else {
             target = "Folder";
-            handler = clearFile;
+            handler = clearFileOrFolder;
+            console.log("delete folder", active_path)
           }
           if (window.confirm("Delete " + target + " " + active_path + " (including contents)?")) {
-            file_name = active_path;
-            console.log("Deleting " + target + " at: " + active_path)
-            queue.push(handler(active_path, file_name));
+            file_to_delete = active_path;
+            console.log("Deleting " + target + " at:" + active_path)
+            queue.push(handler(active_cache, file_to_delete));
           }
         }
         return true;
       }
-
+      
       return queue
-        .push(function () {
-          return true;
-        })
-        .push(null, function (my_error) {
-          console.log("hm")
-          console.log(my_error)
-          throw my_error;
+        .push(function (e) {
+          console.log("error");
+          console.log(e);
+          throw e;
+        }, function (x) {
+          console.log("all good");
+          console.log(x);
         });
     })
-
     .declareMethod('editor_bulkSave', function () {
       var gadget = this,
         props = CodeMirror.menu_dict,
