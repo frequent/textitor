@@ -1309,7 +1309,7 @@
     })  
 
     .declareMethod('editor_removeFile', function () {
-      var gadget = this;
+      var gadget = this,
         queue = new RSVP.Queue(),
         props = CodeMirror.menu_dict,
         active_cache = props.editor_active_cache || SELF,
