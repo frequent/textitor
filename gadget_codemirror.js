@@ -1373,6 +1373,10 @@
             }
             console.log("deleting the following:, ", file_list)
             return RSVP.all(file_list);
+          })
+          .push(null, function (e) {
+            console.log(e)
+            throw e;
           });
       }
 
