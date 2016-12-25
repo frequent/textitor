@@ -1346,13 +1346,6 @@
           .push(function () {
             return gadget.jio_allAttachments(my_cache);
           })
-          .push(null, function (my_error) {
-            if (is404(my_error)) {
-              console.log("file not found. file: ", my_cache, "storage: ", my_storage)
-              return;
-            }
-            throw my_error;  
-          })
           .push(function (my_content_dict) {
             var file_list = [],
               clear_all = my_file_or_folder === undefined,
@@ -1380,10 +1373,12 @@
             }
             console.log("deleting the following:, ", file_list)
             return RSVP.all(file_list);
-          })
-          .push(null, function (e) {
-            console.log(e)
-            throw e;
+          }, function (my_error) {
+            if (is404(my_error)) {
+              console.log("file not found. file: ", my_cache, "storage: ", my_storage, ". Nothing to do.")
+              return;
+            }
+            throw my_error;  
           });
       }
 
