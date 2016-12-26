@@ -1396,13 +1396,13 @@
             console.log("done clearFileList from serviceworker for file or folder")
             var list = active_path.split("/");
             props.editor_setActivePath(list.splice(0, list.length - 1).join("/"));
+            props.editor_setDisplay();
             if (is_bulk) {
               return;
             }
             props.editor.swapDoc(props.editor_createDoc());
             props.editor_resetActiveFile();
             props.editor_resetModified();
-            props.editor_setDisplay();
             return true;
           });
       }
