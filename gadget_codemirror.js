@@ -1435,7 +1435,7 @@
 
       if (active_file) {
         file_to_delete = active_file.name;
-        queue.push(clearFile(active_cache, file_to_delete));
+        queue.push(clearFileOrFolder(active_cache, file_to_delete));
       } else {
         
         // not file => folder or cache
