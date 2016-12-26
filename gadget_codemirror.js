@@ -1394,9 +1394,10 @@
           })
           .push(function () {
             console.log("done clearFileList from serviceworker for file or folder")
-            var list = active_path.split("/");
-            props.editor_setActivePath(list.splice(0, list.length - 1).join("/"));
-            props.editor_setDisplay();
+            var list = active_path.split("/"),
+              path = list.splice(0, list.length - 1).join("/");
+            props.editor_setActivePath(path);
+            props.editor_setDisplay(path);
             if (is_bulk) {
               return;
             }
