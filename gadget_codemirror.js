@@ -1374,6 +1374,7 @@
             console.log("deleting the following:, ", file_list)
             return RSVP.all(file_list);
           }, function (my_error) {
+            console.log(my_error)
             if (is404(my_error)) {
               console.log("file not found. file: ", my_cache, "storage: ", my_storage, ". Nothing to do.")
               return;
@@ -1394,8 +1395,10 @@
           })
           .push(function () {
             console.log("done clearFileList from serviceworker for file or folder")
+            console.log(active_path)
             var list = active_path.split("/"),
               path = list.splice(0, list.length - 1).join("/");
+            console.log(path)
             props.editor_setActivePath(path);
             props.editor_setDisplay(path);
             if (is_bulk) {
