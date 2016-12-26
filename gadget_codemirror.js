@@ -1321,11 +1321,11 @@
 
       // REMOVE => clear file/folder/cache from memory and serviceworker
       
-      function dropFile(my_cache, my_file_or_folder) {
-        console.log("dropping, ", my_file_or_folder, " from: ", my_cache)
+      function dropFile(my_cache, my_item) {
+        console.log("dropping, ", my_item, " from: ", my_cache)
         return new RSVP.Queue()
           .push(function () {
-            return gadget.jio_removeAttachment(my_cache, my_file_or_folder);
+            return gadget.jio_removeAttachment(my_cache, my_item);
           })
           .push(null, function (my_error) {
             if (is404(my_error)) {
@@ -1364,9 +1364,9 @@
                 }
                 if (drop || clear_all) {
                   console.log("flagged to delete, drop:", drop, " clear_all: ", clear_all)
-                  file_list.push(dropFile(my_cache, my_file_or_folder));
+                  file_list.push(dropFile(my_cache, item));
                   if (my_storage === "memory") {
-                    file_list.push(dropFile(my_cache, my_file_or_folder + "_history"));
+                    file_list.push(dropFile(my_cache, item + "_history"));
                   }
                 }
               }
