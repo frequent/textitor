@@ -1462,13 +1462,13 @@
       }
       
       return queue
-        .push(function (e) {
-          console.log("error");
-          console.log(e);
-          throw e;
-        }, function (x) {
-          console.log("all good");
-          console.log(x);
+        .push(function () {
+          console.log("all set");
+          return true;
+        })
+        .push(null, function (my_error) {
+          console.log(my_error);
+          throw my_error;
         });
     })
     .declareMethod('editor_bulkSave', function () {
