@@ -1406,7 +1406,7 @@
               props.editor_setActivePath(path);
               props.editor_setDisplay(path);
             }
-            if (is_bulk) {
+            if (my_is_bulk) {
               return;
             }
             console.log("ojoj")
