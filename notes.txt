@@ -1,19 +1,14 @@
 
 => progress
+
 > add all methods to queue after finding out how to make nested queue calls
 > why does error propagation not work
-> deleting folder, should also delete files inside?
 > cleanup
 > allow to createJIO inside project = support storages, find place to add params
 
-- don't allow to save file.name as folder and vice versa => no dot in folder name and must have dot in file name
-- fix repeating folder names, should prompt then overwrite
-- on second invalid save, focus input to prevent using mouse
-- remove project prefix from file paths
-- fix display of files in folder
-- fix filter
-- fix filename prefix
-
+- fix storing of files names in memory storage, so they can be deleted
+- fix root project textitor should not show up
+- fix search filter
 
 => maintain self
 - add manifest
