@@ -1396,17 +1396,21 @@
           .push(function () {
             console.log("done clearFileList from serviceworker for file or folder")
             console.log(active_path)
-            var list = active_path.split("/"),
-              path = list.splice(0, list.length - 1).join("/"),
-              old_doc;
-            console.log(path)
-            props.editor_setActivePath(path);
-            props.editor_setDisplay(path);
+            var list,
+              path;
+            console.log("handler activepath aware")
+            if (active_path) {
+              list = active_path.split("/"),
+              path = list.splice(0, list.length - 1).join("/");
+              console.log(path)
+              props.editor_setActivePath(path);
+              props.editor_setDisplay(path);
+            }
             if (is_bulk) {
               return;
             }
             console.log("ojoj")
-            old_doc = props.editor.swapDoc(props.editor_createDoc());
+            props.editor.swapDoc(props.editor_createDoc());
             props.editor_resetActiveFile();
             props.editor_resetModified();
             console.log("DONE")
