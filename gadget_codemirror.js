@@ -1681,21 +1681,12 @@
 
           // set active file to active and save previous file (old_doc)
           if (active_file && props.editor_is_modified) {
-            
-            console.log("STORING FILE ON MEMORY")
-            console.log("active_path: ", props.editor_active_path)
-            console.log("active_file: ", props.editor_active_file)
-            console.log("active_cache:", active_storage)
-            
-            
             if (active_file.name.indexOf(active_path) === -1) {
               save_file_name = active_path + "/" + active_file.name;
             } else {
               save_file_name = active_file.name;
             }
             save_mime_type = props.editor_active_file.mime_type;
-
-            console.log("saving under: ", save_file_name)
             return RSVP.all([
               gadget.jio_putAttachment(
                 active_storage,
