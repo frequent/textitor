@@ -1,4 +1,3 @@
-
 => progress
 
 > add all methods to queue after finding out how to make nested queue calls
@@ -13,6 +12,7 @@
 => maintain self
 - add manifest
 - try image handling with favicon, must be possible to handle images without opening
+- try trainling syntax correction based on jslint/csslint for obvious cases
 
 => test
 
@@ -20,7 +20,6 @@
 - add voice commands, try on mobile instead of using shortcuts
 - juliusjs, find out how to build grammar with emscriptem online
 - add voice find/grep and replace
-
 
 => gitstorage
   - replicate with indexeddb and remote gitstorage
@@ -68,5 +67,3 @@ serverless.getTree("master", function (err, tree) {if (err) {console.log("error"
   - jio per branch? document = branch?
   - if document per branch, files are attachments, editing and saving updates attachments
   - of a diff is a new attachment?
-  
-
