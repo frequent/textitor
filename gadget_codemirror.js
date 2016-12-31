@@ -93,6 +93,9 @@
     "<input type='radio' tabindex='2' name='is_container' value='cache' />" +
     "<span class='custom-menu-label'>Folder</span>" +
     "<input type='radio' tabindex='3' name='is_container' value='folder' />" +
+    "<select name='is_storage_type'>" +
+    "<option value='serviceworker'>Serviceworker</option>" +
+    "<option value='github'>Github</option></select>" +
     "<span class='custom-menu-typewriter'>CTRL+ALT+</span>" +
     "<form name='save'>" +
       "<button type='submit' tabindex='4' class='custom-menu-button'>" +
