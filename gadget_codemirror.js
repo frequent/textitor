@@ -88,14 +88,31 @@
 
   var OBJECT_MENU_TEMPLATE = "<span class='custom-menu-label'>Name:</span>" +
     "<input type='text' tabindex='1' placeholder='file name' value='%s' />" +
-    "<input type='hidden' value='%s' />" +
+    "<input type='hidden' value='%s' name=is_mime_type' />" +
+    "<span class='custom-menu-label'>Type</span>" +
+    "<select tabindex='2' name='is_container'>" +
+    "<option value='file' selected='selected'>File</option>" +
+    "<option value='folder'>Folder</option>" +
+    "<option value='cache'>Project</option>" +
+    "<option value='github'>Github</option></select>" +
+    "<span class='custom-menu-typewriter'>CTRL+ALT+</span>" +
+    "<form name='save'>" +
+      "<button type='submit' tabindex='3' class='custom-menu-button'>" +
+        "<b>S</b>ave</button></form>" +
+    "<form name='close'>" +
+      "<button type='submit' tabindex='4' class='custom-menu-button'>" +
+        "<b>C</b>lose</button></form>" +
+    "<form name='remove'>" +
+      "<button type='submit' tabindex='5' class='custom-menu-button'>" +
+        "<b>D</b>elete</button></form>";
+
+  var OLD_OBJECT_MENU_TEMPLATE = "<span class='custom-menu-label'>Name:</span>" +
+    "<input type='text' tabindex='1' placeholder='file name' value='%s' />" +
+    "<input type='hidden' value='%s' name='is_mime_type'/>" +
     "<span class='custom-menu-label'>Cache</span>" +
     "<input type='radio' tabindex='2' name='is_container' value='cache' />" +
     "<span class='custom-menu-label'>Folder</span>" +
     "<input type='radio' tabindex='3' name='is_container' value='folder' />" +
-    "<select name='is_storage_type'>" +
-    "<option value='serviceworker'>Serviceworker</option>" +
-    "<option value='github'>Github</option></select>" +
     "<span class='custom-menu-typewriter'>CTRL+ALT+</span>" +
     "<form name='save'>" +
       "<button type='submit' tabindex='4' class='custom-menu-button'>" +
@@ -1493,6 +1510,7 @@
         file_name_input,
         file_name,
         is_container,
+        is_select,
         content,
         folder_file_list,
         mime_type_input,
@@ -1514,7 +1532,8 @@
         if (!active_file) {
           file_name_input = dialog.querySelector("input");
           file_name = file_name_input.value;
-          is_container = dialog.querySelector('input[name="is_container"]:checked');
+          is_select = dialog.querySelector('select[name="is_container"]');
+          is_container = is_select && is_select.selectedIndex;
           mime_type_input = file_name.split(".").pop().replace("/", "");
           mime_type = setMimeType(mime_type_input);
         } else {
@@ -1523,6 +1542,7 @@
         }
 
         // validate (cache and folder can be overwritten, won't change files)
+        // XXX add git validation
         if (dialog) {
           if (!file_name) {
             return props.dialog_flagInput(file_name_input, FLAG);
@@ -1538,7 +1558,7 @@
         content = props.editor.getValue();
 
         if (is_container) {
-          if (is_container.value === 'cache') {
+          if (is_select.options[is_select.selectedIndex].value === 'cache') {
             return props.editor_createCache(gadget, file_name_input.value);
           } else {
             mime_type = "application/json";
