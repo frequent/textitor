@@ -1199,7 +1199,7 @@
             tabSize: 2, // default 4
             smartIndent: true, // default true
             indentWithTabs: false, // default false
-            lint: false,
+            lint: true,
             gutters: ["CodeMirror-lint-markers"],
             myAutoLint: true,
             autofocus: true, // default false
