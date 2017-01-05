@@ -1,13 +1,10 @@
 => progress
 
-> add all methods to queue after finding out how to make nested queue calls
-> why does error propagation not work
 > cleanup
+> fix delete [cache]/bar/ should not delete /bar
 > allow to createJIO inside project = support storages, find place to add params
-
-- fix storing of files names in memory storage, so they can be deleted
+- wrap all shortcuts in a single promise (queue call) with global error handler to fix propagation
 - fix root project textitor should not show up
-- fix search filter
 
 => maintain self
 - add manifest
