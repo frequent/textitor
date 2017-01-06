@@ -21,19 +21,7 @@
       })
       .push(function () {
         return my_gadget.routeStorageRequest("put", "textitor");
-      })
-      /*
-      // dummy data
-      .push(function (my_id) {
-        return my_gadget.routeStorageRequest("putAttachment", [
-          my_id,
-          "http://foo.css",
-          new Blob(["span%2C%20div%20%7Bborder%3A%201px%20solid%20red%20!important%3B%7D"], {
-            type: "text/css"
-          })
-        ]);
-      })
-      */;
+      });
   }
 
   rJS(window)
@@ -148,3 +136,4 @@
     });
 
 }(window, rJS));
+
