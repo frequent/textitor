@@ -1,46 +1,46 @@
 CACHE MANIFEST
-# generated on Fri, 06 Jan 2016 09:15:00 +0000
+# generated on Fri, 06 Jan 2016 09:52:00 +0000
 
 CACHE:
 # basic gadget files
-rendersjs.js
-rsvp.js
-jiodev.js
+https://frequent.github.io/textitor/rendersjs.js
+https://frequent.github.io/textitor/rsvp.js
+https://frequent.github.io/textitor/jiodev.js
 
 # Codemirror
-codemirror.css
-codemirror.js
-codemirror_addon_closebracket.js
-codemirror_addon_comment.js
-codemirror_addon_dialog.js
-codemirror_addon_fullscreen.js
-codemirror_addon_fullscreen.css
-codemirror_addon_lint.js
-codemirror_addon_matchbrackets.js
-codemirror_addon_matchhighlight.js
-codemirror_addon_placeholder.js
-codemirror_addon_search.js
-codemirror_addon_searchcursor.js
-codemirror_addon_trailingspace.js
-codemirror_language_css.js
-codemirror_language_diff.js
-codemirror_language_html.js
-codemirror_language_javascript.js
-codemirror_language_markdown.js
-codemirror_language_php.js
-codemirror_language_python.js
-codemirror_language_sql.js
-codemirror_language_xml.js
-codemirror_lint.css
-codemirror_lint_css.js
-codemirror_lint_html.js
-codemirror_lint_javascript.js
-codemirror_lint_json.js
-codemirror_theme_rubyblue.css
-csslint.js
-htmllint.js
-jsonlint.js
-jshint.js
+https://frequent.github.io/textitor/codemirror.css
+https://frequent.github.io/textitor/codemirror.js
+https://frequent.github.io/textitor/codemirror_addon_closebracket.js
+https://frequent.github.io/textitor/codemirror_addon_comment.js
+https://frequent.github.io/textitor/codemirror_addon_dialog.js
+https://frequent.github.io/textitor/codemirror_addon_fullscreen.js
+https://frequent.github.io/textitor/codemirror_addon_fullscreen.css
+https://frequent.github.io/textitor/codemirror_addon_lint.js
+https://frequent.github.io/textitor/codemirror_addon_matchbrackets.js
+https://frequent.github.io/textitor/codemirror_addon_matchhighlight.js
+https://frequent.github.io/textitor/codemirror_addon_placeholder.js
+https://frequent.github.io/textitor/codemirror_addon_search.js
+https://frequent.github.io/textitor/codemirror_addon_searchcursor.js
+https://frequent.github.io/textitor/codemirror_addon_trailingspace.js
+https://frequent.github.io/textitor/codemirror_language_css.js
+https://frequent.github.io/textitor/codemirror_language_diff.js
+https://frequent.github.io/textitor/codemirror_language_html.js
+https://frequent.github.io/textitor/codemirror_language_javascript.js
+https://frequent.github.io/textitor/codemirror_language_markdown.js
+https://frequent.github.io/textitor/codemirror_language_php.js
+https://frequent.github.io/textitor/codemirror_language_python.js
+https://frequent.github.io/textitor/codemirror_language_sql.js
+https://frequent.github.io/textitor/codemirror_language_xml.js
+https://frequent.github.io/textitor/codemirror_lint.css
+https://frequent.github.io/textitor/codemirror_lint_css.js
+https://frequent.github.io/textitor/codemirror_lint_html.js
+https://frequent.github.io/textitor/codemirror_lint_javascript.js
+https://frequent.github.io/textitor/codemirror_lint_json.js
+https://frequent.github.io/textitor/codemirror_theme_rubyblue.css
+https://frequent.github.io/textitor/csslint.js
+https://frequent.github.io/textitor/htmllint.js
+https://frequent.github.io/textitor/jsonlint.js
+https://frequent.github.io/textitor/jshint.js
 
 NETWORK:
 *
