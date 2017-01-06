@@ -6,6 +6,31 @@
     <script type="text/javascript" src="rsvp.js"></script>
     <script type="text/javascript" src="renderjs.js"></script>
     <script type="text/javascript" src="app.js"></script>
+    <script type="text/javascript">
+      var cache = window.applicationCache;
+      cache.addEventListener('cached', logEvent, false);
+      cache.addEventListener('checking', logEvent, false);
+      cache.addEventListener('downloading', logEvent, false);
+      cache.addEventListener('error', logEvent, false);
+      cache.addEventListener('noupdate', logEvent, false);
+      cache.addEventListener('obsolete', logEvent, false);
+      cache.addEventListener('progress', logEvent, false);
+      cache.addEventListener('updateready', logEvent, false);
+      
+      function logEvent(e) {
+          var online, status, type, message;
+          online = (navigator.onLine) ? 'yes' : 'no';
+          status = cacheStatusValues[cache.status];
+          type = e.type;
+          message = 'online: ' + online;
+          message+= ', event: ' + type;
+          message+= ', status: ' + status;
+          if (type == 'error' && navigator.onLine) {
+              message+= ' (prolly a syntax error in manifest)';
+          }
+          console.log(message);
+      }
+    </script>
 </head>
 <body>
 
