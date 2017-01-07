@@ -20,8 +20,8 @@
       var gadget = this;
       return new RSVP.Queue()
         .push(function () {
-          return gadget.declareGadget("gadget_textitor.html",
-            {"scope":"textitor"}
+          return gadget.declareGadget("gadget_couscous.html",
+            {"scope":"couscous"}
           );
         })
         .push(function (my_declared_gadget) {
@@ -37,3 +37,4 @@
     });
 
 }(window, rJS));
+
