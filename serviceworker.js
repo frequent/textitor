@@ -7,6 +7,9 @@
 // see https://developer.mozilla.org/en-US/docs/Web/API/Cache
 // importScripts('./serviceworker-cache-polyfill.js');
 
+// selective cache:
+// https://github.com/GoogleChrome/samples/blob/gh-pages/service-worker/selective-caching/service-worker.js
+
 // debug:
 // chrome://cache/
 // chrome://inspect/#service-workers
@@ -38,6 +41,9 @@
 // versioning allows to keep a clean cache, current_cache is accessed on fetch
 var CURRENT_CACHE_VERSION = 1;
 var CURRENT_CACHE;
+var CURRENT_CACHE_DICT = {
+  "self": "self-v" + CURRENT_CACHE_VERSION
+};
 
 // runs while an existing worker runs or nothing controls the page (update here)
 //self.addEventListener('install', function (event) {
@@ -46,14 +52,26 @@ var CURRENT_CACHE;
 
 // runs active page, changes here (like deleting old cache) breaks page
 self.addEventListener('activate', function (event) {
-  
-  // only validate against version, nothing else persists
+
+  var expected_cache_name_list = Object.keys(CURRENT_CACHE_DICT).map(function(key) {
+    return CURRENT_CACHE_DICT[key];
+  });
+
   event.waitUntil(caches.keys()
     .then(function(cache_name_list) {
       return Promise.all(
         cache_name_list.map(function(cache_name) {
           version = cache_name.split("-v")[1];
+          
+          // removes caches which are out of version
           if (!(version && parseInt(version, 10) === CURRENT_CACHE_VERSION)) {
+            console.log('Deleting out of date cache: ', cache_name);
+            return caches.delete(cache_name);
+          }
+          
+          // removes caches which are not on the list of expected names 
+          if (expected_cache_name_list.indexOf(cache_name) === -1) {
+            console.log('Deleting out unregistered cache:', cache_name);
             return caches.delete(cache_name);
           }
         })
@@ -67,7 +85,7 @@ self.addEventListener('activate', function (event) {
 /*
 self.addEventListener('fetch', function (event) {
   var url = event.request.url;
-  
+
   if (event.request.method === "GET") {
     event.respondWith(
       caches.open(CURRENT_CACHE)
@@ -156,7 +174,16 @@ self.addEventListener('message', function (event) {
 
     // create new cache by opening it. this will only run once per cache/folder
     case 'put':
+      if (param.id === "self") {
+        event.port[0].postMessage({
+          error: {
+            'status': 406,
+            'message': "Reserved cache name. Please choose a different name."
+          }
+        });
+      }
       CURRENT_CACHE = param.id + "-v" + CURRENT_CACHE_VERSION;
+      CURRENT_CACHE_DICT[param.id] = CURRENT_CACHE;
       caches.open(CURRENT_CACHE)
         .then(function() {
           event.ports[0].postMessage({
@@ -173,6 +200,7 @@ self.addEventListener('message', function (event) {
     
     // remove a cache
     case 'remove':
+      delete CURRENT_CACHE_DICT[param.id];
       CURRENT_CACHE = param.id + "-v" + CURRENT_CACHE_VERSION;
       caches.delete(CURRENT_CACHE)
         .then(function() {
