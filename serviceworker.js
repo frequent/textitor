@@ -7,9 +7,6 @@
 // see https://developer.mozilla.org/en-US/docs/Web/API/Cache
 // importScripts('./serviceworker-cache-polyfill.js');
 
-// selective cache:
-// https://github.com/GoogleChrome/samples/blob/gh-pages/service-worker/selective-caching/service-worker.js
-
 // debug:
 // chrome://cache/
 // chrome://inspect/#service-workers
@@ -36,7 +33,10 @@
 
 
 // https://developer.mozilla.org/en-US/docs/Web/API/Service_Worker_API/Using_Service_Workers
-// http://www.html5rocks.com/en/tutorials/service-worker/introduction/
+// intro http://www.html5rocks.com/en/tutorials/service-worker/introduction/
+// selective cache https://github.com/GoogleChrome/samples/blob/gh-pages/service-worker/selective-caching/service-worker.js
+// selective cache https://googlechrome.github.io/samples/service-worker/selective-caching/
+// handling POST with indexedDB: https://serviceworke.rs/request-deferrer.html
 
 // versioning allows to keep a clean cache, current_cache is accessed on fetch
 var CURRENT_CACHE_VERSION = 1;
@@ -80,54 +80,65 @@ self.addEventListener('activate', function (event) {
   );
 });
 
-// XXX build a server on fetch?
+// XXX build a server on fetch
 // intercept network requests, allows to serve form cache or fetch from network
-/*
 self.addEventListener('fetch', function (event) {
-  var url = event.request.url;
+  var url = event.request.url,
+    cacheable_list = ["codemirror", "jiodev", "renderjs", "rsvp"],
+    isCacheable = function (el) {
+      return url.indexOf(el) >= 0;
+    };
+
+  console.log('Handling fetch event for', url, event.request.method);
 
   if (event.request.method === "GET") {
-    event.respondWith(
-      caches.open(CURRENT_CACHE)
-        .then(function(cache) {
-          return cache.match(event.request)
-            .then(function(response) {
-              if (response) {
+    event.respondWith(caches.open(CURRENT_CACHE_DICT["self"])
+      .then(function(cache) {
+        return cache.match(event.request)
+          .then(function(response) {
+  
+            // cached, return from cache
+            if (response) {
+              console.log("found response in cache, returning ", response);
+              return response;
+      
+            // not cached, fetch from network
+            }
+            console.log('not found, fetching from network: ', url);        
+          
+            // clone call, because any operation like fetch/put... will
+            // consume the request, so we need a copy of the original
+            // (see https://fetch.spec.whatwg.org/#dom-request-clone)
+            return fetch(event.request.clone())
+              .then(function(response) {
+            
+                // add resource to cache
+                if (response.status < 400 && cacheable_list.some(isCacheable)) {
+                  console.log('Caching response to: ', url);
+                  cache.put(event.request, response.clone());
+                } else {
+                  console.log('NOT Caching response to: ', url);
+                }
                 return response;
-              
-              // no cached response for event.request, fetch from network
-              } else {
-                
-                // clone call, because any operation like fetch/put... will
-                // consume the request, so we need a copy of the original
-                // (see https://fetch.spec.whatwg.org/#dom-request-clone)
-                return fetch(event.request.clone()).then(function(response) {
-
-                  // add resource to cache
-                  cache.put(event.request, response.clone())
-                    .then(function() {
-                      return response;
-                    });
-                });
-              }
-            })
-            .catch(function(error) {
-              
-              // This catch() will handle exceptions that arise from the match()
-              // or fetch() operations. Note that a HTTP error response (e.g.
-              // 404) will NOT trigger an exception. It will return a normal 
-              // response object that has the appropriate error code set.
-              throw error;
+              });
             });
       })
+      .catch(function(error) {
+
+        // This catch() will handle exceptions that arise from the match()
+        // or fetch() operations. Note that a HTTP error response (e.g.
+        // 404) will NOT trigger an exception. It will return a normal 
+        // response object that has the appropriate error code set.
+        console.log('fetch handling error, ', error);
+        throw error;
+      })
     );
-  
+
   // we could also handle post with indexedDB here
-  } else {
-    event.respondWith(fetch(event.request));
+  //} else {
+  //  event.respondWith(fetch(event.request));
   }
 });
-*/
 
 self.addEventListener('message', function (event) {
   var param = event.data,
@@ -218,12 +229,18 @@ self.addEventListener('message', function (event) {
     // return list of caches ~ folders
     case 'allDocs':
       caches.keys().then(function(key_list) {
-        result_list = key_list.map(function(key) {
-          return {
-            "id": key.split("-v")[0],
-            "value": {}
-          };
-        });
+        var result_list = [],
+          id,
+          i;
+        for (i = 0; i < key_list.length; i += 1) {
+          id = key_list[i].split("-v")[0];
+          if (id !== "self") {
+            result_list.append({
+              "id": id,
+              "value": {}
+            });
+          }
+        }
         event.ports[0].postMessage({
           error: null,
           data: result_list
