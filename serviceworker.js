@@ -65,13 +65,11 @@ self.addEventListener('activate', function (event) {
           
           // removes caches which are out of version
           if (!(version && parseInt(version, 10) === CURRENT_CACHE_VERSION)) {
-            console.log('Deleting out of date cache: ', cache_name);
             return caches.delete(cache_name);
           }
           
           // removes caches which are not on the list of expected names 
           if (expected_cache_name_list.indexOf(cache_name) === -1) {
-            console.log('Deleting out unregistered cache:', cache_name);
             return caches.delete(cache_name);
           }
         })
@@ -89,8 +87,6 @@ self.addEventListener('fetch', function (event) {
       return url.indexOf(el) >= 0;
     };
 
-  console.log('Handling fetch event for', url, event.request.method);
-
   if (event.request.method === "GET") {
     event.respondWith(caches.open(CURRENT_CACHE_DICT["self"])
       .then(function(cache) {
@@ -99,13 +95,11 @@ self.addEventListener('fetch', function (event) {
   
             // cached, return from cache
             if (response) {
-              console.log("found response in cache, returning ", response);
               return response;
       
             // not cached, fetch from network
             }
-            console.log('not found, fetching from network: ', url);        
-          
+
             // clone call, because any operation like fetch/put... will
             // consume the request, so we need a copy of the original
             // (see https://fetch.spec.whatwg.org/#dom-request-clone)
@@ -114,10 +108,7 @@ self.addEventListener('fetch', function (event) {
             
                 // add resource to cache
                 if (response.status < 400 && cacheable_list.some(isCacheable)) {
-                  console.log('Caching response to: ', url);
                   cache.put(event.request, response.clone());
-                } else {
-                  console.log('NOT Caching response to: ', url);
                 }
                 return response;
               });
@@ -129,7 +120,6 @@ self.addEventListener('fetch', function (event) {
         // or fetch() operations. Note that a HTTP error response (e.g.
         // 404) will NOT trigger an exception. It will return a normal 
         // response object that has the appropriate error code set.
-        console.log('fetch handling error, ', error);
         throw error;
       })
     );
