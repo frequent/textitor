@@ -1,17 +1,15 @@
 => progress
 
-> cleanup
-> fix delete [cache]/bar/ should not delete /bar
 > allow to createJIO inside project = support storages, find place to add params
-- wrap all shortcuts in a single promise (queue call) with global error handler to fix propagation
-- fix root project textitor should not show up
+- wrap all shortcuts in a single promise (proper queue call) with global error handler to fix propagation
 
 => maintain self
-- add manifest
 - try image handling with favicon, must be possible to handle images without opening
-- try trainling syntax correction based on jslint/csslint for obvious cases
+- try trailing syntax correction based on jslint/csslint for obvious cases
+- try method source links, clicking on a method opens file it is contained
 
-=> test
+=> test/preview/deploy
+- run tests textitor/test/, preview like gh-pages on textitor/preview/, and "build" on textitor/deploy/
 
 => speak
 - add voice commands, try on mobile instead of using shortcuts
@@ -38,8 +36,6 @@
   - repair/sync = push
 
 => cachestorage
-  - this is my filesystem to work on, create, edit, delete, ....
-  - must work offline
   - commit will do a diff with local gitstorage, allow to init?
   - can add everything to gitstorage. push will send to master
 
