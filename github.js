@@ -1,2477 +1,3832 @@
-// https://unpkg.com/github-api@2.3.0/dist/GitHub.bundle.js
-// alternative: https://unpkg.com/github-api@2.3.0/dist/GitHub.js
+// https://unpkg.com/github-api@3.0.0/dist/GitHub.bundle.js
 
 (function(f){if(typeof exports==="object"&&typeof module!=="undefined"){module.exports=f()}else if(typeof define==="function"&&define.amd){define([],f)}else{var g;if(typeof window!=="undefined"){g=window}else if(typeof global!=="undefined"){g=global}else if(typeof self!=="undefined"){g=self}else{g=this}g.GitHub = f()}})(function(){var define,module,exports;return (function e(t,n,r){function s(o,u){if(!n[o]){if(!t[o]){var a=typeof require=="function"&&require;if(!u&&a)return a(o,!0);if(i)return i(o,!0);var f=new Error("Cannot find module '"+o+"'");throw f.code="MODULE_NOT_FOUND",f}var l=n[o]={exports:{}};t[o][0].call(l.exports,function(e){var n=t[o][1][e];return s(n?n:e)},l,l.exports,e,t,n,r)}return n[o].exports}var i=typeof require=="function"&&require;for(var o=0;o<r.length;o++)s(r[o]);return s})({1:[function(require,module,exports){
-(function (global, factory) {
-  if (typeof define === "function" && define.amd) {
-    define(['module', './Requestable'], factory);
-  } else if (typeof exports !== "undefined") {
-    factory(module, require('./Requestable'));
-  } else {
-    var mod = {
-      exports: {}
-    };
-    factory(mod, global.Requestable);
-    global.Gist = mod.exports;
-  }
-})(this, function (module, _Requestable2) {
-  'use strict';
+'use strict';
 
-  var _Requestable3 = _interopRequireDefault(_Requestable2);
+var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
-  function _interopRequireDefault(obj) {
-    return obj && obj.__esModule ? obj : {
-      default: obj
-    };
-  }
+var _Requestable2 = require('./Requestable');
 
-  function _classCallCheck(instance, Constructor) {
-    if (!(instance instanceof Constructor)) {
-      throw new TypeError("Cannot call a class as a function");
-    }
-  }
+var _Requestable3 = _interopRequireDefault(_Requestable2);
 
-  var _createClass = function () {
-    function defineProperties(target, props) {
-      for (var i = 0; i < props.length; i++) {
-        var descriptor = props[i];
-        descriptor.enumerable = descriptor.enumerable || false;
-        descriptor.configurable = true;
-        if ("value" in descriptor) descriptor.writable = true;
-        Object.defineProperty(target, descriptor.key, descriptor);
-      }
-    }
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-    return function (Constructor, protoProps, staticProps) {
-      if (protoProps) defineProperties(Constructor.prototype, protoProps);
-      if (staticProps) defineProperties(Constructor, staticProps);
-      return Constructor;
-    };
-  }();
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
-  function _possibleConstructorReturn(self, call) {
-    if (!self) {
-      throw new ReferenceError("this hasn't been initialised - super() hasn't been called");
-    }
+function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
 
-    return call && (typeof call === "object" || typeof call === "function") ? call : self;
+function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; } /**
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                * @file
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                * @copyright  2013 Michael Aufreiter (Development Seed) and 2016 Yahoo Inc.
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                * @license    Licensed under {@link https://spdx.org/licenses/BSD-3-Clause-Clear.html BSD-3-Clause-Clear}.
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                *             Github.js is freely distributable.
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                */
+
+/**
+ * A Gist can retrieve and modify gists.
+ */
+var Gist = function (_Requestable) {
+  _inherits(Gist, _Requestable);
+
+  /**
+   * Create a Gist.
+   * @param {string} id - the id of the gist (not required when creating a gist)
+   * @param {Requestable.auth} [auth] - information required to authenticate to Github
+   * @param {string} [apiBase=https://api.github.com] - the base Github API URL
+   */
+  function Gist(id, auth, apiBase) {
+    _classCallCheck(this, Gist);
+
+    var _this = _possibleConstructorReturn(this, (Gist.__proto__ || Object.getPrototypeOf(Gist)).call(this, auth, apiBase));
+
+    _this.__id = id;
+    return _this;
   }
 
-  function _inherits(subClass, superClass) {
-    if (typeof superClass !== "function" && superClass !== null) {
-      throw new TypeError("Super expression must either be null or a function, not " + typeof superClass);
-    }
+  /**
+   * Fetch a gist.
+   * @see https://developer.github.com/v3/gists/#get-a-single-gist
+   * @param {Requestable.callback} [cb] - will receive the gist
+   * @return {Promise} - the Promise for the http request
+   */
 
-    subClass.prototype = Object.create(superClass && superClass.prototype, {
-      constructor: {
-        value: subClass,
-        enumerable: false,
-        writable: true,
-        configurable: true
-      }
-    });
-    if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass;
-  }
 
-  var Gist = function (_Requestable) {
-    _inherits(Gist, _Requestable);
-
-    /**
-     * Create a Gist.
-     * @param {string} id - the id of the gist (not required when creating a gist)
-     * @param {Requestable.auth} [auth] - information required to authenticate to Github
-     * @param {string} [apiBase=https://api.github.com] - the base Github API URL
-     */
-
-    function Gist(id, auth, apiBase) {
-      _classCallCheck(this, Gist);
-
-      var _this = _possibleConstructorReturn(this, Object.getPrototypeOf(Gist).call(this, auth, apiBase));
-
-      _this.__id = id;
-      return _this;
+  _createClass(Gist, [{
+    key: 'read',
+    value: function read(cb) {
+      return this._request('GET', '/gists/' + this.__id, null, cb);
     }
 
     /**
-     * Fetch a gist.
-     * @see https://developer.github.com/v3/gists/#get-a-single-gist
-     * @param {Requestable.callback} [cb] - will receive the gist
+     * Create a new gist.
+     * @see https://developer.github.com/v3/gists/#create-a-gist
+     * @param {Object} gist - the data for the new gist
+     * @param {Requestable.callback} [cb] - will receive the new gist upon creation
      * @return {Promise} - the Promise for the http request
      */
 
-
-    _createClass(Gist, [{
-      key: 'read',
-      value: function read(cb) {
-        return this._request('GET', '/gists/' + this.__id, null, cb);
-      }
-    }, {
-      key: 'create',
-      value: function create(gist, cb) {
-        var _this2 = this;
-
-        return this._request('POST', '/gists', gist, cb).then(function (response) {
-          _this2.__id = response.data.id;
-          return response;
-        });
-      }
-    }, {
-      key: 'delete',
-      value: function _delete(cb) {
-        return this._request('DELETE', '/gists/' + this.__id, null, cb);
-      }
-    }, {
-      key: 'fork',
-      value: function fork(cb) {
-        return this._request('POST', '/gists/' + this.__id + '/forks', null, cb);
-      }
-    }, {
-      key: 'update',
-      value: function update(gist, cb) {
-        return this._request('PATCH', '/gists/' + this.__id, gist, cb);
-      }
-    }, {
-      key: 'star',
-      value: function star(cb) {
-        return this._request('PUT', '/gists/' + this.__id + '/star', null, cb);
-      }
-    }, {
-      key: 'unstar',
-      value: function unstar(cb) {
-        return this._request('DELETE', '/gists/' + this.__id + '/star', null, cb);
-      }
-    }, {
-      key: 'isStarred',
-      value: function isStarred(cb) {
-        return this._request204or404('/gists/' + this.__id + '/star', null, cb);
-      }
-    }, {
-      key: 'listComments',
-      value: function listComments(cb) {
-        return this._requestAllPages('/gists/' + this.__id + '/comments', null, cb);
-      }
-    }, {
-      key: 'getComment',
-      value: function getComment(comment, cb) {
-        return this._request('GET', '/gists/' + this.__id + '/comments/' + comment, null, cb);
-      }
-    }, {
-      key: 'createComment',
-      value: function createComment(comment, cb) {
-        return this._request('POST', '/gists/' + this.__id + '/comments', { body: comment }, cb);
-      }
-    }, {
-      key: 'editComment',
-      value: function editComment(comment, body, cb) {
-        return this._request('PATCH', '/gists/' + this.__id + '/comments/' + comment, { body: body }, cb);
-      }
-    }, {
-      key: 'deleteComment',
-      value: function deleteComment(comment, cb) {
-        return this._request('DELETE', '/gists/' + this.__id + '/comments/' + comment, null, cb);
-      }
-    }]);
-
-    return Gist;
-  }(_Requestable3.default);
-
-  module.exports = Gist;
-});
-
-},{"./Requestable":8}],2:[function(require,module,exports){
-(function (global, factory) {
-  if (typeof define === "function" && define.amd) {
-    define(['module', './Gist', './User', './Issue', './Search', './RateLimit', './Repository', './Organization', './Team', './Markdown'], factory);
-  } else if (typeof exports !== "undefined") {
-    factory(module, require('./Gist'), require('./User'), require('./Issue'), require('./Search'), require('./RateLimit'), require('./Repository'), require('./Organization'), require('./Team'), require('./Markdown'));
-  } else {
-    var mod = {
-      exports: {}
-    };
-    factory(mod, global.Gist, global.User, global.Issue, global.Search, global.RateLimit, global.Repository, global.Organization, global.Team, global.Markdown);
-    global.GitHub = mod.exports;
-  }
-})(this, function (module, _Gist, _User, _Issue, _Search, _RateLimit, _Repository, _Organization, _Team, _Markdown) {
-  'use strict';
-
-  var _Gist2 = _interopRequireDefault(_Gist);
-
-  var _User2 = _interopRequireDefault(_User);
-
-  var _Issue2 = _interopRequireDefault(_Issue);
-
-  var _Search2 = _interopRequireDefault(_Search);
-
-  var _RateLimit2 = _interopRequireDefault(_RateLimit);
-
-  var _Repository2 = _interopRequireDefault(_Repository);
-
-  var _Organization2 = _interopRequireDefault(_Organization);
-
-  var _Team2 = _interopRequireDefault(_Team);
-
-  var _Markdown2 = _interopRequireDefault(_Markdown);
-
-  function _interopRequireDefault(obj) {
-    return obj && obj.__esModule ? obj : {
-      default: obj
-    };
-  }
-
-  function _classCallCheck(instance, Constructor) {
-    if (!(instance instanceof Constructor)) {
-      throw new TypeError("Cannot call a class as a function");
-    }
-  }
-
-  var _createClass = function () {
-    function defineProperties(target, props) {
-      for (var i = 0; i < props.length; i++) {
-        var descriptor = props[i];
-        descriptor.enumerable = descriptor.enumerable || false;
-        descriptor.configurable = true;
-        if ("value" in descriptor) descriptor.writable = true;
-        Object.defineProperty(target, descriptor.key, descriptor);
-      }
-    }
-
-    return function (Constructor, protoProps, staticProps) {
-      if (protoProps) defineProperties(Constructor.prototype, protoProps);
-      if (staticProps) defineProperties(Constructor, staticProps);
-      return Constructor;
-    };
-  }();
-
-  var GitHub = function () {
-    /**
-     * Create a new GitHub.
-     * @param {Requestable.auth} [auth] - the credentials to authenticate to Github. If auth is
-     *                                  not provided requests will be made unauthenticated
-     * @param {string} [apiBase=https://api.github.com] - the base Github API URL
-     */
-
-    function GitHub(auth) {
-      var apiBase = arguments.length <= 1 || arguments[1] === undefined ? 'https://api.github.com' : arguments[1];
-
-      _classCallCheck(this, GitHub);
-
-      this.__apiBase = apiBase;
-      this.__auth = auth || {};
-    }
-
-    /**
-     * Create a new Gist wrapper
-     * @param {number} [id] - the id for the gist, leave undefined when creating a new gist
-     * @return {Gist}
-     */
-
-
-    _createClass(GitHub, [{
-      key: 'getGist',
-      value: function getGist(id) {
-        return new _Gist2.default(id, this.__auth, this.__apiBase);
-      }
-    }, {
-      key: 'getUser',
-      value: function getUser(user) {
-        return new _User2.default(user, this.__auth, this.__apiBase);
-      }
-    }, {
-      key: 'getOrganization',
-      value: function getOrganization(organization) {
-        return new _Organization2.default(organization, this.__auth, this.__apiBase);
-      }
-    }, {
-      key: 'getTeam',
-      value: function getTeam(teamId) {
-        return new _Team2.default(teamId, this.__auth, this.__apiBase);
-      }
-    }, {
-      key: 'getRepo',
-      value: function getRepo(user, repo) {
-        return new _Repository2.default(this._getFullName(user, repo), this.__auth, this.__apiBase);
-      }
-    }, {
-      key: 'getIssues',
-      value: function getIssues(user, repo) {
-        return new _Issue2.default(this._getFullName(user, repo), this.__auth, this.__apiBase);
-      }
-    }, {
-      key: 'search',
-      value: function search(query) {
-        return new _Search2.default(query, this.__auth, this.__apiBase);
-      }
-    }, {
-      key: 'getRateLimit',
-      value: function getRateLimit() {
-        return new _RateLimit2.default(this.__auth, this.__apiBase);
-      }
-    }, {
-      key: 'getMarkdown',
-      value: function getMarkdown() {
-        return new _Markdown2.default(this.__auth, this.__apiBase);
-      }
-    }, {
-      key: '_getFullName',
-      value: function _getFullName(user, repo) {
-        var fullname = user;
-
-        if (repo) {
-          fullname = user + '/' + repo;
-        }
-
-        return fullname;
-      }
-    }]);
-
-    return GitHub;
-  }();
-
-  module.exports = GitHub;
-});
-
-},{"./Gist":1,"./Issue":3,"./Markdown":4,"./Organization":5,"./RateLimit":6,"./Repository":7,"./Search":9,"./Team":10,"./User":11}],3:[function(require,module,exports){
-(function (global, factory) {
-  if (typeof define === "function" && define.amd) {
-    define(['module', './Requestable'], factory);
-  } else if (typeof exports !== "undefined") {
-    factory(module, require('./Requestable'));
-  } else {
-    var mod = {
-      exports: {}
-    };
-    factory(mod, global.Requestable);
-    global.Issue = mod.exports;
-  }
-})(this, function (module, _Requestable2) {
-  'use strict';
-
-  var _Requestable3 = _interopRequireDefault(_Requestable2);
-
-  function _interopRequireDefault(obj) {
-    return obj && obj.__esModule ? obj : {
-      default: obj
-    };
-  }
-
-  function _classCallCheck(instance, Constructor) {
-    if (!(instance instanceof Constructor)) {
-      throw new TypeError("Cannot call a class as a function");
-    }
-  }
-
-  var _createClass = function () {
-    function defineProperties(target, props) {
-      for (var i = 0; i < props.length; i++) {
-        var descriptor = props[i];
-        descriptor.enumerable = descriptor.enumerable || false;
-        descriptor.configurable = true;
-        if ("value" in descriptor) descriptor.writable = true;
-        Object.defineProperty(target, descriptor.key, descriptor);
-      }
-    }
-
-    return function (Constructor, protoProps, staticProps) {
-      if (protoProps) defineProperties(Constructor.prototype, protoProps);
-      if (staticProps) defineProperties(Constructor, staticProps);
-      return Constructor;
-    };
-  }();
-
-  function _possibleConstructorReturn(self, call) {
-    if (!self) {
-      throw new ReferenceError("this hasn't been initialised - super() hasn't been called");
-    }
-
-    return call && (typeof call === "object" || typeof call === "function") ? call : self;
-  }
-
-  function _inherits(subClass, superClass) {
-    if (typeof superClass !== "function" && superClass !== null) {
-      throw new TypeError("Super expression must either be null or a function, not " + typeof superClass);
-    }
-
-    subClass.prototype = Object.create(superClass && superClass.prototype, {
-      constructor: {
-        value: subClass,
-        enumerable: false,
-        writable: true,
-        configurable: true
-      }
-    });
-    if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass;
-  }
-
-  var Issue = function (_Requestable) {
-    _inherits(Issue, _Requestable);
-
-    /**
-     * Create a new Issue
-     * @param {string} repository - the full name of the repository (`:user/:repo`) to get issues for
-     * @param {Requestable.auth} [auth] - information required to authenticate to Github
-     * @param {string} [apiBase=https://api.github.com] - the base Github API URL
-     */
-
-    function Issue(repository, auth, apiBase) {
-      _classCallCheck(this, Issue);
-
-      var _this = _possibleConstructorReturn(this, Object.getPrototypeOf(Issue).call(this, auth, apiBase));
-
-      _this.__repository = repository;
-      return _this;
-    }
-
-    /**
-     * Create a new issue
-     * @see https://developer.github.com/v3/issues/#create-an-issue
-     * @param {Object} issueData - the issue to create
-     * @param {Requestable.callback} [cb] - will receive the created issue
-     * @return {Promise} - the promise for the http request
-     */
-
-
-    _createClass(Issue, [{
-      key: 'createIssue',
-      value: function createIssue(issueData, cb) {
-        return this._request('POST', '/repos/' + this.__repository + '/issues', issueData, cb);
-      }
-    }, {
-      key: 'listIssues',
-      value: function listIssues(options, cb) {
-        return this._requestAllPages('/repos/' + this.__repository + '/issues', options, cb);
-      }
-    }, {
-      key: 'listIssueEvents',
-      value: function listIssueEvents(issue, cb) {
-        return this._request('GET', '/repos/' + this.__repository + '/issues/' + issue + '/events', null, cb);
-      }
-    }, {
-      key: 'listIssueComments',
-      value: function listIssueComments(issue, cb) {
-        return this._request('GET', '/repos/' + this.__repository + '/issues/' + issue + '/comments', null, cb);
-      }
-    }, {
-      key: 'getIssueComment',
-      value: function getIssueComment(id, cb) {
-        return this._request('GET', '/repos/' + this.__repository + '/issues/comments/' + id, null, cb);
-      }
-    }, {
-      key: 'createIssueComment',
-      value: function createIssueComment(issue, comment, cb) {
-        return this._request('POST', '/repos/' + this.__repository + '/issues/' + issue + '/comments', { body: comment }, cb);
-      }
-    }, {
-      key: 'editIssueComment',
-      value: function editIssueComment(id, comment, cb) {
-        return this._request('PATCH', '/repos/' + this.__repository + '/issues/comments/' + id, { body: comment }, cb);
-      }
-    }, {
-      key: 'deleteIssueComment',
-      value: function deleteIssueComment(id, cb) {
-        return this._request('DELETE', '/repos/' + this.__repository + '/issues/comments/' + id, null, cb);
-      }
-    }, {
-      key: 'editIssue',
-      value: function editIssue(issue, issueData, cb) {
-        return this._request('PATCH', '/repos/' + this.__repository + '/issues/' + issue, issueData, cb);
-      }
-    }, {
-      key: 'getIssue',
-      value: function getIssue(issue, cb) {
-        return this._request('GET', '/repos/' + this.__repository + '/issues/' + issue, null, cb);
-      }
-    }, {
-      key: 'listMilestones',
-      value: function listMilestones(options, cb) {
-        return this._request('GET', '/repos/' + this.__repository + '/milestones', options, cb);
-      }
-    }, {
-      key: 'getMilestone',
-      value: function getMilestone(milestone, cb) {
-        return this._request('GET', '/repos/' + this.__repository + '/milestones/' + milestone, null, cb);
-      }
-    }, {
-      key: 'createMilestone',
-      value: function createMilestone(milestoneData, cb) {
-        return this._request('POST', '/repos/' + this.__repository + '/milestones', milestoneData, cb);
-      }
-    }, {
-      key: 'editMilestone',
-      value: function editMilestone(milestone, milestoneData, cb) {
-        return this._request('PATCH', '/repos/' + this.__repository + '/milestones/' + milestone, milestoneData, cb);
-      }
-    }, {
-      key: 'deleteMilestone',
-      value: function deleteMilestone(milestone, cb) {
-        return this._request('DELETE', '/repos/' + this.__repository + '/milestones/' + milestone, null, cb);
-      }
-    }]);
-
-    return Issue;
-  }(_Requestable3.default);
-
-  module.exports = Issue;
-});
-
-},{"./Requestable":8}],4:[function(require,module,exports){
-(function (global, factory) {
-  if (typeof define === "function" && define.amd) {
-    define(['module', './Requestable'], factory);
-  } else if (typeof exports !== "undefined") {
-    factory(module, require('./Requestable'));
-  } else {
-    var mod = {
-      exports: {}
-    };
-    factory(mod, global.Requestable);
-    global.Markdown = mod.exports;
-  }
-})(this, function (module, _Requestable2) {
-  'use strict';
-
-  var _Requestable3 = _interopRequireDefault(_Requestable2);
-
-  function _interopRequireDefault(obj) {
-    return obj && obj.__esModule ? obj : {
-      default: obj
-    };
-  }
-
-  function _classCallCheck(instance, Constructor) {
-    if (!(instance instanceof Constructor)) {
-      throw new TypeError("Cannot call a class as a function");
-    }
-  }
-
-  var _createClass = function () {
-    function defineProperties(target, props) {
-      for (var i = 0; i < props.length; i++) {
-        var descriptor = props[i];
-        descriptor.enumerable = descriptor.enumerable || false;
-        descriptor.configurable = true;
-        if ("value" in descriptor) descriptor.writable = true;
-        Object.defineProperty(target, descriptor.key, descriptor);
-      }
-    }
-
-    return function (Constructor, protoProps, staticProps) {
-      if (protoProps) defineProperties(Constructor.prototype, protoProps);
-      if (staticProps) defineProperties(Constructor, staticProps);
-      return Constructor;
-    };
-  }();
-
-  function _possibleConstructorReturn(self, call) {
-    if (!self) {
-      throw new ReferenceError("this hasn't been initialised - super() hasn't been called");
-    }
-
-    return call && (typeof call === "object" || typeof call === "function") ? call : self;
-  }
-
-  function _inherits(subClass, superClass) {
-    if (typeof superClass !== "function" && superClass !== null) {
-      throw new TypeError("Super expression must either be null or a function, not " + typeof superClass);
-    }
-
-    subClass.prototype = Object.create(superClass && superClass.prototype, {
-      constructor: {
-        value: subClass,
-        enumerable: false,
-        writable: true,
-        configurable: true
-      }
-    });
-    if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass;
-  }
-
-  var Markdown = function (_Requestable) {
-    _inherits(Markdown, _Requestable);
-
-    /**
-     * construct a RateLimit
-     * @param {Requestable.auth} auth - the credentials to authenticate to GitHub
-     * @param {string} [apiBase] - the base Github API URL
-     * @return {Promise} - the promise for the http request
-     */
-
-    function Markdown(auth, apiBase) {
-      _classCallCheck(this, Markdown);
-
-      return _possibleConstructorReturn(this, Object.getPrototypeOf(Markdown).call(this, auth, apiBase));
-    }
-
-    /**
-     * Render html from Markdown text.
-     * @see https://developer.github.com/v3/markdown/#render-an-arbitrary-markdown-document
-     * @param {Object} options - conversion options
-     * @param {string} [options.text] - the markdown text to convert
-     * @param {string} [options.mode=markdown] - can be either `markdown` or `gfm`
-     * @param {string} [options.context] - repository name if mode is gfm
-     * @param {Requestable.callback} [cb] - will receive the converted html
-     * @return {Promise} - the promise for the http request
-     */
-
-
-    _createClass(Markdown, [{
-      key: 'render',
-      value: function render(options, cb) {
-        return this._request('POST', '/markdown', options, cb);
-      }
-    }]);
-
-    return Markdown;
-  }(_Requestable3.default);
-
-  module.exports = Markdown;
-});
-
-},{"./Requestable":8}],5:[function(require,module,exports){
-(function (global, factory) {
-  if (typeof define === "function" && define.amd) {
-    define(['module', './Requestable'], factory);
-  } else if (typeof exports !== "undefined") {
-    factory(module, require('./Requestable'));
-  } else {
-    var mod = {
-      exports: {}
-    };
-    factory(mod, global.Requestable);
-    global.Organization = mod.exports;
-  }
-})(this, function (module, _Requestable2) {
-  'use strict';
-
-  var _Requestable3 = _interopRequireDefault(_Requestable2);
-
-  function _interopRequireDefault(obj) {
-    return obj && obj.__esModule ? obj : {
-      default: obj
-    };
-  }
-
-  function _classCallCheck(instance, Constructor) {
-    if (!(instance instanceof Constructor)) {
-      throw new TypeError("Cannot call a class as a function");
-    }
-  }
-
-  var _createClass = function () {
-    function defineProperties(target, props) {
-      for (var i = 0; i < props.length; i++) {
-        var descriptor = props[i];
-        descriptor.enumerable = descriptor.enumerable || false;
-        descriptor.configurable = true;
-        if ("value" in descriptor) descriptor.writable = true;
-        Object.defineProperty(target, descriptor.key, descriptor);
-      }
-    }
-
-    return function (Constructor, protoProps, staticProps) {
-      if (protoProps) defineProperties(Constructor.prototype, protoProps);
-      if (staticProps) defineProperties(Constructor, staticProps);
-      return Constructor;
-    };
-  }();
-
-  function _possibleConstructorReturn(self, call) {
-    if (!self) {
-      throw new ReferenceError("this hasn't been initialised - super() hasn't been called");
-    }
-
-    return call && (typeof call === "object" || typeof call === "function") ? call : self;
-  }
-
-  function _inherits(subClass, superClass) {
-    if (typeof superClass !== "function" && superClass !== null) {
-      throw new TypeError("Super expression must either be null or a function, not " + typeof superClass);
-    }
-
-    subClass.prototype = Object.create(superClass && superClass.prototype, {
-      constructor: {
-        value: subClass,
-        enumerable: false,
-        writable: true,
-        configurable: true
-      }
-    });
-    if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass;
-  }
-
-  var Organization = function (_Requestable) {
-    _inherits(Organization, _Requestable);
-
-    /**
-     * Create a new Organization
-     * @param {string} organization - the name of the organization
-     * @param {Requestable.auth} [auth] - information required to authenticate to Github
-     * @param {string} [apiBase=https://api.github.com] - the base Github API URL
-     */
-
-    function Organization(organization, auth, apiBase) {
-      _classCallCheck(this, Organization);
-
-      var _this = _possibleConstructorReturn(this, Object.getPrototypeOf(Organization).call(this, auth, apiBase));
-
-      _this.__name = organization;
-      return _this;
-    }
-
-    /**
-     * Create a repository in an organization
-     * @see https://developer.github.com/v3/repos/#create
-     * @param {Object} options - the repository definition
-     * @param {Requestable.callback} [cb] - will receive the created repository
-     * @return {Promise} - the promise for the http request
-     */
-
-
-    _createClass(Organization, [{
-      key: 'createRepo',
-      value: function createRepo(options, cb) {
-        return this._request('POST', '/orgs/' + this.__name + '/repos', options, cb);
-      }
-    }, {
-      key: 'getRepos',
-      value: function getRepos(cb) {
-        var requestOptions = this._getOptionsWithDefaults({ direction: 'desc' });
-
-        return this._requestAllPages('/orgs/' + this.__name + '/repos', requestOptions, cb);
-      }
-    }, {
-      key: 'isMember',
-      value: function isMember(username, cb) {
-        return this._request204or404('/orgs/' + this.__name + '/members/' + username, null, cb);
-      }
-    }, {
-      key: 'listMembers',
-      value: function listMembers(options, cb) {
-        return this._request('GET', '/orgs/' + this.__name + '/members', options, cb);
-      }
-    }, {
-      key: 'getTeams',
-      value: function getTeams(cb) {
-        return this._requestAllPages('/orgs/' + this.__name + '/teams', undefined, cb);
-      }
-    }, {
-      key: 'createTeam',
-      value: function createTeam(options, cb) {
-        return this._request('POST', '/orgs/' + this.__name + '/teams', options, cb);
-      }
-    }]);
-
-    return Organization;
-  }(_Requestable3.default);
-
-  module.exports = Organization;
-});
-
-},{"./Requestable":8}],6:[function(require,module,exports){
-(function (global, factory) {
-  if (typeof define === "function" && define.amd) {
-    define(['module', './Requestable'], factory);
-  } else if (typeof exports !== "undefined") {
-    factory(module, require('./Requestable'));
-  } else {
-    var mod = {
-      exports: {}
-    };
-    factory(mod, global.Requestable);
-    global.RateLimit = mod.exports;
-  }
-})(this, function (module, _Requestable2) {
-  'use strict';
-
-  var _Requestable3 = _interopRequireDefault(_Requestable2);
-
-  function _interopRequireDefault(obj) {
-    return obj && obj.__esModule ? obj : {
-      default: obj
-    };
-  }
-
-  function _classCallCheck(instance, Constructor) {
-    if (!(instance instanceof Constructor)) {
-      throw new TypeError("Cannot call a class as a function");
-    }
-  }
-
-  var _createClass = function () {
-    function defineProperties(target, props) {
-      for (var i = 0; i < props.length; i++) {
-        var descriptor = props[i];
-        descriptor.enumerable = descriptor.enumerable || false;
-        descriptor.configurable = true;
-        if ("value" in descriptor) descriptor.writable = true;
-        Object.defineProperty(target, descriptor.key, descriptor);
-      }
-    }
-
-    return function (Constructor, protoProps, staticProps) {
-      if (protoProps) defineProperties(Constructor.prototype, protoProps);
-      if (staticProps) defineProperties(Constructor, staticProps);
-      return Constructor;
-    };
-  }();
-
-  function _possibleConstructorReturn(self, call) {
-    if (!self) {
-      throw new ReferenceError("this hasn't been initialised - super() hasn't been called");
-    }
-
-    return call && (typeof call === "object" || typeof call === "function") ? call : self;
-  }
-
-  function _inherits(subClass, superClass) {
-    if (typeof superClass !== "function" && superClass !== null) {
-      throw new TypeError("Super expression must either be null or a function, not " + typeof superClass);
-    }
-
-    subClass.prototype = Object.create(superClass && superClass.prototype, {
-      constructor: {
-        value: subClass,
-        enumerable: false,
-        writable: true,
-        configurable: true
-      }
-    });
-    if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass;
-  }
-
-  var RateLimit = function (_Requestable) {
-    _inherits(RateLimit, _Requestable);
-
-    /**
-     * construct a RateLimit
-     * @param {Requestable.auth} auth - the credentials to authenticate to GitHub
-     * @param {string} [apiBase] - the base Github API URL
-     * @return {Promise} - the promise for the http request
-     */
-
-    function RateLimit(auth, apiBase) {
-      _classCallCheck(this, RateLimit);
-
-      return _possibleConstructorReturn(this, Object.getPrototypeOf(RateLimit).call(this, auth, apiBase));
-    }
-
-    /**
-     * Query the current rate limit
-     * @see https://developer.github.com/v3/rate_limit/
-     * @param {Requestable.callback} [cb] - will receive the rate-limit data
-     * @return {Promise} - the promise for the http request
-     */
-
-
-    _createClass(RateLimit, [{
-      key: 'getRateLimit',
-      value: function getRateLimit(cb) {
-        return this._request('GET', '/rate_limit', null, cb);
-      }
-    }]);
-
-    return RateLimit;
-  }(_Requestable3.default);
-
-  module.exports = RateLimit;
-});
-
-},{"./Requestable":8}],7:[function(require,module,exports){
-(function (Buffer){
-(function (global, factory) {
-   if (typeof define === "function" && define.amd) {
-      define(['module', './Requestable', 'utf8', 'js-base64', 'debug'], factory);
-   } else if (typeof exports !== "undefined") {
-      factory(module, require('./Requestable'), require('utf8'), require('js-base64'), require('debug'));
-   } else {
-      var mod = {
-         exports: {}
-      };
-      factory(mod, global.Requestable, global.utf8, global.jsBase64, global.debug);
-      global.Repository = mod.exports;
-   }
-})(this, function (module, _Requestable2, _utf, _jsBase, _debug) {
-   'use strict';
-
-   var _Requestable3 = _interopRequireDefault(_Requestable2);
-
-   var _utf2 = _interopRequireDefault(_utf);
-
-   var _debug2 = _interopRequireDefault(_debug);
-
-   function _interopRequireDefault(obj) {
-      return obj && obj.__esModule ? obj : {
-         default: obj
-      };
-   }
-
-   var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) {
-      return typeof obj;
-   } : function (obj) {
-      return obj && typeof Symbol === "function" && obj.constructor === Symbol ? "symbol" : typeof obj;
-   };
-
-   function _classCallCheck(instance, Constructor) {
-      if (!(instance instanceof Constructor)) {
-         throw new TypeError("Cannot call a class as a function");
-      }
-   }
-
-   var _createClass = function () {
-      function defineProperties(target, props) {
-         for (var i = 0; i < props.length; i++) {
-            var descriptor = props[i];
-            descriptor.enumerable = descriptor.enumerable || false;
-            descriptor.configurable = true;
-            if ("value" in descriptor) descriptor.writable = true;
-            Object.defineProperty(target, descriptor.key, descriptor);
-         }
-      }
-
-      return function (Constructor, protoProps, staticProps) {
-         if (protoProps) defineProperties(Constructor.prototype, protoProps);
-         if (staticProps) defineProperties(Constructor, staticProps);
-         return Constructor;
-      };
-   }();
-
-   function _possibleConstructorReturn(self, call) {
-      if (!self) {
-         throw new ReferenceError("this hasn't been initialised - super() hasn't been called");
-      }
-
-      return call && (typeof call === "object" || typeof call === "function") ? call : self;
-   }
-
-   function _inherits(subClass, superClass) {
-      if (typeof superClass !== "function" && superClass !== null) {
-         throw new TypeError("Super expression must either be null or a function, not " + typeof superClass);
-      }
-
-      subClass.prototype = Object.create(superClass && superClass.prototype, {
-         constructor: {
-            value: subClass,
-            enumerable: false,
-            writable: true,
-            configurable: true
-         }
+  }, {
+    key: 'create',
+    value: function create(gist, cb) {
+      var _this2 = this;
+
+      return this._request('POST', '/gists', gist, cb).then(function (response) {
+        _this2.__id = response.data.id;
+        return response;
       });
-      if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass;
-   }
+    }
 
-   var log = (0, _debug2.default)('github:repository');
+    /**
+     * Delete a gist.
+     * @see https://developer.github.com/v3/gists/#delete-a-gist
+     * @param {Requestable.callback} [cb] - will receive true if the request succeeds
+     * @return {Promise} - the Promise for the http request
+     */
+
+  }, {
+    key: 'delete',
+    value: function _delete(cb) {
+      return this._request('DELETE', '/gists/' + this.__id, null, cb);
+    }
+
+    /**
+     * Fork a gist.
+     * @see https://developer.github.com/v3/gists/#fork-a-gist
+     * @param {Requestable.callback} [cb] - the function that will receive the gist
+     * @return {Promise} - the Promise for the http request
+     */
+
+  }, {
+    key: 'fork',
+    value: function fork(cb) {
+      return this._request('POST', '/gists/' + this.__id + '/forks', null, cb);
+    }
+
+    /**
+     * Update a gist.
+     * @see https://developer.github.com/v3/gists/#edit-a-gist
+     * @param {Object} gist - the new data for the gist
+     * @param {Requestable.callback} [cb] - the function that receives the API result
+     * @return {Promise} - the Promise for the http request
+     */
+
+  }, {
+    key: 'update',
+    value: function update(gist, cb) {
+      return this._request('PATCH', '/gists/' + this.__id, gist, cb);
+    }
+
+    /**
+     * Star a gist.
+     * @see https://developer.github.com/v3/gists/#star-a-gist
+     * @param {Requestable.callback} [cb] - will receive true if the request is successful
+     * @return {Promise} - the Promise for the http request
+     */
+
+  }, {
+    key: 'star',
+    value: function star(cb) {
+      return this._request('PUT', '/gists/' + this.__id + '/star', null, cb);
+    }
+
+    /**
+     * Unstar a gist.
+     * @see https://developer.github.com/v3/gists/#unstar-a-gist
+     * @param {Requestable.callback} [cb] - will receive true if the request is successful
+     * @return {Promise} - the Promise for the http request
+     */
+
+  }, {
+    key: 'unstar',
+    value: function unstar(cb) {
+      return this._request('DELETE', '/gists/' + this.__id + '/star', null, cb);
+    }
+
+    /**
+     * Check if a gist is starred by the user.
+     * @see https://developer.github.com/v3/gists/#check-if-a-gist-is-starred
+     * @param {Requestable.callback} [cb] - will receive true if the gist is starred and false if the gist is not starred
+     * @return {Promise} - the Promise for the http request
+     */
+
+  }, {
+    key: 'isStarred',
+    value: function isStarred(cb) {
+      return this._request204or404('/gists/' + this.__id + '/star', null, cb);
+    }
+
+    /**
+     * List the gist's comments
+     * @see https://developer.github.com/v3/gists/comments/#list-comments-on-a-gist
+     * @param {Requestable.callback} [cb] - will receive the array of comments
+     * @return {Promise} - the promise for the http request
+     */
+
+  }, {
+    key: 'listComments',
+    value: function listComments(cb) {
+      return this._requestAllPages('/gists/' + this.__id + '/comments', null, cb);
+    }
+
+    /**
+     * Fetch one of the gist's comments
+     * @see https://developer.github.com/v3/gists/comments/#get-a-single-comment
+     * @param {number} comment - the id of the comment
+     * @param {Requestable.callback} [cb] - will receive the comment
+     * @return {Promise} - the Promise for the http request
+     */
+
+  }, {
+    key: 'getComment',
+    value: function getComment(comment, cb) {
+      return this._request('GET', '/gists/' + this.__id + '/comments/' + comment, null, cb);
+    }
+
+    /**
+     * Comment on a gist
+     * @see https://developer.github.com/v3/gists/comments/#create-a-comment
+     * @param {string} comment - the comment to add
+     * @param {Requestable.callback} [cb] - the function that receives the API result
+     * @return {Promise} - the Promise for the http request
+     */
+
+  }, {
+    key: 'createComment',
+    value: function createComment(comment, cb) {
+      return this._request('POST', '/gists/' + this.__id + '/comments', { body: comment }, cb);
+    }
+
+    /**
+     * Edit a comment on the gist
+     * @see https://developer.github.com/v3/gists/comments/#edit-a-comment
+     * @param {number} comment - the id of the comment
+     * @param {string} body - the new comment
+     * @param {Requestable.callback} [cb] - will receive the modified comment
+     * @return {Promise} - the promise for the http request
+     */
+
+  }, {
+    key: 'editComment',
+    value: function editComment(comment, body, cb) {
+      return this._request('PATCH', '/gists/' + this.__id + '/comments/' + comment, { body: body }, cb);
+    }
+
+    /**
+     * Delete a comment on the gist.
+     * @see https://developer.github.com/v3/gists/comments/#delete-a-comment
+     * @param {number} comment - the id of the comment
+     * @param {Requestable.callback} [cb] - will receive true if the request succeeds
+     * @return {Promise} - the Promise for the http request
+     */
+
+  }, {
+    key: 'deleteComment',
+    value: function deleteComment(comment, cb) {
+      return this._request('DELETE', '/gists/' + this.__id + '/comments/' + comment, null, cb);
+    }
+  }]);
+
+  return Gist;
+}(_Requestable3.default);
+
+module.exports = Gist;
+
+},{"./Requestable":9}],2:[function(require,module,exports){
+'use strict';
+
+var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }(); /**
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                      * @file
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                      * @copyright  2013 Michael Aufreiter (Development Seed) and 2016 Yahoo Inc.
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                      * @license    Licensed under {@link https://spdx.org/licenses/BSD-3-Clause-Clear.html BSD-3-Clause-Clear}.
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                      *             Github.js is freely distributable.
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                      */
+/* eslint valid-jsdoc: ["error", {"requireReturnDescription": false}] */
+
+var _Gist = require('./Gist');
+
+var _Gist2 = _interopRequireDefault(_Gist);
+
+var _User = require('./User');
+
+var _User2 = _interopRequireDefault(_User);
+
+var _Issue = require('./Issue');
+
+var _Issue2 = _interopRequireDefault(_Issue);
+
+var _Search = require('./Search');
+
+var _Search2 = _interopRequireDefault(_Search);
+
+var _RateLimit = require('./RateLimit');
+
+var _RateLimit2 = _interopRequireDefault(_RateLimit);
+
+var _Repository = require('./Repository');
+
+var _Repository2 = _interopRequireDefault(_Repository);
+
+var _Organization = require('./Organization');
+
+var _Organization2 = _interopRequireDefault(_Organization);
+
+var _Team = require('./Team');
+
+var _Team2 = _interopRequireDefault(_Team);
+
+var _Markdown = require('./Markdown');
+
+var _Markdown2 = _interopRequireDefault(_Markdown);
+
+var _Project = require('./Project');
+
+var _Project2 = _interopRequireDefault(_Project);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+/**
+ * GitHub encapsulates the functionality to create various API wrapper objects.
+ */
+var GitHub = function () {
+  /**
+   * Create a new GitHub.
+   * @param {Requestable.auth} [auth] - the credentials to authenticate to Github. If auth is
+   *                                  not provided requests will be made unauthenticated
+   * @param {string} [apiBase=https://api.github.com] - the base Github API URL
+   */
+  function GitHub(auth) {
+    var apiBase = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : 'https://api.github.com';
+
+    _classCallCheck(this, GitHub);
+
+    this.__apiBase = apiBase;
+    this.__auth = auth || {};
+  }
+
+  /**
+   * Create a new Gist wrapper
+   * @param {number} [id] - the id for the gist, leave undefined when creating a new gist
+   * @return {Gist}
+   */
+
+
+  _createClass(GitHub, [{
+    key: 'getGist',
+    value: function getGist(id) {
+      return new _Gist2.default(id, this.__auth, this.__apiBase);
+    }
+
+    /**
+     * Create a new User wrapper
+     * @param {string} [user] - the name of the user to get information about
+     *                        leave undefined for the authenticated user
+     * @return {User}
+     */
+
+  }, {
+    key: 'getUser',
+    value: function getUser(user) {
+      return new _User2.default(user, this.__auth, this.__apiBase);
+    }
+
+    /**
+     * Create a new Organization wrapper
+     * @param {string} organization - the name of the organization
+     * @return {Organization}
+     */
+
+  }, {
+    key: 'getOrganization',
+    value: function getOrganization(organization) {
+      return new _Organization2.default(organization, this.__auth, this.__apiBase);
+    }
+
+    /**
+     * create a new Team wrapper
+     * @param {string} teamId - the name of the team
+     * @return {team}
+     */
+
+  }, {
+    key: 'getTeam',
+    value: function getTeam(teamId) {
+      return new _Team2.default(teamId, this.__auth, this.__apiBase);
+    }
+
+    /**
+     * Create a new Repository wrapper
+     * @param {string} user - the user who owns the respository
+     * @param {string} repo - the name of the repository
+     * @return {Repository}
+     */
+
+  }, {
+    key: 'getRepo',
+    value: function getRepo(user, repo) {
+      return new _Repository2.default(this._getFullName(user, repo), this.__auth, this.__apiBase);
+    }
+
+    /**
+     * Create a new Issue wrapper
+     * @param {string} user - the user who owns the respository
+     * @param {string} repo - the name of the repository
+     * @return {Issue}
+     */
+
+  }, {
+    key: 'getIssues',
+    value: function getIssues(user, repo) {
+      return new _Issue2.default(this._getFullName(user, repo), this.__auth, this.__apiBase);
+    }
+
+    /**
+     * Create a new Search wrapper
+     * @param {string} query - the query to search for
+     * @return {Search}
+     */
+
+  }, {
+    key: 'search',
+    value: function search(query) {
+      return new _Search2.default(query, this.__auth, this.__apiBase);
+    }
+
+    /**
+     * Create a new RateLimit wrapper
+     * @return {RateLimit}
+     */
+
+  }, {
+    key: 'getRateLimit',
+    value: function getRateLimit() {
+      return new _RateLimit2.default(this.__auth, this.__apiBase);
+    }
+
+    /**
+     * Create a new Markdown wrapper
+     * @return {Markdown}
+     */
+
+  }, {
+    key: 'getMarkdown',
+    value: function getMarkdown() {
+      return new _Markdown2.default(this.__auth, this.__apiBase);
+    }
+
+    /**
+     * Create a new Project wrapper
+     * @param {string} id - the id of the project
+     * @return {Markdown}
+     */
+
+  }, {
+    key: 'getProject',
+    value: function getProject(id) {
+      return new _Project2.default(id, this.__auth, this.__apiBase);
+    }
+
+    /**
+     * Computes the full repository name
+     * @param {string} user - the username (or the full name)
+     * @param {string} repo - the repository name, must not be passed if `user` is the full name
+     * @return {string} the repository's full name
+     */
+
+  }, {
+    key: '_getFullName',
+    value: function _getFullName(user, repo) {
+      var fullname = user;
+
+      if (repo) {
+        fullname = user + '/' + repo;
+      }
+
+      return fullname;
+    }
+  }]);
+
+  return GitHub;
+}();
+
+module.exports = GitHub;
+
+},{"./Gist":1,"./Issue":3,"./Markdown":4,"./Organization":5,"./Project":6,"./RateLimit":7,"./Repository":8,"./Search":10,"./Team":11,"./User":12}],3:[function(require,module,exports){
+'use strict';
+
+var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+var _Requestable2 = require('./Requestable');
+
+var _Requestable3 = _interopRequireDefault(_Requestable2);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
+
+function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; } /**
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                * @file
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                * @copyright  2013 Michael Aufreiter (Development Seed) and 2016 Yahoo Inc.
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                * @license    Licensed under {@link https://spdx.org/licenses/BSD-3-Clause-Clear.html BSD-3-Clause-Clear}.
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                *             Github.js is freely distributable.
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                */
+
+/**
+ * Issue wraps the functionality to get issues for repositories
+ */
+var Issue = function (_Requestable) {
+  _inherits(Issue, _Requestable);
+
+  /**
+   * Create a new Issue
+   * @param {string} repository - the full name of the repository (`:user/:repo`) to get issues for
+   * @param {Requestable.auth} [auth] - information required to authenticate to Github
+   * @param {string} [apiBase=https://api.github.com] - the base Github API URL
+   */
+  function Issue(repository, auth, apiBase) {
+    _classCallCheck(this, Issue);
+
+    var _this = _possibleConstructorReturn(this, (Issue.__proto__ || Object.getPrototypeOf(Issue)).call(this, auth, apiBase));
+
+    _this.__repository = repository;
+    return _this;
+  }
+
+  /**
+   * Create a new issue
+   * @see https://developer.github.com/v3/issues/#create-an-issue
+   * @param {Object} issueData - the issue to create
+   * @param {Requestable.callback} [cb] - will receive the created issue
+   * @return {Promise} - the promise for the http request
+   */
+
+
+  _createClass(Issue, [{
+    key: 'createIssue',
+    value: function createIssue(issueData, cb) {
+      return this._request('POST', '/repos/' + this.__repository + '/issues', issueData, cb);
+    }
+
+    /**
+     * List the issues for the repository
+     * @see https://developer.github.com/v3/issues/#list-issues-for-a-repository
+     * @param {Object} options - filtering options
+     * @param {Requestable.callback} [cb] - will receive the array of issues
+     * @return {Promise} - the promise for the http request
+     */
+
+  }, {
+    key: 'listIssues',
+    value: function listIssues(options, cb) {
+      return this._requestAllPages('/repos/' + this.__repository + '/issues', options, cb);
+    }
+
+    /**
+     * List the events for an issue
+     * @see https://developer.github.com/v3/issues/events/#list-events-for-an-issue
+     * @param {number} issue - the issue to get events for
+     * @param {Requestable.callback} [cb] - will receive the list of events
+     * @return {Promise} - the promise for the http request
+     */
+
+  }, {
+    key: 'listIssueEvents',
+    value: function listIssueEvents(issue, cb) {
+      return this._request('GET', '/repos/' + this.__repository + '/issues/' + issue + '/events', null, cb);
+    }
+
+    /**
+     * List comments on an issue
+     * @see https://developer.github.com/v3/issues/comments/#list-comments-on-an-issue
+     * @param {number} issue - the id of the issue to get comments from
+     * @param {Requestable.callback} [cb] - will receive the comments
+     * @return {Promise} - the promise for the http request
+     */
+
+  }, {
+    key: 'listIssueComments',
+    value: function listIssueComments(issue, cb) {
+      return this._request('GET', '/repos/' + this.__repository + '/issues/' + issue + '/comments', null, cb);
+    }
+
+    /**
+     * Get a single comment on an issue
+     * @see https://developer.github.com/v3/issues/comments/#get-a-single-comment
+     * @param {number} id - the comment id to get
+     * @param {Requestable.callback} [cb] - will receive the comment
+     * @return {Promise} - the promise for the http request
+     */
+
+  }, {
+    key: 'getIssueComment',
+    value: function getIssueComment(id, cb) {
+      return this._request('GET', '/repos/' + this.__repository + '/issues/comments/' + id, null, cb);
+    }
+
+    /**
+     * Comment on an issue
+     * @see https://developer.github.com/v3/issues/comments/#create-a-comment
+     * @param {number} issue - the id of the issue to comment on
+     * @param {string} comment - the comment to add
+     * @param {Requestable.callback} [cb] - will receive the created comment
+     * @return {Promise} - the promise for the http request
+     */
+
+  }, {
+    key: 'createIssueComment',
+    value: function createIssueComment(issue, comment, cb) {
+      return this._request('POST', '/repos/' + this.__repository + '/issues/' + issue + '/comments', { body: comment }, cb);
+    }
+
+    /**
+     * Edit a comment on an issue
+     * @see https://developer.github.com/v3/issues/comments/#edit-a-comment
+     * @param {number} id - the comment id to edit
+     * @param {string} comment - the comment to edit
+     * @param {Requestable.callback} [cb] - will receive the edited comment
+     * @return {Promise} - the promise for the http request
+     */
+
+  }, {
+    key: 'editIssueComment',
+    value: function editIssueComment(id, comment, cb) {
+      return this._request('PATCH', '/repos/' + this.__repository + '/issues/comments/' + id, { body: comment }, cb);
+    }
+
+    /**
+     * Delete a comment on an issue
+     * @see https://developer.github.com/v3/issues/comments/#delete-a-comment
+     * @param {number} id - the comment id to delete
+     * @param {Requestable.callback} [cb] - will receive true if the request is successful
+     * @return {Promise} - the promise for the http request
+     */
+
+  }, {
+    key: 'deleteIssueComment',
+    value: function deleteIssueComment(id, cb) {
+      return this._request('DELETE', '/repos/' + this.__repository + '/issues/comments/' + id, null, cb);
+    }
+
+    /**
+     * Edit an issue
+     * @see https://developer.github.com/v3/issues/#edit-an-issue
+     * @param {number} issue - the issue number to edit
+     * @param {Object} issueData - the new issue data
+     * @param {Requestable.callback} [cb] - will receive the modified issue
+     * @return {Promise} - the promise for the http request
+     */
+
+  }, {
+    key: 'editIssue',
+    value: function editIssue(issue, issueData, cb) {
+      return this._request('PATCH', '/repos/' + this.__repository + '/issues/' + issue, issueData, cb);
+    }
+
+    /**
+     * Get a particular issue
+     * @see https://developer.github.com/v3/issues/#get-a-single-issue
+     * @param {number} issue - the issue number to fetch
+     * @param {Requestable.callback} [cb] - will receive the issue
+     * @return {Promise} - the promise for the http request
+     */
+
+  }, {
+    key: 'getIssue',
+    value: function getIssue(issue, cb) {
+      return this._request('GET', '/repos/' + this.__repository + '/issues/' + issue, null, cb);
+    }
+
+    /**
+     * List the milestones for the repository
+     * @see https://developer.github.com/v3/issues/milestones/#list-milestones-for-a-repository
+     * @param {Object} options - filtering options
+     * @param {Requestable.callback} [cb] - will receive the array of milestones
+     * @return {Promise} - the promise for the http request
+     */
+
+  }, {
+    key: 'listMilestones',
+    value: function listMilestones(options, cb) {
+      return this._request('GET', '/repos/' + this.__repository + '/milestones', options, cb);
+    }
+
+    /**
+     * Get a milestone
+     * @see https://developer.github.com/v3/issues/milestones/#get-a-single-milestone
+     * @param {string} milestone - the id of the milestone to fetch
+     * @param {Requestable.callback} [cb] - will receive the milestone
+     * @return {Promise} - the promise for the http request
+     */
+
+  }, {
+    key: 'getMilestone',
+    value: function getMilestone(milestone, cb) {
+      return this._request('GET', '/repos/' + this.__repository + '/milestones/' + milestone, null, cb);
+    }
+
+    /**
+     * Create a new milestone
+     * @see https://developer.github.com/v3/issues/milestones/#create-a-milestone
+     * @param {Object} milestoneData - the milestone definition
+     * @param {Requestable.callback} [cb] - will receive the milestone
+     * @return {Promise} - the promise for the http request
+     */
+
+  }, {
+    key: 'createMilestone',
+    value: function createMilestone(milestoneData, cb) {
+      return this._request('POST', '/repos/' + this.__repository + '/milestones', milestoneData, cb);
+    }
+
+    /**
+     * Edit a milestone
+     * @see https://developer.github.com/v3/issues/milestones/#update-a-milestone
+     * @param {string} milestone - the id of the milestone to edit
+     * @param {Object} milestoneData - the updates to make to the milestone
+     * @param {Requestable.callback} [cb] - will receive the updated milestone
+     * @return {Promise} - the promise for the http request
+     */
+
+  }, {
+    key: 'editMilestone',
+    value: function editMilestone(milestone, milestoneData, cb) {
+      return this._request('PATCH', '/repos/' + this.__repository + '/milestones/' + milestone, milestoneData, cb);
+    }
+
+    /**
+     * Delete a milestone (this is distinct from closing a milestone)
+     * @see https://developer.github.com/v3/issues/milestones/#delete-a-milestone
+     * @param {string} milestone - the id of the milestone to delete
+     * @param {Requestable.callback} [cb] - will receive the status
+     * @return {Promise} - the promise for the http request
+     */
+
+  }, {
+    key: 'deleteMilestone',
+    value: function deleteMilestone(milestone, cb) {
+      return this._request('DELETE', '/repos/' + this.__repository + '/milestones/' + milestone, null, cb);
+    }
+
+    /**
+     * Create a new label
+     * @see https://developer.github.com/v3/issues/labels/#create-a-label
+     * @param {Object} labelData - the label definition
+     * @param {Requestable.callback} [cb] - will receive the object representing the label
+     * @return {Promise} - the promise for the http request
+     */
+
+  }, {
+    key: 'createLabel',
+    value: function createLabel(labelData, cb) {
+      return this._request('POST', '/repos/' + this.__repository + '/labels', labelData, cb);
+    }
+
+    /**
+     * List the labels for the repository
+     * @see https://developer.github.com/v3/issues/labels/#list-all-labels-for-this-repository
+     * @param {Object} options - filtering options
+     * @param {Requestable.callback} [cb] - will receive the array of labels
+     * @return {Promise} - the promise for the http request
+     */
+
+  }, {
+    key: 'listLabels',
+    value: function listLabels(options, cb) {
+      return this._request('GET', '/repos/' + this.__repository + '/labels', options, cb);
+    }
+
+    /**
+     * Get a label
+     * @see https://developer.github.com/v3/issues/labels/#get-a-single-label
+     * @param {string} label - the name of the label to fetch
+     * @param {Requestable.callback} [cb] - will receive the label
+     * @return {Promise} - the promise for the http request
+     */
+
+  }, {
+    key: 'getLabel',
+    value: function getLabel(label, cb) {
+      return this._request('GET', '/repos/' + this.__repository + '/labels/' + label, null, cb);
+    }
+
+    /**
+     * Edit a label
+     * @see https://developer.github.com/v3/issues/labels/#update-a-label
+     * @param {string} label - the name of the label to edit
+     * @param {Object} labelData - the updates to make to the label
+     * @param {Requestable.callback} [cb] - will receive the updated label
+     * @return {Promise} - the promise for the http request
+     */
+
+  }, {
+    key: 'editLabel',
+    value: function editLabel(label, labelData, cb) {
+      return this._request('PATCH', '/repos/' + this.__repository + '/labels/' + label, labelData, cb);
+    }
+
+    /**
+     * Delete a label
+     * @see https://developer.github.com/v3/issues/labels/#delete-a-label
+     * @param {string} label - the name of the label to delete
+     * @param {Requestable.callback} [cb] - will receive the status
+     * @return {Promise} - the promise for the http request
+     */
+
+  }, {
+    key: 'deleteLabel',
+    value: function deleteLabel(label, cb) {
+      return this._request('DELETE', '/repos/' + this.__repository + '/labels/' + label, null, cb);
+    }
+  }]);
+
+  return Issue;
+}(_Requestable3.default);
+
+module.exports = Issue;
+
+},{"./Requestable":9}],4:[function(require,module,exports){
+'use strict';
+
+var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+var _Requestable2 = require('./Requestable');
+
+var _Requestable3 = _interopRequireDefault(_Requestable2);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
+
+function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; } /**
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                * @file
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                * @copyright  2013 Michael Aufreiter (Development Seed) and 2016 Yahoo Inc.
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                * @license    Licensed under {@link https://spdx.org/licenses/BSD-3-Clause-Clear.html BSD-3-Clause-Clear}.
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                *             Github.js is freely distributable.
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                */
+
+/**
+ * Renders html from Markdown text
+ */
+var Markdown = function (_Requestable) {
+  _inherits(Markdown, _Requestable);
+
+  /**
+   * construct a Markdown
+   * @param {Requestable.auth} auth - the credentials to authenticate to GitHub
+   * @param {string} [apiBase] - the base Github API URL
+   * @return {Promise} - the promise for the http request
+   */
+  function Markdown(auth, apiBase) {
+    _classCallCheck(this, Markdown);
+
+    return _possibleConstructorReturn(this, (Markdown.__proto__ || Object.getPrototypeOf(Markdown)).call(this, auth, apiBase));
+  }
+
+  /**
+   * Render html from Markdown text.
+   * @see https://developer.github.com/v3/markdown/#render-an-arbitrary-markdown-document
+   * @param {Object} options - conversion options
+   * @param {string} [options.text] - the markdown text to convert
+   * @param {string} [options.mode=markdown] - can be either `markdown` or `gfm`
+   * @param {string} [options.context] - repository name if mode is gfm
+   * @param {Requestable.callback} [cb] - will receive the converted html
+   * @return {Promise} - the promise for the http request
+   */
+
+
+  _createClass(Markdown, [{
+    key: 'render',
+    value: function render(options, cb) {
+      return this._request('POST', '/markdown', options, cb);
+    }
+  }]);
+
+  return Markdown;
+}(_Requestable3.default);
+
+module.exports = Markdown;
+
+},{"./Requestable":9}],5:[function(require,module,exports){
+'use strict';
+
+var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+var _Requestable2 = require('./Requestable');
+
+var _Requestable3 = _interopRequireDefault(_Requestable2);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
+
+function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; } /**
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                * @file
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                * @copyright  2013 Michael Aufreiter (Development Seed) and 2016 Yahoo Inc.
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                * @license    Licensed under {@link https://spdx.org/licenses/BSD-3-Clause-Clear.html BSD-3-Clause-Clear}.
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                *             Github.js is freely distributable.
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                */
+
+/**
+ * Organization encapsulates the functionality to create repositories in organizations
+ */
+var Organization = function (_Requestable) {
+  _inherits(Organization, _Requestable);
+
+  /**
+   * Create a new Organization
+   * @param {string} organization - the name of the organization
+   * @param {Requestable.auth} [auth] - information required to authenticate to Github
+   * @param {string} [apiBase=https://api.github.com] - the base Github API URL
+   */
+  function Organization(organization, auth, apiBase) {
+    _classCallCheck(this, Organization);
+
+    var _this = _possibleConstructorReturn(this, (Organization.__proto__ || Object.getPrototypeOf(Organization)).call(this, auth, apiBase));
+
+    _this.__name = organization;
+    return _this;
+  }
+
+  /**
+   * Create a repository in an organization
+   * @see https://developer.github.com/v3/repos/#create
+   * @param {Object} options - the repository definition
+   * @param {Requestable.callback} [cb] - will receive the created repository
+   * @return {Promise} - the promise for the http request
+   */
+
+
+  _createClass(Organization, [{
+    key: 'createRepo',
+    value: function createRepo(options, cb) {
+      return this._request('POST', '/orgs/' + this.__name + '/repos', options, cb);
+    }
+
+    /**
+     * List the repositories in an organization
+     * @see https://developer.github.com/v3/repos/#list-organization-repositories
+     * @param {Requestable.callback} [cb] - will receive the list of repositories
+     * @return {Promise} - the promise for the http request
+     */
+
+  }, {
+    key: 'getRepos',
+    value: function getRepos(cb) {
+      var requestOptions = this._getOptionsWithDefaults({ direction: 'desc' });
+
+      return this._requestAllPages('/orgs/' + this.__name + '/repos', requestOptions, cb);
+    }
+
+    /**
+     * Query if the user is a member or not
+     * @param {string} username - the user in question
+     * @param {Requestable.callback} [cb] - will receive true if the user is a member
+     * @return {Promise} - the promise for the http request
+     */
+
+  }, {
+    key: 'isMember',
+    value: function isMember(username, cb) {
+      return this._request204or404('/orgs/' + this.__name + '/members/' + username, null, cb);
+    }
+
+    /**
+     * List the users who are members of the company
+     * @see https://developer.github.com/v3/orgs/members/#members-list
+     * @param {object} options - filtering options
+     * @param {string} [options.filter=all] - can be either `2fa_disabled` or `all`
+     * @param {string} [options.role=all] - can be one of: `all`, `admin`, or `member`
+     * @param {Requestable.callback} [cb] - will receive the list of users
+     * @return {Promise} - the promise for the http request
+     */
+
+  }, {
+    key: 'listMembers',
+    value: function listMembers(options, cb) {
+      return this._request('GET', '/orgs/' + this.__name + '/members', options, cb);
+    }
+
+    /**
+     * List the Teams in the Organization
+     * @see https://developer.github.com/v3/orgs/teams/#list-teams
+     * @param {Requestable.callback} [cb] - will receive the list of teams
+     * @return {Promise} - the promise for the http request
+     */
+
+  }, {
+    key: 'getTeams',
+    value: function getTeams(cb) {
+      return this._requestAllPages('/orgs/' + this.__name + '/teams', undefined, cb);
+    }
+
+    /**
+     * Create a team
+     * @see https://developer.github.com/v3/orgs/teams/#create-team
+     * @param {object} options - Team creation parameters
+     * @param {string} options.name - The name of the team
+     * @param {string} [options.description] - Team description
+     * @param {string} [options.repo_names] - Repos to add the team to
+     * @param {string} [options.privacy=secret] - The level of privacy the team should have. Can be either one
+     * of: `secret`, or `closed`
+     * @param {Requestable.callback} [cb] - will receive the created team
+     * @return {Promise} - the promise for the http request
+     */
+
+  }, {
+    key: 'createTeam',
+    value: function createTeam(options, cb) {
+      return this._request('POST', '/orgs/' + this.__name + '/teams', options, cb);
+    }
+
+    /**
+     * Get information about all projects
+     * @see https://developer.github.com/v3/projects/#list-organization-projects
+     * @param {Requestable.callback} [cb] - will receive the list of projects
+     * @return {Promise} - the promise for the http request
+     */
+
+  }, {
+    key: 'listProjects',
+    value: function listProjects(cb) {
+      return this._requestAllPages('/orgs/' + this.__name + '/projects', { AcceptHeader: 'inertia-preview' }, cb);
+    }
+
+    /**
+     * Create a new project
+     * @see https://developer.github.com/v3/repos/projects/#create-a-project
+     * @param {Object} options - the description of the project
+     * @param {Requestable.callback} cb - will receive the newly created project
+     * @return {Promise} - the promise for the http request
+     */
+
+  }, {
+    key: 'createProject',
+    value: function createProject(options, cb) {
+      options = options || {};
+      options.AcceptHeader = 'inertia-preview';
+      return this._request('POST', '/orgs/' + this.__name + '/projects', options, cb);
+    }
+  }]);
+
+  return Organization;
+}(_Requestable3.default);
+
+module.exports = Organization;
+
+},{"./Requestable":9}],6:[function(require,module,exports){
+'use strict';
+
+var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+var _Requestable2 = require('./Requestable');
+
+var _Requestable3 = _interopRequireDefault(_Requestable2);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+function _toConsumableArray(arr) { if (Array.isArray(arr)) { for (var i = 0, arr2 = Array(arr.length); i < arr.length; i++) { arr2[i] = arr[i]; } return arr2; } else { return Array.from(arr); } }
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
+
+function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; } /**
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                * @file
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                * @copyright  2013 Michael Aufreiter (Development Seed) and 2016 Yahoo Inc.
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                * @license    Licensed under {@link https://spdx.org/licenses/BSD-3-Clause-Clear.html BSD-3-Clause-Clear}.
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                *             Github.js is freely distributable.
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                */
+
+/**
+ * Project encapsulates the functionality to create, query, and modify cards and columns.
+ */
+var Project = function (_Requestable) {
+   _inherits(Project, _Requestable);
 
    /**
-    * Respository encapsulates the functionality to create, query, and modify files.
+    * Create a Project.
+    * @param {string} id - the id of the project
+    * @param {Requestable.auth} [auth] - information required to authenticate to Github
+    * @param {string} [apiBase=https://api.github.com] - the base Github API URL
+    */
+   function Project(id, auth, apiBase) {
+      _classCallCheck(this, Project);
+
+      var _this = _possibleConstructorReturn(this, (Project.__proto__ || Object.getPrototypeOf(Project)).call(this, auth, apiBase, 'inertia-preview'));
+
+      _this.__id = id;
+      return _this;
+   }
+
+   /**
+    * Get information about a project
+    * @see https://developer.github.com/v3/projects/#get-a-project
+    * @param {Requestable.callback} cb - will receive the project information
+    * @return {Promise} - the promise for the http request
     */
 
-   var Repository = function (_Requestable) {
-      _inherits(Repository, _Requestable);
 
-      /**
-       * Create a Repository.
-       * @param {string} fullname - the full name of the repository
-       * @param {Requestable.auth} [auth] - information required to authenticate to Github
-       * @param {string} [apiBase=https://api.github.com] - the base Github API URL
-       */
-
-      function Repository(fullname, auth, apiBase) {
-         _classCallCheck(this, Repository);
-
-         var _this = _possibleConstructorReturn(this, Object.getPrototypeOf(Repository).call(this, auth, apiBase));
-
-         _this.__fullname = fullname;
-         _this.__currentTree = {
-            branch: null,
-            sha: null
-         };
-         return _this;
+   _createClass(Project, [{
+      key: 'getProject',
+      value: function getProject(cb) {
+         return this._request('GET', '/projects/' + this.__id, null, cb);
       }
 
       /**
-       * Get a reference
-       * @see https://developer.github.com/v3/git/refs/#get-a-reference
-       * @param {string} ref - the reference to get
-       * @param {Requestable.callback} [cb] - will receive the reference's refSpec or a list of refSpecs that match `ref`
+       * Edit a project
+       * @see https://developer.github.com/v3/projects/#update-a-project
+       * @param {Object} options - the description of the project
+       * @param {Requestable.callback} cb - will receive the modified project
        * @return {Promise} - the promise for the http request
        */
 
+   }, {
+      key: 'updateProject',
+      value: function updateProject(options, cb) {
+         return this._request('PATCH', '/projects/' + this.__id, options, cb);
+      }
 
-      _createClass(Repository, [{
-         key: 'getRef',
-         value: function getRef(ref, cb) {
-            return this._request('GET', '/repos/' + this.__fullname + '/git/refs/' + ref, null, cb);
-         }
-      }, {
-         key: 'createRef',
-         value: function createRef(options, cb) {
-            return this._request('POST', '/repos/' + this.__fullname + '/git/refs', options, cb);
-         }
-      }, {
-         key: 'deleteRef',
-         value: function deleteRef(ref, cb) {
-            return this._request('DELETE', '/repos/' + this.__fullname + '/git/refs/' + ref, null, cb);
-         }
-      }, {
-         key: 'deleteRepo',
-         value: function deleteRepo(cb) {
-            return this._request('DELETE', '/repos/' + this.__fullname, null, cb);
-         }
-      }, {
-         key: 'listTags',
-         value: function listTags(cb) {
-            return this._request('GET', '/repos/' + this.__fullname + '/tags', null, cb);
-         }
-      }, {
-         key: 'listPullRequests',
-         value: function listPullRequests(options, cb) {
-            options = options || {};
-            return this._request('GET', '/repos/' + this.__fullname + '/pulls', options, cb);
-         }
-      }, {
-         key: 'getPullRequest',
-         value: function getPullRequest(number, cb) {
-            return this._request('GET', '/repos/' + this.__fullname + '/pulls/' + number, null, cb);
-         }
-      }, {
-         key: 'listPullRequestFiles',
-         value: function listPullRequestFiles(number, cb) {
-            return this._request('GET', '/repos/' + this.__fullname + '/pulls/' + number + '/files', null, cb);
-         }
-      }, {
-         key: 'compareBranches',
-         value: function compareBranches(base, head, cb) {
-            return this._request('GET', '/repos/' + this.__fullname + '/compare/' + base + '...' + head, null, cb);
-         }
-      }, {
-         key: 'listBranches',
-         value: function listBranches(cb) {
-            return this._request('GET', '/repos/' + this.__fullname + '/branches', null, cb);
-         }
-      }, {
-         key: 'getBlob',
-         value: function getBlob(sha, cb) {
-            return this._request('GET', '/repos/' + this.__fullname + '/git/blobs/' + sha, null, cb, 'raw');
-         }
-      }, {
-         key: 'getCommit',
-         value: function getCommit(sha, cb) {
-            return this._request('GET', '/repos/' + this.__fullname + '/git/commits/' + sha, null, cb);
-         }
-      }, {
-         key: 'listCommits',
-         value: function listCommits(options, cb) {
-            options = options || {};
+      /**
+       * Delete a project
+       * @see https://developer.github.com/v3/projects/#delete-a-project
+       * @param {Requestable.callback} cb - will receive true if the operation is successful
+       * @return {Promise} - the promise for the http request
+       */
 
-            options.since = this._dateToISO(options.since);
-            options.until = this._dateToISO(options.until);
+   }, {
+      key: 'deleteProject',
+      value: function deleteProject(cb) {
+         return this._request('DELETE', '/projects/' + this.__id, null, cb);
+      }
 
-            return this._request('GET', '/repos/' + this.__fullname + '/commits', options, cb);
-         }
-      }, {
-         key: 'getSingleCommit',
-         value: function getSingleCommit(ref, cb) {
-            ref = ref || '';
-            return this._request('GET', '/repos/' + this.__fullname + '/commits/' + ref, null, cb);
-         }
-      }, {
-         key: 'getSha',
-         value: function getSha(branch, path, cb) {
-            branch = branch ? '?ref=' + branch : '';
-            return this._request('GET', '/repos/' + this.__fullname + '/contents/' + path + branch, null, cb);
-         }
-      }, {
-         key: 'listStatuses',
-         value: function listStatuses(sha, cb) {
-            return this._request('GET', '/repos/' + this.__fullname + '/commits/' + sha + '/statuses', null, cb);
-         }
-      }, {
-         key: 'getTree',
-         value: function getTree(treeSHA, cb) {
-            return this._request('GET', '/repos/' + this.__fullname + '/git/trees/' + treeSHA, null, cb);
-         }
-      }, {
-         key: 'createBlob',
-         value: function createBlob(content, cb) {
-            var postBody = this._getContentObject(content);
+      /**
+       * Get information about all columns of a project
+       * @see https://developer.github.com/v3/projects/columns/#list-project-columns
+       * @param {Requestable.callback} [cb] - will receive the list of columns
+       * @return {Promise} - the promise for the http request
+       */
 
-            log('sending content', postBody);
-            return this._request('POST', '/repos/' + this.__fullname + '/git/blobs', postBody, cb);
-         }
-      }, {
-         key: '_getContentObject',
-         value: function _getContentObject(content) {
-            if (typeof content === 'string') {
-               log('contet is a string');
-               return {
-                  content: _utf2.default.encode(content),
-                  encoding: 'utf-8'
-               };
-            } else if (typeof Buffer !== 'undefined' && content instanceof Buffer) {
-               log('We appear to be in Node');
-               return {
-                  content: content.toString('base64'),
-                  encoding: 'base64'
-               };
-            } else if (typeof Blob !== 'undefined' && content instanceof Blob) {
-               log('We appear to be in the browser');
-               return {
-                  content: _jsBase.Base64.encode(content),
-                  encoding: 'base64'
-               };
-            } else {
-               // eslint-disable-line
-               log('Not sure what this content is: ' + (typeof content === 'undefined' ? 'undefined' : _typeof(content)) + ', ' + JSON.stringify(content));
-               throw new Error('Unknown content passed to postBlob. Must be string or Buffer (node) or Blob (web)');
+   }, {
+      key: 'listProjectColumns',
+      value: function listProjectColumns(cb) {
+         return this._requestAllPages('/projects/' + this.__id + '/columns', null, cb);
+      }
+
+      /**
+       * Get information about a column
+       * @see https://developer.github.com/v3/projects/columns/#get-a-project-column
+       * @param {string} colId - the id of the column
+       * @param {Requestable.callback} cb - will receive the column information
+       * @return {Promise} - the promise for the http request
+       */
+
+   }, {
+      key: 'getProjectColumn',
+      value: function getProjectColumn(colId, cb) {
+         return this._request('GET', '/projects/columns/' + colId, null, cb);
+      }
+
+      /**
+       * Create a new column
+       * @see https://developer.github.com/v3/projects/columns/#create-a-project-column
+       * @param {Object} options - the description of the column
+       * @param {Requestable.callback} cb - will receive the newly created column
+       * @return {Promise} - the promise for the http request
+       */
+
+   }, {
+      key: 'createProjectColumn',
+      value: function createProjectColumn(options, cb) {
+         return this._request('POST', '/projects/' + this.__id + '/columns', options, cb);
+      }
+
+      /**
+       * Edit a column
+       * @see https://developer.github.com/v3/projects/columns/#update-a-project-column
+       * @param {string} colId - the column id
+       * @param {Object} options - the description of the column
+       * @param {Requestable.callback} cb - will receive the modified column
+       * @return {Promise} - the promise for the http request
+       */
+
+   }, {
+      key: 'updateProjectColumn',
+      value: function updateProjectColumn(colId, options, cb) {
+         return this._request('PATCH', '/projects/columns/' + colId, options, cb);
+      }
+
+      /**
+       * Delete a column
+       * @see https://developer.github.com/v3/projects/columns/#delete-a-project-column
+       * @param {string} colId - the column to be deleted
+       * @param {Requestable.callback} cb - will receive true if the operation is successful
+       * @return {Promise} - the promise for the http request
+       */
+
+   }, {
+      key: 'deleteProjectColumn',
+      value: function deleteProjectColumn(colId, cb) {
+         return this._request('DELETE', '/projects/columns/' + colId, null, cb);
+      }
+
+      /**
+       * Move a column
+       * @see https://developer.github.com/v3/projects/columns/#move-a-project-column
+       * @param {string} colId - the column to be moved
+       * @param {string} position - can be one of first, last, or after:<column-id>,
+       * where <column-id> is the id value of a column in the same project.
+       * @param {Requestable.callback} cb - will receive true if the operation is successful
+       * @return {Promise} - the promise for the http request
+       */
+
+   }, {
+      key: 'moveProjectColumn',
+      value: function moveProjectColumn(colId, position, cb) {
+         return this._request('POST', '/projects/columns/' + colId + '/moves', { position: position }, cb);
+      }
+
+      /**
+       * Get information about all cards of a project
+       * @see https://developer.github.com/v3/projects/cards/#list-project-cards
+       * @param {Requestable.callback} [cb] - will receive the list of cards
+       * @return {Promise} - the promise for the http request
+       */
+
+   }, {
+      key: 'listProjectCards',
+      value: function listProjectCards(cb) {
+         var _this2 = this;
+
+         return this.listProjectColumns().then(function (_ref) {
+            var data = _ref.data;
+
+            return Promise.all(data.map(function (column) {
+               return _this2._requestAllPages('/projects/columns/' + column.id + '/cards', null);
+            }));
+         }).then(function (cardsInColumns) {
+            var cards = cardsInColumns.reduce(function (prev, _ref2) {
+               var data = _ref2.data;
+
+               prev.push.apply(prev, _toConsumableArray(data));
+               return prev;
+            }, []);
+            if (cb) {
+               cb(null, cards);
             }
-         }
-      }, {
-         key: 'updateTree',
-         value: function updateTree(baseTreeSHA, path, blobSHA, cb) {
-            var newTree = {
-               base_tree: baseTreeSHA, // eslint-disable-line
-               tree: [{
-                  path: path,
-                  sha: blobSHA,
-                  mode: '100644',
-                  type: 'blob'
-               }]
-            };
-
-            return this._request('POST', '/repos/' + this.__fullname + '/git/trees', newTree, cb);
-         }
-      }, {
-         key: 'createTree',
-         value: function createTree(tree, baseSHA, cb) {
-            return this._request('POST', '/repos/' + this.__fullname + '/git/trees', {
-               tree: tree,
-               base_tree: baseSHA // eslint-disable-line
-            }, cb);
-         }
-      }, {
-         key: 'commit',
-         value: function commit(parent, tree, message, cb) {
-            var _this2 = this;
-
-            var data = {
-               message: message,
-               tree: tree,
-               parents: [parent]
-            };
-
-            return this._request('POST', '/repos/' + this.__fullname + '/git/commits', data, cb).then(function (response) {
-               _this2.__currentTree.sha = response.data.sha; // Update latest commit
-               return response;
-            });
-         }
-      }, {
-         key: 'updateHead',
-         value: function updateHead(ref, commitSHA, force, cb) {
-            return this._request('PATCH', '/repos/' + this.__fullname + '/git/refs/' + ref, {
-               sha: commitSHA,
-               force: force
-            }, cb);
-         }
-      }, {
-         key: 'getDetails',
-         value: function getDetails(cb) {
-            return this._request('GET', '/repos/' + this.__fullname, null, cb);
-         }
-      }, {
-         key: 'getContributors',
-         value: function getContributors(cb) {
-            return this._request('GET', '/repos/' + this.__fullname + '/stats/contributors', null, cb);
-         }
-      }, {
-         key: 'getCollaborators',
-         value: function getCollaborators(cb) {
-            return this._request('GET', '/repos/' + this.__fullname + '/collaborators', null, cb);
-         }
-      }, {
-         key: 'isCollaborator',
-         value: function isCollaborator(username, cb) {
-            return this._request('GET', '/repos/' + this.__fullname + '/collaborators/' + username, null, cb);
-         }
-      }, {
-         key: 'getContents',
-         value: function getContents(ref, path, raw, cb) {
-            path = path ? '' + encodeURI(path) : '';
-            return this._request('GET', '/repos/' + this.__fullname + '/contents/' + path, {
-               ref: ref
-            }, cb, raw);
-         }
-      }, {
-         key: 'getReadme',
-         value: function getReadme(ref, raw, cb) {
-            return this._request('GET', '/repos/' + this.__fullname + '/readme', {
-               ref: ref
-            }, cb, raw);
-         }
-      }, {
-         key: 'fork',
-         value: function fork(cb) {
-            return this._request('POST', '/repos/' + this.__fullname + '/forks', null, cb);
-         }
-      }, {
-         key: 'listForks',
-         value: function listForks(cb) {
-            return this._request('GET', '/repos/' + this.__fullname + '/forks', null, cb);
-         }
-      }, {
-         key: 'createBranch',
-         value: function createBranch(oldBranch, newBranch, cb) {
-            var _this3 = this;
-
-            if (typeof newBranch === 'function') {
-               cb = newBranch;
-               newBranch = oldBranch;
-               oldBranch = 'master';
+            return cards;
+         }).catch(function (err) {
+            if (cb) {
+               cb(err);
+               return;
             }
+            throw err;
+         });
+      }
 
-            return this.getRef('heads/' + oldBranch).then(function (response) {
-               var sha = response.data.object.sha;
-               return _this3.createRef({
-                  sha: sha,
-                  ref: 'refs/heads/' + newBranch
-               }, cb);
-            });
-         }
-      }, {
-         key: 'createPullRequest',
-         value: function createPullRequest(options, cb) {
-            return this._request('POST', '/repos/' + this.__fullname + '/pulls', options, cb);
-         }
-      }, {
-         key: 'updatePullRequst',
-         value: function updatePullRequst(number, options, cb) {
-            return this._request('PATCH', '/repos/' + this.__fullname + '/pulls/' + number, options, cb);
-         }
-      }, {
-         key: 'listHooks',
-         value: function listHooks(cb) {
-            return this._request('GET', '/repos/' + this.__fullname + '/hooks', null, cb);
-         }
-      }, {
-         key: 'getHook',
-         value: function getHook(id, cb) {
-            return this._request('GET', '/repos/' + this.__fullname + '/hooks/' + id, null, cb);
-         }
-      }, {
-         key: 'createHook',
-         value: function createHook(options, cb) {
-            return this._request('POST', '/repos/' + this.__fullname + '/hooks', options, cb);
-         }
-      }, {
-         key: 'updateHook',
-         value: function updateHook(id, options, cb) {
-            return this._request('PATCH', '/repos/' + this.__fullname + '/hooks/' + id, options, cb);
-         }
-      }, {
-         key: 'deleteHook',
-         value: function deleteHook(id, cb) {
-            return this._request('DELETE', this.__repoPath + '/hooks/' + id, null, cb);
-         }
-      }, {
-         key: 'deleteFile',
-         value: function deleteFile(branch, path, cb) {
-            var _this4 = this;
+      /**
+      * Get information about all cards of a column
+      * @see https://developer.github.com/v3/projects/cards/#list-project-cards
+      * @param {string} colId - the id of the column
+      * @param {Requestable.callback} [cb] - will receive the list of cards
+      * @return {Promise} - the promise for the http request
+      */
 
-            return this.getSha(branch, path).then(function (response) {
-               var deleteCommit = {
-                  message: 'Delete the file at \'' + path + '\'',
-                  sha: response.data.sha,
-                  branch: branch
-               };
-               return _this4._request('DELETE', '/repos/' + _this4.__fullname + '/contents/' + path, deleteCommit, cb);
-            });
-         }
-      }, {
-         key: 'move',
-         value: function move(branch, oldPath, newPath, cb) {
-            var _this5 = this;
+   }, {
+      key: 'listColumnCards',
+      value: function listColumnCards(colId, cb) {
+         return this._requestAllPages('/projects/columns/' + colId + '/cards', null, cb);
+      }
 
-            var oldSha = void 0;
-            return this.getRef('heads/' + branch).then(function (_ref) {
-               var object = _ref.data.object;
-               return _this5.getTree(object.sha + '?recursive=true');
-            }).then(function (_ref2) {
-               var _ref2$data = _ref2.data;
-               var tree = _ref2$data.tree;
-               var sha = _ref2$data.sha;
+      /**
+      * Get information about a card
+      * @see https://developer.github.com/v3/projects/cards/#get-a-project-card
+      * @param {string} cardId - the id of the card
+      * @param {Requestable.callback} cb - will receive the card information
+      * @return {Promise} - the promise for the http request
+      */
 
-               oldSha = sha;
-               var newTree = tree.map(function (ref) {
-                  if (ref.path === oldPath) {
-                     ref.path = newPath;
-                  }
-                  if (ref.type === 'tree') {
-                     delete ref.sha;
-                  }
-                  return ref;
-               });
-               return _this5.createTree(newTree);
-            }).then(function (_ref3) {
-               var tree = _ref3.data;
-               return _this5.commit(oldSha, tree.sha, 'Renamed \'' + oldPath + '\' to \'' + newPath + '\'');
-            }).then(function (_ref4) {
-               var commit = _ref4.data;
-               return _this5.updateHead('heads/' + branch, commit.sha, true, cb);
-            });
-         }
-      }, {
-         key: 'writeFile',
-         value: function writeFile(branch, path, content, message, options, cb) {
-            var _this6 = this;
+   }, {
+      key: 'getProjectCard',
+      value: function getProjectCard(cardId, cb) {
+         return this._request('GET', '/projects/columns/cards/' + cardId, null, cb);
+      }
 
-            if (typeof options === 'function') {
-               cb = options;
-               options = {};
-            }
-            var filePath = path ? encodeURI(path) : '';
-            var shouldEncode = options.encode !== false;
-            var commit = {
-               branch: branch,
-               message: message,
-               author: options.author,
-               committer: options.committer,
-               content: shouldEncode ? _jsBase.Base64.encode(content) : content
-            };
+      /**
+      * Create a new card
+      * @see https://developer.github.com/v3/projects/cards/#create-a-project-card
+      * @param {string} colId - the column id
+      * @param {Object} options - the description of the card
+      * @param {Requestable.callback} cb - will receive the newly created card
+      * @return {Promise} - the promise for the http request
+      */
 
-            return this.getSha(branch, filePath).then(function (response) {
-               commit.sha = response.data.sha;
-               return _this6._request('PUT', '/repos/' + _this6.__fullname + '/contents/' + filePath, commit, cb);
-            }, function () {
-               return _this6._request('PUT', '/repos/' + _this6.__fullname + '/contents/' + filePath, commit, cb);
-            });
-         }
-      }, {
-         key: 'isStarred',
-         value: function isStarred(cb) {
-            return this._request204or404('/user/starred/' + this.__fullname, null, cb);
-         }
-      }, {
-         key: 'star',
-         value: function star(cb) {
-            return this._request('PUT', '/user/starred/' + this.__fullname, null, cb);
-         }
-      }, {
-         key: 'unstar',
-         value: function unstar(cb) {
-            return this._request('DELETE', '/user/starred/' + this.__fullname, null, cb);
-         }
-      }, {
-         key: 'createRelease',
-         value: function createRelease(options, cb) {
-            return this._request('POST', '/repos/' + this.__fullname + '/releases', options, cb);
-         }
-      }, {
-         key: 'updateRelease',
-         value: function updateRelease(id, options, cb) {
-            return this._request('PATCH', '/repos/' + this.__fullname + '/releases/' + id, options, cb);
-         }
-      }, {
-         key: 'listReleases',
-         value: function listReleases(cb) {
-            return this._request('GET', '/repos/' + this.__fullname + '/releases', null, cb);
-         }
-      }, {
-         key: 'getRelease',
-         value: function getRelease(id, cb) {
-            return this._request('GET', '/repos/' + this.__fullname + '/releases/' + id, null, cb);
-         }
-      }, {
-         key: 'deleteRelease',
-         value: function deleteRelease(id, cb) {
-            return this._request('DELETE', '/repos/' + this.__fullname + '/releases/' + id, null, cb);
-         }
-      }, {
-         key: 'mergePullRequest',
-         value: function mergePullRequest(number, options, cb) {
-            return this._request('PUT', '/repos/' + this.__fullname + '/pulls/' + number + '/merge', options, cb);
-         }
-      }]);
+   }, {
+      key: 'createProjectCard',
+      value: function createProjectCard(colId, options, cb) {
+         return this._request('POST', '/projects/columns/' + colId + '/cards', options, cb);
+      }
 
-      return Repository;
-   }(_Requestable3.default);
+      /**
+      * Edit a card
+      * @see https://developer.github.com/v3/projects/cards/#update-a-project-card
+      * @param {string} cardId - the card id
+      * @param {Object} options - the description of the card
+      * @param {Requestable.callback} cb - will receive the modified card
+      * @return {Promise} - the promise for the http request
+      */
 
-   module.exports = Repository;
-});
+   }, {
+      key: 'updateProjectCard',
+      value: function updateProjectCard(cardId, options, cb) {
+         return this._request('PATCH', '/projects/columns/cards/' + cardId, options, cb);
+      }
 
-}).call(this,require("buffer").Buffer)
+      /**
+      * Delete a card
+      * @see https://developer.github.com/v3/projects/cards/#delete-a-project-card
+      * @param {string} cardId - the card to be deleted
+      * @param {Requestable.callback} cb - will receive true if the operation is successful
+      * @return {Promise} - the promise for the http request
+      */
 
-},{"./Requestable":8,"buffer":30,"debug":31,"js-base64":36,"utf8":39}],8:[function(require,module,exports){
-(function (global, factory) {
-   if (typeof define === "function" && define.amd) {
-      define(['module', 'axios', 'debug', 'js-base64', 'es6-promise'], factory);
-   } else if (typeof exports !== "undefined") {
-      factory(module, require('axios'), require('debug'), require('js-base64'), require('es6-promise'));
-   } else {
-      var mod = {
-         exports: {}
+   }, {
+      key: 'deleteProjectCard',
+      value: function deleteProjectCard(cardId, cb) {
+         return this._request('DELETE', '/projects/columns/cards/' + cardId, null, cb);
+      }
+
+      /**
+      * Move a card
+      * @see https://developer.github.com/v3/projects/cards/#move-a-project-card
+      * @param {string} cardId - the card to be moved
+      * @param {string} position - can be one of top, bottom, or after:<card-id>,
+      * where <card-id> is the id value of a card in the same project.
+      * @param {string} colId - the id value of a column in the same project.
+      * @param {Requestable.callback} cb - will receive true if the operation is successful
+      * @return {Promise} - the promise for the http request
+      */
+
+   }, {
+      key: 'moveProjectCard',
+      value: function moveProjectCard(cardId, position, colId, cb) {
+         return this._request('POST', '/projects/columns/cards/' + cardId + '/moves', { position: position, column_id: colId }, // eslint-disable-line camelcase
+         cb);
+      }
+   }]);
+
+   return Project;
+}(_Requestable3.default);
+
+module.exports = Project;
+
+},{"./Requestable":9}],7:[function(require,module,exports){
+'use strict';
+
+var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+var _Requestable2 = require('./Requestable');
+
+var _Requestable3 = _interopRequireDefault(_Requestable2);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
+
+function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; } /**
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                * @file
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                * @copyright  2013 Michael Aufreiter (Development Seed) and 2016 Yahoo Inc.
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                * @license    Licensed under {@link https://spdx.org/licenses/BSD-3-Clause-Clear.html BSD-3-Clause-Clear}.
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                *             Github.js is freely distributable.
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                */
+
+/**
+ * RateLimit allows users to query their rate-limit status
+ */
+var RateLimit = function (_Requestable) {
+  _inherits(RateLimit, _Requestable);
+
+  /**
+   * construct a RateLimit
+   * @param {Requestable.auth} auth - the credentials to authenticate to GitHub
+   * @param {string} [apiBase] - the base Github API URL
+   * @return {Promise} - the promise for the http request
+   */
+  function RateLimit(auth, apiBase) {
+    _classCallCheck(this, RateLimit);
+
+    return _possibleConstructorReturn(this, (RateLimit.__proto__ || Object.getPrototypeOf(RateLimit)).call(this, auth, apiBase));
+  }
+
+  /**
+   * Query the current rate limit
+   * @see https://developer.github.com/v3/rate_limit/
+   * @param {Requestable.callback} [cb] - will receive the rate-limit data
+   * @return {Promise} - the promise for the http request
+   */
+
+
+  _createClass(RateLimit, [{
+    key: 'getRateLimit',
+    value: function getRateLimit(cb) {
+      return this._request('GET', '/rate_limit', null, cb);
+    }
+  }]);
+
+  return RateLimit;
+}(_Requestable3.default);
+
+module.exports = RateLimit;
+
+},{"./Requestable":9}],8:[function(require,module,exports){
+(function (Buffer){
+'use strict';
+
+var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; };
+
+var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+var _Requestable2 = require('./Requestable');
+
+var _Requestable3 = _interopRequireDefault(_Requestable2);
+
+var _utf = require('utf8');
+
+var _utf2 = _interopRequireDefault(_utf);
+
+var _jsBase = require('js-base64');
+
+var _debug = require('debug');
+
+var _debug2 = _interopRequireDefault(_debug);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
+
+function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; } /**
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                * @file
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                * @copyright  2013 Michael Aufreiter (Development Seed) and 2016 Yahoo Inc.
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                * @license    Licensed under {@link https://spdx.org/licenses/BSD-3-Clause-Clear.html BSD-3-Clause-Clear}.
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                *             Github.js is freely distributable.
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                */
+
+var log = (0, _debug2.default)('github:repository');
+
+/**
+ * Respository encapsulates the functionality to create, query, and modify files.
+ */
+
+var Repository = function (_Requestable) {
+   _inherits(Repository, _Requestable);
+
+   /**
+    * Create a Repository.
+    * @param {string} fullname - the full name of the repository
+    * @param {Requestable.auth} [auth] - information required to authenticate to Github
+    * @param {string} [apiBase=https://api.github.com] - the base Github API URL
+    */
+   function Repository(fullname, auth, apiBase) {
+      _classCallCheck(this, Repository);
+
+      var _this = _possibleConstructorReturn(this, (Repository.__proto__ || Object.getPrototypeOf(Repository)).call(this, auth, apiBase));
+
+      _this.__fullname = fullname;
+      _this.__currentTree = {
+         branch: null,
+         sha: null
       };
-      factory(mod, global.axios, global.debug, global.jsBase64, global.Promise);
-      global.Requestable = mod.exports;
-   }
-})(this, function (module, _axios, _debug, _jsBase, _es6Promise) {
-   'use strict';
-
-   var _axios2 = _interopRequireDefault(_axios);
-
-   var _debug2 = _interopRequireDefault(_debug);
-
-   function _interopRequireDefault(obj) {
-      return obj && obj.__esModule ? obj : {
-         default: obj
-      };
-   }
-
-   var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) {
-      return typeof obj;
-   } : function (obj) {
-      return obj && typeof Symbol === "function" && obj.constructor === Symbol ? "symbol" : typeof obj;
-   };
-
-   var _createClass = function () {
-      function defineProperties(target, props) {
-         for (var i = 0; i < props.length; i++) {
-            var descriptor = props[i];
-            descriptor.enumerable = descriptor.enumerable || false;
-            descriptor.configurable = true;
-            if ("value" in descriptor) descriptor.writable = true;
-            Object.defineProperty(target, descriptor.key, descriptor);
-         }
-      }
-
-      return function (Constructor, protoProps, staticProps) {
-         if (protoProps) defineProperties(Constructor.prototype, protoProps);
-         if (staticProps) defineProperties(Constructor, staticProps);
-         return Constructor;
-      };
-   }();
-
-   function _classCallCheck(instance, Constructor) {
-      if (!(instance instanceof Constructor)) {
-         throw new TypeError("Cannot call a class as a function");
-      }
-   }
-
-   function _possibleConstructorReturn(self, call) {
-      if (!self) {
-         throw new ReferenceError("this hasn't been initialised - super() hasn't been called");
-      }
-
-      return call && (typeof call === "object" || typeof call === "function") ? call : self;
-   }
-
-   function _inherits(subClass, superClass) {
-      if (typeof superClass !== "function" && superClass !== null) {
-         throw new TypeError("Super expression must either be null or a function, not " + typeof superClass);
-      }
-
-      subClass.prototype = Object.create(superClass && superClass.prototype, {
-         constructor: {
-            value: subClass,
-            enumerable: false,
-            writable: true,
-            configurable: true
-         }
-      });
-      if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass;
-   }
-
-   var log = (0, _debug2.default)('github:request');
-
-   if (typeof Promise === 'undefined') {
-      (0, _es6Promise.polyfill)();
+      return _this;
    }
 
    /**
-    * The error structure returned when a network call fails
+    * Get a reference
+    * @see https://developer.github.com/v3/git/refs/#get-a-reference
+    * @param {string} ref - the reference to get
+    * @param {Requestable.callback} [cb] - will receive the reference's refSpec or a list of refSpecs that match `ref`
+    * @return {Promise} - the promise for the http request
     */
 
-   var ResponseError = function (_Error) {
-      _inherits(ResponseError, _Error);
 
-      /**
-       * Construct a new ResponseError
-       * @param {string} message - an message to return instead of the the default error message
-       * @param {string} path - the requested path
-       * @param {Object} response - the object returned by Axios
-       */
-
-      function ResponseError(message, path, response) {
-         _classCallCheck(this, ResponseError);
-
-         var _this = _possibleConstructorReturn(this, Object.getPrototypeOf(ResponseError).call(this, message));
-
-         _this.path = path;
-         _this.request = response.config;
-         _this.response = response;
-         _this.status = response.status;
-         return _this;
+   _createClass(Repository, [{
+      key: 'getRef',
+      value: function getRef(ref, cb) {
+         return this._request('GET', '/repos/' + this.__fullname + '/git/refs/' + ref, null, cb);
       }
 
-      return ResponseError;
-   }(Error);
-
-   var Requestable = function () {
       /**
-       * Either a username and password or an oauth token for Github
-       * @typedef {Object} Requestable.auth
-       * @prop {string} [username] - the Github username
-       * @prop {string} [password] - the user's password
-       * @prop {token} [token] - an OAuth token
-       */
-      /**
-       * Initialize the http internals.
-       * @param {Requestable.auth} [auth] - the credentials to authenticate to Github. If auth is
-       *                                  not provided request will be made unauthenticated
-       * @param {string} [apiBase=https://api.github.com] - the base Github API URL
+       * Create a reference
+       * @see https://developer.github.com/v3/git/refs/#create-a-reference
+       * @param {Object} options - the object describing the ref
+       * @param {Requestable.callback} [cb] - will receive the ref
+       * @return {Promise} - the promise for the http request
        */
 
-      function Requestable(auth, apiBase) {
-         _classCallCheck(this, Requestable);
+   }, {
+      key: 'createRef',
+      value: function createRef(options, cb) {
+         return this._request('POST', '/repos/' + this.__fullname + '/git/refs', options, cb);
+      }
 
-         this.__apiBase = apiBase || 'https://api.github.com';
-         this.__auth = {
-            token: auth.token,
-            username: auth.username,
-            password: auth.password
+      /**
+       * Delete a reference
+       * @see https://developer.github.com/v3/git/refs/#delete-a-reference
+       * @param {string} ref - the name of the ref to delte
+       * @param {Requestable.callback} [cb] - will receive true if the request is successful
+       * @return {Promise} - the promise for the http request
+       */
+
+   }, {
+      key: 'deleteRef',
+      value: function deleteRef(ref, cb) {
+         return this._request('DELETE', '/repos/' + this.__fullname + '/git/refs/' + ref, null, cb);
+      }
+
+      /**
+       * Delete a repository
+       * @see https://developer.github.com/v3/repos/#delete-a-repository
+       * @param {Requestable.callback} [cb] - will receive true if the request is successful
+       * @return {Promise} - the promise for the http request
+       */
+
+   }, {
+      key: 'deleteRepo',
+      value: function deleteRepo(cb) {
+         return this._request('DELETE', '/repos/' + this.__fullname, null, cb);
+      }
+
+      /**
+       * List the tags on a repository
+       * @see https://developer.github.com/v3/repos/#list-tags
+       * @param {Requestable.callback} [cb] - will receive the tag data
+       * @return {Promise} - the promise for the http request
+       */
+
+   }, {
+      key: 'listTags',
+      value: function listTags(cb) {
+         return this._request('GET', '/repos/' + this.__fullname + '/tags', null, cb);
+      }
+
+      /**
+       * List the open pull requests on the repository
+       * @see https://developer.github.com/v3/pulls/#list-pull-requests
+       * @param {Object} options - options to filter the search
+       * @param {Requestable.callback} [cb] - will receive the list of PRs
+       * @return {Promise} - the promise for the http request
+       */
+
+   }, {
+      key: 'listPullRequests',
+      value: function listPullRequests(options, cb) {
+         options = options || {};
+         return this._request('GET', '/repos/' + this.__fullname + '/pulls', options, cb);
+      }
+
+      /**
+       * Get information about a specific pull request
+       * @see https://developer.github.com/v3/pulls/#get-a-single-pull-request
+       * @param {number} number - the PR you wish to fetch
+       * @param {Requestable.callback} [cb] - will receive the PR from the API
+       * @return {Promise} - the promise for the http request
+       */
+
+   }, {
+      key: 'getPullRequest',
+      value: function getPullRequest(number, cb) {
+         return this._request('GET', '/repos/' + this.__fullname + '/pulls/' + number, null, cb);
+      }
+
+      /**
+       * List the files of a specific pull request
+       * @see https://developer.github.com/v3/pulls/#list-pull-requests-files
+       * @param {number|string} number - the PR you wish to fetch
+       * @param {Requestable.callback} [cb] - will receive the list of files from the API
+       * @return {Promise} - the promise for the http request
+       */
+
+   }, {
+      key: 'listPullRequestFiles',
+      value: function listPullRequestFiles(number, cb) {
+         return this._request('GET', '/repos/' + this.__fullname + '/pulls/' + number + '/files', null, cb);
+      }
+
+      /**
+       * Compare two branches/commits/repositories
+       * @see https://developer.github.com/v3/repos/commits/#compare-two-commits
+       * @param {string} base - the base commit
+       * @param {string} head - the head commit
+       * @param {Requestable.callback} cb - will receive the comparison
+       * @return {Promise} - the promise for the http request
+       */
+
+   }, {
+      key: 'compareBranches',
+      value: function compareBranches(base, head, cb) {
+         return this._request('GET', '/repos/' + this.__fullname + '/compare/' + base + '...' + head, null, cb);
+      }
+
+      /**
+       * List all the branches for the repository
+       * @see https://developer.github.com/v3/repos/#list-branches
+       * @param {Requestable.callback} cb - will receive the list of branches
+       * @return {Promise} - the promise for the http request
+       */
+
+   }, {
+      key: 'listBranches',
+      value: function listBranches(cb) {
+         return this._request('GET', '/repos/' + this.__fullname + '/branches', null, cb);
+      }
+
+      /**
+       * Get a raw blob from the repository
+       * @see https://developer.github.com/v3/git/blobs/#get-a-blob
+       * @param {string} sha - the sha of the blob to fetch
+       * @param {Requestable.callback} cb - will receive the blob from the API
+       * @return {Promise} - the promise for the http request
+       */
+
+   }, {
+      key: 'getBlob',
+      value: function getBlob(sha, cb) {
+         return this._request('GET', '/repos/' + this.__fullname + '/git/blobs/' + sha, null, cb, 'raw');
+      }
+
+      /**
+       * Get a single branch
+       * @see https://developer.github.com/v3/repos/branches/#get-branch
+       * @param {string} branch - the name of the branch to fetch
+       * @param {Requestable.callback} cb - will receive the branch from the API
+       * @returns {Promise} - the promise for the http request
+       */
+
+   }, {
+      key: 'getBranch',
+      value: function getBranch(branch, cb) {
+         return this._request('GET', '/repos/' + this.__fullname + '/branches/' + branch, null, cb);
+      }
+
+      /**
+       * Get a commit from the repository
+       * @see https://developer.github.com/v3/repos/commits/#get-a-single-commit
+       * @param {string} sha - the sha for the commit to fetch
+       * @param {Requestable.callback} cb - will receive the commit data
+       * @return {Promise} - the promise for the http request
+       */
+
+   }, {
+      key: 'getCommit',
+      value: function getCommit(sha, cb) {
+         return this._request('GET', '/repos/' + this.__fullname + '/git/commits/' + sha, null, cb);
+      }
+
+      /**
+       * List the commits on a repository, optionally filtering by path, author or time range
+       * @see https://developer.github.com/v3/repos/commits/#list-commits-on-a-repository
+       * @param {Object} [options] - the filtering options for commits
+       * @param {string} [options.sha] - the SHA or branch to start from
+       * @param {string} [options.path] - the path to search on
+       * @param {string} [options.author] - the commit author
+       * @param {(Date|string)} [options.since] - only commits after this date will be returned
+       * @param {(Date|string)} [options.until] - only commits before this date will be returned
+       * @param {Requestable.callback} cb - will receive the list of commits found matching the criteria
+       * @return {Promise} - the promise for the http request
+       */
+
+   }, {
+      key: 'listCommits',
+      value: function listCommits(options, cb) {
+         options = options || {};
+
+         options.since = this._dateToISO(options.since);
+         options.until = this._dateToISO(options.until);
+
+         return this._request('GET', '/repos/' + this.__fullname + '/commits', options, cb);
+      }
+
+      /**
+       * Gets a single commit information for a repository
+       * @see https://developer.github.com/v3/repos/commits/#get-a-single-commit
+       * @param {string} ref - the reference for the commit-ish
+       * @param {Requestable.callback} cb - will receive the commit information
+       * @return {Promise} - the promise for the http request
+       */
+
+   }, {
+      key: 'getSingleCommit',
+      value: function getSingleCommit(ref, cb) {
+         ref = ref || '';
+         return this._request('GET', '/repos/' + this.__fullname + '/commits/' + ref, null, cb);
+      }
+
+      /**
+       * Get tha sha for a particular object in the repository. This is a convenience function
+       * @see https://developer.github.com/v3/repos/contents/#get-contents
+       * @param {string} [branch] - the branch to look in, or the repository's default branch if omitted
+       * @param {string} path - the path of the file or directory
+       * @param {Requestable.callback} cb - will receive a description of the requested object, including a `SHA` property
+       * @return {Promise} - the promise for the http request
+       */
+
+   }, {
+      key: 'getSha',
+      value: function getSha(branch, path, cb) {
+         branch = branch ? '?ref=' + branch : '';
+         return this._request('GET', '/repos/' + this.__fullname + '/contents/' + path + branch, null, cb);
+      }
+
+      /**
+       * List the commit statuses for a particular sha, branch, or tag
+       * @see https://developer.github.com/v3/repos/statuses/#list-statuses-for-a-specific-ref
+       * @param {string} sha - the sha, branch, or tag to get statuses for
+       * @param {Requestable.callback} cb - will receive the list of statuses
+       * @return {Promise} - the promise for the http request
+       */
+
+   }, {
+      key: 'listStatuses',
+      value: function listStatuses(sha, cb) {
+         return this._request('GET', '/repos/' + this.__fullname + '/commits/' + sha + '/statuses', null, cb);
+      }
+
+      /**
+       * Get a description of a git tree
+       * @see https://developer.github.com/v3/git/trees/#get-a-tree
+       * @param {string} treeSHA - the SHA of the tree to fetch
+       * @param {Requestable.callback} cb - will receive the callback data
+       * @return {Promise} - the promise for the http request
+       */
+
+   }, {
+      key: 'getTree',
+      value: function getTree(treeSHA, cb) {
+         return this._request('GET', '/repos/' + this.__fullname + '/git/trees/' + treeSHA, null, cb);
+      }
+
+      /**
+       * Create a blob
+       * @see https://developer.github.com/v3/git/blobs/#create-a-blob
+       * @param {(string|Buffer|Blob)} content - the content to add to the repository
+       * @param {Requestable.callback} cb - will receive the details of the created blob
+       * @return {Promise} - the promise for the http request
+       */
+
+   }, {
+      key: 'createBlob',
+      value: function createBlob(content, cb) {
+         var postBody = this._getContentObject(content);
+
+         log('sending content', postBody);
+         return this._request('POST', '/repos/' + this.__fullname + '/git/blobs', postBody, cb);
+      }
+
+      /**
+       * Get the object that represents the provided content
+       * @param {string|Buffer|Blob} content - the content to send to the server
+       * @return {Object} the representation of `content` for the GitHub API
+       */
+
+   }, {
+      key: '_getContentObject',
+      value: function _getContentObject(content) {
+         if (typeof content === 'string') {
+            log('contet is a string');
+            return {
+               content: _utf2.default.encode(content),
+               encoding: 'utf-8'
+            };
+         } else if (typeof Buffer !== 'undefined' && content instanceof Buffer) {
+            log('We appear to be in Node');
+            return {
+               content: content.toString('base64'),
+               encoding: 'base64'
+            };
+         } else if (typeof Blob !== 'undefined' && content instanceof Blob) {
+            log('We appear to be in the browser');
+            return {
+               content: _jsBase.Base64.encode(content),
+               encoding: 'base64'
+            };
+         } else {
+            // eslint-disable-line
+            log('Not sure what this content is: ' + (typeof content === 'undefined' ? 'undefined' : _typeof(content)) + ', ' + JSON.stringify(content));
+            throw new Error('Unknown content passed to postBlob. Must be string or Buffer (node) or Blob (web)');
+         }
+      }
+
+      /**
+       * Update a tree in Git
+       * @see https://developer.github.com/v3/git/trees/#create-a-tree
+       * @param {string} baseTreeSHA - the SHA of the tree to update
+       * @param {string} path - the path for the new file
+       * @param {string} blobSHA - the SHA for the blob to put at `path`
+       * @param {Requestable.callback} cb - will receive the new tree that is created
+       * @return {Promise} - the promise for the http request
+       * @deprecated use {@link Repository#createTree} instead
+       */
+
+   }, {
+      key: 'updateTree',
+      value: function updateTree(baseTreeSHA, path, blobSHA, cb) {
+         var newTree = {
+            base_tree: baseTreeSHA, // eslint-disable-line
+            tree: [{
+               path: path,
+               sha: blobSHA,
+               mode: '100644',
+               type: 'blob'
+            }]
          };
 
-         if (auth.token) {
-            this.__authorizationHeader = 'token ' + auth.token;
-         } else if (auth.username && auth.password) {
-            this.__authorizationHeader = 'Basic ' + _jsBase.Base64.encode(auth.username + ':' + auth.password);
-         }
+         return this._request('POST', '/repos/' + this.__fullname + '/git/trees', newTree, cb);
       }
 
       /**
-       * Compute the URL to use to make a request.
-       * @private
-       * @param {string} path - either a URL relative to the API base or an absolute URL
-       * @return {string} - the URL to use
+       * Create a new tree in git
+       * @see https://developer.github.com/v3/git/trees/#create-a-tree
+       * @param {Object} tree - the tree to create
+       * @param {string} baseSHA - the root sha of the tree
+       * @param {Requestable.callback} cb - will receive the new tree that is created
+       * @return {Promise} - the promise for the http request
        */
 
+   }, {
+      key: 'createTree',
+      value: function createTree(tree, baseSHA, cb) {
+         return this._request('POST', '/repos/' + this.__fullname + '/git/trees', {
+            tree: tree,
+            base_tree: baseSHA }, cb);
+      }
 
-      _createClass(Requestable, [{
-         key: '__getURL',
-         value: function __getURL(path) {
-            var url = path;
+      /**
+       * Add a commit to the repository
+       * @see https://developer.github.com/v3/git/commits/#create-a-commit
+       * @param {string} parent - the SHA of the parent commit
+       * @param {string} tree - the SHA of the tree for this commit
+       * @param {string} message - the commit message
+       * @param {Requestable.callback} cb - will receive the commit that is created
+       * @return {Promise} - the promise for the http request
+       */
 
-            if (path.indexOf('//') === -1) {
-               url = this.__apiBase + path;
-            }
+   }, {
+      key: 'commit',
+      value: function commit(parent, tree, message, cb) {
+         var _this2 = this;
 
-            var newCacheBuster = 'timestamp=' + new Date().getTime();
-            return url.replace(/(timestamp=\d+)/, newCacheBuster);
+         var data = {
+            message: message,
+            tree: tree,
+            parents: [parent]
+         };
+
+         return this._request('POST', '/repos/' + this.__fullname + '/git/commits', data, cb).then(function (response) {
+            _this2.__currentTree.sha = response.data.sha; // Update latest commit
+            return response;
+         });
+      }
+
+      /**
+       * Update a ref
+       * @see https://developer.github.com/v3/git/refs/#update-a-reference
+       * @param {string} ref - the ref to update
+       * @param {string} commitSHA - the SHA to point the reference to
+       * @param {boolean} force - indicates whether to force or ensure a fast-forward update
+       * @param {Requestable.callback} cb - will receive the updated ref back
+       * @return {Promise} - the promise for the http request
+       */
+
+   }, {
+      key: 'updateHead',
+      value: function updateHead(ref, commitSHA, force, cb) {
+         return this._request('PATCH', '/repos/' + this.__fullname + '/git/refs/' + ref, {
+            sha: commitSHA,
+            force: force
+         }, cb);
+      }
+
+      /**
+       * Update commit status
+       * @see https://developer.github.com/v3/repos/statuses/
+       * @param {string} commitSHA - the SHA of the commit that should be updated
+       * @param {object} options - Commit status parameters
+       * @param {string} options.state - The state of the status. Can be one of: pending, success, error, or failure.
+       * @param {string} [options.target_url] - The target URL to associate with this status.
+       * @param {string} [options.description] - A short description of the status.
+       * @param {string} [options.context] - A string label to differentiate this status among CI systems.
+       * @param {Requestable.callback} cb - will receive the updated commit back
+       * @return {Promise} - the promise for the http request
+       */
+
+   }, {
+      key: 'updateStatus',
+      value: function updateStatus(commitSHA, options, cb) {
+         return this._request('POST', '/repos/' + this.__fullname + '/statuses/' + commitSHA, options, cb);
+      }
+
+      /**
+       * Update repository information
+       * @see https://developer.github.com/v3/repos/#edit
+       * @param {object} options - New parameters that will be set to the repository
+       * @param {string} options.name - Name of the repository
+       * @param {string} [options.description] - A short description of the repository
+       * @param {string} [options.homepage] - A URL with more information about the repository
+       * @param {boolean} [options.private] - Either true to make the repository private, or false to make it public.
+       * @param {boolean} [options.has_issues] - Either true to enable issues for this repository, false to disable them.
+       * @param {boolean} [options.has_wiki] - Either true to enable the wiki for this repository, false to disable it.
+       * @param {boolean} [options.has_downloads] - Either true to enable downloads, false to disable them.
+       * @param {string} [options.default_branch] - Updates the default branch for this repository.
+       * @param {Requestable.callback} cb - will receive the updated repository back
+       * @return {Promise} - the promise for the http request
+       */
+
+   }, {
+      key: 'updateRepository',
+      value: function updateRepository(options, cb) {
+         return this._request('PATCH', '/repos/' + this.__fullname, options, cb);
+      }
+
+      /**
+        * Get information about the repository
+        * @see https://developer.github.com/v3/repos/#get
+        * @param {Requestable.callback} cb - will receive the information about the repository
+        * @return {Promise} - the promise for the http request
+        */
+
+   }, {
+      key: 'getDetails',
+      value: function getDetails(cb) {
+         return this._request('GET', '/repos/' + this.__fullname, null, cb);
+      }
+
+      /**
+       * List the contributors to the repository
+       * @see https://developer.github.com/v3/repos/#list-contributors
+       * @param {Requestable.callback} cb - will receive the list of contributors
+       * @return {Promise} - the promise for the http request
+       */
+
+   }, {
+      key: 'getContributors',
+      value: function getContributors(cb) {
+         return this._request('GET', '/repos/' + this.__fullname + '/contributors', null, cb);
+      }
+
+      /**
+       * List the contributor stats to the repository
+       * @see https://developer.github.com/v3/repos/#list-contributors
+       * @param {Requestable.callback} cb - will receive the list of contributors
+       * @return {Promise} - the promise for the http request
+       */
+
+   }, {
+      key: 'getContributorStats',
+      value: function getContributorStats(cb) {
+         return this._request('GET', '/repos/' + this.__fullname + '/stats/contributors', null, cb);
+      }
+
+      /**
+       * List the users who are collaborators on the repository. The currently authenticated user must have
+       * push access to use this method
+       * @see https://developer.github.com/v3/repos/collaborators/#list-collaborators
+       * @param {Requestable.callback} cb - will receive the list of collaborators
+       * @return {Promise} - the promise for the http request
+       */
+
+   }, {
+      key: 'getCollaborators',
+      value: function getCollaborators(cb) {
+         return this._request('GET', '/repos/' + this.__fullname + '/collaborators', null, cb);
+      }
+
+      /**
+       * Check if a user is a collaborator on the repository
+       * @see https://developer.github.com/v3/repos/collaborators/#check-if-a-user-is-a-collaborator
+       * @param {string} username - the user to check
+       * @param {Requestable.callback} cb - will receive true if the user is a collaborator and false if they are not
+       * @return {Promise} - the promise for the http request {Boolean} [description]
+       */
+
+   }, {
+      key: 'isCollaborator',
+      value: function isCollaborator(username, cb) {
+         return this._request('GET', '/repos/' + this.__fullname + '/collaborators/' + username, null, cb);
+      }
+
+      /**
+       * Get the contents of a repository
+       * @see https://developer.github.com/v3/repos/contents/#get-contents
+       * @param {string} ref - the ref to check
+       * @param {string} path - the path containing the content to fetch
+       * @param {boolean} raw - `true` if the results should be returned raw instead of GitHub's normalized format
+       * @param {Requestable.callback} cb - will receive the fetched data
+       * @return {Promise} - the promise for the http request
+       */
+
+   }, {
+      key: 'getContents',
+      value: function getContents(ref, path, raw, cb) {
+         path = path ? '' + encodeURI(path) : '';
+         return this._request('GET', '/repos/' + this.__fullname + '/contents/' + path, {
+            ref: ref
+         }, cb, raw);
+      }
+
+      /**
+       * Get the README of a repository
+       * @see https://developer.github.com/v3/repos/contents/#get-the-readme
+       * @param {string} ref - the ref to check
+       * @param {boolean} raw - `true` if the results should be returned raw instead of GitHub's normalized format
+       * @param {Requestable.callback} cb - will receive the fetched data
+       * @return {Promise} - the promise for the http request
+       */
+
+   }, {
+      key: 'getReadme',
+      value: function getReadme(ref, raw, cb) {
+         return this._request('GET', '/repos/' + this.__fullname + '/readme', {
+            ref: ref
+         }, cb, raw);
+      }
+
+      /**
+       * Fork a repository
+       * @see https://developer.github.com/v3/repos/forks/#create-a-fork
+       * @param {Requestable.callback} cb - will receive the information about the newly created fork
+       * @return {Promise} - the promise for the http request
+       */
+
+   }, {
+      key: 'fork',
+      value: function fork(cb) {
+         return this._request('POST', '/repos/' + this.__fullname + '/forks', null, cb);
+      }
+
+      /**
+       * List a repository's forks
+       * @see https://developer.github.com/v3/repos/forks/#list-forks
+       * @param {Requestable.callback} cb - will receive the list of repositories forked from this one
+       * @return {Promise} - the promise for the http request
+       */
+
+   }, {
+      key: 'listForks',
+      value: function listForks(cb) {
+         return this._request('GET', '/repos/' + this.__fullname + '/forks', null, cb);
+      }
+
+      /**
+       * Create a new branch from an existing branch.
+       * @param {string} [oldBranch=master] - the name of the existing branch
+       * @param {string} newBranch - the name of the new branch
+       * @param {Requestable.callback} cb - will receive the commit data for the head of the new branch
+       * @return {Promise} - the promise for the http request
+       */
+
+   }, {
+      key: 'createBranch',
+      value: function createBranch(oldBranch, newBranch, cb) {
+         var _this3 = this;
+
+         if (typeof newBranch === 'function') {
+            cb = newBranch;
+            newBranch = oldBranch;
+            oldBranch = 'master';
          }
-      }, {
-         key: '__getRequestHeaders',
-         value: function __getRequestHeaders(raw) {
-            var headers = {
-               'Accept': raw ? 'application/vnd.github.v3.raw+json' : 'application/vnd.github.v3+json',
-               'Content-Type': 'application/json;charset=UTF-8'
+
+         return this.getRef('heads/' + oldBranch).then(function (response) {
+            var sha = response.data.object.sha;
+            return _this3.createRef({
+               sha: sha,
+               ref: 'refs/heads/' + newBranch
+            }, cb);
+         });
+      }
+
+      /**
+       * Create a new pull request
+       * @see https://developer.github.com/v3/pulls/#create-a-pull-request
+       * @param {Object} options - the pull request description
+       * @param {Requestable.callback} cb - will receive the new pull request
+       * @return {Promise} - the promise for the http request
+       */
+
+   }, {
+      key: 'createPullRequest',
+      value: function createPullRequest(options, cb) {
+         return this._request('POST', '/repos/' + this.__fullname + '/pulls', options, cb);
+      }
+
+      /**
+       * Update a pull request
+       * @see https://developer.github.com/v3/pulls/#update-a-pull-request
+       * @param {number|string} number - the number of the pull request to update
+       * @param {Object} options - the pull request description
+       * @param {Requestable.callback} [cb] - will receive the pull request information
+       * @return {Promise} - the promise for the http request
+       */
+
+   }, {
+      key: 'updatePullRequest',
+      value: function updatePullRequest(number, options, cb) {
+         return this._request('PATCH', '/repos/' + this.__fullname + '/pulls/' + number, options, cb);
+      }
+
+      /**
+       * List the hooks for the repository
+       * @see https://developer.github.com/v3/repos/hooks/#list-hooks
+       * @param {Requestable.callback} cb - will receive the list of hooks
+       * @return {Promise} - the promise for the http request
+       */
+
+   }, {
+      key: 'listHooks',
+      value: function listHooks(cb) {
+         return this._request('GET', '/repos/' + this.__fullname + '/hooks', null, cb);
+      }
+
+      /**
+       * Get a hook for the repository
+       * @see https://developer.github.com/v3/repos/hooks/#get-single-hook
+       * @param {number} id - the id of the webook
+       * @param {Requestable.callback} cb - will receive the details of the webook
+       * @return {Promise} - the promise for the http request
+       */
+
+   }, {
+      key: 'getHook',
+      value: function getHook(id, cb) {
+         return this._request('GET', '/repos/' + this.__fullname + '/hooks/' + id, null, cb);
+      }
+
+      /**
+       * Add a new hook to the repository
+       * @see https://developer.github.com/v3/repos/hooks/#create-a-hook
+       * @param {Object} options - the configuration describing the new hook
+       * @param {Requestable.callback} cb - will receive the new webhook
+       * @return {Promise} - the promise for the http request
+       */
+
+   }, {
+      key: 'createHook',
+      value: function createHook(options, cb) {
+         return this._request('POST', '/repos/' + this.__fullname + '/hooks', options, cb);
+      }
+
+      /**
+       * Edit an existing webhook
+       * @see https://developer.github.com/v3/repos/hooks/#edit-a-hook
+       * @param {number} id - the id of the webhook
+       * @param {Object} options - the new description of the webhook
+       * @param {Requestable.callback} cb - will receive the updated webhook
+       * @return {Promise} - the promise for the http request
+       */
+
+   }, {
+      key: 'updateHook',
+      value: function updateHook(id, options, cb) {
+         return this._request('PATCH', '/repos/' + this.__fullname + '/hooks/' + id, options, cb);
+      }
+
+      /**
+       * Delete a webhook
+       * @see https://developer.github.com/v3/repos/hooks/#delete-a-hook
+       * @param {number} id - the id of the webhook to be deleted
+       * @param {Requestable.callback} cb - will receive true if the call is successful
+       * @return {Promise} - the promise for the http request
+       */
+
+   }, {
+      key: 'deleteHook',
+      value: function deleteHook(id, cb) {
+         return this._request('DELETE', this.__fullname + '/hooks/' + id, null, cb);
+      }
+
+      /**
+       * List the deploy keys for the repository
+       * @see https://developer.github.com/v3/repos/keys/#list-deploy-keys
+       * @param {Requestable.callback} cb - will receive the list of deploy keys
+       * @return {Promise} - the promise for the http request
+       */
+
+   }, {
+      key: 'listKeys',
+      value: function listKeys(cb) {
+         return this._request('GET', '/repos/' + this.__fullname + '/keys', null, cb);
+      }
+
+      /**
+       * Get a deploy key for the repository
+       * @see https://developer.github.com/v3/repos/keys/#get-a-deploy-key
+       * @param {number} id - the id of the deploy key
+       * @param {Requestable.callback} cb - will receive the details of the deploy key
+       * @return {Promise} - the promise for the http request
+       */
+
+   }, {
+      key: 'getKey',
+      value: function getKey(id, cb) {
+         return this._request('GET', '/repos/' + this.__fullname + '/keys/' + id, null, cb);
+      }
+
+      /**
+       * Add a new deploy key to the repository
+       * @see https://developer.github.com/v3/repos/keys/#add-a-new-deploy-key
+       * @param {Object} options - the configuration describing the new deploy key
+       * @param {Requestable.callback} cb - will receive the new deploy key
+       * @return {Promise} - the promise for the http request
+       */
+
+   }, {
+      key: 'createKey',
+      value: function createKey(options, cb) {
+         return this._request('POST', '/repos/' + this.__fullname + '/keys', options, cb);
+      }
+
+      /**
+       * Delete a deploy key
+       * @see https://developer.github.com/v3/repos/keys/#remove-a-deploy-key
+       * @param {number} id - the id of the deploy key to be deleted
+       * @param {Requestable.callback} cb - will receive true if the call is successful
+       * @return {Promise} - the promise for the http request
+       */
+
+   }, {
+      key: 'deleteKey',
+      value: function deleteKey(id, cb) {
+         return this._request('DELETE', '/repos/' + this.__fullname + '/keys/' + id, null, cb);
+      }
+
+      /**
+       * Delete a file from a branch
+       * @see https://developer.github.com/v3/repos/contents/#delete-a-file
+       * @param {string} branch - the branch to delete from, or the default branch if not specified
+       * @param {string} path - the path of the file to remove
+       * @param {Requestable.callback} cb - will receive the commit in which the delete occurred
+       * @return {Promise} - the promise for the http request
+       */
+
+   }, {
+      key: 'deleteFile',
+      value: function deleteFile(branch, path, cb) {
+         var _this4 = this;
+
+         return this.getSha(branch, path).then(function (response) {
+            var deleteCommit = {
+               message: 'Delete the file at \'' + path + '\'',
+               sha: response.data.sha,
+               branch: branch
             };
+            return _this4._request('DELETE', '/repos/' + _this4.__fullname + '/contents/' + path, deleteCommit, cb);
+         });
+      }
 
-            if (this.__authorizationHeader) {
-               headers.Authorization = this.__authorizationHeader;
-            }
+      /**
+       * Change all references in a repo from oldPath to new_path
+       * @param {string} branch - the branch to carry out the reference change, or the default branch if not specified
+       * @param {string} oldPath - original path
+       * @param {string} newPath - new reference path
+       * @param {Requestable.callback} cb - will receive the commit in which the move occurred
+       * @return {Promise} - the promise for the http request
+       */
 
-            return headers;
-         }
-      }, {
-         key: '_getOptionsWithDefaults',
-         value: function _getOptionsWithDefaults() {
-            var requestOptions = arguments.length <= 0 || arguments[0] === undefined ? {} : arguments[0];
+   }, {
+      key: 'move',
+      value: function move(branch, oldPath, newPath, cb) {
+         var _this5 = this;
 
-            if (!(requestOptions.visibility || requestOptions.affiliation)) {
-               requestOptions.type = requestOptions.type || 'all';
-            }
-            requestOptions.sort = requestOptions.sort || 'updated';
-            requestOptions.per_page = requestOptions.per_page || '100'; // eslint-disable-line
+         var oldSha = void 0;
+         return this.getRef('heads/' + branch).then(function (_ref) {
+            var object = _ref.data.object;
+            return _this5.getTree(object.sha + '?recursive=true');
+         }).then(function (_ref2) {
+            var _ref2$data = _ref2.data,
+                tree = _ref2$data.tree,
+                sha = _ref2$data.sha;
 
-            return requestOptions;
-         }
-      }, {
-         key: '_dateToISO',
-         value: function _dateToISO(date) {
-            if (date && date instanceof Date) {
-               date = date.toISOString();
-            }
-
-            return date;
-         }
-      }, {
-         key: '_request',
-         value: function _request(method, path, data, cb, raw) {
-            var url = this.__getURL(path);
-            var headers = this.__getRequestHeaders(raw);
-            var queryParams = {};
-
-            var shouldUseDataAsParams = data && (typeof data === 'undefined' ? 'undefined' : _typeof(data)) === 'object' && methodHasNoBody(method);
-            if (shouldUseDataAsParams) {
-               queryParams = data;
-               data = undefined;
-            }
-
-            var config = {
-               url: url,
-               method: method,
-               headers: headers,
-               params: queryParams,
-               data: data,
-               responseType: raw ? 'text' : 'json'
-            };
-
-            log(config.method + ' to ' + config.url);
-            var requestPromise = (0, _axios2.default)(config).catch(callbackErrorOrThrow(cb, path));
-
-            if (cb) {
-               requestPromise.then(function (response) {
-                  cb(null, response.data || true, response);
-               });
-            }
-
-            return requestPromise;
-         }
-      }, {
-         key: '_request204or404',
-         value: function _request204or404(path, data, cb) {
-            var method = arguments.length <= 3 || arguments[3] === undefined ? 'GET' : arguments[3];
-
-            return this._request(method, path, data).then(function success(response) {
-               if (cb) {
-                  cb(null, true, response);
+            oldSha = sha;
+            var newTree = tree.map(function (ref) {
+               if (ref.path === oldPath) {
+                  ref.path = newPath;
                }
-               return true;
-            }, function failure(response) {
-               if (response.status === 404) {
-                  if (cb) {
-                     cb(null, false, response);
-                  }
-                  return false;
+               if (ref.type === 'tree') {
+                  delete ref.sha;
                }
+               return ref;
+            });
+            return _this5.createTree(newTree);
+         }).then(function (_ref3) {
+            var tree = _ref3.data;
+            return _this5.commit(oldSha, tree.sha, 'Renamed \'' + oldPath + '\' to \'' + newPath + '\'');
+         }).then(function (_ref4) {
+            var commit = _ref4.data;
+            return _this5.updateHead('heads/' + branch, commit.sha, true, cb);
+         });
+      }
 
-               if (cb) {
-                  cb(response);
+      /**
+       * Write a file to the repository
+       * @see https://developer.github.com/v3/repos/contents/#update-a-file
+       * @param {string} branch - the name of the branch
+       * @param {string} path - the path for the file
+       * @param {string} content - the contents of the file
+       * @param {string} message - the commit message
+       * @param {Object} [options] - commit options
+       * @param {Object} [options.author] - the author of the commit
+       * @param {Object} [options.commiter] - the committer
+       * @param {boolean} [options.encode] - true if the content should be base64 encoded
+       * @param {Requestable.callback} cb - will receive the new commit
+       * @return {Promise} - the promise for the http request
+       */
+
+   }, {
+      key: 'writeFile',
+      value: function writeFile(branch, path, content, message, options, cb) {
+         var _this6 = this;
+
+         if (typeof options === 'function') {
+            cb = options;
+            options = {};
+         }
+         var filePath = path ? encodeURI(path) : '';
+         var shouldEncode = options.encode !== false;
+         var commit = {
+            branch: branch,
+            message: message,
+            author: options.author,
+            committer: options.committer,
+            content: shouldEncode ? _jsBase.Base64.encode(content) : content
+         };
+
+         return this.getSha(branch, filePath).then(function (response) {
+            commit.sha = response.data.sha;
+            return _this6._request('PUT', '/repos/' + _this6.__fullname + '/contents/' + filePath, commit, cb);
+         }, function () {
+            return _this6._request('PUT', '/repos/' + _this6.__fullname + '/contents/' + filePath, commit, cb);
+         });
+      }
+
+      /**
+       * Check if a repository is starred by you
+       * @see https://developer.github.com/v3/activity/starring/#check-if-you-are-starring-a-repository
+       * @param {Requestable.callback} cb - will receive true if the repository is starred and false if the repository
+       *                                  is not starred
+       * @return {Promise} - the promise for the http request {Boolean} [description]
+       */
+
+   }, {
+      key: 'isStarred',
+      value: function isStarred(cb) {
+         return this._request204or404('/user/starred/' + this.__fullname, null, cb);
+      }
+
+      /**
+       * Star a repository
+       * @see https://developer.github.com/v3/activity/starring/#star-a-repository
+       * @param {Requestable.callback} cb - will receive true if the repository is starred
+       * @return {Promise} - the promise for the http request
+       */
+
+   }, {
+      key: 'star',
+      value: function star(cb) {
+         return this._request('PUT', '/user/starred/' + this.__fullname, null, cb);
+      }
+
+      /**
+       * Unstar a repository
+       * @see https://developer.github.com/v3/activity/starring/#unstar-a-repository
+       * @param {Requestable.callback} cb - will receive true if the repository is unstarred
+       * @return {Promise} - the promise for the http request
+       */
+
+   }, {
+      key: 'unstar',
+      value: function unstar(cb) {
+         return this._request('DELETE', '/user/starred/' + this.__fullname, null, cb);
+      }
+
+      /**
+       * Create a new release
+       * @see https://developer.github.com/v3/repos/releases/#create-a-release
+       * @param {Object} options - the description of the release
+       * @param {Requestable.callback} cb - will receive the newly created release
+       * @return {Promise} - the promise for the http request
+       */
+
+   }, {
+      key: 'createRelease',
+      value: function createRelease(options, cb) {
+         return this._request('POST', '/repos/' + this.__fullname + '/releases', options, cb);
+      }
+
+      /**
+       * Edit a release
+       * @see https://developer.github.com/v3/repos/releases/#edit-a-release
+       * @param {string} id - the id of the release
+       * @param {Object} options - the description of the release
+       * @param {Requestable.callback} cb - will receive the modified release
+       * @return {Promise} - the promise for the http request
+       */
+
+   }, {
+      key: 'updateRelease',
+      value: function updateRelease(id, options, cb) {
+         return this._request('PATCH', '/repos/' + this.__fullname + '/releases/' + id, options, cb);
+      }
+
+      /**
+       * Get information about all releases
+       * @see https://developer.github.com/v3/repos/releases/#list-releases-for-a-repository
+       * @param {Requestable.callback} cb - will receive the release information
+       * @return {Promise} - the promise for the http request
+       */
+
+   }, {
+      key: 'listReleases',
+      value: function listReleases(cb) {
+         return this._request('GET', '/repos/' + this.__fullname + '/releases', null, cb);
+      }
+
+      /**
+       * Get information about a release
+       * @see https://developer.github.com/v3/repos/releases/#get-a-single-release
+       * @param {string} id - the id of the release
+       * @param {Requestable.callback} cb - will receive the release information
+       * @return {Promise} - the promise for the http request
+       */
+
+   }, {
+      key: 'getRelease',
+      value: function getRelease(id, cb) {
+         return this._request('GET', '/repos/' + this.__fullname + '/releases/' + id, null, cb);
+      }
+
+      /**
+       * Delete a release
+       * @see https://developer.github.com/v3/repos/releases/#delete-a-release
+       * @param {string} id - the release to be deleted
+       * @param {Requestable.callback} cb - will receive true if the operation is successful
+       * @return {Promise} - the promise for the http request
+       */
+
+   }, {
+      key: 'deleteRelease',
+      value: function deleteRelease(id, cb) {
+         return this._request('DELETE', '/repos/' + this.__fullname + '/releases/' + id, null, cb);
+      }
+
+      /**
+       * Merge a pull request
+       * @see https://developer.github.com/v3/pulls/#merge-a-pull-request-merge-button
+       * @param {number|string} number - the number of the pull request to merge
+       * @param {Object} options - the merge options for the pull request
+       * @param {Requestable.callback} [cb] - will receive the merge information if the operation is successful
+       * @return {Promise} - the promise for the http request
+       */
+
+   }, {
+      key: 'mergePullRequest',
+      value: function mergePullRequest(number, options, cb) {
+         return this._request('PUT', '/repos/' + this.__fullname + '/pulls/' + number + '/merge', options, cb);
+      }
+
+      /**
+       * Get information about all projects
+       * @see https://developer.github.com/v3/projects/#list-repository-projects
+       * @param {Requestable.callback} [cb] - will receive the list of projects
+       * @return {Promise} - the promise for the http request
+       */
+
+   }, {
+      key: 'listProjects',
+      value: function listProjects(cb) {
+         return this._requestAllPages('/repos/' + this.__fullname + '/projects', { AcceptHeader: 'inertia-preview' }, cb);
+      }
+
+      /**
+       * Create a new project
+       * @see https://developer.github.com/v3/projects/#create-a-repository-project
+       * @param {Object} options - the description of the project
+       * @param {Requestable.callback} cb - will receive the newly created project
+       * @return {Promise} - the promise for the http request
+       */
+
+   }, {
+      key: 'createProject',
+      value: function createProject(options, cb) {
+         options = options || {};
+         options.AcceptHeader = 'inertia-preview';
+         return this._request('POST', '/repos/' + this.__fullname + '/projects', options, cb);
+      }
+   }]);
+
+   return Repository;
+}(_Requestable3.default);
+
+module.exports = Repository;
+
+}).call(this,require("buffer").Buffer)
+
+},{"./Requestable":9,"buffer":39,"debug":40,"js-base64":44,"utf8":47}],9:[function(require,module,exports){
+'use strict';
+
+var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; };
+
+var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+var _axios = require('axios');
+
+var _axios2 = _interopRequireDefault(_axios);
+
+var _debug = require('debug');
+
+var _debug2 = _interopRequireDefault(_debug);
+
+var _jsBase = require('js-base64');
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+function _toConsumableArray(arr) { if (Array.isArray(arr)) { for (var i = 0, arr2 = Array(arr.length); i < arr.length; i++) { arr2[i] = arr[i]; } return arr2; } else { return Array.from(arr); } }
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
+
+function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; } /**
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                * @file
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                * @copyright  2016 Yahoo Inc.
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                * @license    Licensed under {@link https://spdx.org/licenses/BSD-3-Clause-Clear.html BSD-3-Clause-Clear}.
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                *             Github.js is freely distributable.
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                */
+
+var log = (0, _debug2.default)('github:request');
+
+/**
+ * The error structure returned when a network call fails
+ */
+
+var ResponseError = function (_Error) {
+   _inherits(ResponseError, _Error);
+
+   /**
+    * Construct a new ResponseError
+    * @param {string} message - an message to return instead of the the default error message
+    * @param {string} path - the requested path
+    * @param {Object} response - the object returned by Axios
+    */
+   function ResponseError(message, path, response) {
+      _classCallCheck(this, ResponseError);
+
+      var _this = _possibleConstructorReturn(this, (ResponseError.__proto__ || Object.getPrototypeOf(ResponseError)).call(this, message));
+
+      _this.path = path;
+      _this.request = response.config;
+      _this.response = (response || {}).response || response;
+      _this.status = response.status;
+      return _this;
+   }
+
+   return ResponseError;
+}(Error);
+
+/**
+ * Requestable wraps the logic for making http requests to the API
+ */
+
+
+var Requestable = function () {
+   /**
+    * Either a username and password or an oauth token for Github
+    * @typedef {Object} Requestable.auth
+    * @prop {string} [username] - the Github username
+    * @prop {string} [password] - the user's password
+    * @prop {token} [token] - an OAuth token
+    */
+   /**
+    * Initialize the http internals.
+    * @param {Requestable.auth} [auth] - the credentials to authenticate to Github. If auth is
+    *                                  not provided request will be made unauthenticated
+    * @param {string} [apiBase=https://api.github.com] - the base Github API URL
+    * @param {string} [AcceptHeader=v3] - the accept header for the requests
+    */
+   function Requestable(auth, apiBase, AcceptHeader) {
+      _classCallCheck(this, Requestable);
+
+      this.__apiBase = apiBase || 'https://api.github.com';
+      this.__auth = {
+         token: auth.token,
+         username: auth.username,
+         password: auth.password
+      };
+      this.__AcceptHeader = AcceptHeader || 'v3';
+
+      if (auth.token) {
+         this.__authorizationHeader = 'token ' + auth.token;
+      } else if (auth.username && auth.password) {
+         this.__authorizationHeader = 'Basic ' + _jsBase.Base64.encode(auth.username + ':' + auth.password);
+      }
+   }
+
+   /**
+    * Compute the URL to use to make a request.
+    * @private
+    * @param {string} path - either a URL relative to the API base or an absolute URL
+    * @return {string} - the URL to use
+    */
+
+
+   _createClass(Requestable, [{
+      key: '__getURL',
+      value: function __getURL(path) {
+         var url = path;
+
+         if (path.indexOf('//') === -1) {
+            url = this.__apiBase + path;
+         }
+
+         var newCacheBuster = 'timestamp=' + new Date().getTime();
+         return url.replace(/(timestamp=\d+)/, newCacheBuster);
+      }
+
+      /**
+       * Compute the headers required for an API request.
+       * @private
+       * @param {boolean} raw - if the request should be treated as JSON or as a raw request
+       * @param {string} AcceptHeader - the accept header for the request
+       * @return {Object} - the headers to use in the request
+       */
+
+   }, {
+      key: '__getRequestHeaders',
+      value: function __getRequestHeaders(raw, AcceptHeader) {
+         var headers = {
+            'Content-Type': 'application/json;charset=UTF-8',
+            'Accept': 'application/vnd.github.' + (AcceptHeader || this.__AcceptHeader)
+         };
+
+         if (raw) {
+            headers.Accept += '.raw';
+         }
+         headers.Accept += '+json';
+
+         if (this.__authorizationHeader) {
+            headers.Authorization = this.__authorizationHeader;
+         }
+
+         return headers;
+      }
+
+      /**
+       * Sets the default options for API requests
+       * @protected
+       * @param {Object} [requestOptions={}] - the current options for the request
+       * @return {Object} - the options to pass to the request
+       */
+
+   }, {
+      key: '_getOptionsWithDefaults',
+      value: function _getOptionsWithDefaults() {
+         var requestOptions = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : {};
+
+         if (!(requestOptions.visibility || requestOptions.affiliation)) {
+            requestOptions.type = requestOptions.type || 'all';
+         }
+         requestOptions.sort = requestOptions.sort || 'updated';
+         requestOptions.per_page = requestOptions.per_page || '100'; // eslint-disable-line
+
+         return requestOptions;
+      }
+
+      /**
+       * if a `Date` is passed to this function it will be converted to an ISO string
+       * @param {*} date - the object to attempt to cooerce into an ISO date string
+       * @return {string} - the ISO representation of `date` or whatever was passed in if it was not a date
+       */
+
+   }, {
+      key: '_dateToISO',
+      value: function _dateToISO(date) {
+         if (date && date instanceof Date) {
+            date = date.toISOString();
+         }
+
+         return date;
+      }
+
+      /**
+       * A function that receives the result of the API request.
+       * @callback Requestable.callback
+       * @param {Requestable.Error} error - the error returned by the API or `null`
+       * @param {(Object|true)} result - the data returned by the API or `true` if the API returns `204 No Content`
+       * @param {Object} request - the raw {@linkcode https://github.com/mzabriskie/axios#response-schema Response}
+       */
+      /**
+       * Make a request.
+       * @param {string} method - the method for the request (GET, PUT, POST, DELETE)
+       * @param {string} path - the path for the request
+       * @param {*} [data] - the data to send to the server. For HTTP methods that don't have a body the data
+       *                   will be sent as query parameters
+       * @param {Requestable.callback} [cb] - the callback for the request
+       * @param {boolean} [raw=false] - if the request should be sent as raw. If this is a falsy value then the
+       *                              request will be made as JSON
+       * @return {Promise} - the Promise for the http request
+       */
+
+   }, {
+      key: '_request',
+      value: function _request(method, path, data, cb, raw) {
+         var url = this.__getURL(path);
+
+         var AcceptHeader = (data || {}).AcceptHeader;
+         if (AcceptHeader) {
+            delete data.AcceptHeader;
+         }
+         var headers = this.__getRequestHeaders(raw, AcceptHeader);
+
+         var queryParams = {};
+
+         var shouldUseDataAsParams = data && (typeof data === 'undefined' ? 'undefined' : _typeof(data)) === 'object' && methodHasNoBody(method);
+         if (shouldUseDataAsParams) {
+            queryParams = data;
+            data = undefined;
+         }
+
+         var config = {
+            url: url,
+            method: method,
+            headers: headers,
+            params: queryParams,
+            data: data,
+            responseType: raw ? 'text' : 'json'
+         };
+
+         log(config.method + ' to ' + config.url);
+         var requestPromise = (0, _axios2.default)(config).catch(callbackErrorOrThrow(cb, path));
+
+         if (cb) {
+            requestPromise.then(function (response) {
+               if (response.data && Object.keys(response.data).length > 0) {
+                  // When data has results
+                  cb(null, response.data, response);
+               } else if (config.method !== 'GET' && Object.keys(response.data).length < 1) {
+                  // True when successful submit a request and receive a empty object
+                  cb(null, response.status < 300, response);
+               } else {
+                  cb(null, response.data, response);
                }
-               throw response;
             });
          }
-      }, {
-         key: '_requestAllPages',
-         value: function _requestAllPages(path, options, cb, results) {
-            var _this2 = this;
 
-            results = results || [];
+         return requestPromise;
+      }
 
-            return this._request('GET', path, options).then(function (response) {
-               var thisGroup = void 0;
-               if (response.data instanceof Array) {
-                  thisGroup = response.data;
-               } else if (response.data.items instanceof Array) {
-                  thisGroup = response.data.items;
-               } else {
-                  var message = 'cannot figure out how to append ' + response.data + ' to the result set';
-                  throw new ResponseError(message, path, response);
-               }
-               results.push.apply(results, thisGroup);
+      /**
+       * Make a request to an endpoint the returns 204 when true and 404 when false
+       * @param {string} path - the path to request
+       * @param {Object} data - any query parameters for the request
+       * @param {Requestable.callback} cb - the callback that will receive `true` or `false`
+       * @param {method} [method=GET] - HTTP Method to use
+       * @return {Promise} - the promise for the http request
+       */
 
-               var nextUrl = getNextPage(response.headers.link);
-               if (nextUrl) {
-                  log('getting next page: ' + nextUrl);
-                  return _this2._requestAllPages(nextUrl, options, cb, results);
-               }
+   }, {
+      key: '_request204or404',
+      value: function _request204or404(path, data, cb) {
+         var method = arguments.length > 3 && arguments[3] !== undefined ? arguments[3] : 'GET';
 
+         return this._request(method, path, data).then(function success(response) {
+            if (cb) {
+               cb(null, true, response);
+            }
+            return true;
+         }, function failure(response) {
+            if (response.response.status === 404) {
                if (cb) {
-                  cb(null, results, response);
+                  cb(null, false, response);
                }
+               return false;
+            }
 
-               response.data = results;
-               return response;
-            }).catch(callbackErrorOrThrow(cb, path));
-         }
-      }]);
-
-      return Requestable;
-   }();
-
-   module.exports = Requestable;
-
-   // ////////////////////////// //
-   //  Private helper functions  //
-   // ////////////////////////// //
-   var METHODS_WITH_NO_BODY = ['GET', 'HEAD', 'DELETE'];
-   function methodHasNoBody(method) {
-      return METHODS_WITH_NO_BODY.indexOf(method) !== -1;
-   }
-
-   function getNextPage() {
-      var linksHeader = arguments.length <= 0 || arguments[0] === undefined ? '' : arguments[0];
-
-      var links = linksHeader.split(/\s*,\s*/); // splits and strips the urls
-      return links.reduce(function (nextUrl, link) {
-         if (link.search(/rel="next"/) !== -1) {
-            return (link.match(/<(.*)>/) || [])[1];
-         }
-
-         return nextUrl;
-      }, undefined);
-   }
-
-   function callbackErrorOrThrow(cb, path) {
-      return function handler(response) {
-         var message = 'error making request ' + response.config.method + ' ' + response.config.url;
-         var error = new ResponseError(message, path, response);
-         log(message + ' ' + JSON.stringify(response.data));
-         if (cb) {
-            log('going to error callback');
-            cb(error);
-         } else {
-            log('throwing error');
-            throw error;
-         }
-      };
-   }
-});
-
-},{"axios":12,"debug":31,"es6-promise":33,"js-base64":36}],9:[function(require,module,exports){
-(function (global, factory) {
-  if (typeof define === "function" && define.amd) {
-    define(['module', './Requestable', 'debug'], factory);
-  } else if (typeof exports !== "undefined") {
-    factory(module, require('./Requestable'), require('debug'));
-  } else {
-    var mod = {
-      exports: {}
-    };
-    factory(mod, global.Requestable, global.debug);
-    global.Search = mod.exports;
-  }
-})(this, function (module, _Requestable2, _debug) {
-  'use strict';
-
-  var _Requestable3 = _interopRequireDefault(_Requestable2);
-
-  var _debug2 = _interopRequireDefault(_debug);
-
-  function _interopRequireDefault(obj) {
-    return obj && obj.__esModule ? obj : {
-      default: obj
-    };
-  }
-
-  function _classCallCheck(instance, Constructor) {
-    if (!(instance instanceof Constructor)) {
-      throw new TypeError("Cannot call a class as a function");
-    }
-  }
-
-  var _createClass = function () {
-    function defineProperties(target, props) {
-      for (var i = 0; i < props.length; i++) {
-        var descriptor = props[i];
-        descriptor.enumerable = descriptor.enumerable || false;
-        descriptor.configurable = true;
-        if ("value" in descriptor) descriptor.writable = true;
-        Object.defineProperty(target, descriptor.key, descriptor);
+            if (cb) {
+               cb(response);
+            }
+            throw response;
+         });
       }
-    }
 
-    return function (Constructor, protoProps, staticProps) {
-      if (protoProps) defineProperties(Constructor.prototype, protoProps);
-      if (staticProps) defineProperties(Constructor, staticProps);
-      return Constructor;
-    };
-  }();
+      /**
+       * Make a request and fetch all the available data. Github will paginate responses so for queries
+       * that might span multiple pages this method is preferred to {@link Requestable#request}
+       * @param {string} path - the path to request
+       * @param {Object} options - the query parameters to include
+       * @param {Requestable.callback} [cb] - the function to receive the data. The returned data will always be an array.
+       * @param {Object[]} results - the partial results. This argument is intended for interal use only.
+       * @return {Promise} - a promise which will resolve when all pages have been fetched
+       * @deprecated This will be folded into {@link Requestable#_request} in the 2.0 release.
+       */
 
-  function _possibleConstructorReturn(self, call) {
-    if (!self) {
-      throw new ReferenceError("this hasn't been initialised - super() hasn't been called");
-    }
+   }, {
+      key: '_requestAllPages',
+      value: function _requestAllPages(path, options, cb, results) {
+         var _this2 = this;
 
-    return call && (typeof call === "object" || typeof call === "function") ? call : self;
-  }
+         results = results || [];
 
-  function _inherits(subClass, superClass) {
-    if (typeof superClass !== "function" && superClass !== null) {
-      throw new TypeError("Super expression must either be null or a function, not " + typeof superClass);
-    }
+         return this._request('GET', path, options).then(function (response) {
+            var _results;
 
-    subClass.prototype = Object.create(superClass && superClass.prototype, {
-      constructor: {
-        value: subClass,
-        enumerable: false,
-        writable: true,
-        configurable: true
+            var thisGroup = void 0;
+            if (response.data instanceof Array) {
+               thisGroup = response.data;
+            } else if (response.data.items instanceof Array) {
+               thisGroup = response.data.items;
+            } else {
+               var message = 'cannot figure out how to append ' + response.data + ' to the result set';
+               throw new ResponseError(message, path, response);
+            }
+            (_results = results).push.apply(_results, _toConsumableArray(thisGroup));
+
+            var nextUrl = getNextPage(response.headers.link);
+            if (nextUrl) {
+               log('getting next page: ' + nextUrl);
+               return _this2._requestAllPages(nextUrl, options, cb, results);
+            }
+
+            if (cb) {
+               cb(null, results, response);
+            }
+
+            response.data = results;
+            return response;
+         }).catch(callbackErrorOrThrow(cb, path));
       }
-    });
-    if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass;
-  }
+   }]);
 
-  var log = (0, _debug2.default)('github:search');
+   return Requestable;
+}();
+
+module.exports = Requestable;
+
+// ////////////////////////// //
+//  Private helper functions  //
+// ////////////////////////// //
+var METHODS_WITH_NO_BODY = ['GET', 'HEAD', 'DELETE'];
+function methodHasNoBody(method) {
+   return METHODS_WITH_NO_BODY.indexOf(method) !== -1;
+}
+
+function getNextPage() {
+   var linksHeader = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : '';
+
+   var links = linksHeader.split(/\s*,\s*/); // splits and strips the urls
+   return links.reduce(function (nextUrl, link) {
+      if (link.search(/rel="next"/) !== -1) {
+         return (link.match(/<(.*)>/) || [])[1];
+      }
+
+      return nextUrl;
+   }, undefined);
+}
+
+function callbackErrorOrThrow(cb, path) {
+   return function handler(object) {
+      var error = void 0;
+      if (object.hasOwnProperty('config')) {
+         var _object$response = object.response,
+             status = _object$response.status,
+             statusText = _object$response.statusText,
+             _object$config = object.config,
+             method = _object$config.method,
+             url = _object$config.url;
+
+         var message = status + ' error making request ' + method + ' ' + url + ': "' + statusText + '"';
+         error = new ResponseError(message, path, object);
+         log(message + ' ' + JSON.stringify(object.data));
+      } else {
+         error = object;
+      }
+      if (cb) {
+         log('going to error callback');
+         cb(error);
+      } else {
+         log('throwing error');
+         throw error;
+      }
+   };
+}
+
+},{"axios":13,"debug":40,"js-base64":44}],10:[function(require,module,exports){
+'use strict';
+
+var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+var _Requestable2 = require('./Requestable');
+
+var _Requestable3 = _interopRequireDefault(_Requestable2);
+
+var _debug = require('debug');
+
+var _debug2 = _interopRequireDefault(_debug);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
+
+function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; } /**
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                * @file
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                * @copyright  2013 Michael Aufreiter (Development Seed) and 2016 Yahoo Inc.
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                * @license    Licensed under {@link https://spdx.org/licenses/BSD-3-Clause-Clear.html BSD-3-Clause-Clear}.
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                *             Github.js is freely distributable.
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                */
+
+var log = (0, _debug2.default)('github:search');
+
+/**
+ * Wrap the Search API
+ */
+
+var Search = function (_Requestable) {
+  _inherits(Search, _Requestable);
 
   /**
-   * Wrap the Search API
+   * Create a Search
+   * @param {Object} defaults - defaults for the search
+   * @param {Requestable.auth} [auth] - information required to authenticate to Github
+   * @param {string} [apiBase=https://api.github.com] - the base Github API URL
+   */
+  function Search(defaults, auth, apiBase) {
+    _classCallCheck(this, Search);
+
+    var _this = _possibleConstructorReturn(this, (Search.__proto__ || Object.getPrototypeOf(Search)).call(this, auth, apiBase));
+
+    _this.__defaults = _this._getOptionsWithDefaults(defaults);
+    return _this;
+  }
+
+  /**
+   * Available search options
+   * @see https://developer.github.com/v3/search/#parameters
+   * @typedef {Object} Search.Params
+   * @param {string} q - the query to make
+   * @param {string} sort - the sort field, one of `stars`, `forks`, or `updated`.
+   *                      Default is [best match](https://developer.github.com/v3/search/#ranking-search-results)
+   * @param {string} order - the ordering, either `asc` or `desc`
+   */
+  /**
+   * Perform a search on the GitHub API
+   * @private
+   * @param {string} path - the scope of the search
+   * @param {Search.Params} [withOptions] - additional parameters for the search
+   * @param {Requestable.callback} [cb] - will receive the results of the search
+   * @return {Promise} - the promise for the http request
    */
 
-  var Search = function (_Requestable) {
-    _inherits(Search, _Requestable);
 
-    /**
-     * Create a Search
-     * @param {Object} defaults - defaults for the search
-     * @param {Requestable.auth} [auth] - information required to authenticate to Github
-     * @param {string} [apiBase=https://api.github.com] - the base Github API URL
-     */
+  _createClass(Search, [{
+    key: '_search',
+    value: function _search(path) {
+      var _this2 = this;
 
-    function Search(defaults, auth, apiBase) {
-      _classCallCheck(this, Search);
+      var withOptions = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : {};
+      var cb = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : undefined;
 
-      var _this = _possibleConstructorReturn(this, Object.getPrototypeOf(Search).call(this, auth, apiBase));
+      var requestOptions = {};
+      Object.keys(this.__defaults).forEach(function (prop) {
+        requestOptions[prop] = _this2.__defaults[prop];
+      });
+      Object.keys(withOptions).forEach(function (prop) {
+        requestOptions[prop] = withOptions[prop];
+      });
 
-      _this.__defaults = _this._getOptionsWithDefaults(defaults);
-      return _this;
+      log('searching ' + path + ' with options:', requestOptions);
+      return this._requestAllPages('/search/' + path, requestOptions, cb);
     }
 
     /**
-     * Available search options
-     * @see https://developer.github.com/v3/search/#parameters
-     * @typedef {Object} Search.Params
-     * @param {string} q - the query to make
-     * @param {string} sort - the sort field, one of `stars`, `forks`, or `updated`.
-     *                      Default is [best match](https://developer.github.com/v3/search/#ranking-search-results)
-     * @param {string} order - the ordering, either `asc` or `desc`
-     */
-    /**
-     * Perform a search on the GitHub API
-     * @private
-     * @param {string} path - the scope of the search
-     * @param {Search.Params} [withOptions] - additional parameters for the search
+     * Search for repositories
+     * @see https://developer.github.com/v3/search/#search-repositories
+     * @param {Search.Params} [options] - additional parameters for the search
      * @param {Requestable.callback} [cb] - will receive the results of the search
      * @return {Promise} - the promise for the http request
      */
 
-
-    _createClass(Search, [{
-      key: '_search',
-      value: function _search(path) {
-        var _this2 = this;
-
-        var withOptions = arguments.length <= 1 || arguments[1] === undefined ? {} : arguments[1];
-        var cb = arguments.length <= 2 || arguments[2] === undefined ? undefined : arguments[2];
-
-        var requestOptions = {};
-        Object.keys(this.__defaults).forEach(function (prop) {
-          requestOptions[prop] = _this2.__defaults[prop];
-        });
-        Object.keys(withOptions).forEach(function (prop) {
-          requestOptions[prop] = withOptions[prop];
-        });
-
-        log('searching ' + path + ' with options:', requestOptions);
-        return this._requestAllPages('/search/' + path, requestOptions, cb);
-      }
-    }, {
-      key: 'forRepositories',
-      value: function forRepositories(options, cb) {
-        return this._search('repositories', options, cb);
-      }
-    }, {
-      key: 'forCode',
-      value: function forCode(options, cb) {
-        return this._search('code', options, cb);
-      }
-    }, {
-      key: 'forIssues',
-      value: function forIssues(options, cb) {
-        return this._search('issues', options, cb);
-      }
-    }, {
-      key: 'forUsers',
-      value: function forUsers(options, cb) {
-        return this._search('users', options, cb);
-      }
-    }]);
-
-    return Search;
-  }(_Requestable3.default);
-
-  module.exports = Search;
-});
-
-},{"./Requestable":8,"debug":31}],10:[function(require,module,exports){
-(function (global, factory) {
-  if (typeof define === "function" && define.amd) {
-    define(['module', './Requestable', 'debug'], factory);
-  } else if (typeof exports !== "undefined") {
-    factory(module, require('./Requestable'), require('debug'));
-  } else {
-    var mod = {
-      exports: {}
-    };
-    factory(mod, global.Requestable, global.debug);
-    global.Team = mod.exports;
-  }
-})(this, function (module, _Requestable2, _debug) {
-  'use strict';
-
-  var _Requestable3 = _interopRequireDefault(_Requestable2);
-
-  var _debug2 = _interopRequireDefault(_debug);
-
-  function _interopRequireDefault(obj) {
-    return obj && obj.__esModule ? obj : {
-      default: obj
-    };
-  }
-
-  function _classCallCheck(instance, Constructor) {
-    if (!(instance instanceof Constructor)) {
-      throw new TypeError("Cannot call a class as a function");
-    }
-  }
-
-  var _createClass = function () {
-    function defineProperties(target, props) {
-      for (var i = 0; i < props.length; i++) {
-        var descriptor = props[i];
-        descriptor.enumerable = descriptor.enumerable || false;
-        descriptor.configurable = true;
-        if ("value" in descriptor) descriptor.writable = true;
-        Object.defineProperty(target, descriptor.key, descriptor);
-      }
-    }
-
-    return function (Constructor, protoProps, staticProps) {
-      if (protoProps) defineProperties(Constructor.prototype, protoProps);
-      if (staticProps) defineProperties(Constructor, staticProps);
-      return Constructor;
-    };
-  }();
-
-  function _possibleConstructorReturn(self, call) {
-    if (!self) {
-      throw new ReferenceError("this hasn't been initialised - super() hasn't been called");
-    }
-
-    return call && (typeof call === "object" || typeof call === "function") ? call : self;
-  }
-
-  function _inherits(subClass, superClass) {
-    if (typeof superClass !== "function" && superClass !== null) {
-      throw new TypeError("Super expression must either be null or a function, not " + typeof superClass);
-    }
-
-    subClass.prototype = Object.create(superClass && superClass.prototype, {
-      constructor: {
-        value: subClass,
-        enumerable: false,
-        writable: true,
-        configurable: true
-      }
-    });
-    if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass;
-  }
-
-  var log = (0, _debug2.default)('github:team');
-
-  /**
-   * A Team allows scoping of API requests to a particular Github Organization Team.
-   */
-
-  var Team = function (_Requestable) {
-    _inherits(Team, _Requestable);
-
-    /**
-     * Create a Team.
-     * @param {string} [teamId] - the id for the team
-     * @param {Requestable.auth} [auth] - information required to authenticate to Github
-     * @param {string} [apiBase=https://api.github.com] - the base Github API URL
-     */
-
-    function Team(teamId, auth, apiBase) {
-      _classCallCheck(this, Team);
-
-      var _this = _possibleConstructorReturn(this, Object.getPrototypeOf(Team).call(this, auth, apiBase));
-
-      _this.__teamId = teamId;
-      return _this;
+  }, {
+    key: 'forRepositories',
+    value: function forRepositories(options, cb) {
+      return this._search('repositories', options, cb);
     }
 
     /**
-     * Get Team information
-     * @see https://developer.github.com/v3/orgs/teams/#get-team
-     * @param {Requestable.callback} [cb] - will receive the team
+     * Search for code
+     * @see https://developer.github.com/v3/search/#search-code
+     * @param {Search.Params} [options] - additional parameters for the search
+     * @param {Requestable.callback} [cb] - will receive the results of the search
      * @return {Promise} - the promise for the http request
      */
 
+  }, {
+    key: 'forCode',
+    value: function forCode(options, cb) {
+      return this._search('code', options, cb);
+    }
 
-    _createClass(Team, [{
-      key: 'getTeam',
-      value: function getTeam(cb) {
-        log('Fetching Team ' + this.__teamId);
-        return this._request('Get', '/teams/' + this.__teamId, undefined, cb);
-      }
-    }, {
-      key: 'listRepos',
-      value: function listRepos(cb) {
-        log('Fetching repositories for Team ' + this.__teamId);
-        return this._requestAllPages('/teams/' + this.__teamId + '/repos', undefined, cb);
-      }
-    }, {
-      key: 'editTeam',
-      value: function editTeam(options, cb) {
-        log('Editing Team ' + this.__teamId);
-        return this._request('PATCH', '/teams/' + this.__teamId, options, cb);
-      }
-    }, {
-      key: 'listMembers',
-      value: function listMembers(options, cb) {
-        log('Getting members of Team ' + this.__teamId);
-        return this._requestAllPages('/teams/' + this.__teamId + '/members', options, cb);
-      }
-    }, {
-      key: 'getMembership',
-      value: function getMembership(username, cb) {
-        log('Getting membership of user ' + username + ' in Team ' + this.__teamId);
-        return this._request('GET', '/teams/' + this.__teamId + '/memberships/' + username, undefined, cb);
-      }
-    }, {
-      key: 'addMembership',
-      value: function addMembership(username, options, cb) {
-        log('Adding user ' + username + ' to Team ' + this.__teamId);
-        return this._request('PUT', '/teams/' + this.__teamId + '/memberships/' + username, options, cb);
-      }
-    }, {
-      key: 'isManagedRepo',
-      value: function isManagedRepo(owner, repo, cb) {
-        log('Getting repo management by Team ' + this.__teamId + ' for repo ' + owner + '/' + repo);
-        return this._request204or404('/teams/' + this.__teamId + '/repos/' + owner + '/' + repo, undefined, cb);
-      }
-    }, {
-      key: 'manageRepo',
-      value: function manageRepo(owner, repo, options, cb) {
-        log('Adding or Updating repo management by Team ' + this.__teamId + ' for repo ' + owner + '/' + repo);
-        return this._request204or404('/teams/' + this.__teamId + '/repos/' + owner + '/' + repo, options, cb, 'PUT');
-      }
-    }, {
-      key: 'unmanageRepo',
-      value: function unmanageRepo(owner, repo, cb) {
-        log('Remove repo management by Team ' + this.__teamId + ' for repo ' + owner + '/' + repo);
-        return this._request204or404('/teams/' + this.__teamId + '/repos/' + owner + '/' + repo, undefined, cb, 'DELETE');
-      }
-    }, {
-      key: 'deleteTeam',
-      value: function deleteTeam(cb) {
-        log('Deleting Team ' + this.__teamId);
-        return this._request204or404('/teams/' + this.__teamId, undefined, cb, 'DELETE');
-      }
-    }]);
+    /**
+     * Search for issues
+     * @see https://developer.github.com/v3/search/#search-issues
+     * @param {Search.Params} [options] - additional parameters for the search
+     * @param {Requestable.callback} [cb] - will receive the results of the search
+     * @return {Promise} - the promise for the http request
+     */
 
-    return Team;
-  }(_Requestable3.default);
+  }, {
+    key: 'forIssues',
+    value: function forIssues(options, cb) {
+      return this._search('issues', options, cb);
+    }
 
-  module.exports = Team;
-});
+    /**
+     * Search for users
+     * @see https://developer.github.com/v3/search/#search-users
+     * @param {Search.Params} [options] - additional parameters for the search
+     * @param {Requestable.callback} [cb] - will receive the results of the search
+     * @return {Promise} - the promise for the http request
+     */
 
-},{"./Requestable":8,"debug":31}],11:[function(require,module,exports){
-(function (global, factory) {
-   if (typeof define === "function" && define.amd) {
-      define(['module', './Requestable', 'debug'], factory);
-   } else if (typeof exports !== "undefined") {
-      factory(module, require('./Requestable'), require('debug'));
-   } else {
-      var mod = {
-         exports: {}
-      };
-      factory(mod, global.Requestable, global.debug);
-      global.User = mod.exports;
-   }
-})(this, function (module, _Requestable2, _debug) {
-   'use strict';
+  }, {
+    key: 'forUsers',
+    value: function forUsers(options, cb) {
+      return this._search('users', options, cb);
+    }
+  }]);
 
-   var _Requestable3 = _interopRequireDefault(_Requestable2);
+  return Search;
+}(_Requestable3.default);
 
-   var _debug2 = _interopRequireDefault(_debug);
+module.exports = Search;
 
-   function _interopRequireDefault(obj) {
-      return obj && obj.__esModule ? obj : {
-         default: obj
-      };
-   }
+},{"./Requestable":9,"debug":40}],11:[function(require,module,exports){
+'use strict';
 
-   function _classCallCheck(instance, Constructor) {
-      if (!(instance instanceof Constructor)) {
-         throw new TypeError("Cannot call a class as a function");
-      }
-   }
+var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
-   var _createClass = function () {
-      function defineProperties(target, props) {
-         for (var i = 0; i < props.length; i++) {
-            var descriptor = props[i];
-            descriptor.enumerable = descriptor.enumerable || false;
-            descriptor.configurable = true;
-            if ("value" in descriptor) descriptor.writable = true;
-            Object.defineProperty(target, descriptor.key, descriptor);
-         }
-      }
+var _Requestable2 = require('./Requestable');
 
-      return function (Constructor, protoProps, staticProps) {
-         if (protoProps) defineProperties(Constructor.prototype, protoProps);
-         if (staticProps) defineProperties(Constructor, staticProps);
-         return Constructor;
-      };
-   }();
+var _Requestable3 = _interopRequireDefault(_Requestable2);
 
-   function _possibleConstructorReturn(self, call) {
-      if (!self) {
-         throw new ReferenceError("this hasn't been initialised - super() hasn't been called");
-      }
+var _debug = require('debug');
 
-      return call && (typeof call === "object" || typeof call === "function") ? call : self;
-   }
+var _debug2 = _interopRequireDefault(_debug);
 
-   function _inherits(subClass, superClass) {
-      if (typeof superClass !== "function" && superClass !== null) {
-         throw new TypeError("Super expression must either be null or a function, not " + typeof superClass);
-      }
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-      subClass.prototype = Object.create(superClass && superClass.prototype, {
-         constructor: {
-            value: subClass,
-            enumerable: false,
-            writable: true,
-            configurable: true
-         }
-      });
-      if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass;
-   }
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
-   var log = (0, _debug2.default)('github:user');
+function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
+
+function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; } /**
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                * @file
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                * @copyright  2016 Matt Smith (Development Seed)
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                * @license    Licensed under {@link https://spdx.org/licenses/BSD-3-Clause-Clear.html BSD-3-Clause-Clear}.
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                *             Github.js is freely distributable.
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                */
+
+var log = (0, _debug2.default)('github:team');
+
+/**
+ * A Team allows scoping of API requests to a particular Github Organization Team.
+ */
+
+var Team = function (_Requestable) {
+  _inherits(Team, _Requestable);
+
+  /**
+   * Create a Team.
+   * @param {string} [teamId] - the id for the team
+   * @param {Requestable.auth} [auth] - information required to authenticate to Github
+   * @param {string} [apiBase=https://api.github.com] - the base Github API URL
+   */
+  function Team(teamId, auth, apiBase) {
+    _classCallCheck(this, Team);
+
+    var _this = _possibleConstructorReturn(this, (Team.__proto__ || Object.getPrototypeOf(Team)).call(this, auth, apiBase));
+
+    _this.__teamId = teamId;
+    return _this;
+  }
+
+  /**
+   * Get Team information
+   * @see https://developer.github.com/v3/orgs/teams/#get-team
+   * @param {Requestable.callback} [cb] - will receive the team
+   * @return {Promise} - the promise for the http request
+   */
+
+
+  _createClass(Team, [{
+    key: 'getTeam',
+    value: function getTeam(cb) {
+      log('Fetching Team ' + this.__teamId);
+      return this._request('Get', '/teams/' + this.__teamId, undefined, cb);
+    }
+
+    /**
+     * List the Team's repositories
+     * @see https://developer.github.com/v3/orgs/teams/#list-team-repos
+     * @param {Requestable.callback} [cb] - will receive the list of repositories
+     * @return {Promise} - the promise for the http request
+     */
+
+  }, {
+    key: 'listRepos',
+    value: function listRepos(cb) {
+      log('Fetching repositories for Team ' + this.__teamId);
+      return this._requestAllPages('/teams/' + this.__teamId + '/repos', undefined, cb);
+    }
+
+    /**
+     * Edit Team information
+     * @see https://developer.github.com/v3/orgs/teams/#edit-team
+     * @param {object} options - Parameters for team edit
+     * @param {string} options.name - The name of the team
+     * @param {string} [options.description] - Team description
+     * @param {string} [options.repo_names] - Repos to add the team to
+     * @param {string} [options.privacy=secret] - The level of privacy the team should have. Can be either one
+     * of: `secret`, or `closed`
+     * @param {Requestable.callback} [cb] - will receive the updated team
+     * @return {Promise} - the promise for the http request
+     */
+
+  }, {
+    key: 'editTeam',
+    value: function editTeam(options, cb) {
+      log('Editing Team ' + this.__teamId);
+      return this._request('PATCH', '/teams/' + this.__teamId, options, cb);
+    }
+
+    /**
+     * List the users who are members of the Team
+     * @see https://developer.github.com/v3/orgs/teams/#list-team-members
+     * @param {object} options - Parameters for listing team users
+     * @param {string} [options.role=all] - can be one of: `all`, `maintainer`, or `member`
+     * @param {Requestable.callback} [cb] - will receive the list of users
+     * @return {Promise} - the promise for the http request
+     */
+
+  }, {
+    key: 'listMembers',
+    value: function listMembers(options, cb) {
+      log('Getting members of Team ' + this.__teamId);
+      return this._requestAllPages('/teams/' + this.__teamId + '/members', options, cb);
+    }
+
+    /**
+     * Get Team membership status for a user
+     * @see https://developer.github.com/v3/orgs/teams/#get-team-membership
+     * @param {string} username - can be one of: `all`, `maintainer`, or `member`
+     * @param {Requestable.callback} [cb] - will receive the membership status of a user
+     * @return {Promise} - the promise for the http request
+     */
+
+  }, {
+    key: 'getMembership',
+    value: function getMembership(username, cb) {
+      log('Getting membership of user ' + username + ' in Team ' + this.__teamId);
+      return this._request('GET', '/teams/' + this.__teamId + '/memberships/' + username, undefined, cb);
+    }
+
+    /**
+     * Add a member to the Team
+     * @see https://developer.github.com/v3/orgs/teams/#add-team-membership
+     * @param {string} username - can be one of: `all`, `maintainer`, or `member`
+     * @param {object} options - Parameters for adding a team member
+     * @param {string} [options.role=member] - The role that this user should have in the team. Can be one
+     * of: `member`, or `maintainer`
+     * @param {Requestable.callback} [cb] - will receive the membership status of added user
+     * @return {Promise} - the promise for the http request
+     */
+
+  }, {
+    key: 'addMembership',
+    value: function addMembership(username, options, cb) {
+      log('Adding user ' + username + ' to Team ' + this.__teamId);
+      return this._request('PUT', '/teams/' + this.__teamId + '/memberships/' + username, options, cb);
+    }
+
+    /**
+     * Get repo management status for team
+     * @see https://developer.github.com/v3/orgs/teams/#remove-team-membership
+     * @param {string} owner - Organization name
+     * @param {string} repo - Repo name
+     * @param {Requestable.callback} [cb] - will receive the membership status of added user
+     * @return {Promise} - the promise for the http request
+     */
+
+  }, {
+    key: 'isManagedRepo',
+    value: function isManagedRepo(owner, repo, cb) {
+      log('Getting repo management by Team ' + this.__teamId + ' for repo ' + owner + '/' + repo);
+      return this._request204or404('/teams/' + this.__teamId + '/repos/' + owner + '/' + repo, undefined, cb);
+    }
+
+    /**
+     * Add or Update repo management status for team
+     * @see https://developer.github.com/v3/orgs/teams/#add-or-update-team-repository
+     * @param {string} owner - Organization name
+     * @param {string} repo - Repo name
+     * @param {object} options - Parameters for adding or updating repo management for the team
+     * @param {string} [options.permission] - The permission to grant the team on this repository. Can be one
+     * of: `pull`, `push`, or `admin`
+     * @param {Requestable.callback} [cb] - will receive the membership status of added user
+     * @return {Promise} - the promise for the http request
+     */
+
+  }, {
+    key: 'manageRepo',
+    value: function manageRepo(owner, repo, options, cb) {
+      log('Adding or Updating repo management by Team ' + this.__teamId + ' for repo ' + owner + '/' + repo);
+      return this._request204or404('/teams/' + this.__teamId + '/repos/' + owner + '/' + repo, options, cb, 'PUT');
+    }
+
+    /**
+     * Remove repo management status for team
+     * @see https://developer.github.com/v3/orgs/teams/#remove-team-repository
+     * @param {string} owner - Organization name
+     * @param {string} repo - Repo name
+     * @param {Requestable.callback} [cb] - will receive the membership status of added user
+     * @return {Promise} - the promise for the http request
+     */
+
+  }, {
+    key: 'unmanageRepo',
+    value: function unmanageRepo(owner, repo, cb) {
+      log('Remove repo management by Team ' + this.__teamId + ' for repo ' + owner + '/' + repo);
+      return this._request204or404('/teams/' + this.__teamId + '/repos/' + owner + '/' + repo, undefined, cb, 'DELETE');
+    }
+
+    /**
+     * Delete Team
+     * @see https://developer.github.com/v3/orgs/teams/#delete-team
+     * @param {Requestable.callback} [cb] - will receive the list of repositories
+     * @return {Promise} - the promise for the http request
+     */
+
+  }, {
+    key: 'deleteTeam',
+    value: function deleteTeam(cb) {
+      log('Deleting Team ' + this.__teamId);
+      return this._request204or404('/teams/' + this.__teamId, undefined, cb, 'DELETE');
+    }
+  }]);
+
+  return Team;
+}(_Requestable3.default);
+
+module.exports = Team;
+
+},{"./Requestable":9,"debug":40}],12:[function(require,module,exports){
+'use strict';
+
+var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+var _Requestable2 = require('./Requestable');
+
+var _Requestable3 = _interopRequireDefault(_Requestable2);
+
+var _debug = require('debug');
+
+var _debug2 = _interopRequireDefault(_debug);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
+
+function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; } /**
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                * @file
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                * @copyright  2013 Michael Aufreiter (Development Seed) and 2016 Yahoo Inc.
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                * @license    Licensed under {@link https://spdx.org/licenses/BSD-3-Clause-Clear.html BSD-3-Clause-Clear}.
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                *             Github.js is freely distributable.
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                */
+
+var log = (0, _debug2.default)('github:user');
+
+/**
+ * A User allows scoping of API requests to a particular Github user.
+ */
+
+var User = function (_Requestable) {
+   _inherits(User, _Requestable);
 
    /**
-    * A User allows scoping of API requests to a particular Github user.
+    * Create a User.
+    * @param {string} [username] - the user to use for user-scoped queries
+    * @param {Requestable.auth} [auth] - information required to authenticate to Github
+    * @param {string} [apiBase=https://api.github.com] - the base Github API URL
+    */
+   function User(username, auth, apiBase) {
+      _classCallCheck(this, User);
+
+      var _this = _possibleConstructorReturn(this, (User.__proto__ || Object.getPrototypeOf(User)).call(this, auth, apiBase));
+
+      _this.__user = username;
+      return _this;
+   }
+
+   /**
+    * Get the url for the request. (dependent on if we're requesting for the authenticated user or not)
+    * @private
+    * @param {string} endpoint - the endpoint being requested
+    * @return {string} - the resolved endpoint
     */
 
-   var User = function (_Requestable) {
-      _inherits(User, _Requestable);
 
-      /**
-       * Create a User.
-       * @param {string} [username] - the user to use for user-scoped queries
-       * @param {Requestable.auth} [auth] - information required to authenticate to Github
-       * @param {string} [apiBase=https://api.github.com] - the base Github API URL
-       */
+   _createClass(User, [{
+      key: '__getScopedUrl',
+      value: function __getScopedUrl(endpoint) {
+         if (this.__user) {
+            return endpoint ? '/users/' + this.__user + '/' + endpoint : '/users/' + this.__user;
+         } else {
+            // eslint-disable-line
+            switch (endpoint) {
+               case '':
+                  return '/user';
 
-      function User(username, auth, apiBase) {
-         _classCallCheck(this, User);
+               case 'notifications':
+               case 'gists':
+                  return '/' + endpoint;
 
-         var _this = _possibleConstructorReturn(this, Object.getPrototypeOf(User).call(this, auth, apiBase));
-
-         _this.__user = username;
-         return _this;
+               default:
+                  return '/user/' + endpoint;
+            }
+         }
       }
 
       /**
-       * Get the url for the request. (dependent on if we're requesting for the authenticated user or not)
-       * @private
-       * @param {string} endpoint - the endpoint being requested
-       * @return {string} - the resolved endpoint
+       * List the user's repositories
+       * @see https://developer.github.com/v3/repos/#list-user-repositories
+       * @param {Object} [options={}] - any options to refine the search
+       * @param {Requestable.callback} [cb] - will receive the list of repositories
+       * @return {Promise} - the promise for the http request
        */
 
-
-      _createClass(User, [{
-         key: '__getScopedUrl',
-         value: function __getScopedUrl(endpoint) {
-            if (this.__user) {
-               return endpoint ? '/users/' + this.__user + '/' + endpoint : '/users/' + this.__user;
-            } else {
-               // eslint-disable-line
-               switch (endpoint) {
-                  case '':
-                     return '/user';
-
-                  case 'notifications':
-                  case 'gists':
-                     return '/' + endpoint;
-
-                  default:
-                     return '/user/' + endpoint;
-               }
-            }
+   }, {
+      key: 'listRepos',
+      value: function listRepos(options, cb) {
+         if (typeof options === 'function') {
+            cb = options;
+            options = {};
          }
-      }, {
-         key: 'listRepos',
-         value: function listRepos(options, cb) {
-            if (typeof options === 'function') {
-               cb = options;
-               options = {};
-            }
 
-            options = this._getOptionsWithDefaults(options);
+         options = this._getOptionsWithDefaults(options);
 
-            log('Fetching repositories with options: ' + JSON.stringify(options));
-            return this._requestAllPages(this.__getScopedUrl('repos'), options, cb);
-         }
-      }, {
-         key: 'listOrgs',
-         value: function listOrgs(cb) {
-            return this._request('GET', this.__getScopedUrl('orgs'), null, cb);
-         }
-      }, {
-         key: 'listGists',
-         value: function listGists(cb) {
-            return this._request('GET', this.__getScopedUrl('gists'), null, cb);
-         }
-      }, {
-         key: 'listNotifications',
-         value: function listNotifications(options, cb) {
-            options = options || {};
-            if (typeof options === 'function') {
-               cb = options;
-               options = {};
-            }
+         log('Fetching repositories with options: ' + JSON.stringify(options));
+         return this._requestAllPages(this.__getScopedUrl('repos'), options, cb);
+      }
 
-            options.since = this._dateToISO(options.since);
-            options.before = this._dateToISO(options.before);
+      /**
+       * List the orgs that the user belongs to
+       * @see https://developer.github.com/v3/orgs/#list-user-organizations
+       * @param {Requestable.callback} [cb] - will receive the list of organizations
+       * @return {Promise} - the promise for the http request
+       */
 
-            return this._request('GET', this.__getScopedUrl('notifications'), options, cb);
-         }
-      }, {
-         key: 'getProfile',
-         value: function getProfile(cb) {
-            return this._request('GET', this.__getScopedUrl(''), null, cb);
-         }
-      }, {
-         key: 'listStarredRepos',
-         value: function listStarredRepos(cb) {
-            var requestOptions = this._getOptionsWithDefaults();
-            return this._requestAllPages(this.__getScopedUrl('starred'), requestOptions, cb);
-         }
-      }, {
-         key: 'follow',
-         value: function follow(username, cb) {
-            return this._request('PUT', '/user/following/' + this.__user, null, cb);
-         }
-      }, {
-         key: 'unfollow',
-         value: function unfollow(username, cb) {
-            return this._request('DELETE', '/user/following/' + this.__user, null, cb);
-         }
-      }, {
-         key: 'createRepo',
-         value: function createRepo(options, cb) {
-            return this._request('POST', '/user/repos', options, cb);
-         }
-      }]);
+   }, {
+      key: 'listOrgs',
+      value: function listOrgs(cb) {
+         return this._request('GET', this.__getScopedUrl('orgs'), null, cb);
+      }
 
-      return User;
-   }(_Requestable3.default);
+      /**
+       * List the user's gists
+       * @see https://developer.github.com/v3/gists/#list-a-users-gists
+       * @param {Requestable.callback} [cb] - will receive the list of gists
+       * @return {Promise} - the promise for the http request
+       */
 
-   module.exports = User;
-});
+   }, {
+      key: 'listGists',
+      value: function listGists(cb) {
+         return this._request('GET', this.__getScopedUrl('gists'), null, cb);
+      }
 
-},{"./Requestable":8,"debug":31}],12:[function(require,module,exports){
+      /**
+       * List the user's notifications
+       * @see https://developer.github.com/v3/activity/notifications/#list-your-notifications
+       * @param {Object} [options={}] - any options to refine the search
+       * @param {Requestable.callback} [cb] - will receive the list of repositories
+       * @return {Promise} - the promise for the http request
+       */
+
+   }, {
+      key: 'listNotifications',
+      value: function listNotifications(options, cb) {
+         options = options || {};
+         if (typeof options === 'function') {
+            cb = options;
+            options = {};
+         }
+
+         options.since = this._dateToISO(options.since);
+         options.before = this._dateToISO(options.before);
+
+         return this._request('GET', this.__getScopedUrl('notifications'), options, cb);
+      }
+
+      /**
+       * Show the user's profile
+       * @see https://developer.github.com/v3/users/#get-a-single-user
+       * @param {Requestable.callback} [cb] - will receive the user's information
+       * @return {Promise} - the promise for the http request
+       */
+
+   }, {
+      key: 'getProfile',
+      value: function getProfile(cb) {
+         return this._request('GET', this.__getScopedUrl(''), null, cb);
+      }
+
+      /**
+       * Gets the list of starred repositories for the user
+       * @see https://developer.github.com/v3/activity/starring/#list-repositories-being-starred
+       * @param {Requestable.callback} [cb] - will receive the list of starred repositories
+       * @return {Promise} - the promise for the http request
+       */
+
+   }, {
+      key: 'listStarredRepos',
+      value: function listStarredRepos(cb) {
+         var requestOptions = this._getOptionsWithDefaults();
+         return this._requestAllPages(this.__getScopedUrl('starred'), requestOptions, cb);
+      }
+
+      /**
+       * List email addresses for a user
+       * @see https://developer.github.com/v3/users/emails/#list-email-addresses-for-a-user
+       * @param {Requestable.callback} [cb] - will receive the list of emails
+       * @return {Promise} - the promise for the http request
+       */
+
+   }, {
+      key: 'getEmails',
+      value: function getEmails(cb) {
+         return this._request('GET', '/user/emails', null, cb);
+      }
+
+      /**
+       * Have the authenticated user follow this user
+       * @see https://developer.github.com/v3/users/followers/#follow-a-user
+       * @param {string} username - the user to follow
+       * @param {Requestable.callback} [cb] - will receive true if the request succeeds
+       * @return {Promise} - the promise for the http request
+       */
+
+   }, {
+      key: 'follow',
+      value: function follow(username, cb) {
+         return this._request('PUT', '/user/following/' + this.__user, null, cb);
+      }
+
+      /**
+       * Have the currently authenticated user unfollow this user
+       * @see https://developer.github.com/v3/users/followers/#follow-a-user
+       * @param {string} username - the user to unfollow
+       * @param {Requestable.callback} [cb] - receives true if the request succeeds
+       * @return {Promise} - the promise for the http request
+       */
+
+   }, {
+      key: 'unfollow',
+      value: function unfollow(username, cb) {
+         return this._request('DELETE', '/user/following/' + this.__user, null, cb);
+      }
+
+      /**
+       * Create a new repository for the currently authenticated user
+       * @see https://developer.github.com/v3/repos/#create
+       * @param {object} options - the repository definition
+       * @param {Requestable.callback} [cb] - will receive the API response
+       * @return {Promise} - the promise for the http request
+       */
+
+   }, {
+      key: 'createRepo',
+      value: function createRepo(options, cb) {
+         return this._request('POST', '/user/repos', options, cb);
+      }
+   }]);
+
+   return User;
+}(_Requestable3.default);
+
+module.exports = User;
+
+},{"./Requestable":9,"debug":40}],13:[function(require,module,exports){
 module.exports = require('./lib/axios');
-},{"./lib/axios":14}],13:[function(require,module,exports){
+},{"./lib/axios":15}],14:[function(require,module,exports){
 (function (process){
 'use strict';
 
 var utils = require('./../utils');
+var settle = require('./../core/settle');
 var buildURL = require('./../helpers/buildURL');
 var parseHeaders = require('./../helpers/parseHeaders');
-var transformData = require('./../helpers/transformData');
 var isURLSameOrigin = require('./../helpers/isURLSameOrigin');
-var btoa = (typeof window !== 'undefined' && window.btoa) || require('./../helpers/btoa');
+var createError = require('../core/createError');
+var btoa = (typeof window !== 'undefined' && window.btoa && window.btoa.bind(window)) || require('./../helpers/btoa');
 
-module.exports = function xhrAdapter(resolve, reject, config) {
-  var requestData = config.data;
-  var requestHeaders = config.headers;
+module.exports = function xhrAdapter(config) {
+  return new Promise(function dispatchXhrRequest(resolve, reject) {
+    var requestData = config.data;
+    var requestHeaders = config.headers;
 
-  if (utils.isFormData(requestData)) {
-    delete requestHeaders['Content-Type']; // Let the browser set it
-  }
-
-  var request = new XMLHttpRequest();
-  var loadEvent = 'onreadystatechange';
-  var xDomain = false;
-
-  // For IE 8/9 CORS support
-  // Only supports POST and GET calls and doesn't returns the response headers.
-  // DON'T do this for testing b/c XMLHttpRequest is mocked, not XDomainRequest.
-  if (process.env.NODE_ENV !== 'test' && typeof window !== 'undefined' && window.XDomainRequest && !('withCredentials' in request) && !isURLSameOrigin(config.url)) {
-    request = new window.XDomainRequest();
-    loadEvent = 'onload';
-    xDomain = true;
-  }
-
-  // HTTP basic authentication
-  if (config.auth) {
-    var username = config.auth.username || '';
-    var password = config.auth.password || '';
-    requestHeaders.Authorization = 'Basic ' + btoa(username + ':' + password);
-  }
-
-  request.open(config.method.toUpperCase(), buildURL(config.url, config.params, config.paramsSerializer), true);
-
-  // Set the request timeout in MS
-  request.timeout = config.timeout;
-
-  // For IE 9 CORS support.
-  request.onprogress = function handleProgress() {};
-  request.ontimeout = function handleTimeout() {};
-
-  // Listen for ready state
-  request[loadEvent] = function handleLoad() {
-    if (!request || (request.readyState !== 4 && !xDomain)) {
-      return;
+    if (utils.isFormData(requestData)) {
+      delete requestHeaders['Content-Type']; // Let the browser set it
     }
 
-    // The request errored out and we didn't get a response, this will be
-    // handled by onerror instead
-    if (request.status === 0) {
-      return;
+    var request = new XMLHttpRequest();
+    var loadEvent = 'onreadystatechange';
+    var xDomain = false;
+
+    // For IE 8/9 CORS support
+    // Only supports POST and GET calls and doesn't returns the response headers.
+    // DON'T do this for testing b/c XMLHttpRequest is mocked, not XDomainRequest.
+    if (process.env.NODE_ENV !== 'test' &&
+        typeof window !== 'undefined' &&
+        window.XDomainRequest && !('withCredentials' in request) &&
+        !isURLSameOrigin(config.url)) {
+      request = new window.XDomainRequest();
+      loadEvent = 'onload';
+      xDomain = true;
+      request.onprogress = function handleProgress() {};
+      request.ontimeout = function handleTimeout() {};
     }
 
-    // Prepare the response
-    var responseHeaders = 'getAllResponseHeaders' in request ? parseHeaders(request.getAllResponseHeaders()) : null;
-    var responseData = !config.responseType || config.responseType === 'text' ? request.responseText : request.response;
-    var response = {
-      data: transformData(
-        responseData,
-        responseHeaders,
-        config.transformResponse
-      ),
-      // IE sends 1223 instead of 204 (https://github.com/mzabriskie/axios/issues/201)
-      status: request.status === 1223 ? 204 : request.status,
-      statusText: request.status === 1223 ? 'No Content' : request.statusText,
-      headers: responseHeaders,
-      config: config,
-      request: request
+    // HTTP basic authentication
+    if (config.auth) {
+      var username = config.auth.username || '';
+      var password = config.auth.password || '';
+      requestHeaders.Authorization = 'Basic ' + btoa(username + ':' + password);
+    }
+
+    request.open(config.method.toUpperCase(), buildURL(config.url, config.params, config.paramsSerializer), true);
+
+    // Set the request timeout in MS
+    request.timeout = config.timeout;
+
+    // Listen for ready state
+    request[loadEvent] = function handleLoad() {
+      if (!request || (request.readyState !== 4 && !xDomain)) {
+        return;
+      }
+
+      // The request errored out and we didn't get a response, this will be
+      // handled by onerror instead
+      // With one exception: request that using file: protocol, most browsers
+      // will return status as 0 even though it's a successful request
+      if (request.status === 0 && !(request.responseURL && request.responseURL.indexOf('file:') === 0)) {
+        return;
+      }
+
+      // Prepare the response
+      var responseHeaders = 'getAllResponseHeaders' in request ? parseHeaders(request.getAllResponseHeaders()) : null;
+      var responseData = !config.responseType || config.responseType === 'text' ? request.responseText : request.response;
+      var response = {
+        data: responseData,
+        // IE sends 1223 instead of 204 (https://github.com/mzabriskie/axios/issues/201)
+        status: request.status === 1223 ? 204 : request.status,
+        statusText: request.status === 1223 ? 'No Content' : request.statusText,
+        headers: responseHeaders,
+        config: config,
+        request: request
+      };
+
+      settle(resolve, reject, response);
+
+      // Clean up request
+      request = null;
     };
 
-    // Resolve or reject the Promise based on the status
-    ((response.status >= 200 && response.status < 300) ||
-     (!('status' in request) && request.responseText) ?
-      resolve :
-      reject)(response);
+    // Handle low level network errors
+    request.onerror = function handleError() {
+      // Real errors are hidden from us by the browser
+      // onerror should only fire if it's a network error
+      reject(createError('Network Error', config));
 
-    // Clean up request
-    request = null;
-  };
+      // Clean up request
+      request = null;
+    };
 
-  // Handle low level network errors
-  request.onerror = function handleError() {
-    // Real errors are hidden from us by the browser
-    // onerror should only fire if it's a network error
-    reject(new Error('Network Error'));
+    // Handle timeout
+    request.ontimeout = function handleTimeout() {
+      reject(createError('timeout of ' + config.timeout + 'ms exceeded', config, 'ECONNABORTED'));
 
-    // Clean up request
-    request = null;
-  };
-
-  // Handle timeout
-  request.ontimeout = function handleTimeout() {
-    var err = new Error('timeout of ' + config.timeout + 'ms exceeded');
-    err.timeout = config.timeout;
-    err.code = 'ECONNABORTED';
-    reject(err);
-
-    // Clean up request
-    request = null;
-  };
-
-  // Add xsrf header
-  // This is only done if running in a standard browser environment.
-  // Specifically not if we're in a web worker, or react-native.
-  if (utils.isStandardBrowserEnv()) {
-    var cookies = require('./../helpers/cookies');
+      // Clean up request
+      request = null;
+    };
 
     // Add xsrf header
-    var xsrfValue = config.withCredentials || isURLSameOrigin(config.url) ?
-        cookies.read(config.xsrfCookieName) :
-        undefined;
+    // This is only done if running in a standard browser environment.
+    // Specifically not if we're in a web worker, or react-native.
+    if (utils.isStandardBrowserEnv()) {
+      var cookies = require('./../helpers/cookies');
 
-    if (xsrfValue) {
-      requestHeaders[config.xsrfHeaderName] = xsrfValue;
-    }
-  }
+      // Add xsrf header
+      var xsrfValue = (config.withCredentials || isURLSameOrigin(config.url)) && config.xsrfCookieName ?
+          cookies.read(config.xsrfCookieName) :
+          undefined;
 
-  // Add headers to the request
-  if ('setRequestHeader' in request) {
-    utils.forEach(requestHeaders, function setRequestHeader(val, key) {
-      if (typeof requestData === 'undefined' && key.toLowerCase() === 'content-type') {
-        // Remove Content-Type if data is undefined
-        delete requestHeaders[key];
-      } else {
-        // Otherwise add header to the request
-        request.setRequestHeader(key, val);
-      }
-    });
-  }
-
-  // Add withCredentials to request if needed
-  if (config.withCredentials) {
-    request.withCredentials = true;
-  }
-
-  // Add responseType to request if needed
-  if (config.responseType) {
-    try {
-      request.responseType = config.responseType;
-    } catch (e) {
-      if (request.responseType !== 'json') {
-        throw e;
+      if (xsrfValue) {
+        requestHeaders[config.xsrfHeaderName] = xsrfValue;
       }
     }
-  }
 
-  // Handle progress if needed
-  if (config.progress) {
-    if (config.method === 'post' || config.method === 'put') {
-      request.upload.addEventListener('progress', config.progress);
-    } else if (config.method === 'get') {
-      request.addEventListener('progress', config.progress);
+    // Add headers to the request
+    if ('setRequestHeader' in request) {
+      utils.forEach(requestHeaders, function setRequestHeader(val, key) {
+        if (typeof requestData === 'undefined' && key.toLowerCase() === 'content-type') {
+          // Remove Content-Type if data is undefined
+          delete requestHeaders[key];
+        } else {
+          // Otherwise add header to the request
+          request.setRequestHeader(key, val);
+        }
+      });
     }
-  }
 
-  // Format request data
-  if (utils.isArrayBuffer(requestData)) {
-    requestData = new DataView(requestData);
-  }
+    // Add withCredentials to request if needed
+    if (config.withCredentials) {
+      request.withCredentials = true;
+    }
 
-  if (requestData === undefined) {
-    requestData = null;
-  }
+    // Add responseType to request if needed
+    if (config.responseType) {
+      try {
+        request.responseType = config.responseType;
+      } catch (e) {
+        if (request.responseType !== 'json') {
+          throw e;
+        }
+      }
+    }
 
-  // Send the request
-  request.send(requestData);
+    // Handle progress if needed
+    if (typeof config.onDownloadProgress === 'function') {
+      request.addEventListener('progress', config.onDownloadProgress);
+    }
+
+    // Not all browsers support upload events
+    if (typeof config.onUploadProgress === 'function' && request.upload) {
+      request.upload.addEventListener('progress', config.onUploadProgress);
+    }
+
+    if (config.cancelToken) {
+      // Handle cancellation
+      config.cancelToken.promise.then(function onCanceled(cancel) {
+        if (!request) {
+          return;
+        }
+
+        request.abort();
+        reject(cancel);
+        // Clean up request
+        request = null;
+      });
+    }
+
+    if (requestData === undefined) {
+      requestData = null;
+    }
+
+    // Send the request
+    request.send(requestData);
+  });
 };
 
 }).call(this,require('_process'))
 
-},{"./../helpers/btoa":19,"./../helpers/buildURL":20,"./../helpers/cookies":22,"./../helpers/isURLSameOrigin":24,"./../helpers/parseHeaders":25,"./../helpers/transformData":27,"./../utils":28,"_process":38}],14:[function(require,module,exports){
+},{"../core/createError":21,"./../core/settle":24,"./../helpers/btoa":28,"./../helpers/buildURL":29,"./../helpers/cookies":31,"./../helpers/isURLSameOrigin":33,"./../helpers/parseHeaders":35,"./../utils":37,"_process":46}],15:[function(require,module,exports){
 'use strict';
 
-var defaults = require('./defaults');
 var utils = require('./utils');
-var dispatchRequest = require('./core/dispatchRequest');
-var InterceptorManager = require('./core/InterceptorManager');
-var isAbsoluteURL = require('./helpers/isAbsoluteURL');
-var combineURLs = require('./helpers/combineURLs');
 var bind = require('./helpers/bind');
-var transformData = require('./helpers/transformData');
+var Axios = require('./core/Axios');
+var defaults = require('./defaults');
 
-function Axios(defaultConfig) {
-  this.defaults = utils.merge({}, defaultConfig);
+/**
+ * Create an instance of Axios
+ *
+ * @param {Object} defaultConfig The default config for the instance
+ * @return {Axios} A new instance of Axios
+ */
+function createInstance(defaultConfig) {
+  var context = new Axios(defaultConfig);
+  var instance = bind(Axios.prototype.request, context);
+
+  // Copy axios.prototype to instance
+  utils.extend(instance, Axios.prototype, context);
+
+  // Copy context to instance
+  utils.extend(instance, context);
+
+  return instance;
+}
+
+// Create the default instance to be exported
+var axios = createInstance(defaults);
+
+// Expose Axios class to allow class inheritance
+axios.Axios = Axios;
+
+// Factory for creating new instances
+axios.create = function create(instanceConfig) {
+  return createInstance(utils.merge(defaults, instanceConfig));
+};
+
+// Expose Cancel & CancelToken
+axios.Cancel = require('./cancel/Cancel');
+axios.CancelToken = require('./cancel/CancelToken');
+axios.isCancel = require('./cancel/isCancel');
+
+// Expose all/spread
+axios.all = function all(promises) {
+  return Promise.all(promises);
+};
+axios.spread = require('./helpers/spread');
+
+module.exports = axios;
+
+// Allow use of default import syntax in TypeScript
+module.exports.default = axios;
+
+},{"./cancel/Cancel":16,"./cancel/CancelToken":17,"./cancel/isCancel":18,"./core/Axios":19,"./defaults":26,"./helpers/bind":27,"./helpers/spread":36,"./utils":37}],16:[function(require,module,exports){
+'use strict';
+
+/**
+ * A `Cancel` is an object that is thrown when an operation is canceled.
+ *
+ * @class
+ * @param {string=} message The message.
+ */
+function Cancel(message) {
+  this.message = message;
+}
+
+Cancel.prototype.toString = function toString() {
+  return 'Cancel' + (this.message ? ': ' + this.message : '');
+};
+
+Cancel.prototype.__CANCEL__ = true;
+
+module.exports = Cancel;
+
+},{}],17:[function(require,module,exports){
+'use strict';
+
+var Cancel = require('./Cancel');
+
+/**
+ * A `CancelToken` is an object that can be used to request cancellation of an operation.
+ *
+ * @class
+ * @param {Function} executor The executor function.
+ */
+function CancelToken(executor) {
+  if (typeof executor !== 'function') {
+    throw new TypeError('executor must be a function.');
+  }
+
+  var resolvePromise;
+  this.promise = new Promise(function promiseExecutor(resolve) {
+    resolvePromise = resolve;
+  });
+
+  var token = this;
+  executor(function cancel(message) {
+    if (token.reason) {
+      // Cancellation has already been requested
+      return;
+    }
+
+    token.reason = new Cancel(message);
+    resolvePromise(token.reason);
+  });
+}
+
+/**
+ * Throws a `Cancel` if cancellation has been requested.
+ */
+CancelToken.prototype.throwIfRequested = function throwIfRequested() {
+  if (this.reason) {
+    throw this.reason;
+  }
+};
+
+/**
+ * Returns an object that contains a new `CancelToken` and a function that, when called,
+ * cancels the `CancelToken`.
+ */
+CancelToken.source = function source() {
+  var cancel;
+  var token = new CancelToken(function executor(c) {
+    cancel = c;
+  });
+  return {
+    token: token,
+    cancel: cancel
+  };
+};
+
+module.exports = CancelToken;
+
+},{"./Cancel":16}],18:[function(require,module,exports){
+'use strict';
+
+module.exports = function isCancel(value) {
+  return !!(value && value.__CANCEL__);
+};
+
+},{}],19:[function(require,module,exports){
+'use strict';
+
+var defaults = require('./../defaults');
+var utils = require('./../utils');
+var InterceptorManager = require('./InterceptorManager');
+var dispatchRequest = require('./dispatchRequest');
+var isAbsoluteURL = require('./../helpers/isAbsoluteURL');
+var combineURLs = require('./../helpers/combineURLs');
+
+/**
+ * Create a new instance of Axios
+ *
+ * @param {Object} instanceConfig The default config for the instance
+ */
+function Axios(instanceConfig) {
+  this.defaults = instanceConfig;
   this.interceptors = {
     request: new InterceptorManager(),
     response: new InterceptorManager()
   };
 }
 
+/**
+ * Dispatch a request
+ *
+ * @param {Object} config The config specific for this request (merged with this.defaults)
+ */
 Axios.prototype.request = function request(config) {
   /*eslint no-param-reassign:0*/
   // Allow for axios('example/url'[, config]) a la fetch API
@@ -2487,30 +3842,6 @@ Axios.prototype.request = function request(config) {
   if (config.baseURL && !isAbsoluteURL(config.url)) {
     config.url = combineURLs(config.baseURL, config.url);
   }
-
-  // Don't allow overriding defaults.withCredentials
-  config.withCredentials = config.withCredentials || this.defaults.withCredentials;
-
-  // Transform request data
-  config.data = transformData(
-    config.data,
-    config.headers,
-    config.transformRequest
-  );
-
-  // Flatten headers
-  config.headers = utils.merge(
-    config.headers.common || {},
-    config.headers[config.method] || {},
-    config.headers || {}
-  );
-
-  utils.forEach(
-    ['delete', 'get', 'head', 'post', 'put', 'patch', 'common'],
-    function cleanHeaderConfig(method) {
-      delete config.headers[method];
-    }
-  );
 
   // Hook up interceptors middleware
   var chain = [dispatchRequest, undefined];
@@ -2531,24 +3862,6 @@ Axios.prototype.request = function request(config) {
   return promise;
 };
 
-var defaultInstance = new Axios(defaults);
-var axios = module.exports = bind(Axios.prototype.request, defaultInstance);
-
-// Expose properties from defaultInstance
-axios.defaults = defaultInstance.defaults;
-axios.interceptors = defaultInstance.interceptors;
-
-// Factory for creating new instances
-axios.create = function create(defaultConfig) {
-  return new Axios(defaultConfig);
-};
-
-// Expose all/spread
-axios.all = function all(promises) {
-  return Promise.all(promises);
-};
-axios.spread = require('./helpers/spread');
-
 // Provide aliases for supported request methods
 utils.forEach(['delete', 'get', 'head'], function forEachMethodNoData(method) {
   /*eslint func-names:0*/
@@ -2558,7 +3871,6 @@ utils.forEach(['delete', 'get', 'head'], function forEachMethodNoData(method) {
       url: url
     }));
   };
-  axios[method] = bind(Axios.prototype[method], defaultInstance);
 });
 
 utils.forEach(['post', 'put', 'patch'], function forEachMethodWithData(method) {
@@ -2570,10 +3882,11 @@ utils.forEach(['post', 'put', 'patch'], function forEachMethodWithData(method) {
       data: data
     }));
   };
-  axios[method] = bind(Axios.prototype[method], defaultInstance);
 });
 
-},{"./core/InterceptorManager":15,"./core/dispatchRequest":16,"./defaults":17,"./helpers/bind":18,"./helpers/combineURLs":21,"./helpers/isAbsoluteURL":23,"./helpers/spread":26,"./helpers/transformData":27,"./utils":28}],15:[function(require,module,exports){
+module.exports = Axios;
+
+},{"./../defaults":26,"./../helpers/combineURLs":30,"./../helpers/isAbsoluteURL":32,"./../utils":37,"./InterceptorManager":20,"./dispatchRequest":22}],20:[function(require,module,exports){
 'use strict';
 
 var utils = require('./../utils');
@@ -2627,85 +3940,234 @@ InterceptorManager.prototype.forEach = function forEach(fn) {
 
 module.exports = InterceptorManager;
 
-},{"./../utils":28}],16:[function(require,module,exports){
-(function (process){
+},{"./../utils":37}],21:[function(require,module,exports){
 'use strict';
 
+var enhanceError = require('./enhanceError');
+
 /**
- * Dispatch a request to the server using whichever adapter
- * is supported by the current environment.
+ * Create an Error with the specified message, config, error code, and response.
+ *
+ * @param {string} message The error message.
+ * @param {Object} config The config.
+ * @param {string} [code] The error code (for example, 'ECONNABORTED').
+ @ @param {Object} [response] The response.
+ * @returns {Error} The created error.
+ */
+module.exports = function createError(message, config, code, response) {
+  var error = new Error(message);
+  return enhanceError(error, config, code, response);
+};
+
+},{"./enhanceError":23}],22:[function(require,module,exports){
+'use strict';
+
+var utils = require('./../utils');
+var transformData = require('./transformData');
+var isCancel = require('../cancel/isCancel');
+var defaults = require('../defaults');
+
+/**
+ * Throws a `Cancel` if cancellation has been requested.
+ */
+function throwIfCancellationRequested(config) {
+  if (config.cancelToken) {
+    config.cancelToken.throwIfRequested();
+  }
+}
+
+/**
+ * Dispatch a request to the server using the configured adapter.
  *
  * @param {object} config The config that is to be used for the request
  * @returns {Promise} The Promise to be fulfilled
  */
 module.exports = function dispatchRequest(config) {
-  return new Promise(function executor(resolve, reject) {
-    try {
-      var adapter;
+  throwIfCancellationRequested(config);
 
-      if (typeof config.adapter === 'function') {
-        // For custom adapter support
-        adapter = config.adapter;
-      } else if (typeof XMLHttpRequest !== 'undefined') {
-        // For browsers use XHR adapter
-        adapter = require('../adapters/xhr');
-      } else if (typeof process !== 'undefined') {
-        // For node use HTTP adapter
-        adapter = require('../adapters/http');
-      }
+  // Ensure headers exist
+  config.headers = config.headers || {};
 
-      if (typeof adapter === 'function') {
-        adapter(resolve, reject, config);
-      }
-    } catch (e) {
-      reject(e);
+  // Transform request data
+  config.data = transformData(
+    config.data,
+    config.headers,
+    config.transformRequest
+  );
+
+  // Flatten headers
+  config.headers = utils.merge(
+    config.headers.common || {},
+    config.headers[config.method] || {},
+    config.headers || {}
+  );
+
+  utils.forEach(
+    ['delete', 'get', 'head', 'post', 'put', 'patch', 'common'],
+    function cleanHeaderConfig(method) {
+      delete config.headers[method];
     }
+  );
+
+  var adapter = config.adapter || defaults.adapter;
+
+  return adapter(config).then(function onAdapterResolution(response) {
+    throwIfCancellationRequested(config);
+
+    // Transform response data
+    response.data = transformData(
+      response.data,
+      response.headers,
+      config.transformResponse
+    );
+
+    return response;
+  }, function onAdapterRejection(reason) {
+    if (!isCancel(reason)) {
+      throwIfCancellationRequested(config);
+
+      // Transform response data
+      if (reason && reason.response) {
+        reason.response.data = transformData(
+          reason.response.data,
+          reason.response.headers,
+          config.transformResponse
+        );
+      }
+    }
+
+    return Promise.reject(reason);
   });
 };
 
+},{"../cancel/isCancel":18,"../defaults":26,"./../utils":37,"./transformData":25}],23:[function(require,module,exports){
+'use strict';
 
-}).call(this,require('_process'))
+/**
+ * Update an Error with the specified config, error code, and response.
+ *
+ * @param {Error} error The error to update.
+ * @param {Object} config The config.
+ * @param {string} [code] The error code (for example, 'ECONNABORTED').
+ @ @param {Object} [response] The response.
+ * @returns {Error} The error.
+ */
+module.exports = function enhanceError(error, config, code, response) {
+  error.config = config;
+  if (code) {
+    error.code = code;
+  }
+  error.response = response;
+  return error;
+};
 
-},{"../adapters/http":13,"../adapters/xhr":13,"_process":38}],17:[function(require,module,exports){
+},{}],24:[function(require,module,exports){
+'use strict';
+
+var createError = require('./createError');
+
+/**
+ * Resolve or reject a Promise based on response status.
+ *
+ * @param {Function} resolve A function that resolves the promise.
+ * @param {Function} reject A function that rejects the promise.
+ * @param {object} response The response.
+ */
+module.exports = function settle(resolve, reject, response) {
+  var validateStatus = response.config.validateStatus;
+  // Note: status is not exposed by XDomainRequest
+  if (!response.status || !validateStatus || validateStatus(response.status)) {
+    resolve(response);
+  } else {
+    reject(createError(
+      'Request failed with status code ' + response.status,
+      response.config,
+      null,
+      response
+    ));
+  }
+};
+
+},{"./createError":21}],25:[function(require,module,exports){
+'use strict';
+
+var utils = require('./../utils');
+
+/**
+ * Transform the data for a request or a response
+ *
+ * @param {Object|String} data The data to be transformed
+ * @param {Array} headers The headers for the request or response
+ * @param {Array|Function} fns A single function or Array of functions
+ * @returns {*} The resulting transformed data
+ */
+module.exports = function transformData(data, headers, fns) {
+  /*eslint no-param-reassign:0*/
+  utils.forEach(fns, function transform(fn) {
+    data = fn(data, headers);
+  });
+
+  return data;
+};
+
+},{"./../utils":37}],26:[function(require,module,exports){
+(function (process){
 'use strict';
 
 var utils = require('./utils');
+var normalizeHeaderName = require('./helpers/normalizeHeaderName');
 
 var PROTECTION_PREFIX = /^\)\]\}',?\n/;
 var DEFAULT_CONTENT_TYPE = {
   'Content-Type': 'application/x-www-form-urlencoded'
 };
 
-module.exports = {
-  transformRequest: [function transformRequestJSON(data, headers) {
-    if (utils.isFormData(data)) {
-      return data;
-    }
-    if (utils.isArrayBuffer(data)) {
+function setContentTypeIfUnset(headers, value) {
+  if (!utils.isUndefined(headers) && utils.isUndefined(headers['Content-Type'])) {
+    headers['Content-Type'] = value;
+  }
+}
+
+function getDefaultAdapter() {
+  var adapter;
+  if (typeof XMLHttpRequest !== 'undefined') {
+    // For browsers use XHR adapter
+    adapter = require('./adapters/xhr');
+  } else if (typeof process !== 'undefined') {
+    // For node use HTTP adapter
+    adapter = require('./adapters/http');
+  }
+  return adapter;
+}
+
+var defaults = {
+  adapter: getDefaultAdapter(),
+
+  transformRequest: [function transformRequest(data, headers) {
+    normalizeHeaderName(headers, 'Content-Type');
+    if (utils.isFormData(data) ||
+      utils.isArrayBuffer(data) ||
+      utils.isStream(data) ||
+      utils.isFile(data) ||
+      utils.isBlob(data)
+    ) {
       return data;
     }
     if (utils.isArrayBufferView(data)) {
       return data.buffer;
     }
-    if (utils.isObject(data) && !utils.isFile(data) && !utils.isBlob(data)) {
-      // Set application/json if no Content-Type has been specified
-      if (!utils.isUndefined(headers)) {
-        utils.forEach(headers, function processContentTypeHeader(val, key) {
-          if (key.toLowerCase() === 'content-type') {
-            headers['Content-Type'] = val;
-          }
-        });
-
-        if (utils.isUndefined(headers['Content-Type'])) {
-          headers['Content-Type'] = 'application/json;charset=utf-8';
-        }
-      }
+    if (utils.isURLSearchParams(data)) {
+      setContentTypeIfUnset(headers, 'application/x-www-form-urlencoded;charset=utf-8');
+      return data.toString();
+    }
+    if (utils.isObject(data)) {
+      setContentTypeIfUnset(headers, 'application/json;charset=utf-8');
       return JSON.stringify(data);
     }
     return data;
   }],
 
-  transformResponse: [function transformResponseJSON(data) {
+  transformResponse: [function transformResponse(data) {
     /*eslint no-param-reassign:0*/
     if (typeof data === 'string') {
       data = data.replace(PROTECTION_PREFIX, '');
@@ -2716,24 +4178,37 @@ module.exports = {
     return data;
   }],
 
-  headers: {
-    common: {
-      'Accept': 'application/json, text/plain, */*'
-    },
-    patch: utils.merge(DEFAULT_CONTENT_TYPE),
-    post: utils.merge(DEFAULT_CONTENT_TYPE),
-    put: utils.merge(DEFAULT_CONTENT_TYPE)
-  },
-
   timeout: 0,
 
   xsrfCookieName: 'XSRF-TOKEN',
   xsrfHeaderName: 'X-XSRF-TOKEN',
 
-  maxContentLength: -1
+  maxContentLength: -1,
+
+  validateStatus: function validateStatus(status) {
+    return status >= 200 && status < 300;
+  }
 };
 
-},{"./utils":28}],18:[function(require,module,exports){
+defaults.headers = {
+  common: {
+    'Accept': 'application/json, text/plain, */*'
+  }
+};
+
+utils.forEach(['delete', 'get', 'head'], function forEachMehtodNoData(method) {
+  defaults.headers[method] = {};
+});
+
+utils.forEach(['post', 'put', 'patch'], function forEachMethodWithData(method) {
+  defaults.headers[method] = utils.merge(DEFAULT_CONTENT_TYPE);
+});
+
+module.exports = defaults;
+
+}).call(this,require('_process'))
+
+},{"./adapters/http":14,"./adapters/xhr":14,"./helpers/normalizeHeaderName":34,"./utils":37,"_process":46}],27:[function(require,module,exports){
 'use strict';
 
 module.exports = function bind(fn, thisArg) {
@@ -2746,7 +4221,7 @@ module.exports = function bind(fn, thisArg) {
   };
 };
 
-},{}],19:[function(require,module,exports){
+},{}],28:[function(require,module,exports){
 'use strict';
 
 // btoa polyfill for IE<10 courtesy https://github.com/davidchambers/Base64.js
@@ -2784,7 +4259,7 @@ function btoa(input) {
 
 module.exports = btoa;
 
-},{}],20:[function(require,module,exports){
+},{}],29:[function(require,module,exports){
 'use strict';
 
 var utils = require('./../utils');
@@ -2816,6 +4291,8 @@ module.exports = function buildURL(url, params, paramsSerializer) {
   var serializedParams;
   if (paramsSerializer) {
     serializedParams = paramsSerializer(params);
+  } else if (utils.isURLSearchParams(params)) {
+    serializedParams = params.toString();
   } else {
     var parts = [];
 
@@ -2852,8 +4329,7 @@ module.exports = function buildURL(url, params, paramsSerializer) {
   return url;
 };
 
-
-},{"./../utils":28}],21:[function(require,module,exports){
+},{"./../utils":37}],30:[function(require,module,exports){
 'use strict';
 
 /**
@@ -2867,7 +4343,7 @@ module.exports = function combineURLs(baseURL, relativeURL) {
   return baseURL.replace(/\/+$/, '') + '/' + relativeURL.replace(/^\/+/, '');
 };
 
-},{}],22:[function(require,module,exports){
+},{}],31:[function(require,module,exports){
 'use strict';
 
 var utils = require('./../utils');
@@ -2922,7 +4398,7 @@ module.exports = (
   })()
 );
 
-},{"./../utils":28}],23:[function(require,module,exports){
+},{"./../utils":37}],32:[function(require,module,exports){
 'use strict';
 
 /**
@@ -2938,7 +4414,7 @@ module.exports = function isAbsoluteURL(url) {
   return /^([a-z][a-z\d\+\-\.]*:)?\/\//i.test(url);
 };
 
-},{}],24:[function(require,module,exports){
+},{}],33:[function(require,module,exports){
 'use strict';
 
 var utils = require('./../utils');
@@ -3008,7 +4484,21 @@ module.exports = (
   })()
 );
 
-},{"./../utils":28}],25:[function(require,module,exports){
+},{"./../utils":37}],34:[function(require,module,exports){
+'use strict';
+
+var utils = require('../utils');
+
+module.exports = function normalizeHeaderName(headers, normalizedName) {
+  utils.forEach(headers, function processHeader(value, name) {
+    if (name !== normalizedName && name.toUpperCase() === normalizedName.toUpperCase()) {
+      headers[normalizedName] = value;
+      delete headers[name];
+    }
+  });
+};
+
+},{"../utils":37}],35:[function(require,module,exports){
 'use strict';
 
 var utils = require('./../utils');
@@ -3047,7 +4537,7 @@ module.exports = function parseHeaders(headers) {
   return parsed;
 };
 
-},{"./../utils":28}],26:[function(require,module,exports){
+},{"./../utils":37}],36:[function(require,module,exports){
 'use strict';
 
 /**
@@ -3076,30 +4566,10 @@ module.exports = function spread(callback) {
   };
 };
 
-},{}],27:[function(require,module,exports){
+},{}],37:[function(require,module,exports){
 'use strict';
 
-var utils = require('./../utils');
-
-/**
- * Transform the data for a request or a response
- *
- * @param {Object|String} data The data to be transformed
- * @param {Array} headers The headers for the request or response
- * @param {Array|Function} fns A single function or Array of functions
- * @returns {*} The resulting transformed data
- */
-module.exports = function transformData(data, headers, fns) {
-  /*eslint no-param-reassign:0*/
-  utils.forEach(fns, function transform(fn) {
-    data = fn(data, headers);
-  });
-
-  return data;
-};
-
-},{"./../utils":28}],28:[function(require,module,exports){
-'use strict';
+var bind = require('./helpers/bind');
 
 /*global toString:true*/
 
@@ -3134,7 +4604,7 @@ function isArrayBuffer(val) {
  * @returns {boolean} True if value is an FormData, otherwise false
  */
 function isFormData(val) {
-  return toString.call(val) === '[object FormData]';
+  return (typeof FormData !== 'undefined') && (val instanceof FormData);
 }
 
 /**
@@ -3224,6 +4694,36 @@ function isBlob(val) {
 }
 
 /**
+ * Determine if a value is a Function
+ *
+ * @param {Object} val The value to test
+ * @returns {boolean} True if value is a Function, otherwise false
+ */
+function isFunction(val) {
+  return toString.call(val) === '[object Function]';
+}
+
+/**
+ * Determine if a value is a Stream
+ *
+ * @param {Object} val The value to test
+ * @returns {boolean} True if value is a Stream, otherwise false
+ */
+function isStream(val) {
+  return isObject(val) && isFunction(val.pipe);
+}
+
+/**
+ * Determine if a value is a URLSearchParams object
+ *
+ * @param {Object} val The value to test
+ * @returns {boolean} True if value is a URLSearchParams object, otherwise false
+ */
+function isURLSearchParams(val) {
+  return typeof URLSearchParams !== 'undefined' && val instanceof URLSearchParams;
+}
+
+/**
  * Trim excess whitespace off the beginning and end of a string
  *
  * @param {String} str The String to trim
@@ -3286,7 +4786,7 @@ function forEach(obj, fn) {
   } else {
     // Iterate over object keys
     for (var key in obj) {
-      if (obj.hasOwnProperty(key)) {
+      if (Object.prototype.hasOwnProperty.call(obj, key)) {
         fn.call(null, obj[key], key, obj);
       }
     }
@@ -3326,6 +4826,25 @@ function merge(/* obj1, obj2, obj3, ... */) {
   return result;
 }
 
+/**
+ * Extends object a by mutably adding to it the properties of object b.
+ *
+ * @param {Object} a The object to be extended
+ * @param {Object} b The object to copy properties from
+ * @param {Object} thisArg The object to bind function to
+ * @return {Object} The resulting value of object a
+ */
+function extend(a, b, thisArg) {
+  forEach(b, function assignValue(val, key) {
+    if (thisArg && typeof val === 'function') {
+      a[key] = bind(val, thisArg);
+    } else {
+      a[key] = val;
+    }
+  });
+  return a;
+}
+
 module.exports = {
   isArray: isArray,
   isArrayBuffer: isArrayBuffer,
@@ -3338,15 +4857,20 @@ module.exports = {
   isDate: isDate,
   isFile: isFile,
   isBlob: isBlob,
+  isFunction: isFunction,
+  isStream: isStream,
+  isURLSearchParams: isURLSearchParams,
   isStandardBrowserEnv: isStandardBrowserEnv,
   forEach: forEach,
   merge: merge,
+  extend: extend,
   trim: trim
 };
 
-},{}],29:[function(require,module,exports){
+},{"./helpers/bind":27}],38:[function(require,module,exports){
 'use strict'
 
+exports.byteLength = byteLength
 exports.toByteArray = toByteArray
 exports.fromByteArray = fromByteArray
 
@@ -3354,23 +4878,17 @@ var lookup = []
 var revLookup = []
 var Arr = typeof Uint8Array !== 'undefined' ? Uint8Array : Array
 
-function init () {
-  var code = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/'
-  for (var i = 0, len = code.length; i < len; ++i) {
-    lookup[i] = code[i]
-    revLookup[code.charCodeAt(i)] = i
-  }
-
-  revLookup['-'.charCodeAt(0)] = 62
-  revLookup['_'.charCodeAt(0)] = 63
+var code = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/'
+for (var i = 0, len = code.length; i < len; ++i) {
+  lookup[i] = code[i]
+  revLookup[code.charCodeAt(i)] = i
 }
 
-init()
+revLookup['-'.charCodeAt(0)] = 62
+revLookup['_'.charCodeAt(0)] = 63
 
-function toByteArray (b64) {
-  var i, j, l, tmp, placeHolders, arr
+function placeHoldersCount (b64) {
   var len = b64.length
-
   if (len % 4 > 0) {
     throw new Error('Invalid string. Length must be a multiple of 4')
   }
@@ -3380,9 +4898,19 @@ function toByteArray (b64) {
   // represent one byte
   // if there is only one, then the three characters before it represent 2 bytes
   // this is just a cheap hack to not do indexOf twice
-  placeHolders = b64[len - 2] === '=' ? 2 : b64[len - 1] === '=' ? 1 : 0
+  return b64[len - 2] === '=' ? 2 : b64[len - 1] === '=' ? 1 : 0
+}
 
+function byteLength (b64) {
   // base64 is 4/3 + up to two characters of the original data
+  return b64.length * 3 / 4 - placeHoldersCount(b64)
+}
+
+function toByteArray (b64) {
+  var i, j, l, tmp, placeHolders, arr
+  var len = b64.length
+  placeHolders = placeHoldersCount(b64)
+
   arr = new Arr(len * 3 / 4 - placeHolders)
 
   // if there are placeholders, only get up to the last complete 4 chars
@@ -3455,7 +4983,7 @@ function fromByteArray (uint8) {
   return parts.join('')
 }
 
-},{}],30:[function(require,module,exports){
+},{}],39:[function(require,module,exports){
 (function (global){
 /*!
  * The buffer module from node.js, for the browser.
@@ -3511,7 +5039,7 @@ exports.kMaxLength = kMaxLength()
 function typedArraySupport () {
   try {
     var arr = new Uint8Array(1)
-    arr.foo = function () { return 42 }
+    arr.__proto__ = {__proto__: Uint8Array.prototype, foo: function () { return 42 }}
     return arr.foo() === 42 && // typed array instances can be augmented
         typeof arr.subarray === 'function' && // chrome 9-10 lack `subarray`
         arr.subarray(1, 1).byteLength === 0 // ie10 has broken `subarray`
@@ -3624,6 +5152,8 @@ if (Buffer.TYPED_ARRAY_SUPPORT) {
 function assertSize (size) {
   if (typeof size !== 'number') {
     throw new TypeError('"size" argument must be a number')
+  } else if (size < 0) {
+    throw new RangeError('"size" argument must not be negative')
   }
 }
 
@@ -3655,7 +5185,7 @@ function allocUnsafe (that, size) {
   assertSize(size)
   that = createBuffer(that, size < 0 ? 0 : checked(size) | 0)
   if (!Buffer.TYPED_ARRAY_SUPPORT) {
-    for (var i = 0; i < size; i++) {
+    for (var i = 0; i < size; ++i) {
       that[i] = 0
     }
   }
@@ -3687,12 +5217,20 @@ function fromString (that, string, encoding) {
   var length = byteLength(string, encoding) | 0
   that = createBuffer(that, length)
 
-  that.write(string, encoding)
+  var actual = that.write(string, encoding)
+
+  if (actual !== length) {
+    // Writing a hex string, for example, that contains invalid characters will
+    // cause everything after the first invalid character to be ignored. (e.g.
+    // 'abxxcd' will be treated as 'ab')
+    that = that.slice(0, actual)
+  }
+
   return that
 }
 
 function fromArrayLike (that, array) {
-  var length = checked(array.length) | 0
+  var length = array.length < 0 ? 0 : checked(array.length) | 0
   that = createBuffer(that, length)
   for (var i = 0; i < length; i += 1) {
     that[i] = array[i] & 255
@@ -3711,7 +5249,9 @@ function fromArrayBuffer (that, array, byteOffset, length) {
     throw new RangeError('\'length\' is out of bounds')
   }
 
-  if (length === undefined) {
+  if (byteOffset === undefined && length === undefined) {
+    array = new Uint8Array(array)
+  } else if (length === undefined) {
     array = new Uint8Array(array, byteOffset)
   } else {
     array = new Uint8Array(array, byteOffset, length)
@@ -3759,7 +5299,7 @@ function fromObject (that, obj) {
 }
 
 function checked (length) {
-  // Note: cannot use `length < kMaxLength` here because that fails when
+  // Note: cannot use `length < kMaxLength()` here because that fails when
   // length is NaN (which is otherwise coerced to zero.)
   if (length >= kMaxLength()) {
     throw new RangeError('Attempt to allocate Buffer larger than maximum ' +
@@ -3808,9 +5348,9 @@ Buffer.isEncoding = function isEncoding (encoding) {
     case 'utf8':
     case 'utf-8':
     case 'ascii':
+    case 'latin1':
     case 'binary':
     case 'base64':
-    case 'raw':
     case 'ucs2':
     case 'ucs-2':
     case 'utf16le':
@@ -3833,14 +5373,14 @@ Buffer.concat = function concat (list, length) {
   var i
   if (length === undefined) {
     length = 0
-    for (i = 0; i < list.length; i++) {
+    for (i = 0; i < list.length; ++i) {
       length += list[i].length
     }
   }
 
   var buffer = Buffer.allocUnsafe(length)
   var pos = 0
-  for (i = 0; i < list.length; i++) {
+  for (i = 0; i < list.length; ++i) {
     var buf = list[i]
     if (!Buffer.isBuffer(buf)) {
       throw new TypeError('"list" argument must be an Array of Buffers')
@@ -3871,10 +5411,8 @@ function byteLength (string, encoding) {
   for (;;) {
     switch (encoding) {
       case 'ascii':
+      case 'latin1':
       case 'binary':
-      // Deprecated
-      case 'raw':
-      case 'raws':
         return len
       case 'utf8':
       case 'utf-8':
@@ -3947,8 +5485,9 @@ function slowToString (encoding, start, end) {
       case 'ascii':
         return asciiSlice(this, start, end)
 
+      case 'latin1':
       case 'binary':
-        return binarySlice(this, start, end)
+        return latin1Slice(this, start, end)
 
       case 'base64':
         return base64Slice(this, start, end)
@@ -3996,6 +5535,20 @@ Buffer.prototype.swap32 = function swap32 () {
   for (var i = 0; i < len; i += 4) {
     swap(this, i, i + 3)
     swap(this, i + 1, i + 2)
+  }
+  return this
+}
+
+Buffer.prototype.swap64 = function swap64 () {
+  var len = this.length
+  if (len % 8 !== 0) {
+    throw new RangeError('Buffer size must be a multiple of 64-bits')
+  }
+  for (var i = 0; i < len; i += 8) {
+    swap(this, i, i + 7)
+    swap(this, i + 1, i + 6)
+    swap(this, i + 2, i + 5)
+    swap(this, i + 3, i + 4)
   }
   return this
 }
@@ -4082,7 +5635,73 @@ Buffer.prototype.compare = function compare (target, start, end, thisStart, this
   return 0
 }
 
-function arrayIndexOf (arr, val, byteOffset, encoding) {
+// Finds either the first index of `val` in `buffer` at offset >= `byteOffset`,
+// OR the last index of `val` in `buffer` at offset <= `byteOffset`.
+//
+// Arguments:
+// - buffer - a Buffer to search
+// - val - a string, Buffer, or number
+// - byteOffset - an index into `buffer`; will be clamped to an int32
+// - encoding - an optional encoding, relevant is val is a string
+// - dir - true for indexOf, false for lastIndexOf
+function bidirectionalIndexOf (buffer, val, byteOffset, encoding, dir) {
+  // Empty buffer means no match
+  if (buffer.length === 0) return -1
+
+  // Normalize byteOffset
+  if (typeof byteOffset === 'string') {
+    encoding = byteOffset
+    byteOffset = 0
+  } else if (byteOffset > 0x7fffffff) {
+    byteOffset = 0x7fffffff
+  } else if (byteOffset < -0x80000000) {
+    byteOffset = -0x80000000
+  }
+  byteOffset = +byteOffset  // Coerce to Number.
+  if (isNaN(byteOffset)) {
+    // byteOffset: it it's undefined, null, NaN, "foo", etc, search whole buffer
+    byteOffset = dir ? 0 : (buffer.length - 1)
+  }
+
+  // Normalize byteOffset: negative offsets start from the end of the buffer
+  if (byteOffset < 0) byteOffset = buffer.length + byteOffset
+  if (byteOffset >= buffer.length) {
+    if (dir) return -1
+    else byteOffset = buffer.length - 1
+  } else if (byteOffset < 0) {
+    if (dir) byteOffset = 0
+    else return -1
+  }
+
+  // Normalize val
+  if (typeof val === 'string') {
+    val = Buffer.from(val, encoding)
+  }
+
+  // Finally, search either indexOf (if dir is true) or lastIndexOf
+  if (Buffer.isBuffer(val)) {
+    // Special case: looking for empty string/buffer always fails
+    if (val.length === 0) {
+      return -1
+    }
+    return arrayIndexOf(buffer, val, byteOffset, encoding, dir)
+  } else if (typeof val === 'number') {
+    val = val & 0xFF // Search for a byte value [0-255]
+    if (Buffer.TYPED_ARRAY_SUPPORT &&
+        typeof Uint8Array.prototype.indexOf === 'function') {
+      if (dir) {
+        return Uint8Array.prototype.indexOf.call(buffer, val, byteOffset)
+      } else {
+        return Uint8Array.prototype.lastIndexOf.call(buffer, val, byteOffset)
+      }
+    }
+    return arrayIndexOf(buffer, [ val ], byteOffset, encoding, dir)
+  }
+
+  throw new TypeError('val must be string, number or Buffer')
+}
+
+function arrayIndexOf (arr, val, byteOffset, encoding, dir) {
   var indexSize = 1
   var arrLength = arr.length
   var valLength = val.length
@@ -4109,59 +5728,45 @@ function arrayIndexOf (arr, val, byteOffset, encoding) {
     }
   }
 
-  var foundIndex = -1
-  for (var i = 0; byteOffset + i < arrLength; i++) {
-    if (read(arr, byteOffset + i) === read(val, foundIndex === -1 ? 0 : i - foundIndex)) {
-      if (foundIndex === -1) foundIndex = i
-      if (i - foundIndex + 1 === valLength) return (byteOffset + foundIndex) * indexSize
-    } else {
-      if (foundIndex !== -1) i -= i - foundIndex
-      foundIndex = -1
+  var i
+  if (dir) {
+    var foundIndex = -1
+    for (i = byteOffset; i < arrLength; i++) {
+      if (read(arr, i) === read(val, foundIndex === -1 ? 0 : i - foundIndex)) {
+        if (foundIndex === -1) foundIndex = i
+        if (i - foundIndex + 1 === valLength) return foundIndex * indexSize
+      } else {
+        if (foundIndex !== -1) i -= i - foundIndex
+        foundIndex = -1
+      }
+    }
+  } else {
+    if (byteOffset + valLength > arrLength) byteOffset = arrLength - valLength
+    for (i = byteOffset; i >= 0; i--) {
+      var found = true
+      for (var j = 0; j < valLength; j++) {
+        if (read(arr, i + j) !== read(val, j)) {
+          found = false
+          break
+        }
+      }
+      if (found) return i
     }
   }
+
   return -1
-}
-
-Buffer.prototype.indexOf = function indexOf (val, byteOffset, encoding) {
-  if (typeof byteOffset === 'string') {
-    encoding = byteOffset
-    byteOffset = 0
-  } else if (byteOffset > 0x7fffffff) {
-    byteOffset = 0x7fffffff
-  } else if (byteOffset < -0x80000000) {
-    byteOffset = -0x80000000
-  }
-  byteOffset >>= 0
-
-  if (this.length === 0) return -1
-  if (byteOffset >= this.length) return -1
-
-  // Negative offsets start from the end of the buffer
-  if (byteOffset < 0) byteOffset = Math.max(this.length + byteOffset, 0)
-
-  if (typeof val === 'string') {
-    val = Buffer.from(val, encoding)
-  }
-
-  if (Buffer.isBuffer(val)) {
-    // special case: looking for empty string/buffer always fails
-    if (val.length === 0) {
-      return -1
-    }
-    return arrayIndexOf(this, val, byteOffset, encoding)
-  }
-  if (typeof val === 'number') {
-    if (Buffer.TYPED_ARRAY_SUPPORT && Uint8Array.prototype.indexOf === 'function') {
-      return Uint8Array.prototype.indexOf.call(this, val, byteOffset)
-    }
-    return arrayIndexOf(this, [ val ], byteOffset, encoding)
-  }
-
-  throw new TypeError('val must be string, number or Buffer')
 }
 
 Buffer.prototype.includes = function includes (val, byteOffset, encoding) {
   return this.indexOf(val, byteOffset, encoding) !== -1
+}
+
+Buffer.prototype.indexOf = function indexOf (val, byteOffset, encoding) {
+  return bidirectionalIndexOf(this, val, byteOffset, encoding, true)
+}
+
+Buffer.prototype.lastIndexOf = function lastIndexOf (val, byteOffset, encoding) {
+  return bidirectionalIndexOf(this, val, byteOffset, encoding, false)
 }
 
 function hexWrite (buf, string, offset, length) {
@@ -4178,12 +5783,12 @@ function hexWrite (buf, string, offset, length) {
 
   // must be an even number of digits
   var strLen = string.length
-  if (strLen % 2 !== 0) throw new Error('Invalid hex string')
+  if (strLen % 2 !== 0) throw new TypeError('Invalid hex string')
 
   if (length > strLen / 2) {
     length = strLen / 2
   }
-  for (var i = 0; i < length; i++) {
+  for (var i = 0; i < length; ++i) {
     var parsed = parseInt(string.substr(i * 2, 2), 16)
     if (isNaN(parsed)) return i
     buf[offset + i] = parsed
@@ -4199,7 +5804,7 @@ function asciiWrite (buf, string, offset, length) {
   return blitBuffer(asciiToBytes(string), buf, offset, length)
 }
 
-function binaryWrite (buf, string, offset, length) {
+function latin1Write (buf, string, offset, length) {
   return asciiWrite(buf, string, offset, length)
 }
 
@@ -4261,8 +5866,9 @@ Buffer.prototype.write = function write (string, offset, length, encoding) {
       case 'ascii':
         return asciiWrite(this, string, offset, length)
 
+      case 'latin1':
       case 'binary':
-        return binaryWrite(this, string, offset, length)
+        return latin1Write(this, string, offset, length)
 
       case 'base64':
         // Warning: maxLength not taken into account in base64Write
@@ -4397,17 +6003,17 @@ function asciiSlice (buf, start, end) {
   var ret = ''
   end = Math.min(buf.length, end)
 
-  for (var i = start; i < end; i++) {
+  for (var i = start; i < end; ++i) {
     ret += String.fromCharCode(buf[i] & 0x7F)
   }
   return ret
 }
 
-function binarySlice (buf, start, end) {
+function latin1Slice (buf, start, end) {
   var ret = ''
   end = Math.min(buf.length, end)
 
-  for (var i = start; i < end; i++) {
+  for (var i = start; i < end; ++i) {
     ret += String.fromCharCode(buf[i])
   }
   return ret
@@ -4420,7 +6026,7 @@ function hexSlice (buf, start, end) {
   if (!end || end < 0 || end > len) end = len
 
   var out = ''
-  for (var i = start; i < end; i++) {
+  for (var i = start; i < end; ++i) {
     out += toHex(buf[i])
   }
   return out
@@ -4463,7 +6069,7 @@ Buffer.prototype.slice = function slice (start, end) {
   } else {
     var sliceLen = end - start
     newBuf = new Buffer(sliceLen, undefined)
-    for (var i = 0; i < sliceLen; i++) {
+    for (var i = 0; i < sliceLen; ++i) {
       newBuf[i] = this[i + start]
     }
   }
@@ -4690,7 +6296,7 @@ Buffer.prototype.writeUInt8 = function writeUInt8 (value, offset, noAssert) {
 
 function objectWriteUInt16 (buf, value, offset, littleEndian) {
   if (value < 0) value = 0xffff + value + 1
-  for (var i = 0, j = Math.min(buf.length - offset, 2); i < j; i++) {
+  for (var i = 0, j = Math.min(buf.length - offset, 2); i < j; ++i) {
     buf[offset + i] = (value & (0xff << (8 * (littleEndian ? i : 1 - i)))) >>>
       (littleEndian ? i : 1 - i) * 8
   }
@@ -4724,7 +6330,7 @@ Buffer.prototype.writeUInt16BE = function writeUInt16BE (value, offset, noAssert
 
 function objectWriteUInt32 (buf, value, offset, littleEndian) {
   if (value < 0) value = 0xffffffff + value + 1
-  for (var i = 0, j = Math.min(buf.length - offset, 4); i < j; i++) {
+  for (var i = 0, j = Math.min(buf.length - offset, 4); i < j; ++i) {
     buf[offset + i] = (value >>> (littleEndian ? i : 3 - i) * 8) & 0xff
   }
 }
@@ -4939,12 +6545,12 @@ Buffer.prototype.copy = function copy (target, targetStart, start, end) {
 
   if (this === target && start < targetStart && targetStart < end) {
     // descending copy from end
-    for (i = len - 1; i >= 0; i--) {
+    for (i = len - 1; i >= 0; --i) {
       target[i + targetStart] = this[i + start]
     }
   } else if (len < 1000 || !Buffer.TYPED_ARRAY_SUPPORT) {
     // ascending copy from start
-    for (i = 0; i < len; i++) {
+    for (i = 0; i < len; ++i) {
       target[i + targetStart] = this[i + start]
     }
   } else {
@@ -5005,7 +6611,7 @@ Buffer.prototype.fill = function fill (val, start, end, encoding) {
 
   var i
   if (typeof val === 'number') {
-    for (i = start; i < end; i++) {
+    for (i = start; i < end; ++i) {
       this[i] = val
     }
   } else {
@@ -5013,7 +6619,7 @@ Buffer.prototype.fill = function fill (val, start, end, encoding) {
       ? val
       : utf8ToBytes(new Buffer(val, encoding).toString())
     var len = bytes.length
-    for (i = 0; i < end - start; i++) {
+    for (i = 0; i < end - start; ++i) {
       this[i + start] = bytes[i % len]
     }
   }
@@ -5055,7 +6661,7 @@ function utf8ToBytes (string, units) {
   var leadSurrogate = null
   var bytes = []
 
-  for (var i = 0; i < length; i++) {
+  for (var i = 0; i < length; ++i) {
     codePoint = string.charCodeAt(i)
 
     // is surrogate component
@@ -5130,7 +6736,7 @@ function utf8ToBytes (string, units) {
 
 function asciiToBytes (str) {
   var byteArray = []
-  for (var i = 0; i < str.length; i++) {
+  for (var i = 0; i < str.length; ++i) {
     // Node's code seems to be doing this and not & 0x7F..
     byteArray.push(str.charCodeAt(i) & 0xFF)
   }
@@ -5140,7 +6746,7 @@ function asciiToBytes (str) {
 function utf16leToBytes (str, units) {
   var c, hi, lo
   var byteArray = []
-  for (var i = 0; i < str.length; i++) {
+  for (var i = 0; i < str.length; ++i) {
     if ((units -= 2) < 0) break
 
     c = str.charCodeAt(i)
@@ -5158,7 +6764,7 @@ function base64ToBytes (str) {
 }
 
 function blitBuffer (src, dst, offset, length) {
-  for (var i = 0; i < length; i++) {
+  for (var i = 0; i < length; ++i) {
     if ((i + offset >= dst.length) || (i >= src.length)) break
     dst[i + offset] = src[i]
   }
@@ -5171,8 +6777,8 @@ function isnan (val) {
 
 }).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
 
-},{"base64-js":29,"ieee754":34,"isarray":35}],31:[function(require,module,exports){
-
+},{"base64-js":38,"ieee754":42,"isarray":43}],40:[function(require,module,exports){
+(function (process){
 /**
  * This is the web browser implementation of `debug()`.
  *
@@ -5212,13 +6818,23 @@ exports.colors = [
  */
 
 function useColors() {
+  // NB: In an Electron preload script, document will be defined but not fully
+  // initialized. Since we know we're in Chrome, we'll just detect this case
+  // explicitly
+  if (typeof window !== 'undefined' && window && typeof window.process !== 'undefined' && window.process.type === 'renderer') {
+    return true;
+  }
+
   // is webkit? http://stackoverflow.com/a/16459606/376773
-  return ('WebkitAppearance' in document.documentElement.style) ||
+  // document is undefined in react-native: https://github.com/facebook/react-native/pull/1632
+  return (typeof document !== 'undefined' && document && 'WebkitAppearance' in document.documentElement.style) ||
     // is firebug? http://stackoverflow.com/a/398120/376773
-    (window.console && (console.firebug || (console.exception && console.table))) ||
+    (typeof window !== 'undefined' && window && window.console && (console.firebug || (console.exception && console.table))) ||
     // is firefox >= v31?
     // https://developer.mozilla.org/en-US/docs/Tools/Web_Console#Styling_messages
-    (navigator.userAgent.toLowerCase().match(/firefox\/(\d+)/) && parseInt(RegExp.$1, 10) >= 31);
+    (typeof navigator !== 'undefined' && navigator && navigator.userAgent && navigator.userAgent.toLowerCase().match(/firefox\/(\d+)/) && parseInt(RegExp.$1, 10) >= 31) ||
+    // double check webkit in userAgent just in case we are in a worker
+    (typeof navigator !== 'undefined' && navigator && navigator.userAgent && navigator.userAgent.toLowerCase().match(/applewebkit\/(\d+)/));
 }
 
 /**
@@ -5226,7 +6842,11 @@ function useColors() {
  */
 
 exports.formatters.j = function(v) {
-  return JSON.stringify(v);
+  try {
+    return JSON.stringify(v);
+  } catch (err) {
+    return '[UnexpectedJSONParseError]: ' + err.message;
+  }
 };
 
 
@@ -5236,8 +6856,7 @@ exports.formatters.j = function(v) {
  * @api public
  */
 
-function formatArgs() {
-  var args = arguments;
+function formatArgs(args) {
   var useColors = this.useColors;
 
   args[0] = (useColors ? '%c' : '')
@@ -5247,17 +6866,17 @@ function formatArgs() {
     + (useColors ? '%c ' : ' ')
     + '+' + exports.humanize(this.diff);
 
-  if (!useColors) return args;
+  if (!useColors) return;
 
   var c = 'color: ' + this.color;
-  args = [args[0], c, 'color: inherit'].concat(Array.prototype.slice.call(args, 1));
+  args.splice(1, 0, c, 'color: inherit')
 
   // the final "%c" is somewhat tricky, because there could be other
   // arguments passed either before or after the %c, so we need to
   // figure out the correct index to insert the CSS into
   var index = 0;
   var lastC = 0;
-  args[0].replace(/%[a-z%]/g, function(match) {
+  args[0].replace(/%[a-zA-Z%]/g, function(match) {
     if ('%%' === match) return;
     index++;
     if ('%c' === match) {
@@ -5268,7 +6887,6 @@ function formatArgs() {
   });
 
   args.splice(lastC, 0, c);
-  return args;
 }
 
 /**
@@ -5311,11 +6929,14 @@ function save(namespaces) {
  */
 
 function load() {
-  var r;
   try {
-    r = exports.storage.debug;
+    return exports.storage.debug;
   } catch(e) {}
-  return r;
+
+  // If debug isn't set in LS, and we're in Electron, try to load $DEBUG
+  if (typeof process !== 'undefined' && 'env' in process) {
+    return process.env.DEBUG;
+  }
 }
 
 /**
@@ -5335,13 +6956,15 @@ exports.enable(load());
  * @api private
  */
 
-function localstorage(){
+function localstorage() {
   try {
     return window.localStorage;
   } catch (e) {}
 }
 
-},{"./debug":32}],32:[function(require,module,exports){
+}).call(this,require('_process'))
+
+},{"./debug":41,"_process":46}],41:[function(require,module,exports){
 
 /**
  * This is the common logic for both the Node.js and web browser
@@ -5350,7 +6973,7 @@ function localstorage(){
  * Expose `debug()` as the module.
  */
 
-exports = module.exports = debug;
+exports = module.exports = createDebug.debug = createDebug.default = createDebug;
 exports.coerce = coerce;
 exports.disable = disable;
 exports.enable = enable;
@@ -5367,16 +6990,10 @@ exports.skips = [];
 /**
  * Map of special "%n" handling functions, for the debug "format" argument.
  *
- * Valid key names are a single, lowercased letter, i.e. "n".
+ * Valid key names are a single, lower or upper-case letter, i.e. "n" and "N".
  */
 
 exports.formatters = {};
-
-/**
- * Previously assigned color.
- */
-
-var prevColor = 0;
 
 /**
  * Previous log timestamp.
@@ -5386,13 +7003,20 @@ var prevTime;
 
 /**
  * Select a color.
- *
+ * @param {String} namespace
  * @return {Number}
  * @api private
  */
 
-function selectColor() {
-  return exports.colors[prevColor++ % exports.colors.length];
+function selectColor(namespace) {
+  var hash = 0, i;
+
+  for (i in namespace) {
+    hash  = ((hash << 5) - hash) + namespace.charCodeAt(i);
+    hash |= 0; // Convert to 32bit integer
+  }
+
+  return exports.colors[Math.abs(hash) % exports.colors.length];
 }
 
 /**
@@ -5403,17 +7027,13 @@ function selectColor() {
  * @api public
  */
 
-function debug(namespace) {
+function createDebug(namespace) {
 
-  // define the `disabled` version
-  function disabled() {
-  }
-  disabled.enabled = false;
+  function debug() {
+    // disabled?
+    if (!debug.enabled) return;
 
-  // define the `enabled` version
-  function enabled() {
-
-    var self = enabled;
+    var self = debug;
 
     // set `diff` timestamp
     var curr = +new Date();
@@ -5423,22 +7043,22 @@ function debug(namespace) {
     self.curr = curr;
     prevTime = curr;
 
-    // add the `color` if not set
-    if (null == self.useColors) self.useColors = exports.useColors();
-    if (null == self.color && self.useColors) self.color = selectColor();
-
-    var args = Array.prototype.slice.call(arguments);
+    // turn the `arguments` into a proper Array
+    var args = new Array(arguments.length);
+    for (var i = 0; i < args.length; i++) {
+      args[i] = arguments[i];
+    }
 
     args[0] = exports.coerce(args[0]);
 
     if ('string' !== typeof args[0]) {
-      // anything else let's inspect with %o
-      args = ['%o'].concat(args);
+      // anything else let's inspect with %O
+      args.unshift('%O');
     }
 
     // apply any `formatters` transformations
     var index = 0;
-    args[0] = args[0].replace(/%([a-z%])/g, function(match, format) {
+    args[0] = args[0].replace(/%([a-zA-Z%])/g, function(match, format) {
       // if we encounter an escaped % then don't increase the array index
       if (match === '%%') return match;
       index++;
@@ -5454,19 +7074,24 @@ function debug(namespace) {
       return match;
     });
 
-    if ('function' === typeof exports.formatArgs) {
-      args = exports.formatArgs.apply(self, args);
-    }
-    var logFn = enabled.log || exports.log || console.log.bind(console);
+    // apply env-specific formatting (colors, etc.)
+    exports.formatArgs.call(self, args);
+
+    var logFn = debug.log || exports.log || console.log.bind(console);
     logFn.apply(self, args);
   }
-  enabled.enabled = true;
 
-  var fn = exports.enabled(namespace) ? enabled : disabled;
+  debug.namespace = namespace;
+  debug.enabled = exports.enabled(namespace);
+  debug.useColors = exports.useColors();
+  debug.color = selectColor(namespace);
 
-  fn.namespace = namespace;
+  // env-specific initialization logic for debug instances
+  if ('function' === typeof exports.init) {
+    exports.init(debug);
+  }
 
-  return fn;
+  return debug;
 }
 
 /**
@@ -5540,971 +7165,7 @@ function coerce(val) {
   return val;
 }
 
-},{"ms":37}],33:[function(require,module,exports){
-(function (process,global){
-/*!
- * @overview es6-promise - a tiny implementation of Promises/A+.
- * @copyright Copyright (c) 2014 Yehuda Katz, Tom Dale, Stefan Penner and contributors (Conversion to ES6 API by Jake Archibald)
- * @license   Licensed under MIT license
- *            See https://raw.githubusercontent.com/jakearchibald/es6-promise/master/LICENSE
- * @version   3.2.1
- */
-
-(function() {
-    "use strict";
-    function lib$es6$promise$utils$$objectOrFunction(x) {
-      return typeof x === 'function' || (typeof x === 'object' && x !== null);
-    }
-
-    function lib$es6$promise$utils$$isFunction(x) {
-      return typeof x === 'function';
-    }
-
-    function lib$es6$promise$utils$$isMaybeThenable(x) {
-      return typeof x === 'object' && x !== null;
-    }
-
-    var lib$es6$promise$utils$$_isArray;
-    if (!Array.isArray) {
-      lib$es6$promise$utils$$_isArray = function (x) {
-        return Object.prototype.toString.call(x) === '[object Array]';
-      };
-    } else {
-      lib$es6$promise$utils$$_isArray = Array.isArray;
-    }
-
-    var lib$es6$promise$utils$$isArray = lib$es6$promise$utils$$_isArray;
-    var lib$es6$promise$asap$$len = 0;
-    var lib$es6$promise$asap$$vertxNext;
-    var lib$es6$promise$asap$$customSchedulerFn;
-
-    var lib$es6$promise$asap$$asap = function asap(callback, arg) {
-      lib$es6$promise$asap$$queue[lib$es6$promise$asap$$len] = callback;
-      lib$es6$promise$asap$$queue[lib$es6$promise$asap$$len + 1] = arg;
-      lib$es6$promise$asap$$len += 2;
-      if (lib$es6$promise$asap$$len === 2) {
-        // If len is 2, that means that we need to schedule an async flush.
-        // If additional callbacks are queued before the queue is flushed, they
-        // will be processed by this flush that we are scheduling.
-        if (lib$es6$promise$asap$$customSchedulerFn) {
-          lib$es6$promise$asap$$customSchedulerFn(lib$es6$promise$asap$$flush);
-        } else {
-          lib$es6$promise$asap$$scheduleFlush();
-        }
-      }
-    }
-
-    function lib$es6$promise$asap$$setScheduler(scheduleFn) {
-      lib$es6$promise$asap$$customSchedulerFn = scheduleFn;
-    }
-
-    function lib$es6$promise$asap$$setAsap(asapFn) {
-      lib$es6$promise$asap$$asap = asapFn;
-    }
-
-    var lib$es6$promise$asap$$browserWindow = (typeof window !== 'undefined') ? window : undefined;
-    var lib$es6$promise$asap$$browserGlobal = lib$es6$promise$asap$$browserWindow || {};
-    var lib$es6$promise$asap$$BrowserMutationObserver = lib$es6$promise$asap$$browserGlobal.MutationObserver || lib$es6$promise$asap$$browserGlobal.WebKitMutationObserver;
-    var lib$es6$promise$asap$$isNode = typeof self === 'undefined' && typeof process !== 'undefined' && {}.toString.call(process) === '[object process]';
-
-    // test for web worker but not in IE10
-    var lib$es6$promise$asap$$isWorker = typeof Uint8ClampedArray !== 'undefined' &&
-      typeof importScripts !== 'undefined' &&
-      typeof MessageChannel !== 'undefined';
-
-    // node
-    function lib$es6$promise$asap$$useNextTick() {
-      // node version 0.10.x displays a deprecation warning when nextTick is used recursively
-      // see https://github.com/cujojs/when/issues/410 for details
-      return function() {
-        process.nextTick(lib$es6$promise$asap$$flush);
-      };
-    }
-
-    // vertx
-    function lib$es6$promise$asap$$useVertxTimer() {
-      return function() {
-        lib$es6$promise$asap$$vertxNext(lib$es6$promise$asap$$flush);
-      };
-    }
-
-    function lib$es6$promise$asap$$useMutationObserver() {
-      var iterations = 0;
-      var observer = new lib$es6$promise$asap$$BrowserMutationObserver(lib$es6$promise$asap$$flush);
-      var node = document.createTextNode('');
-      observer.observe(node, { characterData: true });
-
-      return function() {
-        node.data = (iterations = ++iterations % 2);
-      };
-    }
-
-    // web worker
-    function lib$es6$promise$asap$$useMessageChannel() {
-      var channel = new MessageChannel();
-      channel.port1.onmessage = lib$es6$promise$asap$$flush;
-      return function () {
-        channel.port2.postMessage(0);
-      };
-    }
-
-    function lib$es6$promise$asap$$useSetTimeout() {
-      return function() {
-        setTimeout(lib$es6$promise$asap$$flush, 1);
-      };
-    }
-
-    var lib$es6$promise$asap$$queue = new Array(1000);
-    function lib$es6$promise$asap$$flush() {
-      for (var i = 0; i < lib$es6$promise$asap$$len; i+=2) {
-        var callback = lib$es6$promise$asap$$queue[i];
-        var arg = lib$es6$promise$asap$$queue[i+1];
-
-        callback(arg);
-
-        lib$es6$promise$asap$$queue[i] = undefined;
-        lib$es6$promise$asap$$queue[i+1] = undefined;
-      }
-
-      lib$es6$promise$asap$$len = 0;
-    }
-
-    function lib$es6$promise$asap$$attemptVertx() {
-      try {
-        var r = require;
-        var vertx = r('vertx');
-        lib$es6$promise$asap$$vertxNext = vertx.runOnLoop || vertx.runOnContext;
-        return lib$es6$promise$asap$$useVertxTimer();
-      } catch(e) {
-        return lib$es6$promise$asap$$useSetTimeout();
-      }
-    }
-
-    var lib$es6$promise$asap$$scheduleFlush;
-    // Decide what async method to use to triggering processing of queued callbacks:
-    if (lib$es6$promise$asap$$isNode) {
-      lib$es6$promise$asap$$scheduleFlush = lib$es6$promise$asap$$useNextTick();
-    } else if (lib$es6$promise$asap$$BrowserMutationObserver) {
-      lib$es6$promise$asap$$scheduleFlush = lib$es6$promise$asap$$useMutationObserver();
-    } else if (lib$es6$promise$asap$$isWorker) {
-      lib$es6$promise$asap$$scheduleFlush = lib$es6$promise$asap$$useMessageChannel();
-    } else if (lib$es6$promise$asap$$browserWindow === undefined && typeof require === 'function') {
-      lib$es6$promise$asap$$scheduleFlush = lib$es6$promise$asap$$attemptVertx();
-    } else {
-      lib$es6$promise$asap$$scheduleFlush = lib$es6$promise$asap$$useSetTimeout();
-    }
-    function lib$es6$promise$then$$then(onFulfillment, onRejection) {
-      var parent = this;
-
-      var child = new this.constructor(lib$es6$promise$$internal$$noop);
-
-      if (child[lib$es6$promise$$internal$$PROMISE_ID] === undefined) {
-        lib$es6$promise$$internal$$makePromise(child);
-      }
-
-      var state = parent._state;
-
-      if (state) {
-        var callback = arguments[state - 1];
-        lib$es6$promise$asap$$asap(function(){
-          lib$es6$promise$$internal$$invokeCallback(state, child, callback, parent._result);
-        });
-      } else {
-        lib$es6$promise$$internal$$subscribe(parent, child, onFulfillment, onRejection);
-      }
-
-      return child;
-    }
-    var lib$es6$promise$then$$default = lib$es6$promise$then$$then;
-    function lib$es6$promise$promise$resolve$$resolve(object) {
-      /*jshint validthis:true */
-      var Constructor = this;
-
-      if (object && typeof object === 'object' && object.constructor === Constructor) {
-        return object;
-      }
-
-      var promise = new Constructor(lib$es6$promise$$internal$$noop);
-      lib$es6$promise$$internal$$resolve(promise, object);
-      return promise;
-    }
-    var lib$es6$promise$promise$resolve$$default = lib$es6$promise$promise$resolve$$resolve;
-    var lib$es6$promise$$internal$$PROMISE_ID = Math.random().toString(36).substring(16);
-
-    function lib$es6$promise$$internal$$noop() {}
-
-    var lib$es6$promise$$internal$$PENDING   = void 0;
-    var lib$es6$promise$$internal$$FULFILLED = 1;
-    var lib$es6$promise$$internal$$REJECTED  = 2;
-
-    var lib$es6$promise$$internal$$GET_THEN_ERROR = new lib$es6$promise$$internal$$ErrorObject();
-
-    function lib$es6$promise$$internal$$selfFulfillment() {
-      return new TypeError("You cannot resolve a promise with itself");
-    }
-
-    function lib$es6$promise$$internal$$cannotReturnOwn() {
-      return new TypeError('A promises callback cannot return that same promise.');
-    }
-
-    function lib$es6$promise$$internal$$getThen(promise) {
-      try {
-        return promise.then;
-      } catch(error) {
-        lib$es6$promise$$internal$$GET_THEN_ERROR.error = error;
-        return lib$es6$promise$$internal$$GET_THEN_ERROR;
-      }
-    }
-
-    function lib$es6$promise$$internal$$tryThen(then, value, fulfillmentHandler, rejectionHandler) {
-      try {
-        then.call(value, fulfillmentHandler, rejectionHandler);
-      } catch(e) {
-        return e;
-      }
-    }
-
-    function lib$es6$promise$$internal$$handleForeignThenable(promise, thenable, then) {
-       lib$es6$promise$asap$$asap(function(promise) {
-        var sealed = false;
-        var error = lib$es6$promise$$internal$$tryThen(then, thenable, function(value) {
-          if (sealed) { return; }
-          sealed = true;
-          if (thenable !== value) {
-            lib$es6$promise$$internal$$resolve(promise, value);
-          } else {
-            lib$es6$promise$$internal$$fulfill(promise, value);
-          }
-        }, function(reason) {
-          if (sealed) { return; }
-          sealed = true;
-
-          lib$es6$promise$$internal$$reject(promise, reason);
-        }, 'Settle: ' + (promise._label || ' unknown promise'));
-
-        if (!sealed && error) {
-          sealed = true;
-          lib$es6$promise$$internal$$reject(promise, error);
-        }
-      }, promise);
-    }
-
-    function lib$es6$promise$$internal$$handleOwnThenable(promise, thenable) {
-      if (thenable._state === lib$es6$promise$$internal$$FULFILLED) {
-        lib$es6$promise$$internal$$fulfill(promise, thenable._result);
-      } else if (thenable._state === lib$es6$promise$$internal$$REJECTED) {
-        lib$es6$promise$$internal$$reject(promise, thenable._result);
-      } else {
-        lib$es6$promise$$internal$$subscribe(thenable, undefined, function(value) {
-          lib$es6$promise$$internal$$resolve(promise, value);
-        }, function(reason) {
-          lib$es6$promise$$internal$$reject(promise, reason);
-        });
-      }
-    }
-
-    function lib$es6$promise$$internal$$handleMaybeThenable(promise, maybeThenable, then) {
-      if (maybeThenable.constructor === promise.constructor &&
-          then === lib$es6$promise$then$$default &&
-          constructor.resolve === lib$es6$promise$promise$resolve$$default) {
-        lib$es6$promise$$internal$$handleOwnThenable(promise, maybeThenable);
-      } else {
-        if (then === lib$es6$promise$$internal$$GET_THEN_ERROR) {
-          lib$es6$promise$$internal$$reject(promise, lib$es6$promise$$internal$$GET_THEN_ERROR.error);
-        } else if (then === undefined) {
-          lib$es6$promise$$internal$$fulfill(promise, maybeThenable);
-        } else if (lib$es6$promise$utils$$isFunction(then)) {
-          lib$es6$promise$$internal$$handleForeignThenable(promise, maybeThenable, then);
-        } else {
-          lib$es6$promise$$internal$$fulfill(promise, maybeThenable);
-        }
-      }
-    }
-
-    function lib$es6$promise$$internal$$resolve(promise, value) {
-      if (promise === value) {
-        lib$es6$promise$$internal$$reject(promise, lib$es6$promise$$internal$$selfFulfillment());
-      } else if (lib$es6$promise$utils$$objectOrFunction(value)) {
-        lib$es6$promise$$internal$$handleMaybeThenable(promise, value, lib$es6$promise$$internal$$getThen(value));
-      } else {
-        lib$es6$promise$$internal$$fulfill(promise, value);
-      }
-    }
-
-    function lib$es6$promise$$internal$$publishRejection(promise) {
-      if (promise._onerror) {
-        promise._onerror(promise._result);
-      }
-
-      lib$es6$promise$$internal$$publish(promise);
-    }
-
-    function lib$es6$promise$$internal$$fulfill(promise, value) {
-      if (promise._state !== lib$es6$promise$$internal$$PENDING) { return; }
-
-      promise._result = value;
-      promise._state = lib$es6$promise$$internal$$FULFILLED;
-
-      if (promise._subscribers.length !== 0) {
-        lib$es6$promise$asap$$asap(lib$es6$promise$$internal$$publish, promise);
-      }
-    }
-
-    function lib$es6$promise$$internal$$reject(promise, reason) {
-      if (promise._state !== lib$es6$promise$$internal$$PENDING) { return; }
-      promise._state = lib$es6$promise$$internal$$REJECTED;
-      promise._result = reason;
-
-      lib$es6$promise$asap$$asap(lib$es6$promise$$internal$$publishRejection, promise);
-    }
-
-    function lib$es6$promise$$internal$$subscribe(parent, child, onFulfillment, onRejection) {
-      var subscribers = parent._subscribers;
-      var length = subscribers.length;
-
-      parent._onerror = null;
-
-      subscribers[length] = child;
-      subscribers[length + lib$es6$promise$$internal$$FULFILLED] = onFulfillment;
-      subscribers[length + lib$es6$promise$$internal$$REJECTED]  = onRejection;
-
-      if (length === 0 && parent._state) {
-        lib$es6$promise$asap$$asap(lib$es6$promise$$internal$$publish, parent);
-      }
-    }
-
-    function lib$es6$promise$$internal$$publish(promise) {
-      var subscribers = promise._subscribers;
-      var settled = promise._state;
-
-      if (subscribers.length === 0) { return; }
-
-      var child, callback, detail = promise._result;
-
-      for (var i = 0; i < subscribers.length; i += 3) {
-        child = subscribers[i];
-        callback = subscribers[i + settled];
-
-        if (child) {
-          lib$es6$promise$$internal$$invokeCallback(settled, child, callback, detail);
-        } else {
-          callback(detail);
-        }
-      }
-
-      promise._subscribers.length = 0;
-    }
-
-    function lib$es6$promise$$internal$$ErrorObject() {
-      this.error = null;
-    }
-
-    var lib$es6$promise$$internal$$TRY_CATCH_ERROR = new lib$es6$promise$$internal$$ErrorObject();
-
-    function lib$es6$promise$$internal$$tryCatch(callback, detail) {
-      try {
-        return callback(detail);
-      } catch(e) {
-        lib$es6$promise$$internal$$TRY_CATCH_ERROR.error = e;
-        return lib$es6$promise$$internal$$TRY_CATCH_ERROR;
-      }
-    }
-
-    function lib$es6$promise$$internal$$invokeCallback(settled, promise, callback, detail) {
-      var hasCallback = lib$es6$promise$utils$$isFunction(callback),
-          value, error, succeeded, failed;
-
-      if (hasCallback) {
-        value = lib$es6$promise$$internal$$tryCatch(callback, detail);
-
-        if (value === lib$es6$promise$$internal$$TRY_CATCH_ERROR) {
-          failed = true;
-          error = value.error;
-          value = null;
-        } else {
-          succeeded = true;
-        }
-
-        if (promise === value) {
-          lib$es6$promise$$internal$$reject(promise, lib$es6$promise$$internal$$cannotReturnOwn());
-          return;
-        }
-
-      } else {
-        value = detail;
-        succeeded = true;
-      }
-
-      if (promise._state !== lib$es6$promise$$internal$$PENDING) {
-        // noop
-      } else if (hasCallback && succeeded) {
-        lib$es6$promise$$internal$$resolve(promise, value);
-      } else if (failed) {
-        lib$es6$promise$$internal$$reject(promise, error);
-      } else if (settled === lib$es6$promise$$internal$$FULFILLED) {
-        lib$es6$promise$$internal$$fulfill(promise, value);
-      } else if (settled === lib$es6$promise$$internal$$REJECTED) {
-        lib$es6$promise$$internal$$reject(promise, value);
-      }
-    }
-
-    function lib$es6$promise$$internal$$initializePromise(promise, resolver) {
-      try {
-        resolver(function resolvePromise(value){
-          lib$es6$promise$$internal$$resolve(promise, value);
-        }, function rejectPromise(reason) {
-          lib$es6$promise$$internal$$reject(promise, reason);
-        });
-      } catch(e) {
-        lib$es6$promise$$internal$$reject(promise, e);
-      }
-    }
-
-    var lib$es6$promise$$internal$$id = 0;
-    function lib$es6$promise$$internal$$nextId() {
-      return lib$es6$promise$$internal$$id++;
-    }
-
-    function lib$es6$promise$$internal$$makePromise(promise) {
-      promise[lib$es6$promise$$internal$$PROMISE_ID] = lib$es6$promise$$internal$$id++;
-      promise._state = undefined;
-      promise._result = undefined;
-      promise._subscribers = [];
-    }
-
-    function lib$es6$promise$promise$all$$all(entries) {
-      return new lib$es6$promise$enumerator$$default(this, entries).promise;
-    }
-    var lib$es6$promise$promise$all$$default = lib$es6$promise$promise$all$$all;
-    function lib$es6$promise$promise$race$$race(entries) {
-      /*jshint validthis:true */
-      var Constructor = this;
-
-      if (!lib$es6$promise$utils$$isArray(entries)) {
-        return new Constructor(function(resolve, reject) {
-          reject(new TypeError('You must pass an array to race.'));
-        });
-      } else {
-        return new Constructor(function(resolve, reject) {
-          var length = entries.length;
-          for (var i = 0; i < length; i++) {
-            Constructor.resolve(entries[i]).then(resolve, reject);
-          }
-        });
-      }
-    }
-    var lib$es6$promise$promise$race$$default = lib$es6$promise$promise$race$$race;
-    function lib$es6$promise$promise$reject$$reject(reason) {
-      /*jshint validthis:true */
-      var Constructor = this;
-      var promise = new Constructor(lib$es6$promise$$internal$$noop);
-      lib$es6$promise$$internal$$reject(promise, reason);
-      return promise;
-    }
-    var lib$es6$promise$promise$reject$$default = lib$es6$promise$promise$reject$$reject;
-
-
-    function lib$es6$promise$promise$$needsResolver() {
-      throw new TypeError('You must pass a resolver function as the first argument to the promise constructor');
-    }
-
-    function lib$es6$promise$promise$$needsNew() {
-      throw new TypeError("Failed to construct 'Promise': Please use the 'new' operator, this object constructor cannot be called as a function.");
-    }
-
-    var lib$es6$promise$promise$$default = lib$es6$promise$promise$$Promise;
-    /**
-      Promise objects represent the eventual result of an asynchronous operation. The
-      primary way of interacting with a promise is through its `then` method, which
-      registers callbacks to receive either a promise's eventual value or the reason
-      why the promise cannot be fulfilled.
-
-      Terminology
-      -----------
-
-      - `promise` is an object or function with a `then` method whose behavior conforms to this specification.
-      - `thenable` is an object or function that defines a `then` method.
-      - `value` is any legal JavaScript value (including undefined, a thenable, or a promise).
-      - `exception` is a value that is thrown using the throw statement.
-      - `reason` is a value that indicates why a promise was rejected.
-      - `settled` the final resting state of a promise, fulfilled or rejected.
-
-      A promise can be in one of three states: pending, fulfilled, or rejected.
-
-      Promises that are fulfilled have a fulfillment value and are in the fulfilled
-      state.  Promises that are rejected have a rejection reason and are in the
-      rejected state.  A fulfillment value is never a thenable.
-
-      Promises can also be said to *resolve* a value.  If this value is also a
-      promise, then the original promise's settled state will match the value's
-      settled state.  So a promise that *resolves* a promise that rejects will
-      itself reject, and a promise that *resolves* a promise that fulfills will
-      itself fulfill.
-
-
-      Basic Usage:
-      ------------
-
-      ```js
-      var promise = new Promise(function(resolve, reject) {
-        // on success
-        resolve(value);
-
-        // on failure
-        reject(reason);
-      });
-
-      promise.then(function(value) {
-        // on fulfillment
-      }, function(reason) {
-        // on rejection
-      });
-      ```
-
-      Advanced Usage:
-      ---------------
-
-      Promises shine when abstracting away asynchronous interactions such as
-      `XMLHttpRequest`s.
-
-      ```js
-      function getJSON(url) {
-        return new Promise(function(resolve, reject){
-          var xhr = new XMLHttpRequest();
-
-          xhr.open('GET', url);
-          xhr.onreadystatechange = handler;
-          xhr.responseType = 'json';
-          xhr.setRequestHeader('Accept', 'application/json');
-          xhr.send();
-
-          function handler() {
-            if (this.readyState === this.DONE) {
-              if (this.status === 200) {
-                resolve(this.response);
-              } else {
-                reject(new Error('getJSON: `' + url + '` failed with status: [' + this.status + ']'));
-              }
-            }
-          };
-        });
-      }
-
-      getJSON('/posts.json').then(function(json) {
-        // on fulfillment
-      }, function(reason) {
-        // on rejection
-      });
-      ```
-
-      Unlike callbacks, promises are great composable primitives.
-
-      ```js
-      Promise.all([
-        getJSON('/posts'),
-        getJSON('/comments')
-      ]).then(function(values){
-        values[0] // => postsJSON
-        values[1] // => commentsJSON
-
-        return values;
-      });
-      ```
-
-      @class Promise
-      @param {function} resolver
-      Useful for tooling.
-      @constructor
-    */
-    function lib$es6$promise$promise$$Promise(resolver) {
-      this[lib$es6$promise$$internal$$PROMISE_ID] = lib$es6$promise$$internal$$nextId();
-      this._result = this._state = undefined;
-      this._subscribers = [];
-
-      if (lib$es6$promise$$internal$$noop !== resolver) {
-        typeof resolver !== 'function' && lib$es6$promise$promise$$needsResolver();
-        this instanceof lib$es6$promise$promise$$Promise ? lib$es6$promise$$internal$$initializePromise(this, resolver) : lib$es6$promise$promise$$needsNew();
-      }
-    }
-
-    lib$es6$promise$promise$$Promise.all = lib$es6$promise$promise$all$$default;
-    lib$es6$promise$promise$$Promise.race = lib$es6$promise$promise$race$$default;
-    lib$es6$promise$promise$$Promise.resolve = lib$es6$promise$promise$resolve$$default;
-    lib$es6$promise$promise$$Promise.reject = lib$es6$promise$promise$reject$$default;
-    lib$es6$promise$promise$$Promise._setScheduler = lib$es6$promise$asap$$setScheduler;
-    lib$es6$promise$promise$$Promise._setAsap = lib$es6$promise$asap$$setAsap;
-    lib$es6$promise$promise$$Promise._asap = lib$es6$promise$asap$$asap;
-
-    lib$es6$promise$promise$$Promise.prototype = {
-      constructor: lib$es6$promise$promise$$Promise,
-
-    /**
-      The primary way of interacting with a promise is through its `then` method,
-      which registers callbacks to receive either a promise's eventual value or the
-      reason why the promise cannot be fulfilled.
-
-      ```js
-      findUser().then(function(user){
-        // user is available
-      }, function(reason){
-        // user is unavailable, and you are given the reason why
-      });
-      ```
-
-      Chaining
-      --------
-
-      The return value of `then` is itself a promise.  This second, 'downstream'
-      promise is resolved with the return value of the first promise's fulfillment
-      or rejection handler, or rejected if the handler throws an exception.
-
-      ```js
-      findUser().then(function (user) {
-        return user.name;
-      }, function (reason) {
-        return 'default name';
-      }).then(function (userName) {
-        // If `findUser` fulfilled, `userName` will be the user's name, otherwise it
-        // will be `'default name'`
-      });
-
-      findUser().then(function (user) {
-        throw new Error('Found user, but still unhappy');
-      }, function (reason) {
-        throw new Error('`findUser` rejected and we're unhappy');
-      }).then(function (value) {
-        // never reached
-      }, function (reason) {
-        // if `findUser` fulfilled, `reason` will be 'Found user, but still unhappy'.
-        // If `findUser` rejected, `reason` will be '`findUser` rejected and we're unhappy'.
-      });
-      ```
-      If the downstream promise does not specify a rejection handler, rejection reasons will be propagated further downstream.
-
-      ```js
-      findUser().then(function (user) {
-        throw new PedagogicalException('Upstream error');
-      }).then(function (value) {
-        // never reached
-      }).then(function (value) {
-        // never reached
-      }, function (reason) {
-        // The `PedgagocialException` is propagated all the way down to here
-      });
-      ```
-
-      Assimilation
-      ------------
-
-      Sometimes the value you want to propagate to a downstream promise can only be
-      retrieved asynchronously. This can be achieved by returning a promise in the
-      fulfillment or rejection handler. The downstream promise will then be pending
-      until the returned promise is settled. This is called *assimilation*.
-
-      ```js
-      findUser().then(function (user) {
-        return findCommentsByAuthor(user);
-      }).then(function (comments) {
-        // The user's comments are now available
-      });
-      ```
-
-      If the assimliated promise rejects, then the downstream promise will also reject.
-
-      ```js
-      findUser().then(function (user) {
-        return findCommentsByAuthor(user);
-      }).then(function (comments) {
-        // If `findCommentsByAuthor` fulfills, we'll have the value here
-      }, function (reason) {
-        // If `findCommentsByAuthor` rejects, we'll have the reason here
-      });
-      ```
-
-      Simple Example
-      --------------
-
-      Synchronous Example
-
-      ```javascript
-      var result;
-
-      try {
-        result = findResult();
-        // success
-      } catch(reason) {
-        // failure
-      }
-      ```
-
-      Errback Example
-
-      ```js
-      findResult(function(result, err){
-        if (err) {
-          // failure
-        } else {
-          // success
-        }
-      });
-      ```
-
-      Promise Example;
-
-      ```javascript
-      findResult().then(function(result){
-        // success
-      }, function(reason){
-        // failure
-      });
-      ```
-
-      Advanced Example
-      --------------
-
-      Synchronous Example
-
-      ```javascript
-      var author, books;
-
-      try {
-        author = findAuthor();
-        books  = findBooksByAuthor(author);
-        // success
-      } catch(reason) {
-        // failure
-      }
-      ```
-
-      Errback Example
-
-      ```js
-
-      function foundBooks(books) {
-
-      }
-
-      function failure(reason) {
-
-      }
-
-      findAuthor(function(author, err){
-        if (err) {
-          failure(err);
-          // failure
-        } else {
-          try {
-            findBoooksByAuthor(author, function(books, err) {
-              if (err) {
-                failure(err);
-              } else {
-                try {
-                  foundBooks(books);
-                } catch(reason) {
-                  failure(reason);
-                }
-              }
-            });
-          } catch(error) {
-            failure(err);
-          }
-          // success
-        }
-      });
-      ```
-
-      Promise Example;
-
-      ```javascript
-      findAuthor().
-        then(findBooksByAuthor).
-        then(function(books){
-          // found books
-      }).catch(function(reason){
-        // something went wrong
-      });
-      ```
-
-      @method then
-      @param {Function} onFulfilled
-      @param {Function} onRejected
-      Useful for tooling.
-      @return {Promise}
-    */
-      then: lib$es6$promise$then$$default,
-
-    /**
-      `catch` is simply sugar for `then(undefined, onRejection)` which makes it the same
-      as the catch block of a try/catch statement.
-
-      ```js
-      function findAuthor(){
-        throw new Error('couldn't find that author');
-      }
-
-      // synchronous
-      try {
-        findAuthor();
-      } catch(reason) {
-        // something went wrong
-      }
-
-      // async with promises
-      findAuthor().catch(function(reason){
-        // something went wrong
-      });
-      ```
-
-      @method catch
-      @param {Function} onRejection
-      Useful for tooling.
-      @return {Promise}
-    */
-      'catch': function(onRejection) {
-        return this.then(null, onRejection);
-      }
-    };
-    var lib$es6$promise$enumerator$$default = lib$es6$promise$enumerator$$Enumerator;
-    function lib$es6$promise$enumerator$$Enumerator(Constructor, input) {
-      this._instanceConstructor = Constructor;
-      this.promise = new Constructor(lib$es6$promise$$internal$$noop);
-
-      if (!this.promise[lib$es6$promise$$internal$$PROMISE_ID]) {
-        lib$es6$promise$$internal$$makePromise(this.promise);
-      }
-
-      if (lib$es6$promise$utils$$isArray(input)) {
-        this._input     = input;
-        this.length     = input.length;
-        this._remaining = input.length;
-
-        this._result = new Array(this.length);
-
-        if (this.length === 0) {
-          lib$es6$promise$$internal$$fulfill(this.promise, this._result);
-        } else {
-          this.length = this.length || 0;
-          this._enumerate();
-          if (this._remaining === 0) {
-            lib$es6$promise$$internal$$fulfill(this.promise, this._result);
-          }
-        }
-      } else {
-        lib$es6$promise$$internal$$reject(this.promise, lib$es6$promise$enumerator$$validationError());
-      }
-    }
-
-    function lib$es6$promise$enumerator$$validationError() {
-      return new Error('Array Methods must be provided an Array');
-    }
-
-    lib$es6$promise$enumerator$$Enumerator.prototype._enumerate = function() {
-      var length  = this.length;
-      var input   = this._input;
-
-      for (var i = 0; this._state === lib$es6$promise$$internal$$PENDING && i < length; i++) {
-        this._eachEntry(input[i], i);
-      }
-    };
-
-    lib$es6$promise$enumerator$$Enumerator.prototype._eachEntry = function(entry, i) {
-      var c = this._instanceConstructor;
-      var resolve = c.resolve;
-
-      if (resolve === lib$es6$promise$promise$resolve$$default) {
-        var then = lib$es6$promise$$internal$$getThen(entry);
-
-        if (then === lib$es6$promise$then$$default &&
-            entry._state !== lib$es6$promise$$internal$$PENDING) {
-          this._settledAt(entry._state, i, entry._result);
-        } else if (typeof then !== 'function') {
-          this._remaining--;
-          this._result[i] = entry;
-        } else if (c === lib$es6$promise$promise$$default) {
-          var promise = new c(lib$es6$promise$$internal$$noop);
-          lib$es6$promise$$internal$$handleMaybeThenable(promise, entry, then);
-          this._willSettleAt(promise, i);
-        } else {
-          this._willSettleAt(new c(function(resolve) { resolve(entry); }), i);
-        }
-      } else {
-        this._willSettleAt(resolve(entry), i);
-      }
-    };
-
-    lib$es6$promise$enumerator$$Enumerator.prototype._settledAt = function(state, i, value) {
-      var promise = this.promise;
-
-      if (promise._state === lib$es6$promise$$internal$$PENDING) {
-        this._remaining--;
-
-        if (state === lib$es6$promise$$internal$$REJECTED) {
-          lib$es6$promise$$internal$$reject(promise, value);
-        } else {
-          this._result[i] = value;
-        }
-      }
-
-      if (this._remaining === 0) {
-        lib$es6$promise$$internal$$fulfill(promise, this._result);
-      }
-    };
-
-    lib$es6$promise$enumerator$$Enumerator.prototype._willSettleAt = function(promise, i) {
-      var enumerator = this;
-
-      lib$es6$promise$$internal$$subscribe(promise, undefined, function(value) {
-        enumerator._settledAt(lib$es6$promise$$internal$$FULFILLED, i, value);
-      }, function(reason) {
-        enumerator._settledAt(lib$es6$promise$$internal$$REJECTED, i, reason);
-      });
-    };
-    function lib$es6$promise$polyfill$$polyfill() {
-      var local;
-
-      if (typeof global !== 'undefined') {
-          local = global;
-      } else if (typeof self !== 'undefined') {
-          local = self;
-      } else {
-          try {
-              local = Function('return this')();
-          } catch (e) {
-              throw new Error('polyfill failed because global object is unavailable in this environment');
-          }
-      }
-
-      var P = local.Promise;
-
-      if (P && Object.prototype.toString.call(P.resolve()) === '[object Promise]' && !P.cast) {
-        return;
-      }
-
-      local.Promise = lib$es6$promise$promise$$default;
-    }
-    var lib$es6$promise$polyfill$$default = lib$es6$promise$polyfill$$polyfill;
-
-    var lib$es6$promise$umd$$ES6Promise = {
-      'Promise': lib$es6$promise$promise$$default,
-      'polyfill': lib$es6$promise$polyfill$$default
-    };
-
-    /* global define:true module:true window: true */
-    if (typeof define === 'function' && define['amd']) {
-      define(function() { return lib$es6$promise$umd$$ES6Promise; });
-    } else if (typeof module !== 'undefined' && module['exports']) {
-      module['exports'] = lib$es6$promise$umd$$ES6Promise;
-    } else if (typeof this !== 'undefined') {
-      this['ES6Promise'] = lib$es6$promise$umd$$ES6Promise;
-    }
-
-    lib$es6$promise$polyfill$$default();
-}).call(this);
-
-
-}).call(this,require('_process'),typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-
-},{"_process":38}],34:[function(require,module,exports){
+},{"ms":45}],42:[function(require,module,exports){
 exports.read = function (buffer, offset, isLE, mLen, nBytes) {
   var e, m
   var eLen = nBytes * 8 - mLen - 1
@@ -6590,14 +7251,14 @@ exports.write = function (buffer, value, offset, isLE, mLen, nBytes) {
   buffer[offset + i - d] |= s * 128
 }
 
-},{}],35:[function(require,module,exports){
+},{}],43:[function(require,module,exports){
 var toString = {}.toString;
 
 module.exports = Array.isArray || function (arr) {
   return toString.call(arr) == '[object Array]';
 };
 
-},{}],36:[function(require,module,exports){
+},{}],44:[function(require,module,exports){
 /*
  * $Id: base64.js,v 2.15 2014/04/05 12:58:57 dankogai Exp dankogai $
  *
@@ -6793,16 +7454,16 @@ module.exports = Array.isArray || function (arr) {
     }
 })(this);
 
-},{"buffer":30}],37:[function(require,module,exports){
+},{"buffer":39}],45:[function(require,module,exports){
 /**
  * Helpers.
  */
 
-var s = 1000;
-var m = s * 60;
-var h = m * 60;
-var d = h * 24;
-var y = d * 365.25;
+var s = 1000
+var m = s * 60
+var h = m * 60
+var d = h * 24
+var y = d * 365.25
 
 /**
  * Parse or format the given `val`.
@@ -6813,17 +7474,23 @@ var y = d * 365.25;
  *
  * @param {String|Number} val
  * @param {Object} options
+ * @throws {Error} throw an error if val is not a non-empty string or a number
  * @return {String|Number}
  * @api public
  */
 
-module.exports = function(val, options){
-  options = options || {};
-  if ('string' == typeof val) return parse(val);
-  return options.long
-    ? long(val)
-    : short(val);
-};
+module.exports = function (val, options) {
+  options = options || {}
+  var type = typeof val
+  if (type === 'string' && val.length > 0) {
+    return parse(val)
+  } else if (type === 'number' && isNaN(val) === false) {
+    return options.long ?
+			fmtLong(val) :
+			fmtShort(val)
+  }
+  throw new Error('val is not a non-empty string or a valid number. val=' + JSON.stringify(val))
+}
 
 /**
  * Parse the given `str` and return milliseconds.
@@ -6834,47 +7501,53 @@ module.exports = function(val, options){
  */
 
 function parse(str) {
-  str = '' + str;
-  if (str.length > 10000) return;
-  var match = /^((?:\d+)?\.?\d+) *(milliseconds?|msecs?|ms|seconds?|secs?|s|minutes?|mins?|m|hours?|hrs?|h|days?|d|years?|yrs?|y)?$/i.exec(str);
-  if (!match) return;
-  var n = parseFloat(match[1]);
-  var type = (match[2] || 'ms').toLowerCase();
+  str = String(str)
+  if (str.length > 10000) {
+    return
+  }
+  var match = /^((?:\d+)?\.?\d+) *(milliseconds?|msecs?|ms|seconds?|secs?|s|minutes?|mins?|m|hours?|hrs?|h|days?|d|years?|yrs?|y)?$/i.exec(str)
+  if (!match) {
+    return
+  }
+  var n = parseFloat(match[1])
+  var type = (match[2] || 'ms').toLowerCase()
   switch (type) {
     case 'years':
     case 'year':
     case 'yrs':
     case 'yr':
     case 'y':
-      return n * y;
+      return n * y
     case 'days':
     case 'day':
     case 'd':
-      return n * d;
+      return n * d
     case 'hours':
     case 'hour':
     case 'hrs':
     case 'hr':
     case 'h':
-      return n * h;
+      return n * h
     case 'minutes':
     case 'minute':
     case 'mins':
     case 'min':
     case 'm':
-      return n * m;
+      return n * m
     case 'seconds':
     case 'second':
     case 'secs':
     case 'sec':
     case 's':
-      return n * s;
+      return n * s
     case 'milliseconds':
     case 'millisecond':
     case 'msecs':
     case 'msec':
     case 'ms':
-      return n;
+      return n
+    default:
+      return undefined
   }
 }
 
@@ -6886,12 +7559,20 @@ function parse(str) {
  * @api private
  */
 
-function short(ms) {
-  if (ms >= d) return Math.round(ms / d) + 'd';
-  if (ms >= h) return Math.round(ms / h) + 'h';
-  if (ms >= m) return Math.round(ms / m) + 'm';
-  if (ms >= s) return Math.round(ms / s) + 's';
-  return ms + 'ms';
+function fmtShort(ms) {
+  if (ms >= d) {
+    return Math.round(ms / d) + 'd'
+  }
+  if (ms >= h) {
+    return Math.round(ms / h) + 'h'
+  }
+  if (ms >= m) {
+    return Math.round(ms / m) + 'm'
+  }
+  if (ms >= s) {
+    return Math.round(ms / s) + 's'
+  }
+  return ms + 'ms'
 }
 
 /**
@@ -6902,12 +7583,12 @@ function short(ms) {
  * @api private
  */
 
-function long(ms) {
-  return plural(ms, d, 'day')
-    || plural(ms, h, 'hour')
-    || plural(ms, m, 'minute')
-    || plural(ms, s, 'second')
-    || ms + ' ms';
+function fmtLong(ms) {
+  return plural(ms, d, 'day') ||
+    plural(ms, h, 'hour') ||
+    plural(ms, m, 'minute') ||
+    plural(ms, s, 'second') ||
+    ms + ' ms'
 }
 
 /**
@@ -6915,15 +7596,105 @@ function long(ms) {
  */
 
 function plural(ms, n, name) {
-  if (ms < n) return;
-  if (ms < n * 1.5) return Math.floor(ms / n) + ' ' + name;
-  return Math.ceil(ms / n) + ' ' + name + 's';
+  if (ms < n) {
+    return
+  }
+  if (ms < n * 1.5) {
+    return Math.floor(ms / n) + ' ' + name
+  }
+  return Math.ceil(ms / n) + ' ' + name + 's'
 }
 
-},{}],38:[function(require,module,exports){
+},{}],46:[function(require,module,exports){
 // shim for using process in browser
-
 var process = module.exports = {};
+
+// cached from whatever global is present so that test runners that stub it
+// don't break things.  But we need to wrap it in a try catch in case it is
+// wrapped in strict mode code which doesn't define any globals.  It's inside a
+// function because try/catches deoptimize in certain engines.
+
+var cachedSetTimeout;
+var cachedClearTimeout;
+
+function defaultSetTimout() {
+    throw new Error('setTimeout has not been defined');
+}
+function defaultClearTimeout () {
+    throw new Error('clearTimeout has not been defined');
+}
+(function () {
+    try {
+        if (typeof setTimeout === 'function') {
+            cachedSetTimeout = setTimeout;
+        } else {
+            cachedSetTimeout = defaultSetTimout;
+        }
+    } catch (e) {
+        cachedSetTimeout = defaultSetTimout;
+    }
+    try {
+        if (typeof clearTimeout === 'function') {
+            cachedClearTimeout = clearTimeout;
+        } else {
+            cachedClearTimeout = defaultClearTimeout;
+        }
+    } catch (e) {
+        cachedClearTimeout = defaultClearTimeout;
+    }
+} ())
+function runTimeout(fun) {
+    if (cachedSetTimeout === setTimeout) {
+        //normal enviroments in sane situations
+        return setTimeout(fun, 0);
+    }
+    // if setTimeout wasn't available but was latter defined
+    if ((cachedSetTimeout === defaultSetTimout || !cachedSetTimeout) && setTimeout) {
+        cachedSetTimeout = setTimeout;
+        return setTimeout(fun, 0);
+    }
+    try {
+        // when when somebody has screwed with setTimeout but no I.E. maddness
+        return cachedSetTimeout(fun, 0);
+    } catch(e){
+        try {
+            // When we are in I.E. but the script has been evaled so I.E. doesn't trust the global object when called normally
+            return cachedSetTimeout.call(null, fun, 0);
+        } catch(e){
+            // same as above but when it's a version of I.E. that must have the global object for 'this', hopfully our context correct otherwise it will throw a global error
+            return cachedSetTimeout.call(this, fun, 0);
+        }
+    }
+
+
+}
+function runClearTimeout(marker) {
+    if (cachedClearTimeout === clearTimeout) {
+        //normal enviroments in sane situations
+        return clearTimeout(marker);
+    }
+    // if clearTimeout wasn't available but was latter defined
+    if ((cachedClearTimeout === defaultClearTimeout || !cachedClearTimeout) && clearTimeout) {
+        cachedClearTimeout = clearTimeout;
+        return clearTimeout(marker);
+    }
+    try {
+        // when when somebody has screwed with setTimeout but no I.E. maddness
+        return cachedClearTimeout(marker);
+    } catch (e){
+        try {
+            // When we are in I.E. but the script has been evaled so I.E. doesn't  trust the global object when called normally
+            return cachedClearTimeout.call(null, marker);
+        } catch (e){
+            // same as above but when it's a version of I.E. that must have the global object for 'this', hopfully our context correct otherwise it will throw a global error.
+            // Some versions of I.E. have different rules for clearTimeout vs setTimeout
+            return cachedClearTimeout.call(this, marker);
+        }
+    }
+
+
+
+}
 var queue = [];
 var draining = false;
 var currentQueue;
@@ -6948,7 +7719,7 @@ function drainQueue() {
     if (draining) {
         return;
     }
-    var timeout = setTimeout(cleanUpNextTick);
+    var timeout = runTimeout(cleanUpNextTick);
     draining = true;
 
     var len = queue.length;
@@ -6965,7 +7736,7 @@ function drainQueue() {
     }
     currentQueue = null;
     draining = false;
-    clearTimeout(timeout);
+    runClearTimeout(timeout);
 }
 
 process.nextTick = function (fun) {
@@ -6977,7 +7748,7 @@ process.nextTick = function (fun) {
     }
     queue.push(new Item(fun, args));
     if (queue.length === 1 && !draining) {
-        setTimeout(drainQueue, 0);
+        runTimeout(drainQueue);
     }
 };
 
@@ -7016,9 +7787,9 @@ process.chdir = function (dir) {
 };
 process.umask = function() { return 0; };
 
-},{}],39:[function(require,module,exports){
+},{}],47:[function(require,module,exports){
 (function (global){
-/*! https://mths.be/utf8js v2.0.0 by @mathias */
+/*! https://mths.be/utf8js v2.1.2 by @mathias */
 ;(function(root) {
 
 	// Detect free variables `exports`
@@ -7177,7 +7948,7 @@ process.umask = function() { return 0; };
 
 		// 2-byte sequence
 		if ((byte1 & 0xE0) == 0xC0) {
-			var byte2 = readContinuationByte();
+			byte2 = readContinuationByte();
 			codePoint = ((byte1 & 0x1F) << 6) | byte2;
 			if (codePoint >= 0x80) {
 				return codePoint;
@@ -7204,7 +7975,7 @@ process.umask = function() { return 0; };
 			byte2 = readContinuationByte();
 			byte3 = readContinuationByte();
 			byte4 = readContinuationByte();
-			codePoint = ((byte1 & 0x0F) << 0x12) | (byte2 << 0x0C) |
+			codePoint = ((byte1 & 0x07) << 0x12) | (byte2 << 0x0C) |
 				(byte3 << 0x06) | byte4;
 			if (codePoint >= 0x010000 && codePoint <= 0x10FFFF) {
 				return codePoint;
@@ -7232,7 +8003,7 @@ process.umask = function() { return 0; };
 	/*--------------------------------------------------------------------------*/
 
 	var utf8 = {
-		'version': '2.0.0',
+		'version': '2.1.2',
 		'encode': utf8encode,
 		'decode': utf8decode
 	};
@@ -7269,4 +8040,3 @@ process.umask = function() { return 0; };
 });
 
 
-//# sourceMappingURL=GitHub.bundle.js.map
