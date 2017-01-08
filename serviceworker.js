@@ -35,7 +35,6 @@
 // https://developer.mozilla.org/en-US/docs/Web/API/Service_Worker_API/Using_Service_Workers
 // intro http://www.html5rocks.com/en/tutorials/service-worker/introduction/
 // selective cache https://github.com/GoogleChrome/samples/blob/gh-pages/service-worker/selective-caching/service-worker.js
-// selective cache https://googlechrome.github.io/samples/service-worker/selective-caching/
 // handling POST with indexedDB: https://serviceworke.rs/request-deferrer.html
 
 // versioning allows to keep a clean cache, current_cache is accessed on fetch
@@ -225,7 +224,7 @@ self.addEventListener('message', function (event) {
         for (i = 0; i < key_list.length; i += 1) {
           id = key_list[i].split("-v")[0];
           if (id !== "self") {
-            result_list.append({
+            result_list.push({
               "id": id,
               "value": {}
             });

@@ -1,5 +1,5 @@
 /*jslint nomen: true, indent: 2, maxerr: 3 */
-/*global window, rJS */
+/*global window, rJS, navigator */
 (function (window, rJS) {
   "use strict";
 
@@ -17,7 +17,24 @@
     })
 
     .declareMethod('render', function (my_option_dict) {
-      return this;
+      var gadget = this;
+
+      if ('serviceWorker' in navigator) {
+        return new RSVP.Promise(function(resolve, reject) {
+            navigator.serviceWorker.register('serviceworker.js', {scope: './'})
+              .then(function () {
+                if (navigator.serviceWorker.controller) {
+                  resolve();
+                } else {
+                  reject(new Error("Please refresh to initialize serviceworker."));
+                }
+              }).catch(function (err) {
+                reject(err);
+              });
+          });
+      } else {
+        throw new Error("Browser does not support serviceworker.");
+      }
     });
 
-}(window, rJS));
+}(window, rJS, navigator));

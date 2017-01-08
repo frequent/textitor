@@ -23,9 +23,9 @@
   
   // and some variables...
   var IDLE = "idle";
-  var SELF = "textitor";
   var FLAG = "Enter valid URL.";
   var FILE = "Missing file extension.";
+  var BUST = "Missing project to save file.";
   var FOLD = "Invalid '.' character.";
   var EOF = ["", "/"];
 
@@ -551,14 +551,6 @@
           folder = file_dict[counter];
           len = folder.item_list.length;
           if (len > 0) {
-            
-            // XXX root files
-            if (folder.root) {
-              str += props.dialog_parseTemplate(
-                FILE_ENTRY_TEMPLATE,
-                [folder.name + " | " + "[Project]"]
-              );
-            }
             for (i = 0; i < len; i += 1) {
               str += props.dialog_parseTemplate(
                 FILE_ENTRY_TEMPLATE,
@@ -1251,16 +1243,14 @@
             directory_content_list = [],
             active_cache = props.editor_active_cache,
             cache_id,
-            is_root,
             cache_content,
             i;
 
           // only load contents of active cache
           for (i = 0; i < response_dict.total_rows; i += 1) {
             cache_id = response_dict.rows[i].id;
-            is_root = cache_id === SELF && !props.editor_active_path;
-            entry_dict[i] = {"name": cache_id, "item_list": [], "root": is_root};
-            //if (cache_id === active_cache || is_root) {
+            entry_dict[i] = {"name": cache_id, "item_list": []};
+            //if (cache_id === active_cache) {
               cache_content = gadget.jio_allAttachments(cache_id);
             //} else {
             //  cache_content = {};
@@ -1333,7 +1323,7 @@
       var gadget = this,
         queue = new RSVP.Queue(),
         props = CodeMirror.menu_dict,
-        active_cache = props.editor_active_cache || SELF,
+        active_cache = props.editor_active_cache,
         active_path = props.editor_active_path,
         active_file = props.editor_active_file,
         file_to_delete,
@@ -1341,6 +1331,10 @@
         handler;
 
       // REMOVE => clear file/folder/cache from memory and serviceworker
+      
+      if (!active_cache || !active_path || !active_file) {
+        return;
+      }
       
       function dropFile(my_cache, my_item) {
         return new RSVP.Queue()
@@ -1505,13 +1499,14 @@
       var gadget = this,
         props = CodeMirror.menu_dict,
         dialog = props.dialog,
-        active_cache = props.editor_active_cache || SELF,
+        active_cache = props.editor_active_cache,
         active_path = props.editor_active_path,
         active_file = props.editor_active_file,
         file_name_input,
         file_name,
         is_container,
         is_select,
+        is_cache,
         content,
         folder_file_list,
         mime_type_input,
@@ -1534,7 +1529,10 @@
           file_name_input = dialog.querySelector("input");
           file_name = file_name_input.value;
           is_select = dialog.querySelector('select[name="is_container"]');
+          
+          // selectedIndex: 0 => file => false
           is_container = is_select && is_select.selectedIndex;
+          is_cache = is_select.options[is_select.selectedIndex].value;
           mime_type_input = file_name.split(".").pop().replace("/", "");
           mime_type = setMimeType(mime_type_input);
         } else {
@@ -1548,6 +1546,9 @@
           if (!file_name) {
             return props.dialog_flagInput(file_name_input, FLAG);
           } else {
+            if (!active_cache && is_cache !== 'cache') {
+              return props.dialog_flagInput(file_name_input, BUST);
+            }
             if (is_container && file_name.indexOf(".") > -1) {
               return props.dialog_flagInput(file_name_input, FOLD);
             }
@@ -1559,7 +1560,7 @@
         content = props.editor.getValue();
 
         if (is_container) {
-          if (is_select.options[is_select.selectedIndex].value === 'cache') {
+          if (is_cache === 'cache') {
             return props.editor_createCache(gadget, file_name_input.value);
           } else {
             mime_type = "application/json";
@@ -1667,7 +1668,7 @@
         .push(function () {
           var new_doc = props.editor_createDoc(my_content),
             old_doc = props.editor.swapDoc(new_doc),
-            active_storage = props.editor_active_cache || SELF,
+            active_cache = props.editor_active_cache,
             active_path = props.editor_active_path,
             active_file = props.editor_active_file,
             save_file_name,
@@ -1683,12 +1684,12 @@
             save_mime_type = props.editor_active_file.mime_type;
             return RSVP.all([
               gadget.jio_putAttachment(
-                active_storage,
+                active_cache,
                 save_file_name,
                 new Blob([old_doc.getValue()], {type: save_mime_type})
               ),
               gadget.jio_putAttachment(
-                active_storage,
+                active_cache,
                 save_file_name + "_history",
                 new Blob([JSON.stringify(old_doc.getHistory())], {
                   'type': "application/json"
@@ -1726,7 +1727,7 @@
         return true;
       }
 
-      active_cache = props.editor_active_cache || SELF;
+      active_cache = props.editor_active_cache;
       file_name_input_list = file_name_input.nextSibling.textContent.split(" | ");
       file_name_to_open = file_name_input_list[1];
 

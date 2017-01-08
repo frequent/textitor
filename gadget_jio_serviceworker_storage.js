@@ -2,10 +2,10 @@
  * JIO Service Worker Storage Type = "serviceworker".
  * Servieworker "filesystem" storage.
  */
-/*global Blob, jIO, RSVP*/
+/*global Blob, jIO, RSVP, navigator*/
 /*jslint nomen: true*/
 
-(function (jIO, RSVP, Blob) {
+(function (jIO, RSVP, Blob, navigator) {
   "use strict";
 
   // no need to validate attachment name, because serviceworker.js will throw
@@ -17,25 +17,10 @@
     return id;
   }
 
+  // validate browser support, serviceworker registration must be done in gadget
   function validateConnection() {
-    if ('serviceWorker' in navigator) {
-      if (navigator.serviceWorker.controller === null) {
-        return new RSVP.Promise(function(resolve, reject) {
-          navigator.serviceWorker.register('serviceworker.js', {scope: './'})
-            .then(function () {
-              if (navigator.serviceWorker.controller) {
-                resolve();
-              } else {
-                reject(new Error("Please refresh to initialize serviceworker"));
-              }
-            }).catch(function (err) {
-              reject(err);
-            });
-        });
-      }
-    } else {
-      throw new jIO.util.jIOError("Serviceworker not available in browser",
-                                  503);
+    if ('serviceWorker' in navigator === false) {
+      throw new jIO.util.jIOError("Serviceworker not available in browser", 503);
     }
   }
 
@@ -243,5 +228,5 @@
 
   jIO.addStorage('serviceworker', ServiceWorkerStorage);
 
-}(jIO, RSVP, Blob));
+}(jIO, RSVP, Blob, navigator));
 
