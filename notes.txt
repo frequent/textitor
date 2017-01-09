@@ -2,6 +2,14 @@
 
 > allow to createJIO inside project = support storages, find place to add params
 - wrap all shortcuts in a single promise (proper queue call) with global error handler to fix propagation
+- try base activity queue on loopEventListener with custom callback (as is), as this will
+  listen permantenly and should allow to trigger subsequent calls without
+  having to cancel the previous promise still pending
+- replace jshint with jslint
+- create git init/fork or clone repo, which all create a repository. The git storage
+  should test for required fields to initiliaze like github usernamen and password
+  and raise an error for each missing one, then catch errors and build a form 
+  based on missing fields and method to call with providing them.
 
 => maintain self
 - try image handling with favicon, must be possible to handle images without opening
@@ -40,13 +48,6 @@
   - can add everything to gitstorage. push will send to master
 
 => github API
-
-
-
-https://github.com/michael/github > instructions
-http://rawgit.com/TristanCavelier/apps/master/app/code-editor/index.html
-https://github.com/TristanCavelier/texteditor/blob/master/manifest.appcache
-http://stackoverflow.com/questions/2745076/what-are-the-differences-between-git-commit-and-git-push?answertab=votes#tab-top
 
 var github = new Github({
   username: "frequent",
