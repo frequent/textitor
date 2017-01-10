@@ -200,6 +200,13 @@
   // Queue function calls
   // XXX refactor to correctly buffer flurry of calls
   function queueCall(callback) {
+
+    /*
+    CodeMirror.menu_dict.editor.dispatchEvent(new CustomEvent('activity', {
+      'callback': callback
+    }));
+    */
+
     var props = CodeMirror.menu_dict,
       deferred = props.service_deferred;
     
@@ -221,6 +228,7 @@
     props.service_queue.push(function () {
       return deferred.promise;
     });
+
   }
 
   // CodeMirror needs this on dialog close
@@ -634,6 +642,7 @@
   }
 
   function dialog_evaluateState(my_parameter) {
+    console.log("queuecall for evaluateState")
     queueCall(function () {
       var parameter = my_parameter,
         props = CodeMirror.menu_dict;
@@ -1076,6 +1085,7 @@
           ]);
         })
         .push(function (my_response_list) {
+          props.service_queue = new RSVP.Queue();
           props.element = my_response_list[0];
           props.textarea = document.createElement("textarea");
           props.element.appendChild(props.textarea);
@@ -1910,11 +1920,36 @@
     })
 
     .declareService(function () {
-      var gadget = this;
+      /*
+      var editor = this.property_dict.editor;
+      return codeMirrorLoopEventListener(editor, 'activity', function (my_event) {
+        var service_queue = this.property_dict.service_queue,
+          activity_queue;
+
+        if (!my_event.callback) {
+          throw new Error("No activity to run specified");
+        }
+        activity_queue = new RSVP.Queue()
+          .push(function () {
+            return my_event.callback;
+          });
+
+        // buffer: if queue is still running, add activities, else add new queue
+        if (service_queue.isFulfilled) {
+          service_queue = activity_queue; 
+          return service_queue;
+        }
+        return service_queue
+          .push(function () {
+            return activity_queue;
+          });
+        });
+      */
+      
       
       // queue enabling to buffer method calls (eg voice commands)
       gadget.property_dict.service_queue = new RSVP.Queue();
-
+      
       queueCall(function () {
         return true;
       });
@@ -1931,6 +1966,7 @@
           // XXX handle service stoppage before throwing
           throw my_service_stopped_error;
         });
+
     })
   
     .declareService(function () {
