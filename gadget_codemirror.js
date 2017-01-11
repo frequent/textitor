@@ -200,13 +200,16 @@
   // Queue function calls
   // XXX refactor to correctly buffer flurry of calls
   function queueCall(callback) {
+    
+    var target = CodeMirror.menu_dict.editor.getWrapperElement();
+    target.dispatchEvent(new CustomEvent('activity', {
+        "detail": {
+          "callback": callback
+        }
+      })
+    );
 
     /*
-    CodeMirror.menu_dict.editor.dispatchEvent(new CustomEvent('activity', {
-      'callback': callback
-    }));
-    */
-
     var props = CodeMirror.menu_dict,
       deferred = props.service_deferred;
     
@@ -228,7 +231,7 @@
     props.service_queue.push(function () {
       return deferred.promise;
     });
-
+    */
   }
 
   // CodeMirror needs this on dialog close
@@ -261,7 +264,7 @@
   /////////////////////////////
   CodeMirror.menu_dict = {};
   CodeMirror.menu_dict.service_deferred = undefined;
-  CodeMirror.menu_dict.service_queue = null;
+  //CodeMirror.menu_dict.service_queue = null;
   CodeMirror.menu_dict.editor = null;
   CodeMirror.menu_dict.editor_active_dialog = null;
   CodeMirror.menu_dict.editor_active_path = null;
@@ -1747,19 +1750,20 @@
         if (file_name_to_open === "[Project]") {
           file_name_to_open = file_name_input_list[0];
           props.editor_setActiveCache(file_name_to_open);
+          // XXX what to return?
+          console.log("DONE here, return something")
         }
         if (props.editor_active_file) {
           return new RSVP.Queue()
             .push(function () {
               return gadget.editor_swapFile();
             })
-            .push(function (answer) {
-              props.dialog_evaluateState(BLANK_SEARCH);
+            .push(function () {
+              return props.dialog_evaluateState(BLANK_SEARCH);
             });
         } else {
-          props.dialog_evaluateState(BLANK_SEARCH);
+          return props.dialog_evaluateState(BLANK_SEARCH);
         }
-        return;
       }
       
       // flag save if new file comes from memory
@@ -1767,7 +1771,7 @@
         file_name_to_open_save_flag = true;
       }
       open_name = file_name_to_open.split("*")[0];
-
+      console.log("still here")
       return new RSVP.Queue()
         .push(function () {
           return gadget.setActiveStorage("memory");
@@ -1920,22 +1924,21 @@
     })
 
     .declareService(function () {
-      /*
-      var editor = this.property_dict.editor;
-      return codeMirrorLoopEventListener(editor, 'activity', function (my_event) {
-        var service_queue = this.property_dict.service_queue,
-          activity_queue;
+      var gadget = this,
+        props = gadget.property_dict,
+        target = props.editor.getWrapperElement();
 
-        if (!my_event.callback) {
-          throw new Error("No activity to run specified");
-        }
-        activity_queue = new RSVP.Queue()
-          .push(function () {
-            return my_event.callback;
-          });
+      return loopEventListener(target, 'activity', false, function (my_event) {
+        var service_queue = props.service_queue,
+          activity_queue,
+          callback = my_event.detail.callback;
+
+        activity_queue = new RSVP.Queue().push(callback);
 
         // buffer: if queue is still running, add activities, else add new queue
-        if (service_queue.isFulfilled) {
+        console.log(service_queue)
+        if (service_queue && service_queue.isFulfilled) {
+          console.log("fulfilled, replacing")
           service_queue = activity_queue; 
           return service_queue;
         }
@@ -1944,9 +1947,9 @@
             return activity_queue;
           });
         });
-      */
       
       
+      /*
       // queue enabling to buffer method calls (eg voice commands)
       gadget.property_dict.service_queue = new RSVP.Queue();
       
@@ -1966,7 +1969,7 @@
           // XXX handle service stoppage before throwing
           throw my_service_stopped_error;
         });
-
+      */
     })
   
     .declareService(function () {
