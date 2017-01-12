@@ -208,30 +208,6 @@
         }
       })
     );
-
-    /*
-    var props = CodeMirror.menu_dict,
-      deferred = props.service_deferred;
-    
-    // Unblock queue
-    if (deferred !== undefined) {
-      deferred.resolve("resolving blocking deferred");
-    }
-
-    // Add next callback
-    try {
-      props.service_queue.push(callback);
-    } catch (error) {
-      throw new Error("Service already crashed... ");
-    }
-
-    // Block the queue
-    deferred = RSVP.defer();
-    props.service_deferred = deferred;
-    props.service_queue.push(function () {
-      return deferred.promise;
-    });
-    */
   }
 
   // CodeMirror needs this on dialog close
@@ -654,6 +630,8 @@
           return props.editor_updateStorage(parameter);
         })
         .push(function (my_close_dialog) {
+          console.log("DONE eval")
+          console.log(my_close_dialog)
           if (my_close_dialog === true && props.editor_active_dialog) {
             if (props.dialog_option_dict.onClose) {
               props.dialog_option_dict.onClose(dialog);
@@ -1937,39 +1915,30 @@
 
         // buffer: if queue is still running, add activities, else add new queue
         console.log(service_queue)
-        if (service_queue && service_queue.isFulfilled) {
-          console.log("fulfilled, replacing")
-          service_queue = activity_queue; 
-          return service_queue;
+        
+        if (service_queue !== undefined) {
+          console.log("unblocking")
+          return new RSVP.Queue()
+            .push(function () {
+              return service_queue.resolve();
+            })
+            .push(function () {
+              console.log("resolved blocker")
+              service_queue = undefined;
+              return activity_queue;
+            });
         }
-        return service_queue
-          .push(function () {
-            return activity_queue;
+        console.log("resolve directly, then block")
+        return activity_queue
+          .push(function (x) {
+            console.log("finished queue call")
+            console.log(x)
+            console.log("now block")
+            deferred = new RSVP.defer();
+            props.service_queue = deferred;
+            return deferred.promise;
           });
         });
-      
-      
-      /*
-      // queue enabling to buffer method calls (eg voice commands)
-      gadget.property_dict.service_queue = new RSVP.Queue();
-      
-      queueCall(function () {
-        return true;
-      });
-
-      return new RSVP.Queue()
-        .push(function () {
-          return gadget.property_dict.service_queue;
-        })
-        .push(function () {
-          throw new Error("Service should not have been stopped!");
-        })
-        .push(null, function (my_service_stopped_error) {
-          
-          // XXX handle service stoppage before throwing
-          throw my_service_stopped_error;
-        });
-      */
     })
   
     .declareService(function () {
