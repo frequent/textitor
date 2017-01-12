@@ -240,7 +240,6 @@
   /////////////////////////////
   CodeMirror.menu_dict = {};
   CodeMirror.menu_dict.service_deferred = undefined;
-  //CodeMirror.menu_dict.service_queue = null;
   CodeMirror.menu_dict.editor = null;
   CodeMirror.menu_dict.editor_active_dialog = null;
   CodeMirror.menu_dict.editor_active_path = null;
@@ -1066,7 +1065,6 @@
           ]);
         })
         .push(function (my_response_list) {
-          props.service_queue = new RSVP.Queue();
           props.element = my_response_list[0];
           props.textarea = document.createElement("textarea");
           props.element.appendChild(props.textarea);
@@ -1934,7 +1932,7 @@
             console.log("finished queue call")
             console.log(x)
             console.log("now block")
-            deferred = new RSVP.defer();
+            var deferred = new RSVP.defer();
             props.service_queue = deferred;
             return deferred.promise;
           });
