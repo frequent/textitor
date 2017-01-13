@@ -198,9 +198,7 @@
   /////////////////////////////
 
   // Queue function calls
-  // XXX refactor to correctly buffer flurry of calls
   function queueCall(callback) {
-    
     var target = CodeMirror.menu_dict.editor.getWrapperElement();
     target.dispatchEvent(new CustomEvent('activity', {
         "detail": {
@@ -620,7 +618,6 @@
   }
 
   function dialog_evaluateState(my_parameter) {
-    console.log("queuecall for evaluateState")
     queueCall(function () {
       var parameter = my_parameter,
         props = CodeMirror.menu_dict;
@@ -629,8 +626,6 @@
           return props.editor_updateStorage(parameter);
         })
         .push(function (my_close_dialog) {
-          console.log("DONE eval")
-          console.log(my_close_dialog)
           if (my_close_dialog === true && props.editor_active_dialog) {
             if (props.dialog_option_dict.onClose) {
               props.dialog_option_dict.onClose(dialog);
@@ -1727,7 +1722,6 @@
           file_name_to_open = file_name_input_list[0];
           props.editor_setActiveCache(file_name_to_open);
           // XXX what to return?
-          console.log("DONE here, return something")
         }
         if (props.editor_active_file) {
           return new RSVP.Queue()
@@ -1741,13 +1735,12 @@
           return props.dialog_evaluateState(BLANK_SEARCH);
         }
       }
-      
+
       // flag save if new file comes from memory
       if (file_name_to_open.indexOf("*") > -1) {
         file_name_to_open_save_flag = true;
       }
       open_name = file_name_to_open.split("*")[0];
-      console.log("still here")
       return new RSVP.Queue()
         .push(function () {
           return gadget.setActiveStorage("memory");
@@ -1910,28 +1903,27 @@
           callback = my_event.detail.callback;
 
         activity_queue = new RSVP.Queue().push(callback);
-
-        // buffer: if queue is still running, add activities, else add new queue
-        console.log(service_queue)
-        
         if (service_queue !== undefined) {
-          console.log("unblocking")
+          // prevent promise cancellation
+          // return false;
+          
+          // XXXXX the question is how to prevent Cancellation error by returning something
+          // the initial queue call is waiting for, because I call eval-storage
+          // and wait for true/false, but at some point I call it again and wait for true/false
+          // which kills the first promise. How to resolve the first promise properly and then
+          // call the next eval storage? because I have no access to the promise object.
+          
           return new RSVP.Queue()
             .push(function () {
               return service_queue.resolve();
             })
             .push(function () {
-              console.log("resolved blocker")
               service_queue = undefined;
               return activity_queue;
             });
         }
-        console.log("resolve directly, then block")
         return activity_queue
-          .push(function (x) {
-            console.log("finished queue call")
-            console.log(x)
-            console.log("now block")
+          .push(function () {
             var deferred = new RSVP.defer();
             props.service_queue = deferred;
             return deferred.promise;
