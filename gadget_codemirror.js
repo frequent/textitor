@@ -618,7 +618,7 @@
   }
 
   function dialog_evaluateState(my_parameter) {
-    queueCall(function () {
+    //queueCall(function () {
       var parameter = my_parameter,
         props = CodeMirror.menu_dict;
       return new RSVP.Queue()
@@ -642,7 +642,7 @@
           console.log(error);
           throw error;
         });
-    });
+    //});
   }
 
   function dialog_isFileMenuItem(my_path, my_folder) {
@@ -1302,11 +1302,11 @@
         handler;
 
       // REMOVE => clear file/folder/cache from memory and serviceworker
-      
-      if (!active_cache || !active_path || !active_file) {
+
+      if (!active_cache && !active_path && !active_file) {
         return;
       }
-      
+
       function dropFile(my_cache, my_item) {
         return new RSVP.Queue()
           .push(function () {
@@ -1632,6 +1632,8 @@
         }
       }
       
+      console.log("swapping")
+      
       return new RSVP.Queue()
         .push(function () {
           return gadget.setActiveStorage("memory");
@@ -1645,6 +1647,9 @@
             save_file_name,
             save_mime_type;
 
+          console.log(active_cache)
+          console.log(active_path)
+          console.log(active_file)
           // set active file to active and save previous file (old_doc)
           if (active_file && props.editor_is_modified) {
             if (active_file.name.indexOf(active_path) === -1) {
@@ -1653,6 +1658,10 @@
               save_file_name = active_file.name;
             }
             save_mime_type = props.editor_active_file.mime_type;
+            
+            console.log(save_file_name)
+            console.log(save_mime_type)
+            
             return RSVP.all([
               gadget.jio_putAttachment(
                 active_cache,
@@ -1670,6 +1679,7 @@
           }
         })
         .push(function () {
+          console.log("swapped")
           if (!my_content) {
             props.dialog_clearTextInput(dialog);
             props.editor_resetActiveFile();
@@ -1708,6 +1718,8 @@
         if (file_name_to_open === "[Project]") {
           file_name_to_open = file_name_input_list[0];
           props.editor_setActiveCache(file_name_to_open);
+          
+          console.log("WE SHOULD CHECK HERE WHETHER PROJECT EXISTS ON MEMORY!")
         }
         if (props.editor_active_file) {
           return new RSVP.Queue()
@@ -1909,7 +1921,7 @@
             props.activity_pending = new RSVP.defer();
             return props.activity_pending.promise;
           });
-        });
+        })
     })
   
     .declareService(function () {
