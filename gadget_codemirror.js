@@ -194,10 +194,10 @@
   }
 
   /////////////////////////////
-  // Some Methods
+  // Some Methods (not asyn)
   /////////////////////////////
 
-  // Queue function calls
+  // activity trigger
   function queueCall(callback) {
     var target = CodeMirror.menu_dict.editor.getWrapperElement();
     target.dispatchEvent(new CustomEvent('activity', {
@@ -206,6 +206,27 @@
         }
       })
     );
+  }
+
+  // activity buffer (allows to trigger activities from activities)
+  function bufferActivity(my_buffered_activity) {
+    var deferred = new RSVP.defer();
+    
+    console.log("ADDING TO BUFFER")
+    
+    CodeMirror.menu_dict.editor_activity_buffer = {
+      handler: new RSVP.Queue()
+        .push(function () {
+          console.log("til here...")
+          return deferred.promise;
+        })
+        .push(function (x) {
+          console.log(x, " now RUNNING")
+          return my_buffered_activity;
+        }),
+      trigger: deferred 
+    };
+    console.log("ADDED TO BUFFER")
   }
 
   // CodeMirror needs this on dialog close
@@ -237,7 +258,6 @@
   // CodeMirror Custom menu_dict Extension
   /////////////////////////////
   CodeMirror.menu_dict = {};
-  CodeMirror.menu_dict.service_deferred = undefined;
   CodeMirror.menu_dict.editor = null;
   CodeMirror.menu_dict.editor_active_dialog = null;
   CodeMirror.menu_dict.editor_active_path = null;
@@ -487,8 +507,7 @@
   function dialog_flagInput(my_input, my_message) {
     //queueCall(function () {
       var input = my_input,
-        message = my_message,
-        deferred;
+        message = my_message;
 
       if (input.className.indexOf("custom-invalid") > 0) {
         return false;
@@ -629,7 +648,7 @@
   }
 
   function dialog_evaluateState(my_parameter) {
-    //queueCall(function () {
+    queueCall(function () {
       var parameter = my_parameter,
         props = CodeMirror.menu_dict;
       return new RSVP.Queue()
@@ -653,7 +672,7 @@
           console.log(error);
           throw error;
         });
-    //});
+    });
   }
 
   function dialog_isFileMenuItem(my_path, my_folder) {
@@ -1642,9 +1661,7 @@
           return;
         }
       }
-      
-      console.log("swapping")
-      
+
       return new RSVP.Queue()
         .push(function () {
           return gadget.setActiveStorage("memory");
@@ -1658,9 +1675,6 @@
             save_file_name,
             save_mime_type;
 
-          console.log(active_cache)
-          console.log(active_path)
-          console.log(active_file)
           // set active file to active and save previous file (old_doc)
           if (active_file && props.editor_is_modified) {
             if (active_file.name.indexOf(active_path) === -1) {
@@ -1669,10 +1683,7 @@
               save_file_name = active_file.name;
             }
             save_mime_type = props.editor_active_file.mime_type;
-            
-            console.log(save_file_name)
-            console.log(save_mime_type)
-            
+
             return RSVP.all([
               gadget.jio_putAttachment(
                 active_cache,
@@ -1690,7 +1701,6 @@
           }
         })
         .push(function () {
-          console.log("swapped")
           if (!my_content) {
             props.dialog_clearTextInput(dialog);
             props.editor_resetActiveFile();
@@ -1751,7 +1761,8 @@
             return props.dialog_evaluateState(BLANK_SEARCH);
           });
         }
-        return queue;
+        bufferActivity(queue);
+        return false;
       }
 
       // flag save if new file comes from memory
@@ -1916,33 +1927,27 @@
         target = props.editor.getWrapperElement();
 
       return loopEventListener(target, 'activity', false, function (my_event) {
-        var activity_pending = props.activity_pending,
-          activity_queue = new RSVP.Queue()
-            .push(my_event.detail.callback);
+        console.log("activity detected")
 
-        console.log("NEW ACTIVITY")
-
-        // there can be pending activities (take too long) and aborted activities
-        // never reach setting a defer in case of aborting an activity
-        // handle abort of find way to finish and trigger next call
-
-        if (activity_pending !== undefined) {
-          return new RSVP.Queue()
-            .push(function () {
-              return activity_pending.resolve();
-            })
-            .push(function () {
-              activity_pending = undefined;
-              return activity_queue;
-            });
-        }
-
-        return activity_queue
+        return new RSVP.Queue()
+          .push(my_event.detail.callback)
           .push(function () {
-            props.activity_pending = new RSVP.defer();
-            return props.activity_pending.promise;
-          });
-        })
+            var activity_buffer = props.editor_activity_buffer;
+
+            console.log("DONE ACTIVITY, clear buffered activities")
+            console.log(CodeMirror.menu_dict.activity_buffer)
+            if (activity_buffer) {
+              console.log("????")
+              return activity_buffer.trigger.resolve("XXX Resolving XXX");
+            }
+            return;
+          })
+          .push(function (x) {
+            console.log(x)
+            props.editor_activity_buffer = undefined;
+            console.log("cleared")
+          })
+      });
     })
   
     .declareService(function () {
