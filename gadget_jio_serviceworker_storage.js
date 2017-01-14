@@ -60,9 +60,18 @@
     throw new jIO.util.jIOError("Storage requires 'put' to create new cache",
                                 400);
   };
-  ServiceWorkerStorage.prototype.get = function () {
-    throw new jIO.util.jIOError("Storage does not support 'get' method",
-                                400);
+
+  ServiceWorkerStorage.prototype.get = function (id) {
+    return new RSVP.Queue()
+      .push(function () {
+        return validateConnection();
+      })
+      .push(function () {
+        return sendMessage({
+          command: 'get',
+          id: restrictDocumentId(id)
+        });
+      });
   };
 
   ServiceWorkerStorage.prototype.put = function (id) {
