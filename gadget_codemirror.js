@@ -312,23 +312,34 @@
         props = CodeMirror.menu_dict,
         cache_name = my_cache_name;
 
+      function createCacheIfNotExits(my_storage, my_name) {
+        return new RSVP.Queue()
+          .push(function () {
+            return gadget.setActiveStorage(my_storage);
+          })
+          .push(function () {
+            return gadget.jio_get(my_name);
+          })
+          .push(null, function (my_error) {
+            if (is404(my_error)) {
+              return gadget.jio_put(my_name);
+            }
+            throw my_error;
+          });
+      }
+
       return new RSVP.Queue()
         .push(function () {
-          return gadget.setActiveStorage("memory");
+          return createCacheIfNotExits("memory", cache_name);
         })
         .push(function () {
-          return gadget.jio_put(cache_name);
-        })
-        .push(function () {
-          return gadget.setActiveStorage("serviceworker");
-        })
-        .push(function () {
-          return gadget.jio_put(cache_name);
+          return createCacheIfNotExits("serviceworker", cache_name);
         })
         .push(function () {
           props.editor_setActiveCache(cache_name);
           return true;
         })
+        // XXX remove once folder ops are handled correctly
         .push(null, function (my_error) {
           console.log(my_error);
           throw my_error;
@@ -1129,6 +1140,7 @@
     .declareAcquiredMethod('jio_create', 'jio_create')
     .declareAcquiredMethod('jio_allDocs', 'jio_allDocs')
     .declareAcquiredMethod('jio_put', 'jio_put')
+    .declareAcquiredMethod('jio_get', 'jio_get')
     .declareAcquiredMethod('jio_remove', 'jio_remove')
     .declareAcquiredMethod('jio_allAttachments', 'jio_allAttachments')
     .declareAcquiredMethod('jio_putAttachment', 'jio_putAttachment')
@@ -1302,7 +1314,6 @@
         handler;
 
       // REMOVE => clear file/folder/cache from memory and serviceworker
-
       if (!active_cache && !active_path && !active_file) {
         return;
       }
@@ -1700,6 +1711,7 @@
         open_name,
         active_cache,
         mime_type,
+        queue,
         file_name_to_open_save_flag;
 
       // open = get from memory/serviceworker, close and store any open file!
@@ -1712,25 +1724,34 @@
       file_name_input_list = file_name_input.nextSibling.textContent.split(" | ");
       file_name_to_open = file_name_input_list[1];
 
-      // project/folder, update display and shelf open file on memory
+      // project/folder
       if (file_name_to_open.split(".").length === 1) {
+        queue = new RSVP.Queue();
         props.editor_setActivePath(file_name_to_open);
+        
+        // when opening a cache, make sure it's (re-) created on memory
         if (file_name_to_open === "[Project]") {
           file_name_to_open = file_name_input_list[0];
           props.editor_setActiveCache(file_name_to_open);
-          
-          console.log("WE SHOULD CHECK HERE WHETHER PROJECT EXISTS ON MEMORY!")
+          queue.push(function () {
+            return props.editor_createCache(gadget, file_name_to_open);
+          });
         }
+
+        // update file menu, shelf open file if there is one
         if (props.editor_active_file) {
-          return new RSVP.Queue()
-            .push(function () {
-              return gadget.editor_swapFile();
-            })
-            .push(function () {
-              return props.dialog_evaluateState(BLANK_SEARCH);
-            });
+          queue.push(function () {
+            return gadget.editor_swapFile();
+          })
+          .push(function () {
+            return props.dialog_evaluateState(BLANK_SEARCH);
+          });
         } else {
-          return props.dialog_evaluateState(BLANK_SEARCH);}
+          queue.push(function () {
+            return props.dialog_evaluateState(BLANK_SEARCH);
+          });
+        }
+        return queue;
       }
 
       // flag save if new file comes from memory
