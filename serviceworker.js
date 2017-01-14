@@ -79,9 +79,10 @@ self.addEventListener('activate', function (event) {
 
 // XXX build a server on fetch
 // intercept network requests, allows to serve form cache or fetch from network
+/*
 self.addEventListener('fetch', function (event) {
   var url = event.request.url,
-    cacheable_list = ["codemirror", "jiodev", "renderjs", "rsvp"],
+    cacheable_list = ["codemirror_", "jiodev", "renderjs", "rsvp"],
     isCacheable = function (el) {
       return url.indexOf(el) >= 0;
     };
@@ -104,7 +105,7 @@ self.addEventListener('fetch', function (event) {
             // (see https://fetch.spec.whatwg.org/#dom-request-clone)
             return fetch(event.request.clone())
               .then(function(response) {
-            
+                
                 // add resource to cache
                 if (response.status < 400 && cacheable_list.some(isCacheable)) {
                   cache.put(event.request, response.clone());
@@ -128,6 +129,7 @@ self.addEventListener('fetch', function (event) {
   //  event.respondWith(fetch(event.request));
   }
 });
+*/
 
 self.addEventListener('message', function (event) {
   var param = event.data,
@@ -139,7 +141,7 @@ self.addEventListener('message', function (event) {
     
     // case 'post' not possible
     
-    // test if cache exits, only run ahead of put
+    // test if cache exits
     case 'get':
       caches.keys().then(function(key_list) {
         var i, len;
@@ -391,6 +393,5 @@ self.addEventListener('message', function (event) {
       throw 'Unknown command: ' + event.data.command;
   }
 });  
-
 
 

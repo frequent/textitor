@@ -71,6 +71,12 @@
           command: 'get',
           id: restrictDocumentId(id)
         });
+      })
+      .push(undefined, function (error) {
+        if (error.status === 404) {
+          throw new jIO.util.jIOError(error.message, 404);
+        }
+        throw error;
       });
   };
 
