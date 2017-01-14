@@ -636,6 +636,7 @@
             props.editor.focus();
             props.dialog_position = IDLE;
           }
+          return;
         })
         .push(null, function (error) {
           console.log(error);
@@ -867,44 +868,30 @@
   }
 
   function editor_openDialog(my_codemirror, my_direction) {
-    queueCall(function () {
-      var my_codemirror = my_codemirror || CodeMirror.menu_dict.editor,
+    //queueCall(function () {
+      var editor_instance = my_codemirror || CodeMirror.menu_dict.editor,
         direction = my_direction;
       return new RSVP.Queue()
         .push(function () {
           return CodeMirror.menu_dict.dialog_setNavigationMenu(direction);
         })
         .push(function (my_dialog_template) {
-          return my_codemirror.openDialog(
+          return editor_instance.openDialog(
             my_dialog_template,
             CodeMirror.menu_dict.dialog_closeCallback,
             CodeMirror.menu_dict.dialog_option_dict
           );
         });
-    });
+    //});
   }
 
   function editor_saveFromDialog() {
     //queueCall(function () {
-    
-      if (CodeMirror.menu_dict.action_pending === SAVE) {
-        return;
-      }
-    
-      CodeMirror.menu_dict.action_pending = SAVE;
       if (CodeMirror.menu_dict.dialog_position !== LEFT) {
         if (CodeMirror.menu_dict.dialog_evaluateState) {
-          return new RSVP.Queue()
-            .push(function () {
-              return CodeMirror.menu_dict.dialog_evaluateState({"target":{"name": SAVE}});
-            })
-            .push(function (my_answer) {
-              CodeMirror.menu_dict.action_pending = null;
-              return my_answer;
-            });
-        } else {
-          return CodeMirror.commands.myEditor_openDialog(CodeMirror, RIGHT);
+          return CodeMirror.menu_dict.dialog_evaluateState({"target":{"name": SAVE}});
         }
+        return CodeMirror.commands.myEditor_openDialog(CodeMirror, RIGHT);
       } else {
         CodeMirror.commands.myEditor_bulkSaveFromDialog();
       }
@@ -1644,7 +1631,7 @@
           return;
         }
       }
-
+      
       return new RSVP.Queue()
         .push(function () {
           return gadget.setActiveStorage("memory");
@@ -1721,7 +1708,6 @@
         if (file_name_to_open === "[Project]") {
           file_name_to_open = file_name_input_list[0];
           props.editor_setActiveCache(file_name_to_open);
-          // XXX what to return?
         }
         if (props.editor_active_file) {
           return new RSVP.Queue()
@@ -1732,8 +1718,7 @@
               return props.dialog_evaluateState(BLANK_SEARCH);
             });
         } else {
-          return props.dialog_evaluateState(BLANK_SEARCH);
-        }
+          return props.dialog_evaluateState(BLANK_SEARCH);}
       }
 
       // flag save if new file comes from memory
@@ -1898,35 +1883,31 @@
         target = props.editor.getWrapperElement();
 
       return loopEventListener(target, 'activity', false, function (my_event) {
-        var service_queue = props.service_queue,
-          activity_queue,
-          callback = my_event.detail.callback;
+        var activity_pending = props.activity_pending,
+          activity_queue = new RSVP.Queue()
+            .push(my_event.detail.callback);
 
-        activity_queue = new RSVP.Queue().push(callback);
-        if (service_queue !== undefined) {
-          // prevent promise cancellation
-          // return false;
-          
-          // XXXXX the question is how to prevent Cancellation error by returning something
-          // the initial queue call is waiting for, because I call eval-storage
-          // and wait for true/false, but at some point I call it again and wait for true/false
-          // which kills the first promise. How to resolve the first promise properly and then
-          // call the next eval storage? because I have no access to the promise object.
-          
+        console.log("NEW ACTIVITY")
+
+        // there can be pending activities (take too long) and aborted activities
+        // never reach setting a defer in case of aborting an activity
+        // handle abort of find way to finish and trigger next call
+
+        if (activity_pending !== undefined) {
           return new RSVP.Queue()
             .push(function () {
-              return service_queue.resolve();
+              return activity_pending.resolve();
             })
             .push(function () {
-              service_queue = undefined;
+              activity_pending = undefined;
               return activity_queue;
             });
         }
+
         return activity_queue
           .push(function () {
-            var deferred = new RSVP.defer();
-            props.service_queue = deferred;
-            return deferred.promise;
+            props.activity_pending = new RSVP.defer();
+            return props.activity_pending.promise;
           });
         });
     })
