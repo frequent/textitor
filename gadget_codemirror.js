@@ -208,25 +208,15 @@
     );
   }
 
-  // activity buffer (allows to trigger activities from activities)
-  function bufferActivity(my_buffered_activity) {
-    var deferred = new RSVP.defer();
-    
-    console.log("ADDING TO BUFFER")
-    
-    CodeMirror.menu_dict.editor_activity_buffer = {
-      handler: new RSVP.Queue()
+  function queueBuffer() {
+    var deferred = new RSVP.defer(),
+      queue = new RSVP.Queue()
         .push(function () {
-          console.log("til here...")
           return deferred.promise;
-        })
-        .push(function (x) {
-          console.log(x, " now RUNNING")
-          return my_buffered_activity;
-        }),
-      trigger: deferred 
-    };
-    console.log("ADDED TO BUFFER")
+        });
+    CodeMirror.menu_dict.buffer_defer = deferred;
+    CodeMirror.menu_dict.buffer_queue = queue;
+    return queue;
   }
 
   // CodeMirror needs this on dialog close
@@ -326,18 +316,6 @@
     //});
   }
   
-  function editor_createBufferedQueue() {
-    var deferred = new RSVP.defer(),
-      queue = new RSVP.Queue()
-        .push(function () {
-          console.log("waiting for resolve...");
-          return deferred.promise;
-        });
-    CodeMirror.menu_dict.buffer_defer = deferred;
-    CodeMirror.menu_dict.buffer_queue = queue;
-    return queue;
-  }
-  
   function editor_createCache(my_gadget, my_cache_name) {
     // queueCall(function () {
       var gadget = my_gadget,
@@ -370,11 +348,6 @@
         .push(function () {
           props.editor_setActiveCache(cache_name);
           return true;
-        })
-        // XXX remove once folder ops are handled correctly
-        .push(null, function (my_error) {
-          console.log(my_error);
-          throw my_error;
         });
     //});
   }
@@ -663,8 +636,6 @@
     queueCall(function () {
       var parameter = my_parameter,
         props = CodeMirror.menu_dict;
-      console.log("what's happening")
-      console.log(my_parameter)
       return new RSVP.Queue()
         .push(function () {
           return props.editor_updateStorage(parameter);
@@ -681,10 +652,6 @@
             props.dialog_position = IDLE;
           }
           return;
-        })
-        .push(null, function (error) {
-          console.log(error);
-          throw error;
         });
     });
   }
@@ -806,7 +773,6 @@
 
   CodeMirror.menu_dict.editor_createDoc = editor_createDoc;
   CodeMirror.menu_dict.editor_createCache = editor_createCache;
-  CodeMirror.menu_dict.editor_createBufferedQueue = editor_createBufferedQueue;
   CodeMirror.menu_dict.editor_setActiveCache = editor_setActiveCache;
   CodeMirror.menu_dict.editor_setDialog = editor_setDialog;
   CodeMirror.menu_dict.editor_setModified = editor_setModified;
@@ -1329,10 +1295,6 @@
           }
           props.editor_setDisplay(active_path || active_file && active_file.name);
           return false;
-        })
-        .push(null, function (my_error) {
-          console.log(my_error);
-          throw my_error;
         });
     })  
 
@@ -1752,8 +1714,7 @@
       // project/folder
       if (file_name_to_open.split(".").length === 1) {
         props.editor_setActivePath(file_name_to_open);
-        // queue = new RSVP.Queue();
-        queue = props.editor_createBufferedQueue()
+        queue = queueBuffer();
 
         // when opening a cache, make sure it's (re-) created on memory
         if (file_name_to_open === "[Project]") {
@@ -1777,7 +1738,6 @@
             return props.dialog_evaluateState(BLANK_SEARCH);
           });
         }
-        //bufferActivity(queue);
         return false;
       }
 
@@ -1942,45 +1902,23 @@
         props = gadget.property_dict,
         target = props.editor.getWrapperElement();
 
+      // central activity handler
       return loopEventListener(target, 'activity', false, function (my_event) {
         return new RSVP.Queue()
           .push(my_event.detail.callback)
           .push(function () {
-            console.log("ACTIVITY done, check buffer");
-            console.log(props.buffer_queue)
-            if (props.buffer_queue) {
-              console.log("buffer exists, resolving")
-              return props.buffer_defer.resolve("hui");
+            if (props.buffer_defer) {
+              props.buffer_defer.resolve();
+              props.buffer_defer = props.buffer_queue = undefined;
             }
             return;
           })
-          .push(function (x) {
-            console.log("BUFFER done, resetting")
-            props.buffer_defer = props.buffer_queue = undefined;
-            console.log("et viola");
-            return;
+
+          // let this be the only error handler if no promise chains are broken
+          .push(null, function (error) {
+            console.log(error);
+            throw error;
           });
-
-        /*
-        return new RSVP.Queue()
-          .push(my_event.detail.callback)
-          .push(function () {
-            var activity_buffer = props.editor_activity_buffer;
-
-            console.log("DONE ACTIVITY, clear buffered activities")
-            console.log(CodeMirror.menu_dict.activity_buffer)
-            if (activity_buffer) {
-              console.log("????")
-              return activity_buffer.trigger.resolve("XXX Resolving XXX");
-            }
-            return;
-          })
-          .push(function (x) {
-            console.log(x)
-            props.editor_activity_buffer = undefined;
-            console.log("cleared")
-          })
-          */
       });
     })
   
