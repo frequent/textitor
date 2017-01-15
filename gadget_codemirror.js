@@ -209,11 +209,20 @@
   }
 
   function queueBuffer() {
-    var deferred = new RSVP.defer(),
-      queue = new RSVP.Queue()
-        .push(function () {
-          return deferred.promise;
-        });
+    var current_deferred = CodeMirror.menu_dict.buffer_defer, 
+      deferred,
+      queue;
+    
+    // XXX stacking activites like this won't work forever
+    if (current_deferred && !current_deferred.promise.isFulfilled) {
+      return CodeMirror.menu_dict.buffer_queue;
+    }
+    deferred = new RSVP.defer();
+    queue = new RSVP.Queue()
+      .push(function () {
+        return deferred.promise;
+      });
+
     CodeMirror.menu_dict.buffer_defer = deferred;
     CodeMirror.menu_dict.buffer_queue = queue;
     return queue;
