@@ -21,7 +21,8 @@
   var PICK = "pick";
   var TAB = "tab";
   
-  // and some variables...
+  // and some miscellaneous strings...
+  var LUCY = "lucy";
   var IDLE = "idle";
   var FLAG = "Enter valid URL.";
   var FILE = "Missing file extension.";
@@ -194,7 +195,7 @@
   }
 
   /////////////////////////////
-  // Some Methods (not asyn)
+  // Some Methods
   /////////////////////////////
 
   // activity trigger
@@ -208,6 +209,7 @@
     );
   }
 
+  // activity buffer
   function queueBuffer() {
     var current_deferred = CodeMirror.menu_dict.buffer_defer, 
       deferred,
@@ -984,17 +986,17 @@
   }
 
   function editor_navigateRight(my_codemirror_instance) {
-    //queueCall(function () {
+    queueCall(function () {
       var instance = my_codemirror_instance;
       return CodeMirror.commands.myEditor_navigateHorizontal(instance, RIGHT, true);
-    //});
+    });
   }
 
   function editor_navigateLeft(my_codemirror_instance) {
-    //queueCall(function () {
+    queueCall(function () {
       var instance = my_codemirror_instance;
       return CodeMirror.commands.myEditor_navigateHorizontal(instance, LEFT, true);
-    //});
+    });
   }
 
   function editor_navigateUp(my_codemirror_instance) {
