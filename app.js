@@ -20,8 +20,8 @@
       var gadget = this;
       return new RSVP.Queue()
         .push(function () {
-          return gadget.declareGadget("gadget_couscous.html",
-            {"scope":"couscous"}
+          return gadget.declareGadget("textitor.html",
+            {"scope":"textitor"}
           );
         })
         .push(function (my_declared_gadget) {

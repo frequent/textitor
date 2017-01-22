@@ -4,23 +4,12 @@
   "use strict";
 
   function initializeStorage(my_gadget, my_name) {
-    var config;
-    if (my_name === "serviceworker") {
-      config = {"type": "serviceworker"};
-    } else {
-      config = {"type": "memory"};
-    }
-          
-    // calling without method acquisition, so call direct method
     return new RSVP.Queue()
       .push(function () {
         return my_gadget.setActiveStorage([my_name]);
       })
       .push(function () {
-        my_gadget.routeStorageRequest("createJIO", config);
-      })
-      .push(function () {
-        return my_gadget.routeStorageRequest("put", "textitor");
+        my_gadget.routeStorageRequest("createJIO", {"type": my_name});
       });
   }
 

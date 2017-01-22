@@ -1876,6 +1876,7 @@
             return wrapBind(my_element, "submit", "onSubmit");
           });
   
+          // return?
           queue
             .push(function () {
               return RSVP.all([
