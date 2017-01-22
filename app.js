@@ -20,7 +20,7 @@
       var gadget = this;
       return new RSVP.Queue()
         .push(function () {
-          return gadget.declareGadget("textitor.html",
+          return gadget.declareGadget("gadget_textitor.html",
             {"scope":"textitor"}
           );
         })
