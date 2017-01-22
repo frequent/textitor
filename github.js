@@ -7918,7 +7918,7 @@ process.umask = function() { return 0; };
 			return continuationByte & 0x3F;
 		}
 
-		// If we end up here, itÃ¢â¬â¢s not a continuation byte
+		// If we end up here, itâ€™s not a continuation byte
 		throw Error('Invalid continuation byte');
 	}
 
@@ -8038,5 +8038,4 @@ process.umask = function() { return 0; };
 
 },{}]},{},[2])(2)
 });
-
 

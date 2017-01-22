@@ -244,4 +244,3 @@
   jIO.addStorage('serviceworker', ServiceWorkerStorage);
 
 }(jIO, RSVP, Blob, navigator));
-

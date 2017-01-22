@@ -11,6 +11,8 @@
   should test for required fields to initiliaze like github usernamen and password
   and raise an error for each missing one, then catch errors and build a form 
   based on missing fields and method to call with providing them.
+- implement lazy loading of dependencies using defers which can add stuff 
+  when required, pass deferred in gadget returned on ready.
 
 => maintain self
 - try image handling with favicon, must be possible to handle images without opening
@@ -21,10 +23,13 @@
 - run tests textitor/test/, preview like gh-pages on textitor/preview/, and "build" on textitor/deploy/
 
 => speak
-- add accoustic model from voxforge
 - add voice commands, try on mobile instead of using shortcuts
+- untangle emscriptem file, remove recognizer if not needed
+- would be nice to implement in Javascript and be able to add samples on the fly, retrain, rebuild, done
+  so one could generate their own trained model step by step.
 - juliusjs, find out how to build grammar with emscriptem online
 - add voice find/grep and replace
+
 
 => gitstorage
   - replicate with indexeddb and remote gitstorage
