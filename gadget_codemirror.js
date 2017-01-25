@@ -82,58 +82,58 @@
 
   var EMPTY_TEMPLATE = "<span class='custom-file-menu-empty-folder'>%s</span>";
 
-  var FILE_ENTRY_TEMPLATE = "<div class='custom-file-menu-row'>" +
-      "<input type='checkbox' autocomplete='off' />" +
-      "<span class='custom-file-menu-checkbox-overlay'>%s</span>" +
-      "</div>";
+  var FILE_ENTRY_TEMPLATE = "<div class='custom-file-menu-row'>\
+      <input type='checkbox' autocomplete='off' />\
+      <span class='custom-file-menu-checkbox-overlay'>%s</span>\
+      </div>";
 
-  var OBJECT_MENU_TEMPLATE = "<span class='custom-menu-label'>Name:</span>" +
-    "<input type='text' tabindex='1' placeholder='file name' value='%s' />" +
-    "<input type='hidden' value='%s' name=is_mime_type' />" +
-    "<span class='custom-menu-label'>Type</span>" +
-    "<select tabindex='2' name='is_container'>" +
-    "<option value='file' selected='selected'>File</option>" +
-    "<option value='folder'>Folder</option>" +
-    "<option value='cache'>Project</option>" +
-    "<option value='github'>Github</option></select>" +
-    "<span class='custom-menu-typewriter'>CTRL+ALT+</span>" +
-    "<form name='save'>" +
-      "<button type='submit' tabindex='3' class='custom-menu-button'>" +
-        "<b>S</b>ave</button></form>" +
-    "<form name='close'>" +
-      "<button type='submit' tabindex='4' class='custom-menu-button'>" +
-        "<b>C</b>lose</button></form>" +
-    "<form name='remove'>" +
-      "<button type='submit' tabindex='5' class='custom-menu-button'>" +
-        "<b>D</b>elete</button></form>";
+  var OBJECT_MENU_TEMPLATE = "<span class='custom-menu-label'>Name:</span>\
+    <input type='text' tabindex='1' placeholder='file name' value='%s' />\
+    <input type='hidden' value='%s' name=is_mime_type' />\
+    <span class='custom-menu-label'>Type</span>\
+    <select tabindex='2' name='is_container'>\
+    <option value='file' selected='selected'>File</option>\
+    <option value='folder'>Folder</option>\
+    <option value='cache'>Project</option>\
+    <option value='github'>Github</option></select>\
+    <span class='custom-menu-typewriter'>CTRL+ALT+</span>\
+    <form name='save'>\
+      <button type='submit' tabindex='3' class='custom-menu-button'>\
+        <b>S</b>ave</button></form>\
+    <form name='close'>\
+      <button type='submit' tabindex='4' class='custom-menu-button'>\
+        <b>C</b>lose</button></form>\
+    <form name='remove'>\
+      <button type='submit' tabindex='5' class='custom-menu-button'>\
+        <b>D</b>elete</button></form>";
 
-  var OLD_OBJECT_MENU_TEMPLATE = "<span class='custom-menu-label'>Name:</span>" +
-    "<input type='text' tabindex='1' placeholder='file name' value='%s' />" +
-    "<input type='hidden' value='%s' name='is_mime_type'/>" +
-    "<span class='custom-menu-label'>Cache</span>" +
-    "<input type='radio' tabindex='2' name='is_container' value='cache' />" +
-    "<span class='custom-menu-label'>Folder</span>" +
-    "<input type='radio' tabindex='3' name='is_container' value='folder' />" +
-    "<span class='custom-menu-typewriter'>CTRL+ALT+</span>" +
-    "<form name='save'>" +
-      "<button type='submit' tabindex='4' class='custom-menu-button'>" +
-        "<b>S</b>ave</button></form>" +
-    "<form name='close'>" +
-      "<button type='submit' tabindex='5' class='custom-menu-button'>" +
-        "<b>C</b>lose</button></form>" +
-    "<form name='remove'>" +
-      "<button type='submit' tabindex='6' class='custom-menu-button'>" +
-        "<b>D</b>elete</button></form>";
+  var OLD_OBJECT_MENU_TEMPLATE = "<span class='custom-menu-label'>Name:</span>\
+    <input type='text' tabindex='1' placeholder='file name' value='%s' />\
+    <input type='hidden' value='%s' name='is_mime_type'/>\
+    <span class='custom-menu-label'>Cache</span>\
+    <input type='radio' tabindex='2' name='is_container' value='cache' />\
+    <span class='custom-menu-label'>Folder</span>\
+    <input type='radio' tabindex='3' name='is_container' value='folder' />\
+    <span class='custom-menu-typewriter'>CTRL+ALT+</span>\
+    <form name='save'>\
+      <button type='submit' tabindex='4' class='custom-menu-button'>\
+        <b>S</b>ave</button></form>\
+    <form name='close'>\
+      <button type='submit' tabindex='5' class='custom-menu-button'>\
+        <b>C</b>lose</button></form>\
+    <form name='remove'>\
+      <button type='submit' tabindex='6' class='custom-menu-button'>\
+        <b>D</b>elete</button></form>";
 
-  var OBJECT_LIST_TEMPLATE = "<span>Search:</span>" +
-    "<form name='search' autocomplete='off'>" +
-      "<input type='text' tabindex='1' name='find' placeholder='search...' />" +
-      "<span class='custom-menu-typewriter'>CTRL+ALT+</span>" +
-      "<button type='submit' tabindex='2' class='custom-menu-button'>" +
-        "<b>F</b>ind</button></form>" +
-    "<form name='bulk'>" +
-      "<button type='submit' tabindex='3' class='custom-menu-button'>" +
-        "<b>S</b>ave All</button></form>";
+  var OBJECT_LIST_TEMPLATE = "<span>Search:</span>\
+    <form name='search' autocomplete='off'>\
+      <input type='text' tabindex='1' name='find' placeholder='search...' />\
+      <span class='custom-menu-typewriter'>CTRL+ALT+</span>\
+      <button type='submit' tabindex='2' class='custom-menu-button'>\
+        <b>F</b>ind</button></form>\
+    <form name='bulk'>\
+      <button type='submit' tabindex='3' class='custom-menu-button'>\
+        <b>S</b>ave All</button></form>";
 
   /////////////////////////////
   // Event handling (gadget_global.js)
@@ -1961,3 +1961,4 @@
     });
 
 }(window, document, rJS, CodeMirror, JSON, loopEventListener));
+
