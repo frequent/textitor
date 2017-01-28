@@ -56,6 +56,8 @@
           ]);
         })
         .push(function (my_declared_gadget_list) {
+
+          // textitor should pass the serviceworker-url here
           return RSVP.all([
             my_declared_gadget_list[0].render(my_option_dict || {}),
             my_declared_gadget_list[1].render(my_option_dict || {})
@@ -125,3 +127,4 @@
     });
 
 }(window, rJS));
+
