@@ -2,12 +2,12 @@
  * JIO Service Worker Storage Backend.
  */
 
+// POLYFILL: => https://developer.mozilla.org/en-US/docs/Web/API/Cache
 // this polyfill provides Cache.add(), Cache.addAll(), and CacheStorage.match(),
 // should not be needed for Chromium > 47 And Firefox > 39
-// see https://developer.mozilla.org/en-US/docs/Web/API/Cache
 // importScripts('./serviceworker-cache-polyfill.js');
 
-// debug:
+// DEBUG:
 // chrome://cache/
 // chrome://inspect/#service-workers
 // chrome://serviceworker-internals/
@@ -27,15 +27,33 @@
 //        });
 //    });
 //});
-
+//
+// clear last cache
 // caches.keys().then(function(key_list) {console.log(key_list);return caches.open(key_list[0]);}).then(function(cache) {return cache.keys().then(function(request_list) {console.log(request_list); return cache.delete(request_list[0]);})});
+// list all caches
 // caches.keys().then(function(key_list) {console.log(key_list);return caches.open(key_list[0]);}).then(function(cache) {return cache.keys().then(function(request_list) {console.log(request_list);})});
 
+// CONFLICTING CONTROLLERS/NO CONTROLLER
+// if using same scope (for example ./) => https://github.com/w3c/ServiceWorker/issues/921
+// hijack using claim() which triggers oncontrollerchange on other serviceworkers
+// => https://developer.mozilla.org/en-US/docs/Web/API/Clients/claim
+// can also be used to not have to refresh page
+// => https://davidwalsh.name/offline-recipes-service-workers
 
-// https://developer.mozilla.org/en-US/docs/Web/API/Service_Worker_API/Using_Service_Workers
-// intro http://www.html5rocks.com/en/tutorials/service-worker/introduction/
-// selective cache https://github.com/GoogleChrome/samples/blob/gh-pages/service-worker/selective-caching/service-worker.js
-// handling POST with indexedDB: https://serviceworke.rs/request-deferrer.html
+// self.addEventListener('install', function(event) {
+//  event.waitUntil(self.skipWaiting());
+// });
+// self.addEventListener('activate', function(event) {
+//  event.waitUntil(self.clients.claim());
+// });
+
+// STUFF
+// intro => https://developer.mozilla.org/en-US/docs/Web/API/Service_Worker_API/Using_Service_Workers
+// intro => http://www.html5rocks.com/en/tutorials/service-worker/introduction/
+// selective cache => https://github.com/GoogleChrome/samples/blob/gh-pages/service-worker/selective-caching/service-worker.js
+// handling POST with indexedDB => https://serviceworke.rs/request-deferrer.html
+// prefetch during install => https://googlechrome.github.io/samples/service-worker/prefetch/
+// serve range from cache => https://googlechrome.github.io/samples/service-worker/prefetch-video/
 
 // versioning allows to keep a clean cache, current_cache is accessed on fetch
 var CURRENT_CACHE_VERSION = 1;
@@ -77,12 +95,12 @@ self.addEventListener('activate', function (event) {
   );
 });
 
-// XXX build a server on fetch
+// XXX I'm a server
 // intercept network requests, allows to serve form cache or fetch from network
 /*
 self.addEventListener('fetch', function (event) {
   var url = event.request.url,
-    cacheable_list = ["codemirror_", "jiodev", "renderjs", "rsvp"],
+    cacheable_list = [],
     isCacheable = function (el) {
       return url.indexOf(el) >= 0;
     };
@@ -351,8 +369,6 @@ self.addEventListener('message', function (event) {
           });
         })
         .catch(function(error) {
-          console.log("getAttachment error");
-          console.log(error);
           event.ports[0].postMessage({
             error: {'message': error.toString()}
           });
@@ -380,8 +396,6 @@ self.addEventListener('message', function (event) {
           });
         })
         .catch(function(error) {
-          console.log("putAttachment error");
-          console.log(error);
           event.ports[0].postMessage({
             error: {'message': error.toString()}
           });
