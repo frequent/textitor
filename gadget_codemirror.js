@@ -1719,7 +1719,7 @@
       }
 
       active_cache = props.editor_active_cache;
-      file_name_input_list = file_name_input.nextSibling.textContent.split(" | ");
+      file_name_input_list = file_name_input.nextElementSibling.textContent.split(" | ");
       file_name_to_open = file_name_input_list[1];
 
       // project/folder
