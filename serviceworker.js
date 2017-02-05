@@ -2,11 +2,6 @@
  * JIO Service Worker Storage Backend.
  */
 
-// POLYFILL: => https://developer.mozilla.org/en-US/docs/Web/API/Cache
-// this polyfill provides Cache.add(), Cache.addAll(), and CacheStorage.match(),
-// should not be needed for Chromium > 47 And Firefox > 39
-// importScripts('./serviceworker-cache-polyfill.js');
-
 // DEBUG:
 // chrome://cache/
 // chrome://inspect/#service-workers
@@ -27,6 +22,7 @@
 //        });
 //    });
 //});
+//
 //
 // clear last cache
 // caches.keys().then(function(key_list) {console.log(key_list);return caches.open(key_list[0]);}).then(function(cache) {return cache.keys().then(function(request_list) {console.log(request_list); return cache.delete(request_list[0]);})});
@@ -59,13 +55,76 @@
 var CURRENT_CACHE_VERSION = 1;
 var CURRENT_CACHE;
 var CURRENT_CACHE_DICT = {
-  "self": "self-v" + CURRENT_CACHE_VERSION
+  "self": "self-v" + CURRENT_CACHE_VERSION,
+  "prefetch": "prefetch-v" + CURRENT_CACHE_VERSION
 };
 
+var PREFETCH_URL_LIST = [];
+
 // runs while an existing worker runs or nothing controls the page (update here)
-//self.addEventListener('install', function (event) {
-//  XXX CACHE SELF?
-//});
+self.addEventListener('install', function (event) {
+
+  // force waiting worker to become active worker (claim)
+  // https://developer.mozilla.org/en-US/docs/Web/API/ServiceWorkerGlobalScope/skipWaiting
+  self.skipWaiting();
+
+  event.waitUntil(
+    caches.open(CURRENT_CACHE_DICT.prefetch)
+      .then(function(cache) {
+        var cachePromises = PREFETCH_URL_LIST.map(function(prefetch_url) {
+          
+        // This constructs a new URL object using the service worker's script
+        // location as the base for relative URLs.
+        var url = new URL(prefetch_url, location.href),
+          request;
+
+        // Append a cache-bust=TIMESTAMP URL parameter to each URL's query 
+        // string. This is particularly important when precaching resources 
+        // that are later used in the fetch handler as responses directly, 
+        // without consulting the network (i.e. cache-first). If we were to 
+        // get back a response from the HTTP browser cache for this precaching 
+        // request then that stale response would be used indefinitely, or at 
+        // least until the next time the service worker script changes 
+        // triggering the install flow.
+        url.search += (url.search ? '&' : '?') + 'cache-bust=' +  Date.now();
+
+        // It's very important to use {mode: 'no-cors'} if there is any chance
+        // that the resources being fetched are served off of a server that 
+        // doesn't support CORS. See
+        // (http://en.wikipedia.org/wiki/Cross-origin_resource_sharing).
+        // If the server doesn't support CORS the fetch() would fail if the 
+        // default mode of 'cors' was used for the fetch() request. The drawback
+        // of hardcoding {mode: 'no-cors'} is that the response from all 
+        // cross-origin hosts will always be opaque
+        // (https://slightlyoff.github.io/ServiceWorker/spec/service_worker/index.html#cross-origin-resources)
+        // and it is not possible to determine whether an opaque response 
+        // represents a success or failure
+        // (https://github.com/whatwg/fetch/issues/14).
+        request = new Request(url, {mode: 'no-cors'});
+
+        return fetch(request).then(function(response) {
+          if (response.status >= 400) {
+            throw new Error('request for ' + prefetch_url +
+              ' failed with status ' + response.statusText);
+          }
+
+          // Use the original URL without the cache-busting parameter as 
+          // the key for cache.put().
+          // XXX User message interface for internal caching?
+          return cache.put(prefetch_url, response);
+        }).catch(function(error) {
+          console.error('Not caching ' + prefetch_url + ' due to ' + error);
+        });
+      });
+
+      return Promise.all(cachePromises).then(function() {
+        console.log('Pre-fetching complete.');
+      });
+    }).catch(function(error) {
+      console.error('Pre-fetching failed:', error);
+    })
+  );
+});
 
 // runs active page, changes here (like deleting old cache) breaks page
 self.addEventListener('activate', function (event) {
@@ -243,7 +302,7 @@ self.addEventListener('message', function (event) {
           i;
         for (i = 0; i < key_list.length; i += 1) {
           id = key_list[i].split("-v")[0];
-          if (id !== "self") {
+          if (id !== "self" && id !== "prefetch") {
             result_list.push({
               "id": id,
               "value": {}
@@ -407,5 +466,6 @@ self.addEventListener('message', function (event) {
       throw 'Unknown command: ' + event.data.command;
   }
 });  
+
 
 
