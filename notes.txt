@@ -1,5 +1,6 @@
 => progress
 
+> rewrite storage to use latest renderjs/jio with worker + cache storage
 > fix folder operations breaking promise chains then remove additonal error handlers
 > allow to createJIO inside project = support storages, find place to add params
 - wrap all shortcuts in a single promise (proper queue call) with global error handler to fix propagation
